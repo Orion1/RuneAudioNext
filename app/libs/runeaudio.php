@@ -1649,8 +1649,7 @@ sysCmd('systemctl stop mpd');
 $dbh = cfgdb_connect($db);
 cfgdb_update('cfg_mpd',$dbh,'zeroconf_name',$newhostname);
 $dbh = null;
-$redis->set('hostname',$newhostname);
-wrk_mpdconf('/etc',$db);
+wrk_mpdconf('/etc',$db,$redis);
 // restart MPD
 sysCmd('systemctl start mpd');
 // restart SAMBA << TODO: use systemd!!!

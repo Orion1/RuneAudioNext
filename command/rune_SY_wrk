@@ -35,7 +35,7 @@
 // common include
 $start = microtime(true);
 ini_set('display_errors', '1');
-ini_set('error_reporting', 1);
+ini_set('error_reporting', -1);
 ini_set('error_log','/var/log/runeaudio/rune_SY_wrk.log');
 define('APP','/srv/http/app/');
 opcache_reset();
@@ -444,13 +444,12 @@ while (1) {
 				case 'hostname':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					wrk_changeHostname($db,$job['args'],$redis);
+					wrk_changeHostname($db,$job->args,$redis);
 					$hn = sysCmd('hostname');
 					$redis->set('hostname',$hn[0]);
 					// update hash
 					$hash = md5_file('/etc/mpd.conf');
 					$redis->set('mpdconfhash',$hash);
-					playerSession('write',$db,'mpdconfhash',$hash);
 					$redis->sRem('w_lock',$jobID);
 
 				break;
@@ -492,15 +491,16 @@ while (1) {
 				break;
 				
 				case 'mpdrestart':
-					
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
 					sysCmd('systemctl stop mpd');
 					sleep(1);
 					sysCmd('systemctl start mpd');
 					// restart mpdscribble
-					if ($_SESSION['scrobbling_lastfm'] == 1) {
+					if ($redis->get('scrobbling_lastfm') == 1) {
 					sysCmd('systemctl restart mpdscribble');
 					}
-				
+					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'netcfg':
@@ -548,9 +548,8 @@ while (1) {
 				case 'ntpserver':
 				runelog('wrk_SY: ',$job->wrkcmd);	
 					$redis->sAdd('w_lock',$jobID);
-					$redis->set('ntpserver', wrk_NTPsync($redis,$job['args']));
+					$redis->set('ntpserver', wrk_NTPsync($job->args));
 					$redis->sRem('w_lock',$jobID);
-					
 				break;
 
 				case 'opcache':
@@ -571,36 +570,43 @@ while (1) {
 				break;
 					
 				case 'orionprofile':
-
-					if ($_SESSION['dev'] == 1) {
-					$job['args'] = 'dev';
-					}
-					runelog("env: SET KERNEL PROFILE",$_SESSION['orionprofile']);
-					sysCmd("/var/www/command/orion_optimize.sh ".$job['args']);
-
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
+					// if ($_SESSION['dev'] == 1) {
+					// $job->args = 'dev';
+					// }
+					$profile = $job->args." ".$redis->get('hwplatformid');
+					runelog("env: SET KERNEL PROFILE",$job->args);
+					sysCmd("/var/www/command/orion_optimize.sh ".$profile);
+					$redis->set('orionprofile',$job->args);
+					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'phprestart':
-				
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
 					sysCmd('systemctl restart php-fpm');
-				
+					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'poweroff':
-				
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
 					sysCmd('/var/www/command/rune_shutdown shutdown');
-				
+					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'reboot':
-				
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
 					sysCmd('/var/www/command/rune_shutdown reboot');
+					$redis->sRem('w_lock',$jobID);
 				
 				break;
 				
 				case 'restore':
 				
-					wrk_restore("/run/".$job['args']);
+					wrk_restore("/run/".$job->args);
 				
 				break;
 				
@@ -630,8 +636,7 @@ while (1) {
 					sysCmd('systemctl stop mpdscribble');
 					$redis->set('scrobbling_lastfm', 0);
 					}
-					$redis->sRem('w_lock',$jobID);	
-					
+					$redis->sRem('w_lock',$jobID);		
 				break;				
 				
 				case 'sourcecfg':

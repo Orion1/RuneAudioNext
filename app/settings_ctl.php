@@ -31,66 +31,36 @@
  *
  */
 
-// handle POST
+// inspect POST
 if (isset($_POST)) {
-/*
-	if (isset($_POST['syscmd'])){
-		switch ($_POST['syscmd']) {
-
-		case 'reboot':
-		// invoke worker
-		wrk_control('exec','reboot');
-		break;
-			
-		case 'poweroff':
-		// invoke worker
-		wrk_control('exec','poweroff');
-		break;
-
-		case 'mpdrestart':
-		// invoke worker
-		wrk_control('exec','mpdrestart');
-		break;
-		
-		// case 'backup':
-			// if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-				// $_SESSION['w_jobID'] = wrk_jobID();
-				// $_SESSION['w_queue'] = 'backup';
-				// $_SESSION['w_active'] = 1;
-				////wait worker response loop
-					// while (1) {
-					// sleep(2);
-					// session_start();
-						// if ( isset($_SESSION[$_SESSION['w_jobID']]) ) {
-						////set UI notify
-						// $_SESSION['notify']['title'] = 'BACKUP';
-						// $_SESSION['notify']['msg'] = 'backup complete.';
-						// pushFile($_SESSION[$_SESSION['w_jobID']]);
-						// unset($_SESSION[$_SESSION['w_jobID']]);
-						// break;
-						// }
-					// session_write_close();
-					// }
-				// } else {
-				// session_start();
-				// $_SESSION['notify']['title'] = 'Job Failed';
-				// $_SESSION['notify']['msg'] = 'background worker is busy.';
-				// }
-		// break;
 	
-		case 'totalbackup':
-			
-		break;
-			
-		case 'restore':
-			
-		break;
+	// ----- HOSTNAME -----
+	if (isset($_POST['hostname'])) {
+		if (empty($_POST['hostname'])) {
+		$args = 'runeaudio';
+		} else {
+		$args = $_POST['hostname'];
 		}
-
-	}
-
-	// ----------------------------------------------------------
-*/
+		$redis->get('hostname') == $_POST['hostname'] || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'hostname', 'args' => $args ));		
+	} 			
+	
+	// ----- NTP SERVER -----
+	if (isset($_POST['ntpserver'])) {
+		if (empty($_POST['ntpserver'])) {
+		$args = 'pool.ntp.org';
+		} else {
+		$args = $_POST['ntpserver'];
+		}
+		$redis->get('ntpserver') == $args || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'ntpserver', 'args' => $args ));		
+	} 
+	
+	// ----- KERNEL PROFILE -----
+	if (isset($_POST['orionprofile'])) {		
+		// submit worker job
+		$redis->get('orionprofile') == $_POST['orionprofile'] || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'orionprofile', 'args' => $_POST['orionprofile'] ));		
+	} 
+	
+	// ----- FEATURES -----
 	if (isset($_POST['features'])) {
 
 			if ($_POST['features']['airplay'] == 1) {
@@ -123,41 +93,21 @@ if (isset($_POST)) {
 				$redis->get('scrobbling_lastfm') == 0 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'stop' ));
 			}
 			
+	} // ----- FEATURES -----
+	
+	// ----- C-MEDIA FIX -----
+	if (isset($_POST['cmediafix'][1])){
+		$redis->get('cmediafix') == 1 || $redis->set('cmediafix', 1);
+	} else {
+		$redis->get('cmediafix') == 0 || $redis->set('cmediafix', 0);
 	}
-	// ------------------------------
-
-			if (isset($_POST['hostname'])) {
-				if (empty($_POST['hostname']) && $_POST['hostname'] != $redis->get('hostname')) {	
-				$args = 'runeaudio';
-				} else {
-				$args = $_POST['hostname'];
-				}
-				// create worker job (change hostname)
-				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'hostname', 'args' => $args ));
-			} 
-
-			if (isset($_POST['ntpserver']) && $_POST['ntpserver'] != $redis->get('ntpserver')) {
-				if (empty($_POST['ntpserver'])) {	
-				$args = 'ntp.inrim.it';
-				} else {
-				$args = $_POST['ntpserver'];
-				}
-				// create worker job (change ntpserver)
-				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'ntpserver', 'args' => $args ));
-			} 
-			
-			if (isset($_POST['cmediafix'][1])){
-				$redis->get('cmediafix') == 1 || $redis->set('cmediafix', 1);
-			} else {
-				$redis->get('cmediafix') == 0 || $redis->set('cmediafix', 0);
-			}
-			
-			if (isset($_POST['orionprofile']) && $_POST['orionprofile'] != $redis->get('orionprofile')){
-				// setup worker queue (set optimization profile)
-				$args = $_POST['orionprofile']." ".$redis->get('hwplatformid');
-				// invoke worker
-				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'orionprofile', 'args' => $args ));
-			}
+	
+	// ----- SYSTEM COMMANDS -----
+	if (isset($_POST['syscmd'])){
+		if ($_POST['syscmd'] == 'reboot') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'reboot' ));
+		if ($_POST['syscmd'] == 'poweroff') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'poweroff' ));
+		if ($_POST['syscmd'] == 'mpdrestart') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdrestart' ));
+	}
 			
 }
 waitSyWrk($redis,$jobID);
@@ -166,6 +116,7 @@ $template->ntpserver = $redis->get('ntpserver');
 $template->airplay = $redis->get('airplay');
 $template->udevil = $redis->get('udevil');
 $template->coverart = $redis->get('coverart');
+$template->orionprofile = $redis->get('orionprofile');
 $template->scrobbling_lastfm = $redis->get('scrobbling_lastfm');
 $template->lastfm = getLastFMauth($redis);
 $template->cmediafix = $redis->get('cmediafix');

@@ -13,7 +13,7 @@
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="ntpserver">NTP server</label>
 				<div class="col-sm-10">
-					<input class="form-control input-lg" type="text" id="ntpserver" name="ntpserver" value="<?=$this->ntpserver ?>" placeholder="ntp.inrim.it" autocomplete="off">
+					<input class="form-control input-lg" type="text" id="ntpserver" name="ntpserver" value="<?=$this->ntpserver ?>" placeholder="pool.ntp.org" autocomplete="off">
 					<span class="help-block">set your reference time sync server <i>(NTP server)</i></span>
 				</div>
 			</div>
@@ -38,13 +38,13 @@
 				<label class="control-label col-sm-2" for="orionprofile">Kernel profile</label>
 				<div class="col-sm-10">
 					<select class="selectpicker" name="orionprofile" data-style="btn-default btn-lg">
-						<option value="default" <?php if($_SESSION['orionprofile'] == 'default'): ?> selected <?php endif ?>>ArchLinux default</option>
-						<option value="RuneAudio" <?php if($_SESSION['orionprofile'] == 'RuneAudio'): ?> selected <?php endif ?>>RuneAudio</option>
-						<option value="ACX" <?php if($_SESSION['orionprofile'] == 'ACX'): ?> selected <?php endif ?>>ACX</option>
-						<option value="Orion" <?php if($_SESSION['orionprofile'] == 'Orion'): ?> selected <?php endif ?>>Orion</option>
-						<option value="OrionV2" <?php if($_SESSION['orionprofile'] == 'OrionV2'): ?> selected <?php endif ?>>OrionV2</option>
-						<option value="RaspberryPi+i2s" <?php if($_SESSION['orionprofile'] == 'RaspberryPi+i2s'): ?> selected <?php endif ?>>RaspberryPi+i2s</option>
-						<option value="Um3ggh1U" <?php if($_SESSION['orionprofile'] == 'Um3ggh1U'): ?> selected <?php endif ?>>Um3ggh1U</option>
+						<option value="default" <?php if($this->orionprofile == 'default'): ?> selected <?php endif ?>>ArchLinux default</option>
+						<option value="RuneAudio" <?php if($this->orionprofile == 'RuneAudio'): ?> selected <?php endif ?>>RuneAudio</option>
+						<option value="ACX" <?php if($this->orionprofile == 'ACX'): ?> selected <?php endif ?>>ACX</option>
+						<option value="Orion" <?php if($this->orionprofile == 'Orion'): ?> selected <?php endif ?>>Orion</option>
+						<option value="OrionV2" <?php if($this->orionprofile == 'OrionV2'): ?> selected <?php endif ?>>OrionV2</option>
+						<option value="RaspberryPi+i2s" <?php if($this->orionprofile == 'RaspberryPi+i2s'): ?> selected <?php endif ?>>RaspberryPi+i2s</option>
+						<option value="Um3ggh1U" <?php if($this->orionprofile == 'Um3ggh1U'): ?> selected <?php endif ?>>Um3ggh1U</option>
 					</select>
 				</div>
 			</div>
