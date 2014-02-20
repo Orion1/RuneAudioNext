@@ -33,12 +33,14 @@
  
 //require_once('/var/www/assets/php/vendor/Zend/Media/Flac.php'); // or using autoload
 // debug
-ini_set('display_errors', '0');
-ini_set('error_reporting', 0);
-include($_SERVER["HOME"].'/app/libs/runeaudio.php');
+// ini_set('display_errors', '0');
+// ini_set('error_reporting', 0);
+// include($_SERVER["HOME"].'/app/libs/runeaudio.php');
 // read current session parameters
 session_start();
 session_write_close();
+// direct output bypass template system
+$tplfile = 0;
 // fetch MPD status
 $status = _parseStatusResponse(MpdStatus($mpd));
 $curTrack = getTrackInfo($mpd,$status['song']);

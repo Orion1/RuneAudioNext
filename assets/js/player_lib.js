@@ -450,7 +450,7 @@ function updateGUI(json){
 		$('#cover-art').css('background-image','url(assets/images/cover-default.png');
 		var covercachenum = Math.floor(Math.random()*1001);
 		$.ajax({
-			url: 'app/coverart.php',
+			url: '/coverart/',
 			data: { v: covercachenum },
 			success: function(data){
 				if ($.parseJSON(data) != 'NOCOVER') {

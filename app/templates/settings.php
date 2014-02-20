@@ -1,6 +1,5 @@
 <div class="container">
 	<h1>Settings</h1>
-
 	<form class="form-horizontal" method="post" role="form">
 		<fieldset>
 			<legend>Environment</legend>
@@ -25,7 +24,6 @@
 			</div>
 		</fieldset>
 	</form>
-
 	<form class="form-horizontal" method="post" role="form">
 		<fieldset>
 			<legend>Sound quality tweaks</legend>

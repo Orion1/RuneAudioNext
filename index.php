@@ -49,6 +49,7 @@ $template = new \League\Plates\Template($engine);
 // allowed controllers
 $controllers = array(
 'credits',
+'coverart',
 'dev',
 'help',
 'mpd-config',
@@ -117,8 +118,10 @@ $debugdata = ob_get_clean();
 $template->debug = $debugdata;
 }
 
-// plates: render layout
+// plates: render layout (if you want to output direct, set $tplfile = 0 into controller)
+if (!isset($tplfile) OR $tplfile != 0) {
 echo $template->render('default_lo');
+}
 // close MPD connection
 closeMpdSocket($mpd);
 ?>
