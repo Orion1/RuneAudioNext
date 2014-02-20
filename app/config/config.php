@@ -34,6 +34,9 @@
 // Environment vars
 define('APP',$_SERVER['HOME'].'/app/');
 define('DAEMONIP', '127.0.0.1'); // default = 'localhost'
+// extend include path for Vendor Libs
+$libs = APP.'/libs/vendor';
+set_include_path(get_include_path() . PATH_SEPARATOR . $libs);
 // RuneAudio Library include
 include(APP.'libs/runeaudio.php');
 // DEV debug parameters
