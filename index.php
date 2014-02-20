@@ -110,9 +110,12 @@ $template->content = 'error';
 
 }
 
-// if ($_SESSION['hiddendebug'] == 1 OR $_SESSION['debug'] == 0) {
-
-// }
+if ($_SESSION['hiddendebug'] != 1 && $_SESSION['debug'] > 0) {
+ob_start();
+echo debug_footer($db);
+$debugdata = ob_get_clean();
+$template->debug = $debugdata;
+}
 
 // plates: render layout
 echo $template->render('default_lo');
