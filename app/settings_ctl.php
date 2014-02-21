@@ -7,7 +7,7 @@
  * copyright (C) 2013 - Andrea Coiutti (aka ACX) & Simone De Gregori (aka Orion)
  *
  * RuneOS
- * copyright (C) 2013 - Carmelo San Giovanni (aka Um3ggh1U)
+ * copyright (C) 2013 - Carmelo San Giovanni (aka Um3ggh1U) & Simone De Gregori (aka Orion)
  *
  * RuneAudio website and logo
  * copyright (C) 2013 - ACX webdesign (Andrea Coiutti)
@@ -26,11 +26,11 @@
  * along with RuneAudio; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
- *  file: settings.php
- *  version: 1.2
+ *  file: app/settings_ctl.php
+ *  version: 1.3
  *
  */
- 
+
 // common include
 playerSession('open',$db,'','');
 playerSession('unlock',$db,'','');
@@ -284,10 +284,6 @@ if (isset($_POST['coverart']) && $_POST['coverart'] != $_SESSION['coverart']) {
 	playerSession('unlock');
 }
 
-// get lastfm auth ENV settings
-$template->lastfm = getLastFMauth($db);
-
-
 if (!empty($_POST['scrobbling_lastfm']) && $_POST['scrobbling_lastfm'] == 1 && ($_POST['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm'] OR ($_POST['lastfm']['pass'] != $_lastfm['pass'] && !empty($_POST['lastfm']['pass'])) OR $_POST['lastfm']['user'] != $_lastfm['user'] && !empty($_POST['lastfm']['user'])) ) {
 // start / respawn session
 session_start();
@@ -389,12 +385,8 @@ if (isset($_POST['ntpserver']) && $_POST['ntpserver'] != $_SESSION['ntpserver'])
 	playerSession('unlock');
 }
 
-$_hostname = $_SESSION['hostname'];
-$_ntpserver = $_SESSION['ntpserver'];
-// hide lastFM auth fields if disabled 
-if ($_SESSION['scrobbling_lastfm'] != 1) {
-$_lastfm_hide = 'hide';
-}
+// get lastfm auth ENV settings
+// $template->lastfm = getLastFMauth($db);
 
 // wait for worker output if $_SESSION['w_active'] = 1
 waitWorker(1);

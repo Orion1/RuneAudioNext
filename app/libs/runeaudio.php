@@ -34,14 +34,6 @@
 // Predefined MPD Response messages
 define("MPD_GREETING", "OK MPD 0.18.0\n");
 
-/* function openMpdSocket($host, $port) {
-//$sock = stream_socket_client('tcp://'.$host.':'.$port.'', $errorno, $errorstr, 30 );
-$response = readMpdResponse($sock);
-// debug
-runelog("[1][".$sock."]\t>>>>>> OPEN MPD SOCKET <<<<<<\t\t\t",'');
-return $sock;
-} */
-
 function openMpdSocket($path) {
 $sock = socket_create(AF_UNIX, SOCK_STREAM, 0);
 socket_connect($sock, $path);
@@ -56,16 +48,6 @@ socket_close($sock);
 runelog("[0][".$sock."]\t<<<<<< CLOSE MPD SOCKET >>>>>>\t\t\t",'');
 }
 
-/* function sendMpdCommand($sock,$cmd) {
-	if ($cmd == 'cmediafix') {
-		$cmd = "pause\npause\n";
-		fputs($sock, $cmd);
-	} else {
-		$cmd = $cmd."\n";
-		fputs($sock, $cmd);	
-	}
-} */
-
 function sendMpdCommand($sock,$cmd) {
 	if ($cmd == 'cmediafix') {
 		socket_write($sock, 'pause\n', strlen('pause\n'));
@@ -77,22 +59,6 @@ function sendMpdCommand($sock,$cmd) {
 	}
 runelog("MPD COMMAND: (socket=".$sock.")",$cmd);
 }
-
-/* function readMpdResponse($sock) {
-$output = "";
-	while(!feof($sock)) {
-		$response =  fgets($sock,1024);
-		$output .= $response;
-		if (strncmp(MPD_RESPONSE_OK,$response,strlen(MPD_RESPONSE_OK)) == 0) {
-			break;
-		}
-		if (strncmp(MPD_RESPONSE_ERR,$response,strlen(MPD_RESPONSE_ERR)) == 0) {
-			$output = "MPD error: $response";
-			break;
-		}
-	}
-return $output;
-} */
 
 function readMpdResponse($sock) {
 $output = "";
@@ -110,13 +76,6 @@ return str_replace(MPD_GREETING,'',$output);
 // return $output;
 }
 
-/* function sendMpdIdle($sock) {
-//sendMpdCommand($sock,"idle player,playlist"); 
-sendMpdCommand($sock,"idle"); 
-$response = readMpdResponse($sock);
-return true;
-} */
-
 function sendMpdIdle($sock) {
 //sendMpdCommand($sock,"idle player,playlist"); 
 sendMpdCommand($sock,"idle"); 
@@ -124,26 +83,12 @@ $response = readMpdResponse($sock);
 return true;
 }
 
-/* function monitorMpdState($sock) {
-	if (sendMpdIdle($sock)) {
-	$status = _parseStatusResponse(MpdStatus($sock));
-	return $status;
-	}
-} */
-
 function monitorMpdState($sock) {
 	if (sendMpdIdle($sock)) {
 	$status = _parseStatusResponse(MpdStatus($sock));
 	return $status;
 	}
 }
-
-/* function getTrackInfo($sock,$songID) {
-			// set currentsong, currentartis, currentalbum
-			sendMpdCommand($sock,"playlistinfo ".$songID);
-			$track = readMpdResponse($sock);
-			return _parseFileListResponse($track);
-} */
 
 function getTrackInfo($sock,$songID) {
 			// set currentsong, currentartis, currentalbum

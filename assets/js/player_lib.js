@@ -453,10 +453,10 @@ function updateGUI(json){
 			url: '/coverart/',
 			data: { v: covercachenum },
 			success: function(data){
-				if ($.parseJSON(data) != 'NOCOVER') {
-					//$('#cover-art').css('background-image','url(app/coverart.php?v=' + covercachenum + ')');
-					$('#cover-art').css('background-image','url(' + data + ')');
-				}
+				// if ($.parseJSON(data) != 'NOCOVER') {
+					$('#cover-art').css('background-image','url(/coverart/?v=' + covercachenum + ')');
+					// $('#cover-art').css('background-image','url(' + data + ')');
+				// }
 			}
 		});
 	}

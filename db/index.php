@@ -55,7 +55,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 				break;
 
 				case 'playlist':
-				echo getPlayQueue($mpd);
+					echo getPlayQueue($mpd);
 				break;
 
 				case 'add':

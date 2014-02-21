@@ -40,8 +40,8 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $libs);
 // RuneAudio Library include
 include(APP.'libs/runeaudio.php');
 // DEV debug parameters
-// ini_set('display_errors',1);
-// define('ERRORLEVEL', '-1'); // default = 'E_ALL ^ E_NOTICE'
+ // ini_set('display_errors',1);
+ // define('ERRORLEVEL', '-1'); // default = 'E_ALL ^ E_NOTICE'
 //__production
 ini_set('display_errors',0);
 define('ERRORLEVEL', 'E_ERROR'); // default = 'E_ALL ^ E_NOTICE'

@@ -69,20 +69,20 @@ $image = curl_exec($ch);
 curl_close($ch);
 
 if (!empty($image)) {
-	echo json_encode($cover_url);
-		//header('Content-Type: ' .mime_content_type($image));
-		//echo $image;
+	// echo json_encode($cover_url);
+		header('Content-Type: ' .mime_content_type($image));
+		echo $image;
     } else if ($flac->hasMetadataBlock(Zend_Media_Flac::PICTURE)) {
 	//Extract picture from file
     header('Content-Type: ' . $flac->getPicture()->getMimeType());
     echo $flac->getPicture()->getData();
-	// echo "pippo";
+
 
 	} else {
-    //$image = '/var/www/images/cover-default.png';
-    //header('Content-Type: ' .mime_content_type($image));
-    //readfile($image);
-	echo json_encode('NOCOVER');
+    $image = '/var/www/assets/images/cover-default.png';
+    header('Content-Type: ' .mime_content_type($image));
+    readfile($image);
+	// echo json_encode('NOCOVER');
     }
 
 
