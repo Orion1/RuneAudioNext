@@ -24,8 +24,8 @@
                     </div>
                 </div>
                 <?php if ($this->coverart == 1): ?>
-				<div class="col-xs-<?=$this->colspan?> txtdx coverart">
-				<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+				<div class="col-sm-<?=$this->colspan?> coverart">
+					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
 				</div>
 				<?php endif ?>
                 <div class="col-sm-<?=$this->colspan?>">
