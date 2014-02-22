@@ -44,10 +44,11 @@
     <!-- -------------------- DATABASE PANEL -------------------- -->
     <div id="panel-sx" class="tab-pane">
         <div class="btnlist btnlist-top">
-            <form id="db-search" class="form-inline" action="javascript:getDB('search', '', GUI.browsemode);">
+            <form id="db-search" class="form-inline" action="javascript:getDB('search', GUI.currentpath, GUI.browsemode);">
                 <input id="db-search-keyword" class="form-control" type="text" value="" placeholder="search in DB..."><button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
             </form>
             <button id="level-up" class="btn hide" title="Go back one level"><i class="fa fa-arrow-left sx"></i> back</button>
+            <button id="search-results" class="btn hide" title="Close search results and go back to the Library browsing"><i class="fa fa-arrow-left sx"></i> back</button>
         </div>
         <div id="database">
             <ul id="database-entries" class="database">
