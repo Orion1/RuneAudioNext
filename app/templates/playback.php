@@ -165,9 +165,11 @@
             <li><a href="#notarget" data-cmd="update"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
         </ul>
     </div>
-    <div id="context-menu-root" class="context-menu">
+    <div id="context-menu-file" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="update"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
+            <li><a href="#notarget" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="#notarget" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
         </ul>
     </div>
 </div>
