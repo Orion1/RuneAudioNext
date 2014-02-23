@@ -50,6 +50,7 @@ $template = new \League\Plates\Template($engine);
 $controllers = array(
 'credits',
 'coverart',
+'coverart2',
 'dev',
 'help',
 'mpd-config',
