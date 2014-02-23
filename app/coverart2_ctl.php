@@ -26,7 +26,7 @@
  * along with RuneAudio; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
- *  file: coverart2_ctl.php
+ *  file: app/coverart2_ctl.php
  *  version: 1.3
  *
  */

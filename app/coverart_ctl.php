@@ -26,7 +26,7 @@
  * along with RuneAudio; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
- *  file: coverart.php
+ *  file: app/coverart_ctl.php
  *  version: 1.3
  *
  */
@@ -83,7 +83,7 @@ if ($flac->hasMetadataBlock(Zend_Media_Flac::PICTURE)) {
     
 	// debug
 	runelog("coverart match: cover-default",'');
-	$image = '/var/www/assets/images/cover-default.png';
+	$image = '/var/www/assets/img/cover-default.png';
     header('Content-Type: ' .mime_content_type($image));
     readfile($image);
 	
