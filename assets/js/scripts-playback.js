@@ -539,6 +539,11 @@ jQuery(document).ready(function($){ 'use strict';
             window.location.hash = e.target.hash; //Polyfill for old browsers
         }
     });
+	
+	// tooltips
+    if( $('.ttip').length ){
+        $('.ttip').tooltip();
+    }
 
 });
 
@@ -578,10 +583,10 @@ jQuery(document).ready(function($){ 'use strict';
             document.body.className = this[hidden] ? 'hidden' : 'visible';
             if (this[hidden]) {
                 GUI.visibility = 'hidden';
-                //console.log('focus = hidden');
+                console.log('focus = hidden');
             } else {
                 GUI.visibility = 'visible';
-                //console.log('focus = visible');
+                console.log('focus = visible');
             }
         }
     }
