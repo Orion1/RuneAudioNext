@@ -237,6 +237,8 @@ function getPlaylistPlain(data, json){
 	}
 	//$('#playlist-entries').html(content);
 	document.getElementById('playlist-entries').innerHTML = content;
+	document.getElementById('pl-filter-results').innerHTML = '';
+	$('#pl-filter').val('');
 }
 
 function parsePath(str) {
@@ -378,7 +380,7 @@ function populateDB(data, path, uplevel, keyword){
 			var s = (data.length == 1) ? '' : 's';
 			//DBlist.append('<li id="db-0" class="search-results clearfix" title="Close search results and go back to the DB"><i class="fa fa-arrow-left db-icon db-folder"></i><div class="db-entry db-folder">' + results + ' result' + s + ' for "<em class="keyword">' + keyword + '</em>"</div></li>');
 			$('#level-up').addClass('hide');
-			$('#search-results').removeClass('hide').html('<i class="fa fa-arrow-left sx"></i> ' + results + ' result' + s + ' for "<em class="keyword">' + keyword + '</em>"');
+			$('#search-results').removeClass('hide').html('<i class="fa fa-arrow-left sx"></i> ' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"');
 		} /*else if (path != '') {
 			DBlist.append('<li id="db-0" class="clearfix"><div class="db-entry db-browse levelup"><i class="fa fa-arrow-left sx"></i> <em>back</em></div></li>');
 		}*/

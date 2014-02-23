@@ -363,10 +363,10 @@ jQuery(document).ready(function($){ 'use strict';
         });
         var numberItems = count;
         var s = (count == 1) ? '' : 's';
-        if (filter !== '') {
-            $('#pl-filter-results').html('<i class="fa fa-search sx"></i> ' + (+count) + ' result' + s + ' for "<em class="keyword">' + filter + '</em>"');
+		if (filter !== '') {
+			document.getElementById('pl-filter-results').innerHTML = '<i class="fa fa-search sx"></i> ' + (+count) + ' result' + s + ' for "<span class="keyword">' + filter + '</span>"';
         } else {
-            $('#pl-filter-results').html('');
+            document.getElementById('pl-filter-results').innerHTML = '';
         }
     });
 	
