@@ -31,10 +31,7 @@
  *
  */
  
-require_once('/var/www/app/libs/vendor/Zend/Media/Flac.php'); // or using autoload
-// read current session parameters
-session_start();
-session_write_close();
+require_once('Zend/Media/Flac.php');
 // direct output bypass template system
 $tplfile = 0;
 // fetch MPD status
@@ -53,38 +50,42 @@ runelog("MPD current path",$currentpath);
 
 $flac = new Zend_Media_Flac($currentpath);
 
-// Extract picture
-// if ($flac->hasMetadataBlock(Zend_Media_Flac::PICTURE)) {
-    // header('Content-Type: ' . $flac->getPicture()->getMimeType());
-    // echo $flac->getPicture()->getData();
-	// debug
-	// error_log('[debug] FLAC embedded image found!', 0);
-// } else {
-
+function getLastFMCover($status) {
 $cover_url = ui_lastFM_coverart($status['currentartist'],$status['currentalbum'],$_SESSION['lastfm_apikey']);
 $ch = curl_init($cover_url);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $image = curl_exec($ch);
 curl_close($ch);
-
 if (!empty($image)) {
-	// echo json_encode($cover_url);
+ return $image;
+} else {
+ return false;
+}
+}
+
+if ($flac->hasMetadataBlock(Zend_Media_Flac::PICTURE)) {
+		
+		// debug
+		runelog("coverart match: embedded",'');
+		//Extract picture from file
+		header('Content-Type: ' . $flac->getPicture()->getMimeType());
+		echo $flac->getPicture()->getData();
+
+
+    } else if ($image = getLastFMCover($status)) {
+		// debug
+		runelog("coverart match: lastfm",'');
 		header('Content-Type: ' .mime_content_type($image));
 		echo $image;
-    } else if ($flac->hasMetadataBlock(Zend_Media_Flac::PICTURE)) {
-	//Extract picture from file
-    header('Content-Type: ' . $flac->getPicture()->getMimeType());
-    echo $flac->getPicture()->getData();
-
 
 	} else {
-    $image = '/var/www/assets/images/cover-default.png';
+    
+	// debug
+	runelog("coverart match: cover-default",'');
+	$image = '/var/www/assets/images/cover-default.png';
     header('Content-Type: ' .mime_content_type($image));
     readfile($image);
-	// echo json_encode('NOCOVER');
-    }
-
-
-
+	
+}
 ?>

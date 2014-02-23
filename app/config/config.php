@@ -35,16 +35,19 @@
 define('APP',$_SERVER['HOME'].'/app/');
 define('DAEMONIP', '127.0.0.1'); // default = 'localhost'
 // extend include path for Vendor Libs
-$libs = APP.'/libs/vendor';
+$libs = APP.'libs/vendor';
 set_include_path(get_include_path() . PATH_SEPARATOR . $libs);
 // RuneAudio Library include
 include(APP.'libs/runeaudio.php');
-// DEV debug parameters
- // ini_set('display_errors',1);
- // define('ERRORLEVEL', '-1'); // default = 'E_ALL ^ E_NOTICE'
-//__production
-ini_set('display_errors',0);
-define('ERRORLEVEL', 'E_ERROR'); // default = 'E_ALL ^ E_NOTICE'
+// LogSettings
+if ($_SESSION['debug'] > 0 ) {
+$activeLog=1;
+} else {
+$activeLog=0;
+}
+ini_set("log_errors" , $activeLog);
+ini_set("error_log" , "/var/log/runeaudio/runeui.log");
+ini_set("display_errors" , "0");
 // datastore SQLite
 $db = 'sqlite:'.$_SERVER['HOME'].'/db/player.db';
 // debug

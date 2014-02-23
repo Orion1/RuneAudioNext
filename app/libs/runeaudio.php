@@ -1651,7 +1651,12 @@ return $status;
 }
 
 function ui_lastFM_coverart($artist,$album,$lastfm_apikey) {
+if (!empty($album)) {
 $url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&album=".urlencode($album)."&format=json";
+} else {
+$url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&format=json";
+$artist = 1;
+}
 // debug
 //echo $url;
 $ch = curl_init($url);
@@ -1671,7 +1676,11 @@ runelog('lastfm query URL',$url);
 
 // key [3] == extralarge last.fm image
 // key [4] == mega last.fm image
-return $output['album']['image'][3]['#text'];
+	if(isset($artist)) {
+	return $output['artist']['image'][4]['#text'];
+	} else {
+	return $output['album']['image'][3]['#text'];
+	}
 }
 
 // push UI update to NGiNX channel
