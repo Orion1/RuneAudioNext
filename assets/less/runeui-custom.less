@@ -696,6 +696,7 @@ html, body {
 		.border-right-radius(0);
 	}
 	.btn {
+		margin-top: -2px;
 		.border-left-radius(0);
 	}
 }
@@ -1008,7 +1009,7 @@ select.selectpicker {
 
 
 
-// Bootstrap addons/overwrites
+// Switch toggles
 // --------------------------------------------------------------
 
 .has-switch {
@@ -1144,7 +1145,7 @@ ul.parsley-error-list {
 // Media Queries
 // --------------------------------------------------------------
 
-@media (min-width: 480px) {
+@media (min-width: 480px) { // everything above 480px
 	.logo {
 		display: inline;
 		margin: -2px 5px 0 -5px;
@@ -1195,12 +1196,19 @@ ul.parsley-error-list {
 		max-width: 400px;
 	}
 }
-@media (max-width: @screen-sm-min) {
+@media (max-width: @screen-sm-min) { // everything under 768px
 	.form-group {
 		margin-bottom: 0;
 	}
 }
-@media (min-width: @screen-md-min) {
+@media (min-width: @screen-sm-min) { // everything above 768px
+	#db-search, #pl-search {
+		.btn {
+			margin-top: 0;
+		}
+	}
+}
+@media (min-width: @screen-md-min) { // everything above 992px
 	#playback .container {
 		padding-top: 60px;
 		padding-bottom: 40px;
