@@ -364,7 +364,7 @@ jQuery(document).ready(function($){ 'use strict';
         var numberItems = count;
         var s = (count == 1) ? '' : 's';
 		if (filter !== '') {
-			document.getElementById('pl-filter-results').innerHTML = '<i class="fa fa-search sx"></i> <span class="hidden-xs">' + (+count) + ' result' + s + ' for "<span class="keyword">' + filter + '</span>"</span>';
+			document.getElementById('pl-filter-results').innerHTML = '<i class="fa fa-search sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + (+count) + ' result' + s + ' for "<span class="keyword">' + filter + '</span>"</span>';
         } else {
             document.getElementById('pl-filter-results').innerHTML = '';
         }
