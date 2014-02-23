@@ -6,17 +6,13 @@
 	<link href="<?=$this->asset('/css/bootstrap-fileupload.min.css')?>" rel="stylesheet">
 	<?php endif ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
-	<link rel="shortcut icon" href="<?=$this->asset('/images/favicon.ico')?>">
 	<!-- dev only -->
 	<!--<link rel="stylesheet/less" href="assets/less/runeui.less">-->
 	<?php if ($this->section == 'index'): ?>
 	<!--<link href="assets/css/test.css" rel="stylesheet">-->
 	<?php endif ?>
 	<!-- /dev only -->
-<<<<<<< HEAD
-=======
     <link rel="icon" type="image/x-icon" href="<?=$this->asset('/img/favicon.ico')?>">
->>>>>>> 51ea047700b6cf912a39c7ecf2470b441ba8c8e7
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>
       <script src="assets/js/html5shiv.js"></script>
