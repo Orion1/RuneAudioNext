@@ -5,7 +5,6 @@
 	<?php if ($this->section == 'settings'): ?>
 	<link href="<?=$this->asset('/css/bootstrap-fileupload.min.css')?>" rel="stylesheet">
 	<?php endif ?>
-	<link href="<?=$this->asset('/css/jquery.pnotify.default.css')?>" rel="stylesheet">
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<!-- dev only -->
 	<!--<link rel="stylesheet/less" href="assets/less/runeui.less">-->
