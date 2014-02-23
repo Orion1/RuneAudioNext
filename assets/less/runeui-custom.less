@@ -25,8 +25,8 @@
  * along with RuneAudio; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
- *  file: runeui.css
- *  version: 1.1
+ *  file: runeui-custom.less
+ *  version: 1.3
  *
  */
 
@@ -380,7 +380,7 @@ html, body {
 	max-width: 294px;
 	height: auto;
 	margin: 10px auto 0;
-	background: #111 url(../images/cover-default.png) no-repeat center center;
+	background: #111 url(../img/cover-default.png) no-repeat center center;
 	background-size: 100% 100%;
 	border: 2px solid @brand-alt;
 	border-radius: 6px;
@@ -394,7 +394,7 @@ html, body {
 // Playlist and Database panels
 // --------------------------------------------------------------
 
-#level-up {
+#level-up, #search-results {
 	height: 39px;
 	margin: 0 0 0 -10px;
 	padding-right: 40px;
@@ -871,27 +871,112 @@ html, body {
 // Pines Notify
 // --------------------------------------------------------------
 
-.ui-pnotify .alert,.ui-pnotify .alert h4 {
-    color: @text-color;
-    text-shadow: none;
-}
 .ui-pnotify {
-    .alert {
+    top: 25px;
+    right: 25px;
+    position: absolute;
+    height: auto;
+    z-index: 9999; // Ensures notices are above everything
+	.alert {
         background: @brand-primary;
         border: 0;
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         border-radius: 0;
+		color: @text-color;
+		text-shadow: none;
         h4 {
             margin: 0 0 5px;
             font-size: 16px;
             font-weight: bold;
             text-transform: uppercase;
+			color: @text-color;
+			text-shadow: none;
         }
         span {
             margin-top: 4px;
         }
     }
+}
+
+html > body .ui-pnotify {
+    position: fixed; // Hides position: fixed from IE6
+}
+
+.ui-pnotify .ui-pnotify-shadow {
+    -webkit-box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+    -moz-box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+    box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+}
+
+.ui-pnotify-container {
+    background-position: 0 0;
+    padding: .8em;
+    height: 100%;
+    margin: 0;
+}
+
+.ui-pnotify-sharp {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+.ui-pnotify-closer, .ui-pnotify-sticker {
+    float: right;
+    margin-left: .2em;
+}
+
+.ui-pnotify-title {
+    display: block;
+    margin-bottom: .4em;
+}
+
+.ui-pnotify-text {
+    display: block;
+}
+
+.ui-pnotify-icon, .ui-pnotify-icon span {
+    display: block;
+    float: left;
+    margin-right: .2em;
+}
+/* -- History Pulldown */
+.ui-pnotify-history-container {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    width: 70px;
+    border-top: none;
+    padding: 0;
+    -webkit-border-top-left-radius: 0;
+    -moz-border-top-left-radius: 0;
+    border-top-left-radius: 0;
+    -webkit-border-top-right-radius: 0;
+    -moz-border-top-right-radius: 0;
+    border-top-right-radius: 0;
+/* Ensures history container is above notices. */
+    z-index: 10000;
+}
+
+.ui-pnotify-history-container .ui-pnotify-history-header {
+    padding: 2px;
+}
+
+.ui-pnotify-history-container button {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.ui-pnotify-history-container .ui-pnotify-history-pulldown {
+    display: block;
+    margin: 0 auto;
+}
+// -------------
+.ui-pnotify .alert,.ui-pnotify .alert h4 {
+    color: @text-color;
+    text-shadow: none;
 }
 
 

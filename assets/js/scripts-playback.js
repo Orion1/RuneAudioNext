@@ -348,6 +348,28 @@ jQuery(document).ready(function($){ 'use strict';
         $('#open-panel-sx').addClass('active');
     });
 
+	// Queue search
+    $('#pl-filter').keyup(function(){
+        $.scrollTo(0 , 500);
+        var filter = $(this).val(), count = 0;
+        $('li', '#playlist-entries').each(function(){
+            var el = $(this);
+			if (el.text().search(new RegExp(filter, 'i')) < 0) {
+                el.hide();
+            } else {
+                el.show();
+                count++;
+            }
+        });
+        var numberItems = count;
+        var s = (count == 1) ? '' : 's';
+        if (filter !== '') {
+            $('#pl-filter-results').html('<i class="fa fa-search sx"></i> ' + (+count) + ' result' + s + ' for "<em class="keyword">' + filter + '</em>"');
+        } else {
+            $('#pl-filter-results').html('');
+        }
+    });
+	
 	
     // LIBRARY
     // ----------------------------------------------------------------------------------------------------
@@ -422,8 +444,14 @@ jQuery(document).ready(function($){ 'use strict';
     });
 
     // close search results in Library
-    db.on('click', '.search-results', function() {
-        getDB('filepath', GUI.currentpath);
+    // db.on('click', '.search-results', function() {
+        // getDB('filepath', GUI.currentpath);
+    // });
+	
+	$('#search-results').click(function(){
+		$(this).addClass('hide')
+		$('#level-up').removeClass('hide');
+		getDB('filepath', GUI.currentpath);
     });
 
 	// context dropdown menu
@@ -458,28 +486,6 @@ jQuery(document).ready(function($){ 'use strict';
         $('#browse-mode-current').html(GUI.browsemode);
         getDB('filepath', '', GUI.browsemode);
         //console.log('Browse mode set to: ', GUI.browsemode);
-    });
-
-    // Library search
-    $('#pl-filter').keyup(function(){
-        $.scrollTo(0 , 500);
-        var filter = $(this).val(), count = 0;
-        $('li', '#playlist-entries').each(function(){
-            var el = $(this);
-			if (el.text().search(new RegExp(filter, 'i')) < 0) {
-                el.hide();
-            } else {
-                el.show();
-                count++;
-            }
-        });
-        var numberItems = count;
-        var s = (count == 1) ? '' : 's';
-        if (filter !== '') {
-            $('#pl-filter-results').html('<i class="fa fa-search sx"></i> ' + (+count) + ' result' + s + ' for "<em class="keyword">' + filter + '</em>"');
-        } else {
-            $('#pl-filter-results').html('');
-        }
     });
 	
 	

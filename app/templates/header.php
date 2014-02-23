@@ -5,7 +5,6 @@
 	<?php if ($this->section == 'settings'): ?>
 	<link href="<?=$this->asset('/css/bootstrap-fileupload.min.css')?>" rel="stylesheet">
 	<?php endif ?>
-	<link href="<?=$this->asset('/css/jquery.pnotify.default.css')?>" rel="stylesheet">
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<link rel="shortcut icon" href="<?=$this->asset('/images/favicon.ico')?>">
 	<!-- dev only -->
@@ -14,6 +13,10 @@
 	<!--<link href="assets/css/test.css" rel="stylesheet">-->
 	<?php endif ?>
 	<!-- /dev only -->
+<<<<<<< HEAD
+=======
+    <link rel="icon" type="image/x-icon" href="<?=$this->asset('/img/favicon.ico')?>">
+>>>>>>> 51ea047700b6cf912a39c7ecf2470b441ba8c8e7
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>
       <script src="assets/js/html5shiv.js"></script>
@@ -76,7 +79,7 @@
 		<button id="play" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="play"><i class="fa fa-play"></i></button>
 		<button id="next" class="btn btn-default btn-cmd" title="Next" data-cmd="next"><i class="fa fa-step-forward"></i></button>
 	</div>
-	<a class="home" href="index.php"><img src="<?=$this->asset('/images/logo.png')?>" class="logo" alt="RuneAudio"></a>
+	<a class="home" href="/"><img src="<?=$this->asset('/img/logo.png')?>" class="logo" alt="RuneAudio"></a>
 </div>
 <div id="menu-bottom" class="ui-footer ui-bar-f ui-footer-fixed slidedown" data-position="fixed" data-role="footer"  role="banner">
 	<ul>

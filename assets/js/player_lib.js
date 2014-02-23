@@ -271,7 +271,7 @@ function parseResponse(inputArr,respType,i,inpath) {
 				if (typeof inputArr[i].Title != 'undefined') {
 					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 					content += inputArr[i].file;
-					content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+					content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-file"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
 					content += inputArr[i].Title + ' <em class="songtime">' + timeConvert(inputArr[i].Time) + '</em>';
 					content += ' <span>';
 					content +=  inputArr[i].Artist;
@@ -376,7 +376,9 @@ function populateDB(data, path, uplevel, keyword){
 		if (keyword) {
 			var results = (data.length) ? data.length : '0';
 			var s = (data.length == 1) ? '' : 's';
-			DBlist.append('<li id="db-0" class="search-results clearfix" title="Close search results and go back to the DB"><i class="fa fa-arrow-left db-icon db-folder"></i><div class="db-entry db-folder">' + results + ' result' + s + ' for "<em class="keyword">' + keyword + '</em>"</div></li>');
+			//DBlist.append('<li id="db-0" class="search-results clearfix" title="Close search results and go back to the DB"><i class="fa fa-arrow-left db-icon db-folder"></i><div class="db-entry db-folder">' + results + ' result' + s + ' for "<em class="keyword">' + keyword + '</em>"</div></li>');
+			$('#level-up').addClass('hide');
+			$('#search-results').removeClass('hide').html('<i class="fa fa-arrow-left sx"></i> ' + results + ' result' + s + ' for "<em class="keyword">' + keyword + '</em>"');
 		} /*else if (path != '') {
 			DBlist.append('<li id="db-0" class="clearfix"><div class="db-entry db-browse levelup"><i class="fa fa-arrow-left sx"></i> <em>back</em></div></li>');
 		}*/
@@ -447,7 +449,7 @@ function updateGUI(json){
     GUI.currentsong = json['currentsong'];
 	var currentalbumstring = json['currentartist'] + ' - ' + json['currentalbum'];
 	if (GUI.currentalbum != currentalbumstring) {
-		$('#cover-art').css('background-image','url(assets/images/cover-default.png');
+		$('#cover-art').css('background-image','url(assets/img/cover-default.png');
 		var covercachenum = Math.floor(Math.random()*1001);
 		$.ajax({
 			url: '/coverart/',

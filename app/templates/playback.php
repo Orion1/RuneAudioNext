@@ -44,10 +44,11 @@
     <!-- -------------------- DATABASE PANEL -------------------- -->
     <div id="panel-sx" class="tab-pane">
         <div class="btnlist btnlist-top">
-            <form id="db-search" class="form-inline" action="javascript:getDB('search', '', GUI.browsemode);">
+            <form id="db-search" class="form-inline" action="javascript:getDB('search', GUI.currentpath, GUI.browsemode);">
                 <input id="db-search-keyword" class="form-control" type="text" value="" placeholder="search in DB..."><button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
             </form>
             <button id="level-up" class="btn hide" title="Go back one level"><i class="fa fa-arrow-left sx"></i> back</button>
+            <button id="search-results" class="btn hide" title="Close search results and go back to the Library browsing"><i class="fa fa-arrow-left sx"></i> back</button>
         </div>
         <div id="database">
             <ul id="database-entries" class="database">
@@ -164,9 +165,11 @@
             <li><a href="#notarget" data-cmd="update"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
         </ul>
     </div>
-    <div id="context-menu-root" class="context-menu">
+    <div id="context-menu-file" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="update"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
+            <li><a href="#notarget" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="#notarget" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
         </ul>
     </div>
 </div>
