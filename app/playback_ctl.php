@@ -26,7 +26,7 @@
  * along with RuneAudio; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
- *  file: playback.php
+ *  file: app/playback_ctl.php
  *  version: 1.3
  *
  */
@@ -40,6 +40,21 @@ $template->colspan = 4;
 
 $template->coverart = 0;
 $template->colspan = 6;
+
+}
+
+if ($_SESSION['volume'] == 1) {
+
+$template->volume['color'] = '#0095D8';
+$template->volume['readonly'] = 'false';
+
+} else {
+
+//$_volumeColor = '#002c40';
+$template->volume['color'] = '#1A242F';
+$template->volume['readonly'] = 'true';
+$template->volume['disabled'] = 1;
+$template->volume['divclass'] = 'nomixer';
 
 }
 

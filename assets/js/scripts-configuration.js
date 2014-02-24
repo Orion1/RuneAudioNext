@@ -54,7 +54,7 @@ var GUI = {
 
 jQuery(document).ready(function($){ 'use strict';
 	
-	backendRequest(GUI.state);	
+	backendRequest2(GUI.state);	
 	if (GUI.state != 'disconnected') {
 		$('#loader').hide();
     }

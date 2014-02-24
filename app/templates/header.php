@@ -13,7 +13,7 @@
       <script src="assets/js/html5shiv.js"></script>
     <![endif]-->
 </head>
-<?php if (empty($this->uri(1))): ?>
+<?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>
 <body id="section-index">
 <?php else: ?>
 <body id="section-<?=$this->section?>">
@@ -74,8 +74,10 @@
 </div>
 <div id="menu-bottom" class="ui-footer ui-bar-f ui-footer-fixed slidedown" data-position="fixed" data-role="footer"  role="banner">
 	<ul>
-		<li id="open-panel-sx"><a href="/#panel-sx" class="open-panel-sx" data-toggle="tab"><i class="fa fa-music sx"></i> Library</a></li>
-		<li id="open-playback" <?=$this->uri(1,'','class="active"')?>><a href="/#playback" class="close-panels" data-toggle="tab"><i class="fa fa-play sx"></i> Playback</a></li>
-		<li id="open-panel-dx"><a href="/#panel-dx" class="open-panel-dx" data-toggle="tab"><i class="fa fa-list sx"></i> Queue</a></li>
+		<li id="open-panel-sx"><a href="<?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>/<?php else: ?>/playback/<?php endif ?>#panel-sx" class="open-panel-sx" data-toggle="tab"><i class="fa fa-music sx"></i> Library</a></li>
+		<li id="open-playback" <?=$this->uri(1,'','class="active"')?>><a href="<?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>/<?php else: ?>/playback/<?php endif ?>#playback" class="close-panels" data-toggle="tab"><i class="fa fa-play sx"></i> Playback</a></li>
+		<li id="open-panel-dx"><a href="<?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>/<?php else: ?>/playback/<?php endif ?>#panel-dx" class="open-panel-dx" data-toggle="tab"><i class="fa fa-list sx"></i> Queue</a></li>
+		
+		
 	</ul>
 </div>

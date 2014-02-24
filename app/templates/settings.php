@@ -38,11 +38,13 @@
 				<label class="control-label col-sm-2" for="orionprofile">Kernel profile</label>
 				<div class="col-sm-10">
 					<select class="selectpicker" name="orionprofile" data-style="btn-default btn-lg">
-						<option value="default" <?php if($this->settings['orionprofile'] == 'default'): ?> selected <?php endif ?>>default</option>
-						<option value="ACX" <?php if($this->settings['orionprofile'] == 'ACX'): ?> selected <?php endif ?>>ACX</option>
-						<option value="Orion" <?php if($this->settings['orionprofile'] == 'Orion'): ?> selected <?php endif ?>>Orion</option>
-						<option value="OrionV2" <?php if($this->settings['orionprofile'] == 'OrionV2'): ?> selected <?php endif ?>>OrionV2</option>
-						<option value="Um3ggh1U" <?php if($this->settings['orionprofile'] == 'Um3ggh1U'): ?> selected <?php endif ?>>Um3ggh1U</option>
+						<option value="default" <?php if($_SESSION['orionprofile'] == 'default'): ?> selected <?php endif ?>>ArchLinux default</option>
+						<option value="RuneAudio" <?php if($_SESSION['orionprofile'] == 'RuneAudio'): ?> selected <?php endif ?>>RuneAudio</option>
+						<option value="ACX" <?php if($_SESSION['orionprofile'] == 'ACX'): ?> selected <?php endif ?>>ACX</option>
+						<option value="Orion" <?php if($_SESSION['orionprofile'] == 'Orion'): ?> selected <?php endif ?>>Orion</option>
+						<option value="OrionV2" <?php if($_SESSION['orionprofile'] == 'OrionV2'): ?> selected <?php endif ?>>OrionV2</option>
+						<option value="RaspberryPi+i2s" <?php if($_SESSION['orionprofile'] == 'RaspberryPi+i2s'): ?> selected <?php endif ?>>RaspberryPi+i2s</option>
+						<option value="Um3ggh1U" <?php if($_SESSION['orionprofile'] == 'Um3ggh1U'): ?> selected <?php endif ?>>Um3ggh1U</option>
 					</select>
 				</div>
 			</div>

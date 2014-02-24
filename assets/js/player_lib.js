@@ -38,7 +38,7 @@
 function sendCmd(inputcmd) {
 	/*
 	$.ajax({
-		url: 'command/?cmd='+inputcmd,
+		url: '/command/?cmd='+inputcmd,
 		success: function(data){
 			GUI.halt = 1;
 			//console.log('GUI.halt (sendCmd)= ', GUI.halt);
@@ -46,7 +46,7 @@ function sendCmd(inputcmd) {
   });
   */
    var request = new XMLHttpRequest;
-   request.open('GET', 'command/?cmd='+inputcmd, true);
+   request.open('GET', '/command/?cmd='+inputcmd, true);
    request.onreadystatechange = function() {
      if (this.readyState === 4){
        if (this.status >= 200 && this.status < 400){
@@ -65,7 +65,7 @@ function sendCmd(inputcmd) {
 function sendPLCmd(inputcmd) {
   /*
 	$.ajax({
-		url: 'db/?cmd='+inputcmd,
+		url: '/db/?cmd='+inputcmd,
 		success: function(data){
 			GUI.halt = 1;
 			//console.log('GUI.halt (sendPLcmd)= ', GUI.halt);
@@ -73,7 +73,7 @@ function sendPLCmd(inputcmd) {
   });
   */
   var request = new XMLHttpRequest;
-   request.open('GET', 'db/?cmd='+inputcmd, true);
+   request.open('GET', '/db/?cmd='+inputcmd, true);
    request.onreadystatechange = function() {
      if (this.readyState === 4){
        if (this.status >= 200 && this.status < 400){
@@ -91,7 +91,7 @@ function sendPLCmd(inputcmd) {
 
 function backendRequest(){
     $.ajax({
-		url: 'lp/display',
+		url: '/lp/display/',
 		//data: { state: GUI.state },
 		success: function(data){
 			//console.log('GUI.halt (backendRequest)= ', GUI.halt);
@@ -149,7 +149,7 @@ function renderUI(text) {
 
 function getPlaylistCmd(json){
 	$.ajax({
-		url: 'db/?cmd=playlist',
+		url: '/db/?cmd=playlist',
 		success: function(data){
 			//console.log('DATA: ', data);
 			if ( data.length > 4) {
@@ -313,28 +313,28 @@ function parseResponse(inputArr,respType,i,inpath) {
 function getDB(cmd, path, browsemode, uplevel){
   /*
 	if (cmd == 'filepath') {
-		$.post('db/?cmd=filepath', { 'path': path }, function(data) {
+		$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
 			populateDB(data, path, uplevel);
 		}, 'json');
 	} else if (cmd == 'add') {
-		$.post('db/?cmd=add', { 'path': path }, function(path) {
+		$.post('/db/?cmd=add', { 'path': path }, function(path) {
 			//console.log('add= ', path);
 		}, 'json');
 	} else if (cmd == 'addplay') {
-		$.post('db/?cmd=addplay', { 'path': path }, function(path) {
+		$.post('/db/?cmd=addplay', { 'path': path }, function(path) {
 			//console.log('addplay= ',path);
 		}, 'json');
 	} else if (cmd == 'addreplaceplay') {
-		$.post('db/?cmd=addreplaceplay', { 'path': path }, function(path) {
+		$.post('/db/?cmd=addreplaceplay', { 'path': path }, function(path) {
 			//console.log('addreplaceplay= ',path);
 		}, 'json');
 	} else if (cmd == 'update') {
-		$.post('db/?cmd=update', { 'path': path }, function(path) {
+		$.post('/db/?cmd=update', { 'path': path }, function(path) {
 			//console.log('update= ',path);
 		}, 'json');
 	} else if (cmd == 'search') {
 		var keyword = $('#db-search-keyword').val();
-		$.post('db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
+		$.post('/db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
 			populateDB(data, path, uplevel, keyword);
 		}, 'json');
 	}
@@ -342,16 +342,16 @@ function getDB(cmd, path, browsemode, uplevel){
 	//console.log('getDB', cmd+', '+path+', '+browsemode+', '+uplevel)
 	if (cmd == 'search') {
 		var keyword = $('#db-search-keyword').val();
-		$.post('db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
+		$.post('/db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
 			populateDB(data, path, uplevel, keyword);
 		}, 'json');
 	} else if (cmd == 'filepath') {
-		$.post('db/?cmd=filepath', { 'path': path }, function(data) {
+		$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
 			populateDB(data, path, uplevel);
     }, 'json');
   } else {
     /* cmd === 'update', 'addplay', 'addreplaceplay', 'update' */
-		$.post('db/?cmd='+cmd, { 'path': path }, function(path) {
+		$.post('/db/?cmd='+cmd, { 'path': path }, function(path) {
 			//console.log('add= ', path);
 		}, 'json');
 	}
