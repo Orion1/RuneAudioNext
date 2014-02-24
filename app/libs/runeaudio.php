@@ -241,7 +241,7 @@ function _parseFileListResponse($resp) {
 				if ( $element == "file" OR $element == "playlist") {
 					$plCounter++;
 					$plistFile = $value;
-					$plistArray[$plCounter]["file"] = $plistFile;
+					$plistArray[$plCounter][$element] = $plistFile;
 					$plistArray[$plCounter]["fileext"] = parseFileStr($plistFile,'.');
 				} else if ( $element == "directory") {
 					$plCounter++;
