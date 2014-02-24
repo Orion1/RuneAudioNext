@@ -361,7 +361,7 @@ function getDB(cmd, path, browsemode, uplevel){
 
 function populateDB(data, path, uplevel, keyword){
 	//console.log('PATH =', path);
-	if (path === '') {
+	if (path === '' && keyword === '') {
 		$('#database-entries').addClass('hide');
 		$('#level-up').addClass('hide');
 		$('#home-blocks').removeClass('hide');
@@ -380,7 +380,7 @@ function populateDB(data, path, uplevel, keyword){
 			var s = (data.length == 1) ? '' : 's';
 			//DBlist.append('<li id="db-0" class="search-results clearfix" title="Close search results and go back to the DB"><i class="fa fa-arrow-left db-icon db-folder"></i><div class="db-entry db-folder">' + results + ' result' + s + ' for "<em class="keyword">' + keyword + '</em>"</div></li>');
 			$('#level-up').addClass('hide');
-			$('#search-results').removeClass('hide').html('<i class="fa fa-arrow-left sx"></i> ' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"');
+			$('#search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
 		} /*else if (path != '') {
 			DBlist.append('<li id="db-0" class="clearfix"><div class="db-entry db-browse levelup"><i class="fa fa-arrow-left sx"></i> <em>back</em></div></li>');
 		}*/
