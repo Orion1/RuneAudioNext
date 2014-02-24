@@ -31,9 +31,9 @@
 #
 #
 #####################################
-# Orion RuneAudio Optimize script v1.0 #
+# Orion RuneAudio Optimize script v1.1 #
 ######################################
-ver="1.0"
+ver="1.1"
     
 ####################
 # common functions #
@@ -227,6 +227,18 @@ mpdprio_default
 echo "flush MOD5 (Um3ggh1U) sound profile "
 fi
 
+# mod5
+if [ "$1" == "RaspberryPi+i2s" ]; then
+ifconfig eth0 mtu 1000
+ifconfig eth0 txqueuelen 4000
+echo 0 > /proc/sys/vm/swappiness
+modKschedLatency hw=$2 s01=100000 s02=2000000 s03=2000000 s04=2000000 u01=2 u02=2 u03=2 u04=2
+sleep 2
+mpdprio_nice
+echo "flush MOD4 (RaspberryPi+i2s)"
+fi
+
+
 # dev
 if [ "$1" == "dev" ]; then
 echo "flush DEV sound profile 'fake'"
@@ -234,6 +246,6 @@ fi
 
 if [ "$1" == "" ]; then
 echo "Orion Optimize Script v$ver" 
-echo "Usage: $0 {default|RuneAudio|ACX|Orion|OrionV2|Um3ggh1U} {architectureID}"
+echo "Usage: $0 {default|RuneAudio|ACX|Orion|OrionV2|RaspberryPi+i2s|Um3ggh1U} {architectureID}"
 exit 1
 fi
