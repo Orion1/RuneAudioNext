@@ -1678,9 +1678,9 @@ runelog('coverart lastfm query URL',$url);
 // key [3] == extralarge last.fm image
 // key [4] == mega last.fm image
 	if(isset($artist)) {
-	return $output['artist']['image'][4]['#text'];
+	return $output['artist']['image'][3]['#text'];
 	} else {
-	return $output['album']['image'][4]['#text'];
+	return $output['album']['image'][3]['#text'];
 	}
 }
 
