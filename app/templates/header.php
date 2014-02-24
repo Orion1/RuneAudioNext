@@ -60,12 +60,12 @@
 		<a class="dropdown-toggle" id="menu-settings" role="button" data-toggle="dropdown" data-target="#" href="<?=$this->uri(1)?>">MENU <i class="fa fa-th-list dx"></i></a>
 		<ul class="dropdown-menu" role="menu" aria-labelledby="menu-settings">
 			<li class="<?=$this->uri(1,'','active')?>"><a href="/"><i class="fa fa-play sx"></i> Playback</a></li>
-			<li class="<?=$this->uri(1,'sources','active')?>"><a href="/sources"><i class="fa fa-folder-open sx"></i> Sources</a></li>
-			<li class="<?=$this->uri(1,'mpd-config','active')?>"><a href="/mpd-config"><i class="fa fa-cogs sx"></i> MPD</a></li>
-			<li class="<?=$this->uri(1,'net-config','active')?>"><a href="/net-config"><i class="fa fa-sitemap sx"></i> Network</a></li>
-			<li class="<?=$this->uri(1,'settings','active')?>"><a href="/settings"><i class="fa fa-wrench sx"></i> Settings</a></li>
+			<li class="<?=$this->uri(1,'sources','active')?>"><a href="/sources/"><i class="fa fa-folder-open sx"></i> Sources</a></li>
+			<li class="<?=$this->uri(1,'mpd-config','active')?>"><a href="/mpd-config/"><i class="fa fa-cogs sx"></i> MPD</a></li>
+			<li class="<?=$this->uri(1,'net-config','active')?>"><a href="/net-config/"><i class="fa fa-sitemap sx"></i> Network</a></li>
+			<li class="<?=$this->uri(1,'settings','active')?>"><a href="/settings/"><i class="fa fa-wrench sx"></i> Settings</a></li>
 			<li class="<?=$this->uri(1,'help','active')?>"><a href="/help/"><i class="fa fa-question-circle sx"></i> Help</a></li>
-			<li class="<?=$this->uri(1,'credits','active')?>"><a href="/credits"><i class="fa fa-trophy sx"></i> Credits</a></li>
+			<li class="<?=$this->uri(1,'credits','active')?>"><a href="/credits/"><i class="fa fa-trophy sx"></i> Credits</a></li>
 			<li><a href="#poweroff-modal" data-toggle="modal"><i class="fa fa-power-off sx"></i> Turn off</a></li>
 		</ul>
 	</div>

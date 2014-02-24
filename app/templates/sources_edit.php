@@ -1,6 +1,6 @@
 <div class="container credits">
 	<h1>NAS mounts</h1>	
-	<form class="form-horizontal" action="sources.php" method="post" role="form" data-validate="parsley">
+	<form class="form-horizontal" action="/sources/" method="post" role="form" data-validate="parsley">
 		<fieldset>
 			<legend><?=$this->title?> <span class="<?php if($this->action == 'add' ): ?> hide <?php endif ?>">(<a href="#source-delete-modal" data-toggle="modal">remove this mount</a>)</span></legend>
 			<div class="form-group">

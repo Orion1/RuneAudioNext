@@ -1,5 +1,5 @@
 <div id="poweroff-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="poweroff-modal-label" aria-hidden="true">
-	<form class="form-horizontal" action="settings.php" method="post">
+	<form class="form-horizontal" action="/settings/" method="post">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
