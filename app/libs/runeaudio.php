@@ -1653,6 +1653,7 @@ return $status;
 function ui_lastFM_coverart($artist,$album,$lastfm_apikey) {
 if (!empty($album)) {
 $url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&album=".urlencode($album)."&format=json";
+unset($artist);
 } else {
 $url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&format=json";
 $artist = 1;
@@ -1662,24 +1663,24 @@ $artist = 1;
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$output = curl_exec($ch);
-$output = json_decode($output,true);
+$response = curl_exec($ch);
 curl_close($ch);
+$output = json_decode($response,true);
+
 
 // debug
-runelog('lastfm query URL',$url);
-// -- REWORK NEEDED --
-// runelog('lastfm response','');
-// foreach($output as $line) {
-// runelog('',var_dump($line));
-// }
+runelog('coverart lastfm query URL',$url);
+// debug++
+// echo "<pre>";
+// print_r($output);
+// echo "</pre>";
 
 // key [3] == extralarge last.fm image
 // key [4] == mega last.fm image
 	if(isset($artist)) {
 	return $output['artist']['image'][4]['#text'];
 	} else {
-	return $output['album']['image'][3]['#text'];
+	return $output['album']['image'][4]['#text'];
 	}
 }
 

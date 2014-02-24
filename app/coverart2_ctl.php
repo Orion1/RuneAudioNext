@@ -60,10 +60,10 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 		runelog("coverart match: embedded",'');
 		header('Content-Type: ' .$auinfo['comments']['picture'][0]['image_mime']);
 		echo $auinfo['comments']['picture'][0]['data'];
-		
+
 } else {
 	
-
+	
 	$cover_url = ui_lastFM_coverart($status['currentartist'],$status['currentalbum'],$_SESSION['lastfm_apikey']);
 	// debug
 	runelog("coverart match: lastfm (query 1) coverURL=",$cover_url);
@@ -74,26 +74,30 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 	curl_close($ch);
 	
 	if (empty($cover_url)) {
-			
+
 			// fetch artist image
 			$cover_url = ui_lastFM_coverart($status['currentartist'],'',$_SESSION['lastfm_apikey']);
+
 			// debug
 			runelog("coverart match: lastfm (query 2) coverURL=",$cover_url);
+			$ch = null;
 			$ch = curl_init($cover_url);
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			$lastfm_img = curl_exec($ch);
 			curl_close($ch);
+
 			
-			if ($lastfm_img_mime = $bufferinfo->buffer($lastfm_img) != 'text/plain') {
+			if (($lastfm_img_mime = $bufferinfo->buffer($lastfm_img)) != 'text/plain') {
 			header('Content-Type: ' .$lastfm_img_mime);
 			echo $lastfm_img;
+			break;
 			
 			} else {
 				
 				// debug
 				runelog("coverart match: cover-default",'');
-				header('Content-Type: ' .$bufferinfo->buffer($_SERVER['HOME'].'/assets/images/cover-default.png'));
+				header('Content-Type: ' .($bufferinfo->buffer($_SERVER['HOME'].'/assets/images/cover-default.png')));
 				readfile($_SERVER['HOME'].'/assets/images/cover-default.png');
 				
 			}
@@ -107,4 +111,5 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 	}
 
 } 
+
 ?>

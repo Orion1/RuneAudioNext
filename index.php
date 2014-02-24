@@ -93,11 +93,18 @@ if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
 			}
 			
 		$template->section = $template->uri(1);
+		// debug
+		runelog("index: section",$template->section);
+		// debug
+		runelog("index: selected controller(1)",APP.$template->uri(1));
 		// load selected APP Controller
 		include(APP.$template->uri(1).'_ctl.php');
 
+
     } else {
 	
+	// debug
+	runelog("index: selected controller(2)",'playback_ctl.php');
 	// load playback APP Controller
     include(APP.'playback_ctl.php');
 	$template->section = 'index';
