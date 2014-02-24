@@ -8,7 +8,7 @@
             <span id="playlist-position">&nbsp;</span>
             <span id="format-bitrate"></span>
             <div class="knobs row">
-                <div class="col-sm-<?=$this->colspan?>">
+                <div class="col-sm-<?=$this->colspan ?>">
                     <div id="timeknob">
                         <div id="countdown" ms-user-select="none">
                             <input id="time" class="playbackknob" value="0" data-width="100%" data-bgColor="#34495E" data-fgcolor="#0095D8" data-thickness="0.30" data-min="0" data-max="1000" data-displayInput="false">
@@ -24,18 +24,18 @@
                     </div>
                 </div>
                 <?php if ($this->coverart == 1): ?>
-				<div class="col-sm-<?=$this->colspan?> coverart">
+				<div class="col-sm-<?=$this->colspan ?> coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
 				</div>
 				<?php endif ?>
-                <div class="col-sm-<?=$this->colspan?>">
+                <div class="col-sm-<?=$this->colspan ?> volume <?=$this->volume['divclass'] ?>">
                     <div id="volumeknob">
-                        <input id="volume" class="volumeknob" value="100" data-width="100%" data-bgColor="#000" data-fgColor="#0095D8" data-thickness=".25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125">
+                        <input id="volume" class="volumeknob" value="100" data-width="100%" data-bgColor="#000" data-thickness=".25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?>>
                     </div>
                     <div class="btn-group">
-                        <button type="button" id="volumedn" class="btn btn-default btn-lg btn-cmd btn-volume" title="Volume down" data-cmd="volumedn"><i class="fa fa-volume-down"></i></button>
-                        <button type="button" id="volumemute" class="btn btn-default btn-lg btn-cmd btn-volume" title="Volume mute/unmute" data-cmd="volumemute"><i class="fa fa-volume-off"></i> <i class="fa fa-exclamation"></i></button>
-                        <button type="button" id="volumeup" class="btn btn-default btn-lg btn-cmd btn-volume" title="Volume up" data-cmd="volumeup"><i class="fa fa-volume-up"></i></button>
+                        <button type="button" id="volumedn" class="btn btn-default btn-lg btn-cmd btn-volume" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume down" data-cmd="volumedn"><i class="fa fa-volume-down"></i></button>
+                        <button type="button" id="volumemute" class="btn btn-default btn-lg btn-cmd btn-volume" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume mute/unmute" data-cmd="volumemute"><i class="fa fa-volume-off"></i> <i class="fa fa-exclamation"></i></button>
+                        <button type="button" id="volumeup" class="btn btn-default btn-lg btn-cmd btn-volume" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume up" data-cmd="volumeup"><i class="fa fa-volume-up"></i></button>
                     </div>
                 </div>
             </div>
