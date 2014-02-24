@@ -31,10 +31,9 @@
  *
  */
  
-// common include
 playerSession('open',$db,'',''); 
 $dbh = cfgdb_connect($db);
-session_write_close();
+
 
 // handle (reset)
 if (isset($_POST['reset']) && $_POST['reset'] == 1) {

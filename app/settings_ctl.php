@@ -386,7 +386,7 @@ if (isset($_POST['ntpserver']) && $_POST['ntpserver'] != $_SESSION['ntpserver'])
 }
 
 // get lastfm auth ENV settings
-// $template->lastfm = getLastFMauth($db);
+$template->lastfm = getLastFMauth($db);
 
 // wait for worker output if $_SESSION['w_active'] = 1
 waitWorker(1);
