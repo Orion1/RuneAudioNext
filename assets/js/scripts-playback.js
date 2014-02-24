@@ -348,7 +348,7 @@ jQuery(document).ready(function($){ 'use strict';
         $('#open-panel-sx').addClass('active');
     });
 
-	// Queue search
+	// Queue on the fly filtering
     $('#pl-filter').keyup(function(){
         $.scrollTo(0 , 500);
         var filter = $(this).val(), count = 0;
@@ -364,10 +364,15 @@ jQuery(document).ready(function($){ 'use strict';
         var numberItems = count;
         var s = (count == 1) ? '' : 's';
 		if (filter !== '') {
-			document.getElementById('pl-filter-results').innerHTML = '<i class="fa fa-search sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + (+count) + ' result' + s + ' for "<span class="keyword">' + filter + '</span>"</span>';
+			$('#pl-filter-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + (+count) + ' result' + s + ' for "<span class="keyword">' + filter + '</span>"</span>');
         } else {
-            document.getElementById('pl-filter-results').innerHTML = '';
+			$('#pl-filter-results').addClass('hide').html('');
         }
+    });
+	
+	// close filter results
+	$('#pl-filter-results').click(function(){
+		getPlaylistCmd(GUI.json);
     });
 	
 	
@@ -414,7 +419,7 @@ jQuery(document).ready(function($){ 'use strict';
     });
 
     // browse level up
-    $('#level-up').click(function(){
+    $('#db-level-up').click(function(){
 		--GUI.currentDBpos[10];
 		var path = GUI.currentpath;
 		if (GUI.currentDBpos[10] === 0) {
@@ -443,14 +448,10 @@ jQuery(document).ready(function($){ 'use strict';
         //console.log('getDB path = ', GUI.DBentry);
     });
 
-    // close search results in Library
-    // db.on('click', '.search-results', function() {
-        // getDB('filepath', GUI.currentpath);
-    // });
-	
-	$('#search-results').click(function(){
+	// close search results
+	$('#db-search-results').click(function(){
 		$(this).addClass('hide')
-		$('#level-up').removeClass('hide');
+		$('#db-level-up').removeClass('hide');
 		getDB('filepath', GUI.currentpath);
     });
 
@@ -527,7 +528,7 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// open tab from external link
     var url = document.location.toString();
-	console.log('url = ', url);
+	//console.log('url = ', url);
     if ( url.match('#') ) {
         $('#menu-bottom a[href=#'+url.split('#')[1]+']').tab('show') ;
     }

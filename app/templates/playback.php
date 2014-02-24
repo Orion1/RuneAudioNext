@@ -1,5 +1,5 @@
 <div class="tab-content">
-    <!-- -------------------- PLAYBACK PANEL -------------------- -->
+    <!-- PLAYBACK PANEL -->
     <div id="playback" class="tab-pane active">
         <div class="container txtmid">
             <span id="currentartist"></span>
@@ -41,18 +41,18 @@
             </div>
         </div>
     </div>
-    <!-- -------------------- DATABASE PANEL -------------------- -->
+    <!-- LIBRARY PANEL -->
     <div id="panel-sx" class="tab-pane">
         <div class="btnlist btnlist-top">
             <form id="db-search" class="form-inline" action="javascript:getDB('search', GUI.currentpath, GUI.browsemode);">
                 <input id="db-search-keyword" class="form-control" type="text" value="" placeholder="search in DB..."><button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
             </form>
-            <button id="level-up" class="btn hide" title="Go back one level"><i class="fa fa-arrow-left sx"></i> back</button>
-            <button id="search-results" class="btn hide" title="Close search results and go back to the Library browsing"><i class="fa fa-arrow-left sx"></i> back</button>
+            <button id="db-level-up" class="btn hide" title="Go back one level"><i class="fa fa-arrow-left sx"></i> back</button>
+            <button id="db-search-results" class="btn hide" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i> back</button>
         </div>
         <div id="database">
             <ul id="database-entries" class="database">
-                <!--<li class="clearfix"><div class="db-entry">Unknown Song <span>Unknown Artist - Unknown Album</span></div></li>-->
+                <!-- DB entries -->
             </ul>
             <div id="home-blocks" class="row">
                 <div class="col-sm-12">
@@ -63,7 +63,6 @@
                         <i class="fa fa-star"></i>
                         <h3>Musica</h3>
                         bookmark
-                        <!--<a href="#" class="home-action"><i class="fa fa-gear"></i></a>-->
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -108,23 +107,23 @@
             </div>
         </div>
     </div>
-    <!-- -------------------- PLAYLIST PANEL -------------------- -->
+    <!-- QUEUE PANEL -->
     <div id="panel-dx" class="tab-pane">
         <div class="btnlist btnlist-top">
             <form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
                 <input id="pl-filter" class="form-control ttip" type="text" value="" placeholder="search in playlist..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly"><button class="btn btn-default"><i class="fa fa-search"></i></button>
             </form>
-            <div id="pl-filter-results"></div>
+			<button id="pl-filter-results" class="btn hide" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i> back</button>
         </div>
         <div id="playlist">
             <ul id="playlist-entries" class="playlist">
-                <!--<li>Unknown Song <span>Unknown Artist - Unknown Album</span></li>-->
+                <!-- playing queue entries -->
             </ul>
             <ul id="pl-editor" class="playlist hide">
-                <!--<li>Unknown Song <span>Unknown Artist - Unknown Album</span></li>-->
+                <!-- playlists -->
             </ul>
             <ul id="pl-detail" class="playlist hide">
-                <!--<li>Unknown Song <span>Unknown Artist - Unknown Album</span></li>-->
+                <!-- playlist entries -->
             </ul>
             <div id="playlist-warning" class="hide">
                 <div class="col-sm-12">

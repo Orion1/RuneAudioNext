@@ -237,7 +237,7 @@ function getPlaylistPlain(data, json){
 	}
 	//$('#playlist-entries').html(content);
 	document.getElementById('playlist-entries').innerHTML = content;
-	document.getElementById('pl-filter-results').innerHTML = '';
+	$('#pl-filter-results').addClass('hide').html('');
 	$('#pl-filter').val('');
 }
 
@@ -360,16 +360,17 @@ function getDB(cmd, path, browsemode, uplevel){
 
 
 function populateDB(data, path, uplevel, keyword){
-	//console.log('PATH =', path);
-	if (path === '' && keyword === '') {
+	console.log('PATH =', path);
+	console.log('KEYWORD =', keyword);
+	if (path === '' && keyword === undefined) {
 		$('#database-entries').addClass('hide');
-		$('#level-up').addClass('hide');
+		$('#db-level-up').addClass('hide');
 		$('#home-blocks').removeClass('hide');
 		$('span', '#db-currentpath').html('');
 		return;
 	} else {
 		$('#database-entries').removeClass('hide');
-		$('#level-up').removeClass('hide');
+		$('#db-level-up').removeClass('hide');
 		$('#home-blocks').addClass('hide');
 		if (path) GUI.currentpath = path;
 		//console.log(' new GUI.currentpath = ', GUI.currentpath);
@@ -377,13 +378,10 @@ function populateDB(data, path, uplevel, keyword){
 		DBlist.html('');
 		if (keyword) {
 			var results = (data.length) ? data.length : '0';
-			var s = (data.length == 1) ? '' : 's';
-			//DBlist.append('<li id="db-0" class="search-results clearfix" title="Close search results and go back to the DB"><i class="fa fa-arrow-left db-icon db-folder"></i><div class="db-entry db-folder">' + results + ' result' + s + ' for "<em class="keyword">' + keyword + '</em>"</div></li>');
-			$('#level-up').addClass('hide');
-			$('#search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
-		} /*else if (path != '') {
-			DBlist.append('<li id="db-0" class="clearfix"><div class="db-entry db-browse levelup"><i class="fa fa-arrow-left sx"></i> <em>back</em></div></li>');
-		}*/
+			var s = (data.length == 1) ? '' : 's'
+			$('#db-level-up').addClass('hide');
+			$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
+		}
 		var content = '';
 		var i = 0;
 		for (i = 0; i < data.length; i++){

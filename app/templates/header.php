@@ -6,12 +6,7 @@
 	<link href="<?=$this->asset('/css/bootstrap-fileupload.min.css')?>" rel="stylesheet">
 	<?php endif ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
-	<!-- dev only -->
-	<!--<link rel="stylesheet/less" href="assets/less/runeui.less">-->
-	<?php if ($this->section == 'index'): ?>
-	<!--<link href="assets/css/test.css" rel="stylesheet">-->
-	<?php endif ?>
-	<!-- /dev only -->
+	<!-- dev only <link rel="stylesheet/less" href="assets/less/runeui.less"> dev only -->
     <link rel="icon" type="image/x-icon" href="<?=$this->asset('/img/favicon.ico')?>">
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>

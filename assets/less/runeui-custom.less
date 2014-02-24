@@ -394,7 +394,7 @@ html, body {
 // Playlist and Database panels
 // --------------------------------------------------------------
 
-#level-up, #search-results {
+#db-level-up, #db-search-results, #pl-filter-results {
 	height: 39px;
 	margin: 0 0 0 -10px;
 	font-size: 16px;
@@ -666,9 +666,6 @@ html, body {
 #db-controls, #pl-controls {
     float: right;
 }
-#db-0 {
-    background: #111D29;
-}
 #db-currentpath {
     line-height: 40px;
 	i {
@@ -678,9 +675,9 @@ html, body {
 #db-browse .dropdown-menu &>li &>a:hover,#db-browse .dropdown-menu &>li &>a:focus,#db-browse .dropdown-menu &>li.active &>a {
     background: @brand-primary;
 }
-#db-0 em, #pl-filter-results i {
-    color: @brand-alt;
-}
+// #pl-filter-results i {
+    // color: @brand-alt;
+// }
 #db-search, #pl-search {
     display: block;
 	white-space: nowrap;
@@ -1186,11 +1183,11 @@ ul.parsley-error-list {
         content: counter(item) '. ';
         color: @brand-alt;
 	}
-	#pl-filter-results {
-		margin: 0 30px 0 10px;
-		line-height: 40px;
-		font-size: 16px;
-	}
+	// #pl-filter-results {
+		// margin: 0 30px 0 10px;
+		// line-height: 40px;
+		// font-size: 16px;
+	// }
 	.form-control {
 		max-width: 400px;
 	}
