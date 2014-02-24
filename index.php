@@ -65,7 +65,7 @@ $controllers = array(
 if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
 
 	// decode REQUEST_URL and assing section
-    if (!empty($template->uri(1))) {
+    if (!empty($template->uri(1)) && ($template->uri(1) != 'playback')) {
 			
 			// decode ACTION
 			if (!empty($template->uri(2))) {
