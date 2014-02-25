@@ -212,7 +212,7 @@ function getPlaylist(data, json){
 function getPlaylistPlain(data, json){
 	var current = parseInt(json['song']) + 1;
 	var state = json['state'];
-	var content='', time='', artist='', album='', title='', id=0;
+	var content = '', time = '', artist = '', album = '', title = '', str = '', filename = '', path = '', id = 0, bottomline = '';
 	var i, line, lines=data.split('\n'), infos=[];
 	//while( line = lines[i++] ){
 	for (i = 0; i < lines.length; i+=1){
@@ -230,9 +230,25 @@ function getPlaylistPlain(data, json){
 		else if( 'Album' === infos[0] ){
 			album = infos[1]
 		}
+		else if( 'file' === infos[0] ){
+			str = infos[1];
+		}
 		else if( 'Id' === infos[0] ){
 			++id;
-			content += '<li id="pl-'+id+'" class="'+ (state != "stop" && id == current ? 'active' : '') +' clearfix"><a class="pl-action" href="#notarget" title="Remove song from playlist"><i class="fa fa-times-circle"></i></a><div class="pl-entry">'+title+'<em class="songtime">'+timeConvert2(time)+'</em><span>'+artist+' - '+album+'</span></div></li>';
+			if (title === '' || album === '' ) {
+				path = parsePath(str);
+				filename = str.split('/').pop();
+				title = filename;
+				if (artist === '' ) {
+					bottomline = 'path: ' + path;
+				} else {
+					bottomline = artist;
+				}
+			} else {
+				bottomline = artist + ' - ' + album;
+			}
+			content += '<li id="pl-'+id+'" class="'+ (state != "stop" && id == current ? 'active' : '') + ' clearfix"><a class="pl-action" href="#notarget" title="Remove song from playlist"><i class="fa fa-times-circle"></i></a><div class="pl-entry">' + title + '<em class="songtime">' + timeConvert2(time) + '</em><span>' + bottomline + '</span></div></li>';
+			time = '', artist = '', album = '', title = '';
 		}
 	}
 	//$('#playlist-entries').html(content);
@@ -247,7 +263,7 @@ function parsePath(str) {
 	//-- verify this switch! (Orion)
 	var songpath = '';
 	if (cutpos && cutpos !=-1){
-		str.slice(0,cutpos);
+		songpath = str.slice(0,cutpos);
 	}
 	return songpath;
 }
@@ -259,10 +275,10 @@ function parseResponse(inputArr,respType,i,inpath) {
 		break;
 		
 		case 'db':
-			//console.log('inpath= :',inpath);
+			//console.log('inpath = ',inpath);
 			//console.log('inputArr[i].file= :',inputArr[i].file);
 			if (inpath === '' && typeof inputArr[i].file != 'undefined') {
-			 inpath = parsePath(inputArr[i].file)
+				inpath = parsePath(inputArr[i].file)
 			}
 			if (typeof inputArr[i].file != 'undefined') {
 				//debug
@@ -284,7 +300,7 @@ function parseResponse(inputArr,respType,i,inpath) {
 				} else {
 					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 					content += inputArr[i].file;
-					content += '"><i class="fa fa-music sx db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+					content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
 					content += inputArr[i].file.replace(inpath + '/', '') + ' <em class="songtime">' + timeConvert(inputArr[i].Time) + '</em>';
 					content += ' <span>';
 					content += ' path \: ';
@@ -360,8 +376,8 @@ function getDB(cmd, path, browsemode, uplevel){
 
 
 function populateDB(data, path, uplevel, keyword){
-	console.log('PATH =', path);
-	console.log('KEYWORD =', keyword);
+	// console.log('PATH =', path);
+	// console.log('KEYWORD =', keyword);
 	if (path === '' && keyword === undefined) {
 		$('#database-entries').addClass('hide');
 		$('#db-level-up').addClass('hide');
