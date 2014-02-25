@@ -229,10 +229,14 @@ $_SESSION['hostname'] = $hn[0];
 	if ($arch != '--') {
 //	wrk_sysOBEnvCheck($arch,0);
 	}
-// start samba
-runelog("service: SAMBA start",'');
-sysCmd('/usr/sbin/smbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
-sysCmd('/usr/sbin/nmbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
+	// start samba
+	runelog("service: SAMBA start",$_SESSION['dev']);
+	if ($_SESSION['dev'] == 1) {
+	sysCmd('systemctl start samba');
+	} else {
+	//sysCmd('/usr/sbin/smbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
+	//sysCmd('/usr/sbin/nmbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
+	}
 }
 
 // start shairport

@@ -115,7 +115,10 @@ session_write_close();
 runelog("rune_PL_wrk: enter idle loop",'');
 $status = monitorMpdState($mpd);
 // idle LOOP
-			
+		
+		session_start();
+		$_SESSION['pl_length'] = $status['playlistlength'];
+		session_write_close();
 		$status = ui_status($mpd,$status);
 		// CMediaFix
 		if (isset($_SESSION['cmediafix']) && $_SESSION['cmediafix'] == 1 && $status['state'] == 'play' ) {
