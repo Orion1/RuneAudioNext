@@ -287,9 +287,15 @@ html, body {
     font-weight: bold;
     color: @brand-primary;
 	line-height: 34px;
+	.notag {
+		color: @brand-alt;
+	}
 }
 #currentartist, #currentalbum {
     font-size: 18px;
+	.notag {
+		color: @brand-alt;
+	}
 }
 #currentalbum {
     margin-bottom: 20px;
@@ -343,7 +349,7 @@ html, body {
 
 
 .volume {
-    padding-top: 30px;
+    //padding-top: 30px;
     .btn-toolbar {
         margin-top: 20px;
     }
@@ -351,8 +357,8 @@ html, body {
 		margin: 0;
     }
 	&.nomixer {
-    padding-top: 0;
-}
+		padding-top: 0;
+	}
 }
 
 #volume {
