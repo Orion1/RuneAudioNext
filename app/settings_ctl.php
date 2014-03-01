@@ -208,90 +208,41 @@ if (isset($_POST['cmediafix']) && $_POST['cmediafix'] != $_SESSION['cmediafix'])
 if (isset($_POST) && isset($_POST['features'])) {
 // start / respawn session
 session_start();
-	foreach ($_POST['features'] as $feature => $value) {
-	
 
-		if ($feature === 'airplay') {
+		if (isset($_POST['features']['airplay'])) {
 			// save new value on SQLite datastore
-			if ($value == 1) {
-			playerSession('write',$db,'airplay',$value);
+			playerSession('write',$db,'airplay',1);
 			// load worker queue
-				if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-					// start / respawn session
-					session_start();
-					if ($value == 1) {
-					$_SESSION['w_queue'] = "airplay";
-					$_SESSION['w_queueargs'] = "start";
-					// set UI notify
-					$_SESSION['notify']['msg'] = 'AirPlay enabled';
-					}
-					if ($value == 0) {
-					$_SESSION['w_queue'] = "airplay";
-					$_SESSION['w_queueargs'] = "stop";
-					// set UI notify
-					$_SESSION['notify']['msg'] = 'AirPlay disabled';
-					}
-					// active worker queue
-					$_SESSION['w_active'] = 1;
-				} else {
-				$_SESSION['notify']['title'] = 'Job Failed';
-				$_SESSION['notify']['msg'] = 'background worker is busy.';
-				}
-			}	
-
-		} else if (!array_search($feature,$_POST['features'])){
+			// ---> creare job per attivare e mettere in coda
+		} else {
 			playerSession('write',$db,'airplay',0);
+			if ($_SESSION['airplay'] != 0) {
+			// ---> creare job per fermare e mettere in coda
+			}
 		}
 
-		if ($feature === 'udevil' && $value != $_SESSION['udevil']) {
+		if (isset($_POST['features']['udevil'])) {
 			// save new value on SQLite datastore
-			if ($value == 1 OR $value == 0) {
-			playerSession('write',$db,'udevil',$value);
+			playerSession('write',$db,'udevil',1);
 			// load worker queue
-				if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-				// start / respawn session
-					session_start();
-					if ($value == 1) {
-					$_SESSION['w_queue'] = "udevil";
-					$_SESSION['w_queueargs'] = "start";
-					// set UI notify
-					$_SESSION['notify']['msg'] = 'USB-Automount enabled';
-					}
-					if ($value == 0) {
-					$_SESSION['w_queue'] = "udevil";
-					$_SESSION['w_queueargs'] = "stop";
-					// set UI notify
-					$_SESSION['notify']['msg'] = 'USB-Automount disabled';
-					}
-					// active worker queue
-					$_SESSION['w_active'] = 1;
-				} else {
-				$_SESSION['notify']['title'] = 'Job Failed';
-				$_SESSION['notify']['msg'] = 'background worker is busy.';
-				}
-			}	
-
-		} else if (!array_search($feature,$_POST['features'])){
+			// ---> creare job per attivare e mettere in coda
 			playerSession('write',$db,'udevil',0);
-		}
+			if ($_SESSION['udevil'] != 0) {
+			// ---> creare job per fermare e mettere in coda
+			}
 
-		if ($feature === 'coverart' && $value != $_SESSION['coverart']) {
+		if (isset($_POST['features']['coverart'])) {
 			// save new value on SQLite datastore
-			if ($value == 1 OR $value == 0) {
-			playerSession('write',$db,'coverart',$value);
-				// set UI notify
-				if ($value == 1) {
-							$_SESSION['notify']['msg'] = 'Display album cover enabled';
-				} else {
-							$_SESSION['notify']['msg'] = 'Display album cover disabled';
-				}
-				
-			}	
-
-		} else if (!array_search($feature,$_POST['features'])){
+			playerSession('write',$db,'coverart',1);
+			// load worker queue
+			// ---> creare job per attivare e mettere in coda
+		} else {
 			playerSession('write',$db,'coverart',0);
+			if ($_SESSION['coverart'] != 0) {
+			// ---> creare job per fermare e mettere in coda
+			}
 		}
-
+/*
 		if ($feature === 'scrobbling_lastfm' && $value == 1 && ($value != $_SESSION['scrobbling_lastfm'] OR ($value['lastfm']['pass'] != $template->lastfm['pass'] && !empty($value['lastfm']['pass'])) OR $value['lastfm']['user'] != $template->lastfm['user'] && !empty($value['lastfm']['user'])) ) {
 		// save new value on SQLite datastore
 		playerSession('write',$db,'scrobbling_lastfm',1);
@@ -314,7 +265,7 @@ session_start();
 				}
 
 
-		} else if (!array_search($feature,$_POST['features'])){
+		} else {
 			if (isset($value['scrobbling_lastfm']) && $value['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm']) {
 			playerSession('write',$db,'scrobbling_lastfm',0);
 
@@ -333,7 +284,8 @@ session_start();
 
 			}
 		}
-	}
+*/
+	
 	// unlock session file
 	playerSession('unlock');
 }
