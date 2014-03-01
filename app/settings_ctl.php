@@ -35,6 +35,9 @@
 playerSession('open',$db,'','');
 playerSession('unlock',$db,'','');
 
+// get lastfm auth ENV settings
+$template->lastfm = getLastFMauth($db);
+
 if (isset($_POST['syscmd'])){
 	switch ($_POST['syscmd']) {
 
@@ -200,137 +203,141 @@ if (isset($_POST['cmediafix']) && $_POST['cmediafix'] != $_SESSION['cmediafix'])
 	playerSession('unlock');
 }
 
-if (isset($_POST['airplay']) && $_POST['airplay'] != $_SESSION['airplay']) {
-	// start / respawn session
-	session_start();
-	// save new value on SQLite datastore
-	if ($_POST['airplay'] == 1 OR $_POST['airplay'] == 0) {
-	playerSession('write',$db,'airplay',$_POST['airplay']);
-	// load worker queue
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-			// start / respawn session
-			session_start();
-			if ($_POST['airplay'] == 1) {
-			$_SESSION['w_queue'] = "airplay";
-			$_SESSION['w_queueargs'] = "start";
-			// set UI notify
-			$_SESSION['notify']['msg'] = 'AirPlay enabled';
-			}
-			if ($_POST['airplay'] == 0) {
-			$_SESSION['w_queue'] = "airplay";
-			$_SESSION['w_queueargs'] = "stop";
-			// set UI notify
-			$_SESSION['notify']['msg'] = 'AirPlay disabled';
-			}
-			// active worker queue
-			$_SESSION['w_active'] = 1;
-		} else {
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		}
-	}	
-	// unlock session file
-	playerSession('unlock');
-}
+// ----------------------------------------------------------
 
-if (isset($_POST['udevil']) && $_POST['udevil'] != $_SESSION['udevil']) {
-	// start / respawn session
-	session_start();
-	// save new value on SQLite datastore
-	if ($_POST['udevil'] == 1 OR $_POST['udevil'] == 0) {
-	playerSession('write',$db,'udevil',$_POST['udevil']);
-	// load worker queue
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		// start / respawn session
-			session_start();
-			if ($_POST['udevil'] == 1) {
-			$_SESSION['w_queue'] = "udevil";
-			$_SESSION['w_queueargs'] = "start";
-			// set UI notify
-			$_SESSION['notify']['msg'] = 'USB-Automount enabled';
-			}
-			if ($_POST['udevil'] == 0) {
-			$_SESSION['w_queue'] = "udevil";
-			$_SESSION['w_queueargs'] = "stop";
-			// set UI notify
-			$_SESSION['notify']['msg'] = 'USB-Automount disabled';
-			}
-			// active worker queue
-			$_SESSION['w_active'] = 1;
-		} else {
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		}
-	}	
-	// unlock session file
-	playerSession('unlock');
-}
-
-if (isset($_POST['coverart']) && $_POST['coverart'] != $_SESSION['coverart']) {
-	// start / respawn session
-	session_start();
-	// save new value on SQLite datastore
-	if ($_POST['coverart'] == 1 OR $_POST['coverart'] == 0) {
-	playerSession('write',$db,'coverart',$_POST['coverart']);
-		// set UI notify
-		if ($_POST['coverart'] == 1) {
-					$_SESSION['notify']['msg'] = 'Display album cover enabled';
-		} else {
-					$_SESSION['notify']['msg'] = 'Display album cover disabled';
-		}
-		
-	}	
-	// unlock session file
-	playerSession('unlock');
-}
-
-if (!empty($_POST['scrobbling_lastfm']) && $_POST['scrobbling_lastfm'] == 1 && ($_POST['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm'] OR ($_POST['lastfm']['pass'] != $_lastfm['pass'] && !empty($_POST['lastfm']['pass'])) OR $_POST['lastfm']['user'] != $_lastfm['user'] && !empty($_POST['lastfm']['user'])) ) {
+if (isset($_POST) && isset($_POST['features'])) {
 // start / respawn session
 session_start();
-// save new value on SQLite datastore
-playerSession('write',$db,'scrobbling_lastfm',1);
-
-	if (($_POST['lastfm']['user'] != $_lastfm['user'] && !empty($_POST['lastfm']['user'])) OR ($_POST['lastfm']['pass'] != $_lastfm['pass'] && !empty($_POST['lastfm']['pass']))) {
-	$_SESSION['w_queueargs']['lastfm'] = $_POST['lastfm'];
-	$_SESSION['notify']['msg'] = '\nLast.FM auth data updated\n';
-	}
+	foreach ($_POST['features'] as $feature => $value) {
 	
-	// active worker queue
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		$_SESSION['w_queue'] = 'scrobbling_lastfm';
-		$_SESSION['w_queueargs']['action'] = 'start';
-		// set UI notify
-		$_SESSION['notify']['msg'] .= 'Last.FM scrobbling enabled';
-		$_SESSION['w_active'] = 1;
-		} else {
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		}
-// unlock session file
-playerSession('unlock');
 
-} else {
-	if (isset($_POST['scrobbling_lastfm']) && $_POST['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm']) {
-	// start / respawn session
-	session_start();
-	// save new value on SQLite datastore
-	playerSession('write',$db,'scrobbling_lastfm',0);
-		// active worker queue
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		// disable LastFM scrobbling
-		$_SESSION['w_queue'] = 'scrobbling_lastfm';
-		$_SESSION['w_queueargs']['action'] = 'stop';
-		// set UI notify
-		$_SESSION['notify']['msg'] = 'Last.FM scrobbling disabled';
-		$_SESSION['w_active'] = 1;
-		} else {
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
+		if ($feature === 'airplay') {
+			// save new value on SQLite datastore
+			if ($value == 1) {
+			playerSession('write',$db,'airplay',$value);
+			// load worker queue
+				if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
+					// start / respawn session
+					session_start();
+					if ($value == 1) {
+					$_SESSION['w_queue'] = "airplay";
+					$_SESSION['w_queueargs'] = "start";
+					// set UI notify
+					$_SESSION['notify']['msg'] = 'AirPlay enabled';
+					}
+					if ($value == 0) {
+					$_SESSION['w_queue'] = "airplay";
+					$_SESSION['w_queueargs'] = "stop";
+					// set UI notify
+					$_SESSION['notify']['msg'] = 'AirPlay disabled';
+					}
+					// active worker queue
+					$_SESSION['w_active'] = 1;
+				} else {
+				$_SESSION['notify']['title'] = 'Job Failed';
+				$_SESSION['notify']['msg'] = 'background worker is busy.';
+				}
+			}	
+
+		} else if (!array_search($feature,$_POST['features'])){
+			playerSession('write',$db,'airplay',0);
 		}
+
+		if ($feature === 'udevil' && $value != $_SESSION['udevil']) {
+			// save new value on SQLite datastore
+			if ($value == 1 OR $value == 0) {
+			playerSession('write',$db,'udevil',$value);
+			// load worker queue
+				if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
+				// start / respawn session
+					session_start();
+					if ($value == 1) {
+					$_SESSION['w_queue'] = "udevil";
+					$_SESSION['w_queueargs'] = "start";
+					// set UI notify
+					$_SESSION['notify']['msg'] = 'USB-Automount enabled';
+					}
+					if ($value == 0) {
+					$_SESSION['w_queue'] = "udevil";
+					$_SESSION['w_queueargs'] = "stop";
+					// set UI notify
+					$_SESSION['notify']['msg'] = 'USB-Automount disabled';
+					}
+					// active worker queue
+					$_SESSION['w_active'] = 1;
+				} else {
+				$_SESSION['notify']['title'] = 'Job Failed';
+				$_SESSION['notify']['msg'] = 'background worker is busy.';
+				}
+			}	
+
+		} else if (!array_search($feature,$_POST['features'])){
+			playerSession('write',$db,'udevil',0);
+		}
+
+		if ($feature === 'coverart' && $value != $_SESSION['coverart']) {
+			// save new value on SQLite datastore
+			if ($value == 1 OR $value == 0) {
+			playerSession('write',$db,'coverart',$value);
+				// set UI notify
+				if ($value == 1) {
+							$_SESSION['notify']['msg'] = 'Display album cover enabled';
+				} else {
+							$_SESSION['notify']['msg'] = 'Display album cover disabled';
+				}
+				
+			}	
+
+		} else if (!array_search($feature,$_POST['features'])){
+			playerSession('write',$db,'coverart',0);
+		}
+
+		if ($feature === 'scrobbling_lastfm' && $value == 1 && ($value != $_SESSION['scrobbling_lastfm'] OR ($value['lastfm']['pass'] != $template->lastfm['pass'] && !empty($value['lastfm']['pass'])) OR $value['lastfm']['user'] != $template->lastfm['user'] && !empty($value['lastfm']['user'])) ) {
+		// save new value on SQLite datastore
+		playerSession('write',$db,'scrobbling_lastfm',1);
+
+			if (($value['lastfm']['user'] != $template->lastfm['user'] && !empty($value['lastfm']['user'])) OR ($value['lastfm']['pass'] != $value['pass'] && !empty($value['lastfm']['pass']))) {
+			$_SESSION['w_queueargs']['lastfm'] = $value['lastfm'];
+			$_SESSION['notify']['msg'] = '\nLast.FM auth data updated\n';
+			}
+			
+			// active worker queue
+				if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
+				$_SESSION['w_queue'] = 'scrobbling_lastfm';
+				$_SESSION['w_queueargs']['action'] = 'start';
+				// set UI notify
+				$_SESSION['notify']['msg'] .= 'Last.FM scrobbling enabled';
+				$_SESSION['w_active'] = 1;
+				} else {
+				$_SESSION['notify']['title'] = 'Job Failed';
+				$_SESSION['notify']['msg'] = 'background worker is busy.';
+				}
+
+
+		} else if (!array_search($feature,$_POST['features'])){
+			if (isset($value['scrobbling_lastfm']) && $value['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm']) {
+			playerSession('write',$db,'scrobbling_lastfm',0);
+
+				// active worker queue
+				if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
+				// disable LastFM scrobbling
+				$_SESSION['w_queue'] = 'scrobbling_lastfm';
+				$_SESSION['w_queueargs']['action'] = 'stop';
+				// set UI notify
+				$_SESSION['notify']['msg'] = 'Last.FM scrobbling disabled';
+				$_SESSION['w_active'] = 1;
+				} else {
+				$_SESSION['notify']['title'] = 'Job Failed';
+				$_SESSION['notify']['msg'] = 'background worker is busy.';
+				}
+
+			}
+		}
+	}
 	// unlock session file
 	playerSession('unlock');
-	}
 }
+// ------------------------------
 
 
 if (isset($_POST['hostname']) && $_POST['hostname'] != $_SESSION['hostname']) {
@@ -384,9 +391,6 @@ if (isset($_POST['ntpserver']) && $_POST['ntpserver'] != $_SESSION['ntpserver'])
 	// unlock session file
 	playerSession('unlock');
 }
-
-// get lastfm auth ENV settings
-$template->lastfm = getLastFMauth($db);
 
 // wait for worker output if $_SESSION['w_active'] = 1
 waitWorker(1);

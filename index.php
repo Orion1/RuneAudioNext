@@ -120,9 +120,12 @@ $template->content = 'error';
 }
 
 if ($_SESSION['hiddendebug'] != 1 && $_SESSION['debug'] > 0) {
+	if (!empty($_POST)) {
+	$debugdata = debug($_POST);
+	}
 ob_start();
 echo debug_footer($db);
-$debugdata = ob_get_clean();
+$debugdata .= ob_get_clean();
 $template->debug = $debugdata;
 }
 

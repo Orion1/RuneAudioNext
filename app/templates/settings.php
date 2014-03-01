@@ -65,7 +65,7 @@
 				<label for="airplay" class="control-label col-sm-2">AirPlay</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="airplay" type="checkbox" <?php if($_SESSION['airplay'] == 1): ?> checked="checked" <?php endif ?>>
+						<input name="features[airplay]" type="checkbox" value="1"<?php if($_SESSION['airplay'] == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>
@@ -74,7 +74,7 @@
 				<label for="udevil" class="control-label col-sm-2">USB Automount</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="udevil" type="checkbox" <?php if($_SESSION['udevil'] == 1): ?> checked="checked" <?php endif ?>>
+						<input name="features[udevil]" type="checkbox" value="1"<?php if($_SESSION['udevil'] == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>
@@ -83,7 +83,7 @@
 				<label for="coverart" class="control-label col-sm-2">Display album cover</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="coverart" type="checkbox" <?php if($_SESSION['coverart'] == 1): ?> checked="checked" <?php endif ?>>
+						<input name="features[coverart]" type="checkbox" value="1"<?php if($_SESSION['coverart'] == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>
@@ -92,7 +92,7 @@
 				<label for="scrobbling_lastfm" class="control-label col-sm-2">Last.FM scrobbling</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="scrobbling_lastfm" type="checkbox" <?php if($_SESSION['scrobbling_lastfm'] == 1): ?> checked="checked" <?php endif ?>>
+						<input name="features[scrobbling_lastfm]" type="checkbox" value="1"<?php if($_SESSION['scrobbling_lastfm'] == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>
@@ -101,21 +101,21 @@
 				<div class="form-group">
 					<label class="control-label col-sm-2" for="lastfm-usr">Username</label>
 					<div class="col-sm-10">
-						<input class="input-lg" type="text" id="lastfm_user" name="lastfm[user]" value="<?=$this->lastfm['user'] ?>" data-trigger="change" placeholder="user">
+						<input class="input-lg" type="text" id="lastfm_user" name="features[lastfm][user]" value="<?=$this->lastfm['user'] ?>" data-trigger="change" placeholder="user">
 						<span class="help-block">Insert your Last.FM <i>username</i></span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="control-label col-sm-2" for="lastfm-pasw">Password</label>
 					<div class="col-sm-10">
-						<input class="input-lg" type="password" id="lastfm_pass" name="lastfm[pass]" value="<?=$this->lastfm['pass'] ?>" placeholder="pass" autocomplete="off">
+						<input class="input-lg" type="password" id="lastfm_pass" name="features[lastfm][pass]" value="<?=$this->lastfm['pass'] ?>" placeholder="pass" autocomplete="off">
 						<span class="help-block">Insert your Last.FM <i>password</i> (case sensitive)</span>
 					</div>
 				</div>
             </div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<button class="btn btn-primary btn-lg" value="save" name="save" type="submit">apply settings</button>
+					<button class="btn btn-primary btn-lg" value="1" name="features[submit]" type="submit">apply settings</button>
 				</div>
 			</div>
 		</fieldset>
@@ -128,7 +128,7 @@
 				<label for="cmediafix" class="control-label col-sm-2">CMedia fix</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="cmediafix" type="checkbox" <?php if($_SESSION['cmediafix'] == 1): ?> checked="checked" <?php endif ?>>
+						<input name="cmediafix" type="checkbox" value="1"<?php if($_SESSION['cmediafix'] == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 					<span class="help-block">For those who have a CM6631 receiver and experiment issues (noise, crackling) between tracks with different sample rates and/or bit depth.<br> 
