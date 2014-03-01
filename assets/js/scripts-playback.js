@@ -107,7 +107,7 @@ jQuery(document).ready(function($){ 'use strict';
                 //$(this).find('i').toggleClass('fa fa-play').toggleClass('fa fa-pause');
                 window.clearInterval(GUI.currentKnob);
                 sendCmd(cmd);
-                //console.log('sendCmd(' + cmd + ');');
+                // console.log('sendCmd(' + cmd + ');');
                 return;
             // } else {
                 // $(this).addClass('btn-primary');
@@ -119,7 +119,7 @@ jQuery(document).ready(function($){ 'use strict';
         // previous/next
         else if (dataCmd == 'previous' || dataCmd == 'next') {
             GUI.halt = 1;
-            //console.log('GUI.halt (next/prev)= ', GUI.halt);
+            // console.log('GUI.halt (next/prev)= ', GUI.halt);
             $('#countdown-display').countdown('pause');
             window.clearInterval(GUI.currentKnob);
         }
@@ -148,7 +148,7 @@ jQuery(document).ready(function($){ 'use strict';
                     setvol(GUI.volume);
                 }
             }
-            //console.log('volume = ', GUI.volume);
+            // console.log('volume = ', GUI.volume);
             sendCmd('setvol ' + vol);
             return;
         }
@@ -162,7 +162,7 @@ jQuery(document).ready(function($){ 'use strict';
             cmd = dataCmd;
         }
         sendCmd(cmd);
-        //console.log('sendCmd(' + cmd + ');');
+        // console.log('sendCmd(' + cmd + ');');
     });
 	
 	$('#volume-step-dn').on({
@@ -194,11 +194,11 @@ jQuery(document).ready(function($){ 'use strict';
 			} else if (direction == 'dn') {
 				GUI.stepVolumeDelta = parseInt(GUI.volume) - i;
 			}
-			//console.log('GUI.stepVolumeDelta = ', GUI.stepVolumeDelta);
+			// console.log('GUI.stepVolumeDelta = ', GUI.stepVolumeDelta);
 			$('#volume').val(GUI.stepVolumeDelta).trigger('change');
 		}
 		volumeStep();
-		//console.log('GUI.volume = ', GUI.volume);
+		// console.log('GUI.volume = ', GUI.volume);
 		
 		GUI.stepVolumeInt = window.setInterval(function() {
 			volumeStep();
@@ -207,7 +207,7 @@ jQuery(document).ready(function($){ 'use strict';
 	function volumeStepSet() {
 		window.clearInterval(GUI.stepVolumeInt);
 		setvol(GUI.stepVolumeDelta);
-		//console.log('set volume to = ', GUI.stepVolumeDelta);
+		// console.log('set volume to = ', GUI.stepVolumeDelta);
 	}
 	
 	
@@ -219,7 +219,7 @@ jQuery(document).ready(function($){ 'use strict';
         inline: false,
 		    change : function (value) {
             if (GUI.state != 'stop') {
-				//console.log('GUI.halt (Knobs)= ', GUI.halt);
+				// console.log('GUI.halt (Knobs)= ', GUI.halt);
 				window.clearInterval(GUI.currentKnob)
 				//$('#time').val(value);
 				// console.log('click percent = ', value);
@@ -228,20 +228,20 @@ jQuery(document).ready(function($){ 'use strict';
         },
         release : function (value) {
 			if (GUI.state != 'stop') {
-				//console.log('release percent = ', value);
+				// console.log('release percent = ', value);
 				GUI.halt = 1;
-				//console.log('GUI.halt (Knobs2)= ', GUI.halt);
+				// console.log('GUI.halt (Knobs2)= ', GUI.halt);
 				window.clearInterval(GUI.currentKnob);
 				var seekto = Math.floor((value * parseInt(GUI.json['time'])) / 1000);
 				sendCmd('seek ' + GUI.json['song'] + ' ' + seekto);
-				//console.log('seekto = ', seekto);
+				// console.log('seekto = ', seekto);
 				$('#time').val(value);
 				$('#countdown-display').countdown('destroy');
 				$('#countdown-display').countdown({since: -seekto, compact: true, format: 'MS'});
 			}
         },
         cancel : function () {
-            //console.log('cancel : ', this);
+            // console.log('cancel : ', this);
         },
         draw : function () {}
     });
@@ -255,7 +255,7 @@ jQuery(document).ready(function($){ 'use strict';
             setvol(value);
         },
         cancel : function () {
-            //console.log('cancel : ', this);
+            // console.log('cancel : ', this);
         },
 		draw : function () {
             // "tron" case
@@ -313,7 +313,7 @@ jQuery(document).ready(function($){ 'use strict';
         var cmd = 'play ' + pos;
         sendCmd(cmd);
         GUI.halt = 1;
-        //console.log('GUI.halt (playlist)= ', GUI.halt);
+        // console.log('GUI.halt (playlist)= ', GUI.halt);
         playlist.find('li').removeClass('active');
         $(this).parent().addClass('active');
     });
@@ -394,7 +394,7 @@ jQuery(document).ready(function($){ 'use strict';
     // click on Library home block
     $('.home-block').click(function(){
 		var path = $(this).data('path');
-		//console.log('CLICKED! ', path);
+		// console.log('CLICKED! ', path);
 		++GUI.currentDBpos[10];
 		getDB('filepath', path, GUI.browsemode, 0);
     });
@@ -412,7 +412,7 @@ jQuery(document).ready(function($){ 'use strict';
                 entryID = entryID.replace('db-','');
                 GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
                 ++GUI.currentDBpos[10];
-                //console.log('getDB path = ', path);
+                // console.log('getDB path = ', path);
                 getDB('filepath', path, GUI.browsemode, 0);
             }
         }
@@ -428,7 +428,7 @@ jQuery(document).ready(function($){ 'use strict';
 			var cutpos = path.lastIndexOf('/');
 			path = cutpos !=-1 ? path.slice(0,cutpos):'';
 		}
-		//console.log('PATH =', path);
+		// console.log('PATH =', path);
 		getDB('filepath', path, GUI.browsemode, 1);
     });
     
@@ -436,7 +436,7 @@ jQuery(document).ready(function($){ 'use strict';
         db.find('li').removeClass('active');
         $(this).parent().addClass('active');
         var path = $(this).parent().data('path');
-        //console.log('doubleclicked path = ', path);
+        // console.log('doubleclicked path = ', path);
         getDB('addplay', path);
         notify('add', path);
     });
@@ -445,7 +445,7 @@ jQuery(document).ready(function($){ 'use strict';
     db.on('click', '.db-action', function() {
         var path = $(this).parent().attr('data-path');
         GUI.DBentry[0] = path;
-        //console.log('getDB path = ', GUI.DBentry);
+        // console.log('getDB path = ', GUI.DBentry);
     });
 
 	// close search results
@@ -486,7 +486,7 @@ jQuery(document).ready(function($){ 'use strict';
         GUI.browsemode = browsemode.slice(0,-1);
         $('#browse-mode-current').html(GUI.browsemode);
         getDB('filepath', '', GUI.browsemode);
-        //console.log('Browse mode set to: ', GUI.browsemode);
+        // console.log('Browse mode set to: ', GUI.browsemode);
     });
 	
 	
@@ -528,9 +528,9 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// open tab from external link
     var url = document.location.toString();
-	//console.log('url = ', url);
+	console.log('url = ', url);
     if ( url.match('#') ) {
-        $('#menu-bottom a[href=#'+url.split('#')[1]+']').tab('show') ;
+		$('#menu-bottom a[href="/#' + url.split('#')[1] + '"]').tab('show');
     }
     // do not scroll with HTML5 history API
     $('#menu-bottom a').on('shown', function (e) {
@@ -548,47 +548,3 @@ jQuery(document).ready(function($){ 'use strict';
 
 });
 
-
-// check active tab 
-// [TODO] check syntax
-(function() {
-    hidden = 'hidden';
-    // Standards:
-    if (hidden in document)
-        document.addEventListener('visibilitychange', onchange);
-    else if ((hidden = 'mozHidden') in document)
-        document.addEventListener('mozvisibilitychange', onchange);
-    else if ((hidden = "webkitHidden") in document)
-        document.addEventListener('webkitvisibilitychange', onchange);
-    else if ((hidden = "msHidden") in document)
-        document.addEventListener('msvisibilitychange', onchange);
-    // IE 9 and lower:
-    else if ('onfocusin' in document)
-        document.onfocusin = document.onfocusout = onchange;
-    // All others:
-    else
-        window.onpageshow = window.onpagehide
-            = window.onfocus = window.onblur = onchange;
-
-    function onchange (evt) {
-        var v = 'visible', h = 'hidden',
-            evtMap = {
-                focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h
-            };
-
-        evt = evt || window.event;
-        if (evt.type in evtMap) {
-            document.body.className = evtMap[evt.type];
-            //console.log('boh? = ', evtMap[evt.type]);
-        } else {
-            document.body.className = this[hidden] ? 'hidden' : 'visible';
-            if (this[hidden]) {
-                GUI.visibility = 'hidden';
-                console.log('focus = hidden');
-            } else {
-                GUI.visibility = 'visible';
-                console.log('focus = visible');
-            }
-        }
-    }
-})();

@@ -123,7 +123,13 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
                 // debug
                 runelog('MPD command (6):',$_GET['cmd']);
                 if ($_GET['cmd'] == 'renderui') {
-                sendMpdCommand($mpd,'swap 1 1');
+				
+					if ((!isset($_SESSION['pl_length'])) OR ($_SESSION['pl_length'] != 0)) {
+					sendMpdCommand($mpd,'swap 1 1');
+					} else {
+					sendMpdCommand($mpd,'clear');
+					}
+				
                 } else {
 				sendMpdCommand($mpd,$_GET['cmd']);
 				}
