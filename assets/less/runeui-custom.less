@@ -115,22 +115,13 @@ html, body {
 
 
 
-// Top Menu
+// Top Bar
 // --------------------------------------------------------------
 
-#menu-top .dropdown-menu &>li:first-child &>a,#context-menus .dropdown-menu &>li:first-child &>a {
-    border-top: 1px solid #000;
-}
-#menu-top .dropdown-menu &>li &>a,#context-menus .dropdown-menu &>li &>a {
-    line-height: 40px;
-    margin: 0;
-    padding: 0 10px;
-    background: @brand-alt;
-    border-bottom: 1px solid #000;
-}
 .logo {
     display: none;
 }
+
 #menu-top {
     .fixed-menu;
 	top: 0;
@@ -168,6 +159,26 @@ html, body {
 		}
 	}
 }
+#menu-top .dropdown-menu &>li:first-child &>a,#context-menus .dropdown-menu &>li:first-child &>a {
+    border-top: 1px solid #000;
+}
+#menu-top .dropdown-menu &>li &>a,#context-menus .dropdown-menu &>li &>a {
+    line-height: 40px;
+    margin: 0;
+    padding: 0 10px;
+    background: @brand-alt;
+    border-bottom: 1px solid #000;
+}
+#menu-top .dropdown-menu &>li &>a:hover,#menu-top .dropdown-menu &>li &>a:focus,#menu-top .dropdown-menu &>li.active &>a,#context-menus .dropdown-menu &>li &>a:hover,#context-menus .dropdown-menu &>li.active &>a {
+    background: @brand-primary;
+}
+
+#menu-settings {
+	display: block;
+	height: 40px;
+	line-height: 40px;
+}
+
 #context-menus {
     .dropdown-menu {
         .right-floating-menu;
@@ -215,13 +226,10 @@ html, body {
     color: @text-color;
     z-index: 1000;
 }
-#menu-top .dropdown-menu &>li &>a:hover,#menu-top .dropdown-menu &>li &>a:focus,#menu-top .dropdown-menu &>li.active &>a,#context-menus .dropdown-menu &>li &>a:hover,#context-menus .dropdown-menu &>li.active &>a {
-    background: @brand-primary;
-}
 
 
 
-// Bottom Menu
+// Bottom Bar
 // --------------------------------------------------------------
 
 #menu-bottom {

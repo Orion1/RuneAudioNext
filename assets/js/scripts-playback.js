@@ -528,9 +528,9 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// open tab from external link
     var url = document.location.toString();
-	// console.log('url = ', url);
+	console.log('url = ', url);
     if ( url.match('#') ) {
-        $('#menu-bottom a[href=#'+url.split('#')[1]+']').tab('show') ;
+		$('#menu-bottom a[href="/#' + url.split('#')[1] + '"]').tab('show');
     }
     // do not scroll with HTML5 history API
     $('#menu-bottom a').on('shown', function (e) {
@@ -548,47 +548,3 @@ jQuery(document).ready(function($){ 'use strict';
 
 });
 
-
-// check active tab 
-// [TODO] check syntax
-(function() {
-    hidden = 'hidden';
-    // Standards:
-    if (hidden in document)
-        document.addEventListener('visibilitychange', onchange);
-    else if ((hidden = 'mozHidden') in document)
-        document.addEventListener('mozvisibilitychange', onchange);
-    else if ((hidden = "webkitHidden") in document)
-        document.addEventListener('webkitvisibilitychange', onchange);
-    else if ((hidden = "msHidden") in document)
-        document.addEventListener('msvisibilitychange', onchange);
-    // IE 9 and lower:
-    else if ('onfocusin' in document)
-        document.onfocusin = document.onfocusout = onchange;
-    // All others:
-    else
-        window.onpageshow = window.onpagehide
-            = window.onfocus = window.onblur = onchange;
-
-    function onchange (evt) {
-        var v = 'visible', h = 'hidden',
-            evtMap = {
-                focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h
-            };
-
-        evt = evt || window.event;
-        if (evt.type in evtMap) {
-            document.body.className = evtMap[evt.type];
-            // console.log('boh? = ', evtMap[evt.type]);
-        } else {
-            document.body.className = this[hidden] ? 'hidden' : 'visible';
-            if (this[hidden]) {
-                GUI.visibility = 'hidden';
-                console.log('focus = hidden');
-            } else {
-                GUI.visibility = 'visible';
-                console.log('focus = visible');
-            }
-        }
-    }
-})();

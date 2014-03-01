@@ -43,50 +43,50 @@ function sendCmd(inputcmd) {
 			GUI.halt = 1;
 			// console.log('GUI.halt (sendCmd)= ', GUI.halt);
 		},
-  });
-  */
-   var request = new XMLHttpRequest;
-   request.open('GET', '/command/?cmd='+inputcmd, true);
-   request.onreadystatechange = function() {
-     if (this.readyState === 4){
-       if (this.status >= 200 && this.status < 400){
-         // Success! resp = this.responseText;
-         GUI.halt = 1;
-         // console.log('GUI.halt (sendCmd)= ', GUI.halt);
-       } else {
-         // Error
-       }
-     }
-   }
-   request.send();
-   request = null;
+	});
+	*/
+	var request = new XMLHttpRequest;
+	request.open('GET', '/command/?cmd='+inputcmd, true);
+	request.onreadystatechange = function() {
+		if (this.readyState === 4){
+			if (this.status >= 200 && this.status < 400){
+				// Success! resp = this.responseText;
+				GUI.halt = 1;
+				// console.log('GUI.halt (sendCmd)= ', GUI.halt);
+			} else {
+				// Error
+			}
+		}
+	}
+	request.send();
+	request = null;
 }
 
 function sendPLCmd(inputcmd) {
-  /*
+	/*
 	$.ajax({
 		url: '/db/?cmd='+inputcmd,
 		success: function(data){
 			GUI.halt = 1;
 			// console.log('GUI.halt (sendPLcmd)= ', GUI.halt);
 		},
-  });
-  */
-  var request = new XMLHttpRequest;
-   request.open('GET', '/db/?cmd='+inputcmd, true);
-   request.onreadystatechange = function() {
-     if (this.readyState === 4){
-       if (this.status >= 200 && this.status < 400){
-         // Success! resp = this.responseText;
-         GUI.halt = 1;
-         // console.log('GUI.halt (sendCmd)= ', GUI.halt);
-       } else {
-         // Error
-       }
-     }
-   }
-   request.send();
-   request = null;
+	});
+	*/
+	var request = new XMLHttpRequest;
+	request.open('GET', '/db/?cmd='+inputcmd, true);
+	request.onreadystatechange = function() {
+		if (this.readyState === 4){
+			if (this.status >= 200 && this.status < 400){
+				// Success! resp = this.responseText;
+				GUI.halt = 1;
+				// console.log('GUI.halt (sendCmd)= ', GUI.halt);
+			} else {
+				// Error
+			}
+		}
+	}
+	request.send();
+	request = null;
 }
 
 function backendRequest(){
@@ -116,13 +116,13 @@ function backendRequest(){
 
 function backendRequest2(){
     var pushstream = new PushStream({
-      host: window.location.hostname,
-      port: window.location.port,
-      modes: "websocket|longpolling"
-    });
-	  pushstream.onmessage = renderUI;
-	  pushstream.addChannel('display');
-      pushstream.connect();
+		host: window.location.hostname,
+		port: window.location.port,
+		modes: "websocket|longpolling"
+	});
+	pushstream.onmessage = renderUI;
+	pushstream.addChannel('display');
+	pushstream.connect();
 }
 
 function renderUI(text) {
@@ -207,7 +207,6 @@ function getPlaylist(data, json){
 	}
 	$('ul.playlist').html(output);
 }
-
 
 function getPlaylistPlain(data, json){
 	var current = parseInt(json['song']) + 1;
@@ -668,4 +667,3 @@ function randomScrollDB() {
     return data ? fn( data ) : fn;
   };
 })();
-

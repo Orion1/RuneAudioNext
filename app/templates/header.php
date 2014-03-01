@@ -52,7 +52,7 @@
 -->
 <div id="menu-top" class="ui-header ui-bar-f ui-header-fixed slidedown" data-position="fixed" data-role="header" role="banner">
 	<div class="dropdown">
-		<a class="dropdown-toggle" id="menu-settings" role="button" data-toggle="dropdown" data-target="#" href="<?=$this->uri(1)?>">MENU <i class="fa fa-th-list dx"></i></a>
+		<a class="dropdown-toggle" id="menu-settings" role="button" data-toggle="dropdown" data-target="#" href="#">MENU <i class="fa fa-th-list dx"></i></a>
 		<ul class="dropdown-menu" role="menu" aria-labelledby="menu-settings">
 			<li class="<?=$this->uri(1,'','active')?>"><a href="/"><i class="fa fa-play sx"></i> Playback</a></li>
 			<li class="<?=$this->uri(1,'sources','active')?>"><a href="/sources/"><i class="fa fa-folder-open sx"></i> Sources</a></li>
@@ -74,10 +74,8 @@
 </div>
 <div id="menu-bottom" class="ui-footer ui-bar-f ui-footer-fixed slidedown" data-position="fixed" data-role="footer"  role="banner">
 	<ul>
-		<li id="open-panel-sx"><a href="<?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>/<?php else: ?>/playback/<?php endif ?>#panel-sx" class="open-panel-sx" data-toggle="tab"><i class="fa fa-music sx"></i> Library</a></li>
-		<li id="open-playback" <?=$this->uri(1,'','class="active"')?>><a href="<?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>/<?php else: ?>/playback/<?php endif ?>#playback" class="close-panels" data-toggle="tab"><i class="fa fa-play sx"></i> Playback</a></li>
-		<li id="open-panel-dx"><a href="<?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>/<?php else: ?>/playback/<?php endif ?>#panel-dx" class="open-panel-dx" data-toggle="tab"><i class="fa fa-list sx"></i> Queue</a></li>
-		
-		
+		<li id="open-panel-sx"><a href="/#panel-sx"<?php if ($this->uri(1,'')): ?> class="open-panel-sx" data-toggle="tab"<?php endif; ?>><i class="fa fa-music sx"></i> Library</a></li>
+		<li id="open-playback" <?=$this->uri(1,'','class="active"')?>><a href="/#playback"<?php if ($this->uri(1,'')): ?> data-toggle="tab"<?php endif; ?>><i class="fa fa-play sx"></i> Playback</a></li>
+		<li id="open-panel-dx"><a href="/#panel-dx"<?php if ($this->uri(1,'')): ?> class="open-panel-dx" data-toggle="tab"<?php endif; ?>><i class="fa fa-list sx"></i> Queue</a></li>
 	</ul>
 </div>
