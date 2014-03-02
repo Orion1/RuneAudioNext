@@ -37,8 +37,10 @@ $start = microtime(true);
 ini_set('display_errors', '1');
 ini_set('error_reporting', 1);
 ini_set('error_log','/var/log/runeaudio/rune_SY_wrk.log');
+define('APP','/srv/http/app/');
 opcache_reset();
 include('/srv/http/app/libs/runeaudio.php');
+sessionSQLite('sessions.db');
 // reset worker logfile
 sysCmd('echo "--------------- start: rune_SY_wrk.php ---------------" > /var/log/runeaudio/rune_SY_wrk.log');
 runelog("WORKER rune_SY_wrk.php STARTING...",'');
@@ -229,13 +231,14 @@ $_SESSION['hostname'] = $hn[0];
 	if ($arch != '--') {
 //	wrk_sysOBEnvCheck($arch,0);
 	}
-	// start samba
-	runelog("service: SAMBA start",$_SESSION['dev']);
+	// start samba services
 	if ($_SESSION['dev'] == 1) {
-	sysCmd('systemctl start samba');
+	runelog("service: SAMBA start (DEV-Mode ON)",'');
+	sysCmd('/usr/sbin/smbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
+	sysCmd('/usr/sbin/nmbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
 	} else {
-	//sysCmd('/usr/sbin/smbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
-	//sysCmd('/usr/sbin/nmbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
+	runelog("service: NMBD start",'');
+	sysCmd('/usr/sbin/nmbd -D --configfile=/var/www/_OS_SETTINGS/etc/samba/smb.conf');
 	}
 }
 

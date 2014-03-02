@@ -358,6 +358,16 @@ $str = substr($strFile, $pos+1);
 return $str;
 }
 
+function sessionSQLite($sessionsdb) {
+require_once(APP.'libs/vendor/kafene/SqliteSessionHandler/SqliteSessionHandler.php');
+$handler = new kafene\SqliteSessionHandler($sessionsdb);
+	if (session_set_save_handler($handler, true)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 // cfg engine and session management
 function playerSession($action,$db,$var,$value) {
 $status = session_status();	
