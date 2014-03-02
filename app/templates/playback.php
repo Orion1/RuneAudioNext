@@ -147,7 +147,8 @@
                 <button id="pl-lastPage" class="btn btn-default" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
             </div>
             <div id="pl-manage">
-                <button class="btn btn-default btn-cmd" data-cmd='load "1000 voci"' title="Manage playlists"><i class="fa fa-file-text-o"></i></button>
+                <!--<button class="btn btn-default btn-cmd" data-cmd='load "1000 voci"' title="Manage playlists"><i class="fa fa-file-text-o"></i></button>-->
+                <button id="pl-manage" class="btn btn-default" title="Manage playlists"><i class="fa fa-file-text-o"></i></button>
                 <button class="btn btn-default" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save"></i></button>
                 <button class="btn btn-default" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o"></i></button>
             </div>
@@ -169,6 +170,14 @@
             <li><a href="#notarget" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
             <li><a href="#notarget" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
             <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+        </ul>
+    </div>
+	<div id="context-menu-playlist" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#notarget" data-cmd=""><i class="fa fa-plus-circle sx"></i> Add to queue</a></li>
+            <li><a href="#notarget" data-cmd=""><i class="fa fa-undo sx"></i> Replace the queue</a></li>
+            <li><a href="#notarget" data-cmd=""><i class="fa fa-edit sx"></i> Rename</a></li>
+            <li><a href="#notarget" data-cmd=""><i class="fa fa-trash-o sx"></i> Delete</a></li>
         </ul>
     </div>
 </div>

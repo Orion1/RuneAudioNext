@@ -35,6 +35,7 @@
 // FUNCTIONS
 // ----------------------------------------------------------------------------------------------------
 
+// send a MPD playback control command
 function sendCmd(inputcmd) {
 	/*
 	$.ajax({
@@ -62,6 +63,7 @@ function sendCmd(inputcmd) {
 	request = null;
 }
 
+// send a Library or Queue related command
 function sendPLCmd(inputcmd) {
 	/*
 	$.ajax({
@@ -89,6 +91,7 @@ function sendPLCmd(inputcmd) {
 	request = null;
 }
 
+// [!] discontinued function, see displayChannel() below
 function backendRequest(){
     $.ajax({
 		url: '/lp/display/',
@@ -114,6 +117,7 @@ function backendRequest(){
     });
 }
 
+// open the Playback UI refresh channel
 function displayChannel(){
     var pushstream = new PushStream({
 		host: window.location.hostname,
@@ -125,6 +129,7 @@ function displayChannel(){
 	pushstream.connect();
 }
 
+// open the notify messages channel
 function notifyChannel(){
     var pushstream = new PushStream({
 		host: window.location.hostname,
@@ -136,6 +141,7 @@ function notifyChannel(){
 	pushstream.connect();
 }
 
+// launch the Playback UI refresh from the data response
 function renderUI(text) {
 	// update global GUI array
 	// GUI.json = eval('(' + data + ')');
@@ -144,7 +150,7 @@ function renderUI(text) {
 	// console.log('current song = ', GUI.json['currentsong']);
 	// console.log( 'GUI.state = ', GUI.state );
 	updateGUI(GUI.json);
-  if (GUI.state != 'disconnected') {
+	if (GUI.state != 'disconnected') {
 	   $('#loader').hide();
 	}
 	refreshTimer(parseInt(GUI.json['elapsed']), parseInt(GUI.json['time']), GUI.json['state']);
@@ -185,6 +191,7 @@ function getPlaylistCmd(json){
 	});
 }
 
+// [!] discontinued function, see getPlaylistPlain() below
 function getPlaylist(data, json){
 	var i = 0;
 	var content = '';
@@ -219,6 +226,7 @@ function getPlaylist(data, json){
 	$('ul.playlist').html(output);
 }
 
+// render the playing queue from the data response 
 function getPlaylistPlain(data, json){
 	var current = parseInt(json['song']) + 1;
 	var state = json['state'];
@@ -267,6 +275,16 @@ function getPlaylistPlain(data, json){
 	$('#pl-filter').val('');
 }
 
+// get the list of saved Playlists
+function getPlaylists(data, json){
+	var content = '';
+	for (i = 0; i < 10; i+=1){
+		content += '<li class="clearfix"><a class="pl-actions" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-playlist"><i class="fa fa-bars"></i></a><div class="pl-entry">Nome playlist<span>293 entries</span></div></li>';
+	}
+	document.getElementById('pl-editor').innerHTML = content;
+}
+
+// recover the path from input string
 function parsePath(str) {
 	var cutpos = str && str.length? str.lastIndexOf('/'):0;
 	// console.log('parsePath.cutpos', cutpos)
@@ -429,7 +447,7 @@ function populateDB(data, path, uplevel, keyword){
 	}
 }
 
-// update interface
+// update the Playback UI
 function updateGUI(json){
     // check MPD status
     refreshState(GUI.state);
@@ -497,7 +515,7 @@ function updateGUI(json){
 	GUI.currentalbum = currentalbumstring;
 }
 
-// update status on playback view
+// update info and status on Playback tab
 function refreshState(state) {
     if (state === 'play') {
         $('#play').addClass('btn-primary');
@@ -611,7 +629,7 @@ function setvol(val) {
     sendCmd('setvol ' + val);
 }
 
-// scrolling
+// custom scrolling
 function customScroll(list, destination, speed) {
     if (typeof(speed) === 'undefined') speed = 500;
     var entryheight = parseInt(1 + $('#' + list + '-1').height());
@@ -636,6 +654,7 @@ function customScroll(list, destination, speed) {
     //$('#' + list + '-' + (destination + 1)).addClass('active');
 }
 
+// [!] scrolling debug purpose only
 function randomScrollPL() {
     var n = $(".playlist li").size();
     var random = 1 + Math.floor(Math.random() * n);
