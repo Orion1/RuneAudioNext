@@ -1616,8 +1616,8 @@ $hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"
 return $hwmixerdev;
 }
 
-function ui_notify($title, $text, $icon, $opacity) {
-	$output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity );
+function ui_notify($title, $text, $icon, $opacity, $hide) {
+	$output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide );
 	ui_render('notify',json_encode($output));
 }
 

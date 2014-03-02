@@ -650,19 +650,13 @@ function randomScrollDB() {
 // notify messages rendering
 function renderMSG(text) {
 	notify = text[0];
-	console.log('renderMSG = ', notify);
-	// $.pnotify({
-		// title: 'Test canale notifiche',
-		// text: 'Il canale delle notifiche funziona!',
-		// icon: 'icon-ok',
-		// opacity: .9
-	// });
+	console.log((notify['hide'] === undefined) ? 'undefined' : notify['hide']);
 	$.pnotify({
 		title: notify['title'],
 		text: notify['text'],
-		icon: notify['icon'],
-		opacity: notify['opacity'],
-		hide: false
+		icon: (notify['icon'] == undefined) ? 'fa fa-check' : notify['icon'],
+		opacity: (notify['opacity'] == undefined) ? .9 : notify['opacity'],
+		hide: (notify['hide'] == undefined)
 	});
 }
 
