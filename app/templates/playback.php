@@ -147,9 +147,9 @@
                 <button id="pl-lastPage" class="btn btn-default" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
             </div>
             <div id="pl-manage">
-                <button id="pl-prevPage" class="btn btn-default btn-cmd" data-cmd='load "1000 voci"' title="Manage playlists"><i class="fa fa-file-text-o"></i></button>
-                <button id="pl-nextPage" class="btn btn-default" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save"></i></button>
-                <button id="pl-firstPage" class="btn btn-default btn-cmd" data-cmd="clear" title="Clear the playing queue"><i class="fa fa-trash-o"></i></button>
+                <button class="btn btn-default btn-cmd" data-cmd='load "1000 voci"' title="Manage playlists"><i class="fa fa-file-text-o"></i></button>
+                <button class="btn btn-default" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save"></i></button>
+                <button class="btn btn-default" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o"></i></button>
             </div>
         </div>
     </div>
@@ -187,6 +187,23 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
                 <button type="button" id="modal-pl-save-btn" class="btn btn-primary btn-lg" data-dismiss="modal">Save playlist</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-pl-clear" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-pl-clear-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="modal-pl-clear-label">Clear current playing queue</h3>
+            </div>
+            <div class="modal-body">
+                This will clear the current playing queue. Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-lg btn-cmd" data-cmd="clear" data-dismiss="modal">Clear</button>
             </div>
         </div>
     </div>
