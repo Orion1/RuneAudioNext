@@ -114,7 +114,7 @@ function backendRequest(){
     });
 }
 
-function backendRequest2(){
+function displayChannel(){
     var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
@@ -122,6 +122,17 @@ function backendRequest2(){
 	});
 	pushstream.onmessage = renderUI;
 	pushstream.addChannel('display');
+	pushstream.connect();
+}
+
+function notifyChannel(){
+    var pushstream = new PushStream({
+		host: window.location.hostname,
+		port: window.location.port,
+		modes: "websocket|longpolling"
+	});
+	pushstream.onmessage = renderMSG;
+	pushstream.addChannel('notify');
 	pushstream.connect();
 }
 
@@ -512,7 +523,6 @@ function refreshState(state) {
         $('#elapsed').html(timeConvert(GUI.json['elapsed']));
         $('#total').html(timeConvert(GUI.json['time']));
         //$('#time').val(json['song_percent']).trigger('change');
-        $('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
         var fileinfo = (GUI.json['audio_channels'] && GUI.json['audio_sample_depth'] && GUI.json['audio_sample_rate']) ? (GUI.json['audio_channels'] + ', ' + GUI.json['audio_sample_depth'] + ' bit, ' + GUI.json['audio_sample_rate'] +' kHz, '+GUI.json['bitrate']+' kbps') : '&nbsp;';
         $('#format-bitrate').html(fileinfo);
         $('li', '#playlist-entries').removeClass('active');
@@ -521,7 +531,7 @@ function refreshState(state) {
         current = $('.playlist').children[current];
         $(current).addClass('active');
     }
-	
+	$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
 	// show UpdateDB icon
 	// console.log('dbupdate = ', GUI.json['updating_db']);
 	if (typeof GUI.json['updating_db'] != 'undefined') {
@@ -637,7 +647,23 @@ function randomScrollDB() {
     customScroll('db', random);
 }
 
-	
+// notify messages rendering
+function renderMSG(text) {
+	notify = text[0];
+	console.log('renderMSG = ', notify);
+	// $.pnotify({
+		// title: 'Test canale notifiche',
+		// text: 'Il canale delle notifiche funziona!',
+		// icon: 'icon-ok',
+		// opacity: .9
+	// });
+	$.pnotify({
+		title: notify['title'],
+		text: notify['text'],
+		icon: notify['icon'],
+		opacity: notify['opacity']
+	});
+}
 
 // Simple JavaScript Templating
 // John Resig - http://ejohn.org/ - MIT Licensed

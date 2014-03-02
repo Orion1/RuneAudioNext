@@ -60,6 +60,7 @@
 	<p><strong>jQuery Knob</strong> by Anthony Terrien<br /><a rel="nofollow" href="https://github.com/aterrien/jQuery-Knob" target="_blank">https://github.com/aterrien/jQuery-Knob</a></p>
 	<p><strong>jQuery Countdown</strong> by Keith Wood<br /><a rel="nofollow" href="http://keith-wood.name/countdown.html" target="_blank">http://keith-wood.name/countdown.html</a></p>
 	<p><strong>jQuery scrollTo</strong> by Ariel Flesler<br /><a rel="nofollow" href="http://flesler.blogspot.it/2007/10/jqueryscrollto.html" target="_blank">http://flesler.blogspot.it/2007/10/jqueryscrollto.html</a></p>
+	<p><strong>PNotify</strong> by SciActive<br /><a rel="nofollow" href="http://sciactive.com/pnotify/" target="_blank">http://sciactive.com/pnotify/</a></p>
 	<p><strong>Twitter Bootstrap</strong> by <a rel="nofollow" href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a rel="nofollow" href="http://twitter.com/fat" target="_blank">@fat<br /></a><a rel="nofollow" href="http://getbootstrap.com/" target="_blank">http://getbootstrap.com/</a></p>
 	<p><strong>Lato-Fonts by Lukasz Dziedzic<br /></strong><a rel="nofollow" href="http://www.latofonts.com/lato-free-fonts/" target="_blank">http://www.latofonts.com/lato-free-fonts</a></p>
 	<p><strong>Font Awesome by Dave Gandy<br /></strong><a rel="nofollow" href="http://fontawesome.io/" target="_blank">http://fontawesome.io</a></p>

@@ -58,6 +58,7 @@ function sendMpdCommand($sock,$cmd) {
 		socket_write($sock, $cmd, strlen($cmd));		
 	}
 runelog("MPD COMMAND: (socket=".$sock.")",$cmd);
+//ui_notify('COMMAND GIVEN','CMD = '.$cmd,'','.9');
 }
 
 function readMpdResponse($sock) {
@@ -1615,18 +1616,9 @@ $hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"
 return $hwmixerdev;
 }
 
-function ui_notify($notify) {
-$output .= "<script>";
-$output .= "jQuery(document).ready(function() {";
-$output .= "$.pnotify.defaults.history = false;";
-$output .= "$.pnotify({";
-$output .= "title: '".$notify['title']."',";
-$output .= "text: '".$notify['msg']."',";
-$output .= "icon: 'icon-ok',";
-$output .= "opacity: .9});";
-$output .= "});";
-$output .= "</script>";
-echo $output;
+function ui_notify($title, $text, $icon, $opacity) {
+	$output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity );
+	ui_render('notify',json_encode($output));
 }
 
 function ui_status($mpd,$status) {

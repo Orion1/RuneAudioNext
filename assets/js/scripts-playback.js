@@ -58,21 +58,24 @@ jQuery(document).ready(function($){ 'use strict';
     // ----------------------------------------------------------------------------------------------------
    
     // first connection with MPD daemon
-    // backendRequest( GUI.state );
-	backendRequest2();
+    // open UI rendering channel;
+	displayChannel();
     // force UI rendering (backend-call)
-	sendCmd( 'renderui' );
+	sendCmd('renderui');
 
     // first GUI update
     updateGUI( GUI.json );
     getDB('filepath', GUI.currentpath, GUI.browsemode);
     $.pnotify.defaults.history = false;
+	$.pnotify.defaults.styling = 'fontawesome';
 
     // hide "connecting" layer
     if (GUI.state != 'disconnected') {
       $('#loader').hide();
     }
 
+	// open notify channel
+	notifyChannel();
 	
     // BUTTONS
     // ----------------------------------------------------------------------------------------------------
