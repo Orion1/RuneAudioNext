@@ -67,6 +67,7 @@
 	<p><strong>Flat UI</strong> by Designmodo<br /><a rel="nofollow" href="http://designmodo.github.io/Flat-UI/" target="_blank">http://designmodo.github.io/Flat-UI</a></p>
 	<p><strong>Bootstrap-select</strong> by <a rel="nofollow" href="https://github.com/caseyjhol" target="_blank">caseyjhol<br /></a><a rel="nofollow" href="http://silviomoreto.github.io/bootstrap-select/" target="_blank">http://silviomoreto.github.io/bootstrap-select/</a></p>
 	<p><strong>PHP reader</strong> class by <a rel="nofollow" href="http://fi.linkedin.com/in/svollbehr" target="_blank" rel="nofollow">Sven Vollbehr<br /></a><a rel="nofollow" title="PHP Reader" href="https://code.google.com/p/php-reader/" target="_blank">https://code.google.com/p/php-reader/</a></p>
+	<p><strong>PHP SQLiteSessionHandler</strong> library by <a rel="nofollow" href="http://www.indeed.com/me/mcovey?sp=0" target="_blank" rel="nofollow">Matthew Covey<br /></a><a rel="nofollow" title="PHP Reader" href="https://github.com/kafene/SqliteSessionHandler" target="_blank">https://github.com/kafene/SqliteSessionHandler</a></p>
 	<p>Also thanks to B. Carlisle (<strong>MPD-class</strong> <a rel="nofollow" href="http://mpd.24oz.com/" target="_blank">http://mpd.24oz.com/</a>) for code inspiration on some data-parsing functions.</p>
 	
 	<h2>RuneOS credits</h2>
