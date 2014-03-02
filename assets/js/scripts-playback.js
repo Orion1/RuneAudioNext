@@ -66,14 +66,16 @@ jQuery(document).ready(function($){ 'use strict';
     // first GUI update
     updateGUI( GUI.json );
     getDB('filepath', GUI.currentpath, GUI.browsemode);
-    $.pnotify.defaults.history = false;
-	$.pnotify.defaults.styling = 'fontawesome';
-
+    
     // hide "connecting" layer
     if (GUI.state != 'disconnected') {
       $('#loader').hide();
     }
-
+	
+	// PNotify init options
+	$.pnotify.defaults.styling = 'bootstrap3';
+	$.pnotify.defaults.history = false;
+	$.pnotify.defaults.styling = 'fontawesome';
 	// open notify channel
 	notifyChannel();
 	

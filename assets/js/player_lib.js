@@ -661,7 +661,8 @@ function renderMSG(text) {
 		title: notify['title'],
 		text: notify['text'],
 		icon: notify['icon'],
-		opacity: notify['opacity']
+		opacity: notify['opacity'],
+		hide: false
 	});
 }
 

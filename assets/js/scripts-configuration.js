@@ -54,10 +54,18 @@ var GUI = {
 
 jQuery(document).ready(function($){ 'use strict';
 	
-	backendRequest2(GUI.state);	
+	displayChannel();	
 	if (GUI.state != 'disconnected') {
 		$('#loader').hide();
     }
+	
+	// PNotify init options
+	$.pnotify.defaults.styling = 'bootstrap3';
+	$.pnotify.defaults.history = false;
+	$.pnotify.defaults.styling = 'fontawesome';
+	// open notify channel
+	notifyChannel();
+	
 	
 	// BUTTONS
     // ----------------------------------------------------------------------------------------------------
