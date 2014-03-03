@@ -380,10 +380,16 @@ runelog("WORKER MAIN LOOP ---",'');
 while (1) {
 sleep(7);
 session_start();
+//debug
+runelog('[wrk] main loop action state(1) ($_SESSION[w_active]): ',$_SESSION['w_active']);
+runelog('[wrk] main loop lock state(1) ($_SESSION[w_lock]): ',$_SESSION['w_lock']);
 	// monitor loop
 	if ($_SESSION['w_active'] == 1 && $_SESSION['w_lock'] == 0) {
 	$_SESSION['w_lock'] = 1;
-	
+	//debug
+	runelog('[wrk] active routine (start) ($_SESSION[w_active]): ',$_SESSION['w_active']);
+	runelog('[wrk] active routine (start) ($_SESSION[w_lock]): ',$_SESSION['w_lock']);
+	runelog('[wrk] active routine (start) ($_SESSION[w_queueargs]): ',$_SESSION['w_queueargs']);
 	// switch command queue for predefined jobs
 	switch($_SESSION['w_queue']) {
 	
@@ -604,6 +610,8 @@ session_start();
 	$_SESSION['w_jobID'] = '';
 	$_SESSION['w_active'] = 0;
 	$_SESSION['w_lock'] = 0;
+	runelog('[wrk] active routine (complete) ($_SESSION[w_active]): ',$_SESSION['w_active']);
+	runelog('[wrk] active routine (complete) ($_SESSION[w_lock]): ',$_SESSION['w_lock']);
 	}
 session_write_close();
 }

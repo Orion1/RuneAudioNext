@@ -128,7 +128,7 @@
 				<label for="cmediafix" class="control-label col-sm-2">CMedia fix</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="cmediafix" type="checkbox" value="1"<?php if($_SESSION['cmediafix'] == 1): ?> checked="checked" <?php endif ?>>
+						<input name="cmediafix[value]" type="checkbox" value="1"<?php if($_SESSION['cmediafix'] == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 					<span class="help-block">For those who have a CM6631 receiver and experiment issues (noise, crackling) between tracks with different sample rates and/or bit depth.<br> 
@@ -137,7 +137,7 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<button class="btn btn-primary btn-lg" value="apply" name="apply" type="submit">Apply fixes</button>
+					<button class="btn btn-primary btn-lg" value="1" name="cmediafix[apply]" type="submit">Apply fixes</button>
 				</div>
 			</div>
 		</fieldset>
@@ -162,12 +162,6 @@
 				<label class="control-label col-sm-2">Restart MPD service</label>
 				<div class="col-sm-10">
 					<input class="btn btn-default" type="submit" name="syscmd" value="mpdrestart" id="syscmd-mpdrestart">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-2">Update MPD database</label>
-				<div class="col-sm-10">
-					<input class="btn btn-default" type="submit" name="syscmd" value="updatempdDB" id="syscmd-updatempddb">
 				</div>
 			</div>
 		</fieldset>

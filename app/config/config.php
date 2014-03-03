@@ -49,7 +49,7 @@ $activeLog=0;
 }
 ini_set("log_errors" , $activeLog);
 ini_set("error_log" , "/var/log/runeaudio/runeui.log");
-ini_set("display_errors" , "0");
+ini_set("display_errors" , 0);
 // datastore SQLite
 $db = 'sqlite:'.$_SERVER['HOME'].'/db/player.db';
 // debug

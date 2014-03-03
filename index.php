@@ -36,7 +36,6 @@ include($_SERVER['HOME'].'/app/config/config.php');
 include($_SERVER['HOME'].'/app/libs/vendor/autoload.php');
 // start RuneAudio SESSION
 playerSession('open',$db,'',''); 
-playerSession('unlock',$db,'','');
 // plates: create new engine
 $engine = new \League\Plates\Engine('/srv/http/app/templates');
 // plates: load asset extension
@@ -99,6 +98,8 @@ if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
 		runelog("index: selected controller(1)",APP.$template->uri(1));
 		// load selected APP Controller
 		include(APP.$template->uri(1).'_ctl.php');
+		// register current controller in SESSION
+		$_SESSION['controller'] = $template->uri(1);
 
 
     } else {
@@ -109,6 +110,8 @@ if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
     include(APP.'playback_ctl.php');
 	$template->section = 'index';
     $template->content = 'playback';
+	// register current controller in SESSION
+	$_SESSION['controller'] = 'playback';
 	
     }
 	
@@ -116,6 +119,8 @@ if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
 
 $template->section = 'error';
 $template->content = 'error';
+// register current controller in SESSION
+$_SESSION['controller'] = 'error';
 
 }
 
@@ -133,6 +138,8 @@ $template->debug = $debugdata;
 if (!isset($tplfile) OR $tplfile != 0) {
 echo $template->render('default_lo');
 }
+// unlock session
+playerSession('unlock',$db,'','');
 // close MPD connection
 closeMpdSocket($mpd);
 ?>
