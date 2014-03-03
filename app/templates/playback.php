@@ -148,7 +148,7 @@
             </div>
             <div id="pl-manage">
                 <!--<button class="btn btn-default btn-cmd" data-cmd='load "1000 voci"' title="Manage playlists"><i class="fa fa-file-text-o"></i></button>-->
-                <button id="pl-manage" class="btn btn-default" title="Manage playlists"><i class="fa fa-file-text-o"></i></button>
+                <button id="pl-list" class="btn btn-default" title="Manage playlists"><i class="fa fa-file-text-o"></i></button>
                 <button class="btn btn-default" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save"></i></button>
                 <button class="btn btn-default" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o"></i></button>
             </div>

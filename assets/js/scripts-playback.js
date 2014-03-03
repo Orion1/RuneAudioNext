@@ -384,11 +384,7 @@ jQuery(document).ready(function($){ 'use strict';
     });
 	
 	// playlists management
-	$('#pl-manage').click(function(){
-		document.getElementById('playlist-entries').innerHTML = '';
-		$('#playlist-entries').addClass('hide');
-		$('#pl-filter-results').removeClass('hide').addClass('back-to-queue').html('<i class="fa fa-arrow-left sx"></i> back to queue');
-		$('#pl-editor').removeClass('hide');
+	$('#pl-list').click(function(){
 		getPlaylists();
     });
 	

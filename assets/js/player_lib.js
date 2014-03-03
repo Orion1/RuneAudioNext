@@ -269,18 +269,26 @@ function getPlaylistPlain(data, json){
 			time = '', artist = '', album = '', title = '';
 		}
 	}
+	$('.playlist').addClass('hide');
+	$('#playlist-entries').removeClass('hide');
 	//$('#playlist-entries').html(content);
 	document.getElementById('playlist-entries').innerHTML = content;
 	$('#pl-filter-results').addClass('hide').html('');
 	$('#pl-filter').val('');
+	$('#pl-manage').removeClass('hide');
 }
 
 // get the list of saved Playlists
-function getPlaylists(data, json){
+function getPlaylists(data, json){	
 	var content = '';
 	for (i = 0; i < 10; i+=1){
 		content += '<li class="clearfix"><a class="pl-actions" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-playlist"><i class="fa fa-bars"></i></a><div class="pl-entry">Nome playlist<span>293 entries</span></div></li>';
 	}
+	document.getElementById('playlist-entries').innerHTML = '';
+	$('.playlist').addClass('hide');
+	$('#pl-manage').addClass('hide');
+	$('#pl-filter-results').removeClass('hide').addClass('back-to-queue').html('<i class="fa fa-arrow-left sx"></i> back to queue');
+	$('#pl-editor').removeClass('hide');
 	document.getElementById('pl-editor').innerHTML = content;
 }
 
