@@ -99,7 +99,9 @@ if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
 		// load selected APP Controller
 		include(APP.$template->uri(1).'_ctl.php');
 		// register current controller in SESSION
+		if ($template->uri(1) != 'coverart') {
 		$_SESSION['controller'] = $template->uri(1);
+		}
 
 
     } else {
@@ -138,8 +140,6 @@ $template->debug = $debugdata;
 if (!isset($tplfile) OR $tplfile != 0) {
 echo $template->render('default_lo');
 }
-// unlock session
-playerSession('unlock',$db,'','');
 // close MPD connection
 closeMpdSocket($mpd);
 ?>

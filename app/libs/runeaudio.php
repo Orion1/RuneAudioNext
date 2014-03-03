@@ -159,7 +159,6 @@ function searchDB($sock,$querytype,$query) {
 	case "title":
 	case "file":
 		sendMpdCommand($sock,"search ".$querytype." \"".html_entity_decode($query)."\"");
-		//sendMpdCommand($sock,"search any \"".html_entity_decode($query)."\"");
 	break;
 	
 	}
@@ -186,6 +185,39 @@ sendMpdCommand($sock,"add \"".html_entity_decode($path)."\"");
 }
 $response = readMpdResponse($sock);
 return $response;
+}
+
+class globalRandom extends Thread {
+	// mpd status
+	public $status;
+	public $sessionid;
+	
+    public function __construct($status,$sessionid){
+		$this->status = $status;
+		// $this->joined = false;
+    }
+	
+    public function run() {
+		$mpd = openMpdSocket('/run/mpd.sock');
+			if ($this->status['consume'] == 0 OR $this->status['random'] == 0) {
+			sendMpdCommand($mpd,'consume 1');
+			sendMpdCommand($mpd,'random 1');
+			}
+			$path = randomSelect($mpd);
+			if ($path) {
+				addQueue($mpd,$path);
+				runelog("global random call",$path);
+				ui_notify('Global Random Mode', $path.' added to current Queue');
+			}
+		closeMpdSocket($mpd);
+    }
+}
+
+function randomSelect($sock) {
+$songs = searchDB($sock,'file','.flac');
+srand((float) microtime() * 10000000);
+$randkey = array_rand($songs);
+return $songs[$randkey]['file'];
 }
 
 function MpdStatus($sock) {
@@ -932,21 +964,23 @@ function waitWorker($sleeptime,$section) {
 	}
 } 
 
-function wrk_control($action,$data = null) {
+function wrk_control($action,$cmd,$data) {
 // debug
 runelog('[wrk] wrk_control('.$action.',$data)',$data);
 runelog('[wrk] current session ID: ',session_id());
 runelog('[wrk] current worker lock state ($_SESSION[w_lock]): ',$_SESSION['w_lock']);
-runelog('[wrk] current worker action state(1) ($_SESSION[w_active]): ',$_SESSION['w_active']);
+runelog('[wrk] current worker state(1) ($_SESSION[w_active]): ',$_SESSION['w_active']);
+runelog('[wrk] current worker action: ',$action);
 runelog('[wrk] current worker args: ',$data);
 // accept $data['action'] $data['args'] from controller 
 	switch ($action) {
 		case 'exec':
-			if($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-			$_SESSION['w_queue'] = $data['action'];
-			$_SESSION['w_queueargs'] = $data['args'];
+			// if($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
+			if($_SESSION['w_lock'] != 1) {
+			$_SESSION['w_queue'] = $cmd;
+			$_SESSION['w_queueargs'] = $data;
+			runelog('[wrk] current worker state(2) ($_SESSION[w_active]): ',$_SESSION['w_active']);
 			$_SESSION['w_active'] = 1;
-			runelog('[wrk] current worker action state(2) ($_SESSION[w_active]): ',$_SESSION['w_active']);
 			$return = 1;
 			} else {
 			ui_notify('system worker', 'background job in progress...try again later.');

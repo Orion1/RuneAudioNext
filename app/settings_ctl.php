@@ -35,7 +35,7 @@
 $template->lastfm = getLastFMauth($db);
 // handle POST
 if (isset($_POST)) {
-
+/*
 	if (isset($_POST['syscmd'])){
 		switch ($_POST['syscmd']) {
 
@@ -116,26 +116,30 @@ if (isset($_POST)) {
 	}
 
 	// ----------------------------------------------------------
-
+*/
 	if (isset($_POST['features'])) {
 
 			if (isset($_POST['features']['airplay'])) {
 				// save new value on SQLite datastore
 				playerSession('write',$db,'airplay',1);
 				// setup worker queue (start shairport)
-				$data['args'] = "start";
+				$wrkdata = array('action' => 'start', 'jobid' => '000001');
+				// $wrkdata = "start";
 				// invoke worker
-				wrk_control('exec','airplay',$data);
+				wrk_control('exec','airplay',$wrkdata);
+				session_write_close();
 			} else {
-				// save new value on SQLite datastore
-				playerSession('write',$db,'airplay',0);
 				if ($_SESSION['airplay'] != 0) {
 				// setup worker queue (stop shairport)
-				$data['args'] = "stop";
-				wrk_control('exec','airplay',$data);
+				$data = "stop";
+					// invoke worker
+					if (wrk_control('exec','airplay',$data)) {
+						// save new value on SQLite datastore
+						playerSession('write',$db,'airplay',0);
+					}
 				}
 			}
-
+	/*
 			if (isset($_POST['features']['udevil'])) {
 				// save new value on SQLite datastore
 				playerSession('write',$db,'udevil',1);
@@ -183,12 +187,12 @@ if (isset($_POST)) {
 				// invoke worker
 				wrk_control('exec','scrobbling_lastfm',$data);
 				}
-			}
+			} */
 	
 	}
 	// ------------------------------
 
-
+/*
 	if (isset($_POST['hostname']) && $_POST['hostname'] != $_SESSION['hostname']) {
 		if (empty($_POST['hostname'])) {	
 		$_POST['hostname'] = 'runeaudio';
@@ -208,7 +212,7 @@ if (isset($_POST)) {
 		// invoke worker
 		wrk_control('exec','ntpserver',$data);
 	}
-
+*/
 }
 // wait for worker output if $_SESSION['w_active'] = 1
 waitWorker(1);

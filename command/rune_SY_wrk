@@ -378,7 +378,7 @@ runelog("WORKER rune_SY_wrk.php STARTED in ".$starttime." seconds.",'');
 runelog("WORKER MAIN LOOP ---",'');
 // WORKER MAIN LOOP --- //
 while (1) {
-sleep(7);
+sleep(5);
 session_start();
 //debug
 runelog('[wrk] main loop action state(1) ($_SESSION[w_active]): ',$_SESSION['w_active']);
@@ -472,10 +472,12 @@ runelog('[wrk] main loop lock state(1) ($_SESSION[w_lock]): ',$_SESSION['w_lock'
 		if ($_SESSION['w_queueargs'] == 'start') {
 		runelog("service: SHAIRPORT start",'');
 		sysCmd('systemctl start shairport');
+		ui_notify('AirPlay', 'AirPlay feature enabled');
 		}
 		if ($_SESSION['w_queueargs'] == 'stop') {
 		runelog("service: SHAIRPORT stop",'');
 		sysCmd('systemctl stop shairport');
+		ui_notify('AirPlay', 'AirPlay feature disabled');
 		}
 		break;
 
@@ -605,9 +607,9 @@ runelog('[wrk] main loop lock state(1) ($_SESSION[w_lock]): ',$_SESSION['w_lock'
 		
 	}
 	// reset locking and command queue
-	$_SESSION['w_queue'] = '';
-	$_SESSION['w_queueargs'] = '';
-	$_SESSION['w_jobID'] = '';
+	// $_SESSION['w_queue'] = '';
+	//$_SESSION['w_queueargs'] = '';
+	// $_SESSION['w_jobID'] = '';
 	$_SESSION['w_active'] = 0;
 	$_SESSION['w_lock'] = 0;
 	runelog('[wrk] active routine (complete) ($_SESSION[w_active]): ',$_SESSION['w_active']);

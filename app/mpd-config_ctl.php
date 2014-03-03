@@ -30,8 +30,7 @@
  *  version: 1.3
  *
  */
- 
-playerSession('open',$db,'',''); 
+
 $dbh = cfgdb_connect($db);
 
 
@@ -43,18 +42,18 @@ $mpdconfdefault = cfgdb_read('',$dbh,'mpdconfdefault');
 	}
 	// tell worker to write new MPD config
 	if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-	session_start();
+
 	$_SESSION['w_queue'] = "mpdcfg";
 	$_SESSION['w_active'] = 1;
 	// set UI notify
 	$_SESSION['notify']['title'] = 'Reset MPD Config';
 	$_SESSION['notify']['msg'] = 'restarting MPD daemon...';
-	session_write_close();
+
 	} else {
-	session_start();
+
 	$_SESSION['notify']['title'] = 'Job Failed';
 	$_SESSION['notify']['msg'] = 'background worker is busy.';
-	session_write_close();
+
 	}
 unset($_POST);
 }
@@ -66,18 +65,18 @@ if(isset($_POST['conf']) && !empty($_POST['conf'])) {
 	}
 	// tell worker to write new MPD config
 		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		session_start();
+
 		$_SESSION['w_queue'] = "mpdcfg";
 		$_SESSION['w_active'] = 1;
 		// set UI notify
 		$_SESSION['notify']['title'] = 'MPD Config modified';
 		$_SESSION['notify']['msg'] = 'restarting MPD daemon...';
-		session_write_close();
+
 		} else {
-		session_start();
+
 		$_SESSION['notify']['title'] = 'Job Failed';
 		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		session_write_close();
+
 		}
 }
 	
@@ -85,19 +84,19 @@ if(isset($_POST['conf']) && !empty($_POST['conf'])) {
 if(isset($_POST['mpdconf']) && !empty($_POST['mpdconf'])) {
 // tell worker to write new MPD config
 		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		session_start();
+
 		$_SESSION['w_queue'] = "mpdcfgman";
 		$_SESSION['w_queueargs'] = $_POST['mpdconf'];
 		$_SESSION['w_active'] = 1;
 		// set UI notify
 		$_SESSION['notify']['title'] = 'MPD Config modified';
 		$_SESSION['notify']['msg'] = 'restarting MPD daemon...';
-		session_write_close();
+
 		} else {
-		session_start();
+
 		$_SESSION['notify']['title'] = 'Job Failed';
 		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		session_write_close();
+
 		}
 }
 
@@ -142,8 +141,7 @@ foreach ($mpdconf as $key => $value) {
 
 // close DB connection
 $dbh = null;
-// unlock session files
-playerSession('unlock',$db,'','');
+
 
 // check actual active output interface
 //$active_ao = _parseOutputsResponse(getMpdOutputs($mpd),1);

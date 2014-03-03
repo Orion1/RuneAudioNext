@@ -86,30 +86,26 @@ runelog("rune_PL_wrk: open MPD local UNIX socket",'');
 $mpd = openMpdSocket('/run/mpd.sock') ;
 if ( !$mpd) {
 		// error message
-		ui_render('notify','Error Connecting MPD Daemon');
-		//runelog('rune_PL_wrk: Error Connecting MPD Daemon');
+		ui_notify('MPD', 'MPD Daemon not responding...');
 } else {
 // read SESSION data
-playerSession('open',$db,'',''); 
+playerSession('open',$db,'','');
+$status = _parseStatusResponse(MpdStatus($mpd));
+// store next songid in PHP SESSION
+$_SESSION['nextsongid'] = $status['nextsongid'];
+// store "lastsongid" in PHP SESSION
+$_SESSION['lastsongid'] = $status['songid'];
 		// check for Ramplay
 		if (isset($_SESSION['ramplay']) && $_SESSION['ramplay'] == 1) {
-			// fetch MPD status
-			$status = _parseStatusResponse(MpdStatus($mpd));
-			// store "lastsongid" in PHP SESSION
-			$_SESSION['lastsongid'] = $status['songid'];
 			// check ramplay delete
 				// if (!rp_checkPLid($_SESSION['lastsongid'],$mpd)) {
 				// rp_deleteFile($_SESSION['lastsongid'],$mpd);
 				// }
-			// read id nextsong and store in PHP SESSION
-			$_SESSION['nextsongid'] = $status['nextsongid'];
 			// check for CMediaFix
 			if (isset($_SESSION['cmediafix']) && $_SESSION['cmediafix'] == 1) {
 			$_SESSION['lastbitdepth'] = $status['audio'];
+			}
 		}
-
-
-}
 		
 // Unlock SESSION file
 session_write_close(); 
@@ -120,7 +116,6 @@ $status = monitorMpdState($mpd);
 		
 		session_start();
 		$_SESSION['pl_length'] = $status['playlistlength'];
-		session_write_close();
 		$status = ui_status($mpd,$status);
 		// CMediaFix
 		if (isset($_SESSION['cmediafix']) && $_SESSION['cmediafix'] == 1 && $status['state'] == 'play' ) {
@@ -145,7 +140,14 @@ $status = monitorMpdState($mpd);
 			// exec addandplay track
 			rp_addPlay($path,$mpd,$status['playlistlength']);
 		}
+		
+		// Global Random
+		if ((isset($_SESSION['globalrandom']) && $_SESSION['globalrandom'] == 1) && ($_SESSION['lastsongid'] != $status['songid'])) {
+		$addsong = new globalRandom($status,$_SESSION['sessionid']);
+		$addsong->start();
+		}
 
+session_write_close();
 // JSON response for GUI
 runelog("rune_PL_wrk: ui_render() response",json_encode($status));
 ui_render('display',json_encode($status));
