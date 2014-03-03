@@ -377,7 +377,15 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// close filter results
 	$('#pl-filter-results').click(function(){
+		if ($(this).hasClass('back-to-queue')) {
+			$('#pl-editor').addClass('hide');
+		}
 		getPlaylistCmd(GUI.json);
+    });
+	
+	// playlists management
+	$('#pl-list').click(function(){
+		getPlaylists();
     });
 	
 	
