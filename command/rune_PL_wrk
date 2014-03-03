@@ -113,8 +113,9 @@ session_write_close();
 runelog("rune_PL_wrk: enter idle loop",'');
 $status = monitorMpdState($mpd);
 // idle LOOP
-		
-		session_start();
+// inspect session
+session_start();
+
 		$_SESSION['pl_length'] = $status['playlistlength'];
 		$status = ui_status($mpd,$status);
 		// CMediaFix
@@ -142,11 +143,15 @@ $status = monitorMpdState($mpd);
 		}
 		
 		// Global Random
-		if ((isset($_SESSION['globalrandom']) && $_SESSION['globalrandom'] == 1) && ($_SESSION['lastsongid'] != $status['songid'])) {
+		if ((isset($_SESSION['globalrandom']) && $_SESSION['globalrandom'] == 1) && ($_SESSION['lastsongid'] != $status['songid']) && ($_SESSION['globalrandom_lock'] == 0)) {
 		$addsong = new globalRandom($status,$_SESSION['sessionid']);
 		$addsong->start();
+		$_SESSION['globalrandom_lock'] = 1;
+		} else {
+		$_SESSION['globalrandom_lock'] = 0;
 		}
-
+		
+// unlock session
 session_write_close();
 // JSON response for GUI
 runelog("rune_PL_wrk: ui_render() response",json_encode($status));
