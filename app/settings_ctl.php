@@ -31,319 +31,185 @@
  *
  */
 
-// common include
-playerSession('open',$db,'','');
-playerSession('unlock',$db,'','');
-
 // get lastfm auth ENV settings
 $template->lastfm = getLastFMauth($db);
+// handle POST
+if (isset($_POST)) {
 
-if (isset($_POST['syscmd'])){
-	switch ($_POST['syscmd']) {
+	if (isset($_POST['syscmd'])){
+		switch ($_POST['syscmd']) {
 
-	case 'reboot':
-	
-			if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-			// start / respawn session
-			session_start();
-			$_SESSION['w_queue'] = "reboot";
-			$_SESSION['w_active'] = 1;
-			// set UI notify
-			$_SESSION['notify']['title'] = 'REBOOT';
-			$_SESSION['notify']['msg'] = 'reboot player initiated...';
-			// unlock session file
-			playerSession('unlock');
-			} else {
-			echo "background worker busy";
-			}
-		// unlock session file
-		playerSession('unlock');
+		case 'reboot':
+		// invoke worker
+		wrk_control('exec','reboot');
 		break;
-		
-	case 'poweroff':
-	
-			if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-			// start / respawn session
-			session_start();
-			$_SESSION['w_queue'] = "poweroff";
-			$_SESSION['w_active'] = 1;
-			// set UI notify
-			$_SESSION['notify']['title'] = 'SHUTDOWN';
-			$_SESSION['notify']['msg'] = 'shutdown player initiated...';
-			// unlock session file
-			playerSession('unlock');
-			} else {
-			echo "background worker busy";
-			}
-		break;
-
-	case 'mpdrestart':
-	
-			if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-			// start / respawn session
-			session_start();
-			$_SESSION['w_queue'] = "mpdrestart";
-			$_SESSION['w_active'] = 1;
-			// set UI notify
-			$_SESSION['notify']['title'] = 'MPD RESTART';
-			$_SESSION['notify']['msg'] = 'restarting MPD daemon...';
-			// unlock session file
-			playerSession('unlock');
-			} else {
-			echo "background worker busy";
-			}
-		break;
-	
-	case 'backup':
 			
-			if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-			// start / respawn session
-			session_start();
-			$_SESSION['w_jobID'] = wrk_jobID();
-			$_SESSION['w_queue'] = 'backup';
-			$_SESSION['w_active'] = 1;
-			playerSession('unlock');
-				// wait worker response loop
-				while (1) {
-				sleep(2);
-				session_start();
-					if ( isset($_SESSION[$_SESSION['w_jobID']]) ) {
-					// set UI notify
-					$_SESSION['notify']['title'] = 'BACKUP';
-					$_SESSION['notify']['msg'] = 'backup complete.';
-					pushFile($_SESSION[$_SESSION['w_jobID']]);
-					unset($_SESSION[$_SESSION['w_jobID']]);
-					break;
-					}
-				session_write_close();
-				}
-			} else {
-			session_start();
-			$_SESSION['notify']['title'] = 'Job Failed';
-			$_SESSION['notify']['msg'] = 'background worker is busy.';
-			}
-		// unlock session file
-		playerSession('unlock');
+		case 'poweroff':
+		// invoke worker
+		wrk_control('exec','poweroff');
 		break;
+
+		case 'mpdrestart':
+		// invoke worker
+		wrk_control('exec','mpdrestart');
+		break;
+		
+		// case 'backup':
+			// if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
+				// $_SESSION['w_jobID'] = wrk_jobID();
+				// $_SESSION['w_queue'] = 'backup';
+				// $_SESSION['w_active'] = 1;
+				////wait worker response loop
+					// while (1) {
+					// sleep(2);
+					// session_start();
+						// if ( isset($_SESSION[$_SESSION['w_jobID']]) ) {
+						////set UI notify
+						// $_SESSION['notify']['title'] = 'BACKUP';
+						// $_SESSION['notify']['msg'] = 'backup complete.';
+						// pushFile($_SESSION[$_SESSION['w_jobID']]);
+						// unset($_SESSION[$_SESSION['w_jobID']]);
+						// break;
+						// }
+					// session_write_close();
+					// }
+				// } else {
+				// session_start();
+				// $_SESSION['notify']['title'] = 'Job Failed';
+				// $_SESSION['notify']['msg'] = 'background worker is busy.';
+				// }
+		// break;
 	
-	case 'updatempdDB':
+		case 'totalbackup':
 			
-			if ( !$mpd) {
-				session_start();
-				$_SESSION['notify']['title'] = 'Error';
-				$_SESSION['notify']['msg'] = 'Cannot connect to MPD Daemon';
-			} else {
-				sendMpdCommand($mpd,'update');
-				session_start();
-				$_SESSION['notify']['title'] = 'MPD Update';
-				$_SESSION['notify']['msg'] = 'database update started...';
-			}
+		break;
 			
-	break;
-		
-	case 'totalbackup':
-		
+		case 'restore':
+			
 		break;
-		
-	case 'restore':
-		
-		break;
-	}
-
-}
-
-if (isset($_POST['orionprofile']) && $_POST['orionprofile'] != $_SESSION['orionprofile']){
-	// load worker queue 
-	if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-	// start / respawn session
-	session_start();
-	$_SESSION['w_queue'] = 'orionprofile';
-	$_SESSION['w_queueargs'] = $_POST['orionprofile']." ".$_SESSION['hwplatformid'];
-	// set UI notify
-	$_SESSION['notify']['title'] = 'KERNEL PROFILE';
-	$_SESSION['notify']['msg'] = 'orionprofile changed <br> current profile:     <strong>'.$_POST['orionprofile']."</strong>";
-	// unlock session file
-	playerSession('unlock');
-	} else {
-	echo "background worker busy";
-	}
-	
-	// activate worker job
-	if ($_SESSION['w_lock'] != 1) {
-	// start / respawn session
-	session_start();
-	$_SESSION['w_active'] = 1;
-	// save new value on SQLite datastore
-	playerSession('write',$db,'orionprofile',$_POST['orionprofile']);
-	// unlock session file
-	playerSession('unlock');
-	} else {
-	return "background worker busy";
-	}
-
-}
-
-if (isset($_POST['cmediafix']) && $_POST['cmediafix'] != $_SESSION['cmediafix']){
-	// load worker queue 
-	// start / respawn session
-	session_start();
-	// save new value on SQLite datastore
-	if ($_POST['cmediafix'] == 1 OR $_POST['cmediafix'] == 0) {
-	playerSession('write',$db,'cmediafix',$_POST['cmediafix']);
-	}
-	// set UI notify
-	if ($_POST['cmediafix'] == 1) {
-	$_SESSION['notify']['title'] = '';
-	$_SESSION['notify']['msg'] = 'CMediaFix enabled';
-	} else {
-	$_SESSION['notify']['title'] = '';
-	$_SESSION['notify']['msg'] = 'CMediaFix disabled';
-	}
-	// unlock session file
-	playerSession('unlock');
-}
-
-// ----------------------------------------------------------
-
-if (isset($_POST) && isset($_POST['features'])) {
-// start / respawn session
-session_start();
-
-		if (isset($_POST['features']['airplay'])) {
-			// save new value on SQLite datastore
-			playerSession('write',$db,'airplay',1);
-			// load worker queue
-			// ---> creare job per attivare e mettere in coda
-		} else {
-			playerSession('write',$db,'airplay',0);
-			if ($_SESSION['airplay'] != 0) {
-			// ---> creare job per fermare e mettere in coda
-			}
 		}
 
-		if (isset($_POST['features']['udevil'])) {
-			// save new value on SQLite datastore
-			playerSession('write',$db,'udevil',1);
-			// load worker queue
-			// ---> creare job per attivare e mettere in coda
-			playerSession('write',$db,'udevil',0);
-			if ($_SESSION['udevil'] != 0) {
-			// ---> creare job per fermare e mettere in coda
-			}
+	}
 
-		if (isset($_POST['features']['coverart'])) {
-			// save new value on SQLite datastore
-			playerSession('write',$db,'coverart',1);
-			// load worker queue
-			// ---> creare job per attivare e mettere in coda
-		} else {
-			playerSession('write',$db,'coverart',0);
-			if ($_SESSION['coverart'] != 0) {
-			// ---> creare job per fermare e mettere in coda
-			}
-		}
-/*
-		if ($feature === 'scrobbling_lastfm' && $value == 1 && ($value != $_SESSION['scrobbling_lastfm'] OR ($value['lastfm']['pass'] != $template->lastfm['pass'] && !empty($value['lastfm']['pass'])) OR $value['lastfm']['user'] != $template->lastfm['user'] && !empty($value['lastfm']['user'])) ) {
+	if (isset($_POST['orionprofile']) && $_POST['orionprofile'] != $_SESSION['orionprofile']){
 		// save new value on SQLite datastore
-		playerSession('write',$db,'scrobbling_lastfm',1);
+		playerSession('write',$db,'orionprofile',$_POST['orionprofile']);
+		// setup worker queue (set optimization profile)
+		$data['args'] = $_POST['orionprofile']." ".$_SESSION['hwplatformid'];
+		// invoke worker
+		wrk_control('exec','orionprofile',$data);
+	}
 
-			if (($value['lastfm']['user'] != $template->lastfm['user'] && !empty($value['lastfm']['user'])) OR ($value['lastfm']['pass'] != $value['pass'] && !empty($value['lastfm']['pass']))) {
-			$_SESSION['w_queueargs']['lastfm'] = $value['lastfm'];
-			$_SESSION['notify']['msg'] = '\nLast.FM auth data updated\n';
-			}
-			
-			// active worker queue
-				if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-				$_SESSION['w_queue'] = 'scrobbling_lastfm';
-				$_SESSION['w_queueargs']['action'] = 'start';
-				// set UI notify
-				$_SESSION['notify']['msg'] .= 'Last.FM scrobbling enabled';
-				$_SESSION['w_active'] = 1;
-				} else {
-				$_SESSION['notify']['title'] = 'Job Failed';
-				$_SESSION['notify']['msg'] = 'background worker is busy.';
-				}
-
-
+	if (isset($_POST['cmediafix'])){
+		// save new value on SQLite datastore
+		if ($_POST['cmediafix']['value'] == 1 && $_POST['cmediafix']['value'] != $_SESSION['cmediafix']) {
+		// save new value on SQLite datastore
+		playerSession('write',$db,'cmediafix',1);
+		// send notify message to UI
+		ui_notify('cmediafix', 'enabled');
 		} else {
-			if (isset($value['scrobbling_lastfm']) && $value['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm']) {
-			playerSession('write',$db,'scrobbling_lastfm',0);
-
-				// active worker queue
-				if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-				// disable LastFM scrobbling
-				$_SESSION['w_queue'] = 'scrobbling_lastfm';
-				$_SESSION['w_queueargs']['action'] = 'stop';
-				// set UI notify
-				$_SESSION['notify']['msg'] = 'Last.FM scrobbling disabled';
-				$_SESSION['w_active'] = 1;
-				} else {
-				$_SESSION['notify']['title'] = 'Job Failed';
-				$_SESSION['notify']['msg'] = 'background worker is busy.';
-				}
-
-			}
+		// save new value on SQLite datastore
+		playerSession('write',$db,'cmediafix',0);
+		// send notify message to UI
+		ui_notify('cmediafix', 'disabled');
 		}
-*/
+	}
+
+	// ----------------------------------------------------------
+
+	if (isset($_POST['features'])) {
+
+			if (isset($_POST['features']['airplay'])) {
+				// save new value on SQLite datastore
+				playerSession('write',$db,'airplay',1);
+				// setup worker queue (start shairport)
+				$data['args'] = "start";
+				// invoke worker
+				wrk_control('exec','airplay',$data);
+			} else {
+				// save new value on SQLite datastore
+				playerSession('write',$db,'airplay',0);
+				if ($_SESSION['airplay'] != 0) {
+				// setup worker queue (stop shairport)
+				$data['args'] = "stop";
+				wrk_control('exec','airplay',$data);
+				}
+			}
+
+			if (isset($_POST['features']['udevil'])) {
+				// save new value on SQLite datastore
+				playerSession('write',$db,'udevil',1);
+				// setup worker queue (disable USB Automount)
+				$data['args'] = 'start';
+				// invoke worker
+				wrk_control('exec','udevil',$data);
+			} else {
+				// save new value on SQLite datastore
+				playerSession('write',$db,'udevil',0);
+				if ($_SESSION['udevil'] != 0) {
+				// setup worker queue (disable USB Automount)
+				$data['args'] = 'stop';
+				// invoke worker
+				wrk_control('exec','udevil',$data);
+				}
+			}
+
+			if (isset($_POST['features']['coverart'])) {
+				// save new value on SQLite datastore
+				playerSession('write',$db,'coverart',1);
+			} else {
+				// save new value on SQLite datastore
+				playerSession('write',$db,'coverart',0);
+			}
 	
-	// unlock session file
-	playerSession('unlock');
-}
-// ------------------------------
+			if (isset($_POST['features']['scrobbling_lastfm']) && $_POST['features']['scrobbling_lastfm'] == 1 && ($_POST['features']['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm'] OR ($_POST['features']['scrobbling_lastfm']['lastfm']['pass'] != $template->lastfm['pass'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['pass'])) OR $_POST['features']['scrobbling_lastfm']['lastfm']['user'] != $template->lastfm['user'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['user'])) ) {
+			// save new value on SQLite datastore
+			playerSession('write',$db,'scrobbling_lastfm',1);
+				if (($_POST['features']['scrobbling_lastfm']['lastfm']['user'] != $template->lastfm['user'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['user'])) OR ($_POST['features']['scrobbling_lastfm']['lastfm']['pass'] != $_POST['features']['scrobbling_lastfm']['pass'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['pass']))) {
+				$data['args']['lastfm'] = $_POST['features']['scrobbling_lastfm']['lastfm'];
+				$_SESSION['notify']['msg'] = '\nLast.FM auth data updated\n';
+				}		
+				// setup worker queue (enable LastFM scrobbling)
+				$data['args']['action'] = 'start';
+				// invoke worker
+				wrk_control('exec','scrobbling_lastfm',$data);
 
-
-if (isset($_POST['hostname']) && $_POST['hostname'] != $_SESSION['hostname']) {
-	// start / respawn session
-	session_start();
-	if (empty($_POST['hostname'])) {	
-	$_POST['hostname'] = 'runeaudio';
+			} else {
+				if (isset($_POST['features']['scrobbling_lastfm']) && $_POST['features']['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm']) {
+				// save new value on SQLite datastore
+				playerSession('write',$db,'scrobbling_lastfm',0);
+				// setup worker queue (disable LastFM scrobbling)
+				$data['args']['action'] = 'stop';
+				// invoke worker
+				wrk_control('exec','scrobbling_lastfm',$data);
+				}
+			}
+	
 	}
-	// load worker queue
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		// start / respawn session
-		session_start();
-		$_SESSION['w_queue'] = "hostname";
-		$_SESSION['w_queueargs'] = $_POST['hostname'];
-		// set UI notify
-		$_SESSION['notify']['title'] = 'Hostname changed';
-		$_SESSION['notify']['msg'] = 'new hostname: '.$_POST['hostname'];
-		// active worker queue
-		$_SESSION['w_active'] = 1;
-		} else {
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
+	// ------------------------------
+
+
+	if (isset($_POST['hostname']) && $_POST['hostname'] != $_SESSION['hostname']) {
+		if (empty($_POST['hostname'])) {	
+		$_POST['hostname'] = 'runeaudio';
 		}
-
-	// unlock session file
-	playerSession('unlock');
-}
-
-if (isset($_POST['ntpserver']) && $_POST['ntpserver'] != $_SESSION['ntpserver']) {
-	// start / respawn session
-	session_start();
-	if (empty($_POST['ntpserver'])) {	
-	$_POST['ntpserver'] = 'ntp.inrim.it';
+		// setup worker queue
+		$data['args'] = $_POST['hostname'];
+		// invoke worker
+		wrk_control('exec','hostname',$data);
 	}
-	// load worker queue
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		// start / respawn session
-		session_start();
-		$_SESSION['w_queue'] = "ntpserver";
-		$_SESSION['w_queueargs'] = $_POST['ntpserver'];
-		// set UI notify
-		$_SESSION['notify']['title'] = 'NTP server changed';
-		$_SESSION['notify']['msg'] = 'new NTP server: '.$_POST['ntpserver'];
-		// active worker queue
-		$_SESSION['w_active'] = 1;
-		} else {
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
+
+	if (isset($_POST['ntpserver']) && $_POST['ntpserver'] != $_SESSION['ntpserver']) {
+		if (empty($_POST['ntpserver'])) {	
+		$_POST['ntpserver'] = 'ntp.inrim.it';
 		}
+		// setup worker queue
+		$data['args'] = $_POST['ntpserver'];
+		// invoke worker
+		wrk_control('exec','ntpserver',$data);
+	}
 
-	// unlock session file
-	playerSession('unlock');
 }
-
 // wait for worker output if $_SESSION['w_active'] = 1
 waitWorker(1);
 ?>

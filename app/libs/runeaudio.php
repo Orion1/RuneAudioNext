@@ -932,6 +932,30 @@ function waitWorker($sleeptime,$section) {
 	}
 } 
 
+function wrk_control($action,$data = null) {
+// debug
+runelog('[wrk] wrk_control('.$action.',$data)',$data);
+runelog('[wrk] current session ID: ',session_id());
+runelog('[wrk] current worker lock state ($_SESSION[w_lock]): ',$_SESSION['w_lock']);
+runelog('[wrk] current worker action state(1) ($_SESSION[w_active]): ',$_SESSION['w_active']);
+// accept $data['action'] $data['args'] from controller 
+	switch ($action) {
+		case 'exec':
+			if($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
+			$_SESSION['w_queue'] = $data['action'];
+			$_SESSION['w_queueargs'] = $data['args'];
+			$_SESSION['w_active'] = 1;
+			runelog('[wrk] current worker action state(2) ($_SESSION[w_active]): ',$_SESSION['w_active']);
+			$return = 1;
+			} else {
+			ui_notify('system worker', 'background job in progress...try again later.');
+			$return = 0;
+			}
+			break;
+	}
+return $return;
+}
+
 // search a string in a file and replace with another string the whole line.
 function wrk_replaceTextLine($file,$inputArray,$strfind,$strrepl,$linelabel,$lineoffset) {
 	runelog('wrk_replaceTextLine($file,$inputArray,$strfind,$strrepl,$linelabel,$lineoffset)','');
@@ -1626,7 +1650,7 @@ $hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"
 return $hwmixerdev;
 }
 
-function ui_notify($title, $text, $icon, $opacity, $hide) {
+function ui_notify($title = null, $text, $icon = null, $opacity = null, $hide = null) {
 	$output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide );
 	ui_render('notify',json_encode($output));
 }

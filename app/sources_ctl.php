@@ -35,31 +35,27 @@
 if (isset($_POST['reset']) && $_POST['reset'] == 1) {
 	// tell worker to write new MPD config
 	if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-	session_start();
 	$_SESSION['w_queue'] = "sourcecfgman";
 	$_SESSION['w_queueargs']  = 'sourcecfgreset';
 	$_SESSION['w_active'] = 1;
 	// set UI notify
 	$_SESSION['notify']['title'] = 'auto.nas modified';
 	$_SESSION['notify']['msg'] = 'remount shares in progress...';
-	session_write_close();
 	} else {
-	session_start();
 	$_SESSION['notify']['title'] = 'Job Failed';
 	$_SESSION['notify']['msg'] = 'background worker is busy.';
-	session_write_close();
 	}
 unset($_POST);
 }
 
 if (isset($_GET['updatempd']) && $_GET['updatempd'] == '1' ){
 	if ( !$mpd) {
-		session_start();
+
 		$_SESSION['notify']['title'] = 'Error';
 		$_SESSION['notify']['msg'] = 'Cannot connect to MPD Daemon';
 	} else {
 		sendMpdCommand($mpd,'update');
-		session_start();
+
 		$_SESSION['notify']['title'] = 'MPD Update';
 		$_SESSION['notify']['msg'] = 'database update started...';
 	}
@@ -89,7 +85,6 @@ $_POST['mount']['remotedir'] = str_replace('\\', '/', $_POST['mount']['remotedir
 if (isset($_POST['delete']) && $_POST['delete'] == 1) {
 // delete an existing entry
 		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		session_start();
 		$_SESSION['w_queue'] = 'sourcecfg';
 		$_POST['mount']['action'] = 'delete';
 		$_SESSION['w_queueargs'] = $_POST;
@@ -97,30 +92,23 @@ if (isset($_POST['delete']) && $_POST['delete'] == 1) {
 		// set UI notify
 		$_SESSION['notify']['title'] = 'mount point deleted';
 		$_SESSION['notify']['msg'] = 'Update DB in progress...';
-		session_write_close();
 		} else {
-		session_start();
 		$_SESSION['notify']['title'] = 'Job Failed';
 		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		session_write_close();
 		}
 	
 	} else {
 	
 		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		session_start();
 		$_SESSION['w_queue'] = 'sourcecfg';
 		$_SESSION['w_queueargs']  = $_POST;
 		$_SESSION['w_active'] = 1;
 		// set UI notify
 		$_SESSION['notify']['title'] = 'mount point modified';
 		$_SESSION['notify']['msg'] = 'Update DB in progress...';
-		session_write_close();
 		} else {
-		session_start();
 		$_SESSION['notify']['title'] = 'Job Failed';
 		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		session_write_close();
 		} 
 	}
 }
@@ -134,8 +122,6 @@ $dbh = null;
 
 // set normal config template
 // $tpl = "sources.html";
-// unlock session files
-playerSession('unlock',$db,'','');
 foreach ($source as $mp) {
 if (wrk_checkStrSysfile('/proc/mounts',$mp['name']) ) {
 	$mp['status'] = 1;
