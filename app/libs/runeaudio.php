@@ -938,6 +938,7 @@ runelog('[wrk] wrk_control('.$action.',$data)',$data);
 runelog('[wrk] current session ID: ',session_id());
 runelog('[wrk] current worker lock state ($_SESSION[w_lock]): ',$_SESSION['w_lock']);
 runelog('[wrk] current worker action state(1) ($_SESSION[w_active]): ',$_SESSION['w_active']);
+runelog('[wrk] current worker args: ',$data);
 // accept $data['action'] $data['args'] from controller 
 	switch ($action) {
 		case 'exec':
