@@ -464,7 +464,8 @@ function updateGUI(json){
     if (GUI.currentsong != json['currentsong']) {
         countdownRestart(0);
         if ($('#panel-dx').hasClass('active')) {
-            customScroll('pl', (json['song']? parseInt(json['song']) : 0));
+            var current = parseInt(json['song']);
+            customScroll('pl', current);
         }
     }
 	
@@ -524,48 +525,39 @@ function updateGUI(json){
 
 // update info and status on Playback tab
 function refreshState(state) {
-  if (state === 'play') {
-      $('#play').addClass('btn-primary');
-      $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-      $('#stop').removeClass('btn-primary');
-  } else if (state === 'pause') {
-      $('#playlist-position').html('Not playing');
-      $('#play').addClass('btn-primary');
-      $('i', '#play').removeClass('fa fa-play').addClass('fa fa-pause');
-      $('#stop').removeClass('btn-primary');
-  } else if (state === 'stop') {
-      $('#play').removeClass('btn-primary');
-      $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-      $('#stop').addClass('btn-primary');
-      $('#countdown-display').countdown('destroy');
-      $('#elapsed').html('00:00');
-      $('#total').html('');
-      $('#time').val(0).trigger('change');
-      $('#format-bitrate').html('&nbsp;');
-      $('li', '#playlist-entries').removeClass('active');
-  }
-  if ( state != 'stop' ) {
-      $('#elapsed').html(timeConvert(GUI.json['elapsed']));
-      $('#total').html(timeConvert(GUI.json['time']));
-      //$('#time').val(json['song_percent']).trigger('change');
-      var fileinfo = (GUI.json['audio_channels'] && GUI.json['audio_sample_depth'] && GUI.json['audio_sample_rate']) ? (GUI.json['audio_channels'] + ', ' + GUI.json['audio_sample_depth'] + ' bit, ' + GUI.json['audio_sample_rate'] +' kHz, '+GUI.json['bitrate']+' kbps') : '&nbsp;';
-      $('#format-bitrate').html(fileinfo);
-      $('li', '#playlist-entries').removeClass('active');
-      var current = parseInt(GUI.json['song']);
-      $('li', '#playlist-entries').eq(current).addClass('active'); // check efficiency
-      current = $('.playlist').children[current];
-      $(current).addClass('active');
-  }
-  if( GUI.json['song'] && GUI.json['playlistlength'] ){ 
-    $('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
-  } else {
-    $('#playlist-position').html( $('<a>',{
-      text: 'Add the vibe!', 
-      title: 'Load some tracks on your Library',
-      href: '#panel-sx',
-      'data-toggle': 'tab'
-    }) ); // TODO: highlight the "Library" tab
-  }
+    if (state === 'play') {
+        $('#play').addClass('btn-primary');
+        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
+        $('#stop').removeClass('btn-primary');
+    } else if (state === 'pause') {
+        $('#playlist-position').html('Not playing');
+        $('#play').addClass('btn-primary');
+        $('i', '#play').removeClass('fa fa-play').addClass('fa fa-pause');
+        $('#stop').removeClass('btn-primary');
+    } else if (state === 'stop') {
+        $('#play').removeClass('btn-primary');
+        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
+        $('#stop').addClass('btn-primary');
+        $('#countdown-display').countdown('destroy');
+        $('#elapsed').html('00:00');
+        $('#total').html('');
+        $('#time').val(0).trigger('change');
+        $('#format-bitrate').html('&nbsp;');
+        $('li', '#playlist-entries').removeClass('active');
+    }
+    if ( state != 'stop' ) {
+        $('#elapsed').html(timeConvert(GUI.json['elapsed']));
+        $('#total').html(timeConvert(GUI.json['time']));
+        //$('#time').val(json['song_percent']).trigger('change');
+        var fileinfo = (GUI.json['audio_channels'] && GUI.json['audio_sample_depth'] && GUI.json['audio_sample_rate']) ? (GUI.json['audio_channels'] + ', ' + GUI.json['audio_sample_depth'] + ' bit, ' + GUI.json['audio_sample_rate'] +' kHz, '+GUI.json['bitrate']+' kbps') : '&nbsp;';
+        $('#format-bitrate').html(fileinfo);
+        $('li', '#playlist-entries').removeClass('active');
+        var current = parseInt(GUI.json['song']);
+        $('li', '#playlist-entries').eq(current).addClass('active'); // check efficiency
+        current = $('.playlist').children[current];
+        $(current).addClass('active');
+    }
+	$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
 	// show UpdateDB icon
 	// console.log('dbupdate = ', GUI.json['updating_db']);
 	if (typeof GUI.json['updating_db'] != 'undefined') {
