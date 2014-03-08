@@ -40,7 +40,6 @@ ini_set('error_log','/var/log/runeaudio/rune_SY_wrk.log');
 define('APP','/srv/http/app/');
 opcache_reset();
 include('/srv/http/app/libs/runeaudio.php');
-sessionSQLite('sessions.db');
 // reset worker logfile
 sysCmd('echo "--------------- start: rune_SY_wrk.php ---------------" > /var/log/runeaudio/rune_SY_wrk.log');
 runelog("WORKER rune_SY_wrk.php STARTING...",'');
@@ -94,17 +93,11 @@ sysCmd('chmod 777 /run');
 // reset DB permission
 sysCmd('chmod -R 777 /var/www/db');
 
-// initialize CLI session
-session_save_path('/run');
-
 // inpect session
 playerSession('open',$db,'','');
 
 // prime PHP 5.5 Opcache
 wrk_opcache('prime');
-
-// reset session file permissions
-sysCmd('chmod 777 /run/sess*');
 
 // mount all sources
 wrk_sourcemount($db,'mountall');

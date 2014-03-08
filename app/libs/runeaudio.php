@@ -160,7 +160,9 @@ function searchDB($sock,$querytype,$query) {
 	case "file":
 		sendMpdCommand($sock,"search ".$querytype." \"".html_entity_decode($query)."\"");
 	break;
-	
+	case "globalrandom":
+		sendMpdCommand($sock,"listall");
+	break;
 	}
 	
 //$response =  htmlentities(readMpdResponse($sock),ENT_XML1,'UTF-8');
@@ -207,14 +209,14 @@ class globalRandom extends Thread {
 			if ($path) {
 				addQueue($mpd,$path);
 				runelog("global random call",$path);
-				ui_notify('Global Random Mode', $path.' added to current Queue');
+				ui_notify('Global Random Mode', utf8_encode($path).' added to current Queue');
 			}
 		closeMpdSocket($mpd);
     }
 }
 
 function randomSelect($sock) {
-$songs = searchDB($sock,'file','.flac');
+$songs = searchDB($sock,'globalrandom');
 srand((float) microtime() * 10000000);
 $randkey = array_rand($songs);
 return $songs[$randkey]['file'];
@@ -1708,6 +1710,7 @@ $curTrack = getTrackInfo($mpd,$status['song']);
 			$status['currentalbum'] = "";
 		}
 	}
+$status['radioname'] = $curTrack[0]['Name'];
 return $status;
 }
 

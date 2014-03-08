@@ -45,7 +45,7 @@ do
 	if ((count == 3)) 
 	then
 		echo "### Set priority for: mpd-player thread ###";
-		renice -15 $pid;
+		renice 0 $pid;
 	fi
 	if ((count == 4))  
 	then
@@ -55,7 +55,7 @@ do
 	if ((count == 5))
 	then
 		echo "### Set priority for: mpd-decoder thread ###";
-		renice -16 $pid;
+		renice 0 $pid;
 	fi
 count=$((count+1))
 done

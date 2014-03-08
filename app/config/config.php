@@ -39,8 +39,6 @@ $libs = APP.'libs/vendor';
 set_include_path(get_include_path() . PATH_SEPARATOR . $libs);
 // RuneAudio Library include
 include(APP.'libs/runeaudio.php');
-// Set SQLite SESSION save handler
-sessionSQLite('sessions.db');
 // LogSettings
 if ($_SESSION['debug'] > 0 ) {
 $activeLog=1;

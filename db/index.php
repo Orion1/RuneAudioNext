@@ -106,7 +106,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 				break;
 				
 				case 'update':
-					if (isset($_POST['path']) && $_POST['path'] != '') {
+					if (isset($_POST['path']) && !empty($_POST['path'])) {
 					sendMpdCommand($mpd,"update \"".html_entity_decode($_POST['path'])."\"");
 					echo json_encode(readMpdResponse($mpd));
 					}

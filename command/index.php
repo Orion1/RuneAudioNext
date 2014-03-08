@@ -125,7 +125,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
                 if ($_GET['cmd'] == 'renderui') {
 				
 					if ((!isset($_SESSION['pl_length'])) OR ($_SESSION['pl_length'] != 0)) {
-					sendMpdCommand($mpd,'swap 1 1');
+					sendMpdCommand($mpd,'swap 0 0');
 					} else {
 					sendMpdCommand($mpd,'clear');
 					}
