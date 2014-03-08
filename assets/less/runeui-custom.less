@@ -590,6 +590,9 @@ html, body {
     }
 	.pl-entry {
 		.list-entry;
+		.fa-microphone {
+			margin-right: 8px;
+		}
 	}
 	span {
 		.list-span;
@@ -604,32 +607,6 @@ html, body {
 		.list-action;
 	}
 }
-/*
-.pl-pages {
-    list-style: none;
-    margin: 20px 0;
-    padding: 0;
-    text-align: center;
-    li:hover {
-        background: #aaa;
-    }
-    li.active {
-        background: #666;
-    }
-    li {
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        margin: 0 4px;
-        text-indent: -999px;
-        border-radius: 10px;
-        cursor: pointer;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
-    }
-}
-*/
 #db-browse {
     margin: 0;
     width: 200px;
@@ -675,6 +652,9 @@ html, body {
     font-size: 14px;
     font-style: normal;
     color: @brand-alt;
+	&.infinite {
+		font-size: 28px;
+	}
 }
 
 #panel-sx, #panel-dx {
