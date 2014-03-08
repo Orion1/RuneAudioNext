@@ -230,7 +230,7 @@ function getPlaylist(data, json){
 function getPlaylistPlain(data, json){
 	var current = parseInt(json['song']) + 1;
 	var state = json['state'];
-	var content = '', time = '', artist = '', album = '', title = '', str = '', filename = '', path = '', id = 0, bottomline = '';
+	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, bottomline = '', totaltime = '';
 	var i, line, lines=data.split('\n'), infos=[];
 	//while( line = lines[i++] ){
 	for (i = 0; i < lines.length; i+=1){
@@ -244,7 +244,10 @@ function getPlaylistPlain(data, json){
 		}
 		else if( 'Title' === infos[0] ){
 			title = infos[1]
-		} 
+		}
+		else if( 'Name' === infos[0] ){
+			name = infos[1]
+		}
 		else if( 'Album' === infos[0] ){
 			album = infos[1]
 		}
@@ -253,7 +256,7 @@ function getPlaylistPlain(data, json){
 		}
 		else if( 'Id' === infos[0] ){
 			++id;
-			if (title === '' || album === '' ) {
+			if (title === '' || album === '') {
 				path = parsePath(str);
 				filename = str.split('/').pop();
 				title = filename;
@@ -265,8 +268,15 @@ function getPlaylistPlain(data, json){
 			} else {
 				bottomline = artist + ' - ' + album;
 			}
-			content += '<li id="pl-'+id+'" class="'+ (state != "stop" && id == current ? 'active' : '') + ' clearfix"><a class="pl-action" href="#notarget" title="Remove song from playlist"><i class="fa fa-times-circle"></i></a><div class="pl-entry">' + title + '<em class="songtime">' + timeConvert2(time) + '</em><span>' + bottomline + '</span></div></li>';
-			time = '', artist = '', album = '', title = '';
+			if (name !== '') {
+				title = '<i class="fa fa-microphone"></i>' + name;
+				bottomline = 'URL: ' + path;
+				totaltime = '';
+			} else {
+				totaltime = '<em class="songtime">' + timeConvert2(time) + '</em>';
+			}
+			content += '<li id="pl-'+id+'" class="'+ (state != "stop" && id == current ? 'active' : '') + ' clearfix"><a class="pl-action" href="#notarget" title="Remove song from playlist"><i class="fa fa-times-circle"></i></a><div class="pl-entry">' + title + totaltime + '<span>' + bottomline + '</span></div></li>';
+			time = '', artist = '', album = '', title = '', name = '';
 		}
 	}
 	$('.playlist').addClass('hide');
@@ -473,15 +483,19 @@ function updateGUI(json){
 	var volume = json['volume'];
 	$('#volume').val((volume == '-1') ? 100 : volume).trigger('change');
 	// console.log('currentartist = ', json['currentartist']);
+	var radioname = json['radioname'];
 	var currentartist = json['currentartist'];
-	$('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? '<span class="notag">[no artist]</span>' : json['currentartist']);
-	// console.log('currentsong = ', json['currentsong']);
 	var currentsong = json['currentsong'];
-	$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? '<span class="notag">[no title]</span>' : json['currentsong']);
-	// console.log('currentalbum = ', json['currentalbum']);
 	var currentalbum = json['currentalbum'];
-	$('#currentalbum').html((currentalbum === null || currentalbum === undefined || currentalbum === '') ? '<span class="notag">[no album]</span>' : json['currentalbum']);
-	
+	if (radioname === null || radioname === undefined || radioname === '') {
+		$('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? '<span class="notag">[no artist]</span>' : currentartist);
+		$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? '<span class="notag">[no title]</span>' : currentsong);
+		$('#currentalbum').html((currentalbum === null || currentalbum === undefined || currentalbum === '') ? '<span class="notag">[no album]</span>' : currentalbum);
+	} else {
+		$('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? radioname : currentartist);
+		$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? radioname : currentsong);
+		$('#currentalbum').html('<span class="notag">streaming</span>');
+	}
 	if (json['repeat'] == 1) {
 		$('#repeat').addClass('btn-primary');
 	} else {

@@ -1691,7 +1691,7 @@ function ui_notify($title = null, $text, $icon = null, $opacity = null, $hide = 
 }
 
 function ui_status($mpd,$status) {
-$curTrack = getTrackInfo($mpd,$status['song']);
+	$curTrack = getTrackInfo($mpd,$status['song']);
 	if (isset($curTrack[0]['Title'])) {
 		$status['currentartist'] = $curTrack[0]['Artist'];
 		$status['currentsong'] = $curTrack[0]['Title'];
@@ -1705,10 +1705,11 @@ $curTrack = getTrackInfo($mpd,$status['song']);
 		if (!empty($path)){
 			$status['currentalbum'] = $path;
 		} else {
-			$status['currentalbum'] = "";
+			$status['currentalbum'] = '';
 		}
 	}
-return $status;
+	$status['radioname'] = $curTrack[0]['Name'];
+	return $status;
 }
 
 function ui_lastFM_coverart($artist,$album,$lastfm_apikey) {
