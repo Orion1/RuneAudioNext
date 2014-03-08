@@ -37,7 +37,7 @@ include($_SERVER['HOME'].'/app/config/config.php');
 ini_set('display_errors',1);
 error_reporting('E_ALL');
 
-if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
+if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 
         if ( !$mpd ) {
         echo 'Error Connecting to MPD daemon ';
@@ -47,7 +47,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 				switch ($_GET['cmd']) {
 				
 				case 'filepath':
-					if (isset($_POST['path']) && $_POST['path'] != '') {
+					if (isset($_POST['path']) && !empty($_POST['path'])) {
 					echo json_encode(searchDB($mpd,'filepath',$_POST['path']));
 					} else {
 					echo json_encode(searchDB($mpd,'filepath'));
@@ -59,13 +59,13 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 				break;
 
 				case 'add':
-					if (isset($_POST['path']) && $_POST['path'] != '') {
+					if (isset($_POST['path']) && !empty($_POST['path'])) {
 					echo json_encode(addQueue($mpd,$_POST['path']));
 					}
 				break;
 				
 				case 'addplay':
-					if (isset($_POST['path']) && $_POST['path'] != '') {
+					if (isset($_POST['path']) && !empty($_POST['path'])) {
 					$status = _parseStatusResponse(MpdStatus($mpd));
 					$pos = $status['playlistlength'] ;
 					addQueue($mpd,$_POST['path']);
@@ -86,7 +86,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 				break;
 
 				case 'addreplaceplay':
-					if (isset($_POST['path']) && $_POST['path'] != '') {
+					if (isset($_POST['path']) && !empty($_POST['path'])) {
 					sendMpdCommand($mpd,'clear');
 					addQueue($mpd,$_POST['path']);
 					// -- REWORK NEEDED -- tempfix for analog/hdmi out of raspberrypi (should be integrated with sendMpdCommand() function)
@@ -113,13 +113,13 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 				break;
 				
 				case 'trackremove':
-					if (isset($_GET['songid']) && $_GET['songid'] != '') {
+					if (isset($_GET['songid']) && !empty($_GET['songid'])) {
 					echo json_encode(remTrackQueue($mpd,$_GET['songid']));
 					}
 				break;
 				
 				case 'search':
-					if (isset($_POST['query']) && $_POST['query'] != '' && isset($_GET['querytype']) && $_GET['querytype'] != '') {
+					if (isset($_POST['query']) && !empty($_POST['query']) && isset($_GET['querytype']) && !empty($_GET['querytype'])) {
 					echo json_encode(searchDB($mpd,$_GET['querytype'],$_POST['query']));
 					}
 				break;
