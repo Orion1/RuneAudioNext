@@ -522,17 +522,21 @@ function updateGUI(json){
 	var currentalbumstring = currentartist + ' - ' + currentalbum;
 	if (GUI.currentalbum != currentalbumstring) {
 		$('#cover-art').css('background-image','url(assets/img/cover-default.png');
-		var covercachenum = Math.floor(Math.random()*1001);
-		$.ajax({
-			url: '/coverart/',
-			data: { v: covercachenum },
-			success: function(data){
-				// if ($.parseJSON(data) != 'NOCOVER') {
-					$('#cover-art').css('background-image','url(/coverart/?v=' + covercachenum + ')');
-					// $('#cover-art').css('background-image','url(' + data + ')');
-				// }
-			}
-		});
+		if (radioname === null || radioname === undefined || radioname === '') {
+			var covercachenum = Math.floor(Math.random()*1001);
+			$.ajax({
+				url: '/coverart/',
+				data: { v: covercachenum },
+				success: function(data){
+					// if ($.parseJSON(data) != 'NOCOVER') {
+						$('#cover-art').css('background-image','url(/coverart/?v=' + covercachenum + ')');
+						// $('#cover-art').css('background-image','url(' + data + ')');
+					// }
+				}
+			});
+		} else {
+			$('#cover-art').css('background-image','url(assets/img/cover-radio.jpg');
+		}
 	}
 	GUI.currentalbum = currentalbumstring;
 }
