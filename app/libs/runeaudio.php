@@ -209,7 +209,7 @@ class globalRandom extends Thread {
 			if ($path) {
 				addQueue($mpd,$path);
 				runelog("global random call",$path);
-				ui_notify('Global Random Mode', utf8_encode($path).' added to current Queue');
+				ui_notify('Global Random Mode', htmlentities($path,ENT_XML1,'UTF-8').' added to current Queue');
 			}
 		closeMpdSocket($mpd);
     }
