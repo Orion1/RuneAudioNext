@@ -70,7 +70,7 @@ $output = "";
 // }
 while($resp = socket_read($sock, 32768)) {
    $output .= $resp;
-   if (strpos($output, "OK\n") !== false) break;
+   if ((strpos($output, "OK\n") !== false) OR (strpos($output, "ACK") !== false)) break;
 }
 runelog("socket_read: buffer length ".strlen($output),$output);
 return str_replace(MPD_GREETING,'',$output);
