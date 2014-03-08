@@ -323,16 +323,16 @@ function parseResponse(inputArr,respType,i,inpath) {
 		case 'db':
 			// console.log('inpath = ',inpath);
 			// console.log('inputArr[i].file= :',inputArr[i].file);
-			if (inpath === '' && typeof inputArr[i].file != 'undefined') {
+			if (inpath === '' && inputArr[i].file !== undefined) {
 				inpath = parsePath(inputArr[i].file)
 			}
-			if (typeof inputArr[i].file != 'undefined') {
+			if (inputArr[i].file !== undefined || inpath === 'Webradio') {
 				//debug
 				// console.log('inputArr[i].file: ', inputArr[i].file);
 				// console.log('inputArr[i].Title: ', inputArr[i].Title);
 				// console.log('inputArr[i].Artist: ', inputArr[i].Artist);
 				// console.log('inputArr[i].Album: ', inputArr[i].Album);
-				if (typeof inputArr[i].Title != 'undefined') {
+				if (inputArr[i].Title !== undefined) {
 					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 					content += inputArr[i].file;
 					content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-file"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
@@ -345,17 +345,25 @@ function parseResponse(inputArr,respType,i,inpath) {
 
 				} else {
 					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
-					content += inputArr[i].file;
-					content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
-					content += inputArr[i].file.replace(inpath + '/', '') + ' <em class="songtime">' + timeConvert(inputArr[i].Time) + '</em>';
-					content += ' <span>';
-					content += ' path \: ';
-					content += inpath;
-					content += '</span></div></li>';
+					content += inputArr[i].file;					
+					if (inpath !== 'Webradio') {
+						content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+						content += inputArr[i].file.replace(inpath + '/', '') + ' <em class="songtime">' + timeConvert(inputArr[i].Time) + '</em>';
+						content += ' <span>';
+						content += ' path \: ';
+						content += inpath;
+						content += '</span></div></li>';
+					} else {
+					// case Webradio
+						content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+						content += inputArr[i].playlist.replace(inpath + '/', '').replace('.' + inputArr[i].fileext , '');
+						content += ' <span>';
+						content += 'webradio';
+						content += '</span></div></li>';
+					}
 				}
 			} else {
-			//debug
-			// console.log('inputArr[i].directory: ', data[i].directory);
+				// console.log('inputArr[i].directory: ', inputArr[i].directory);
 				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 				content += inputArr[i].directory;
 				if (inpath !== '') {
@@ -446,7 +454,7 @@ function populateDB(data, path, uplevel, keyword){
 		var content = '';
 		var i = 0;
 		for (i = 0; i < data.length; i++){
-			content = parseResponse(data,'db',i,path);
+			content = parseResponse(data, 'db', i, path);
 			DBlist.append(content);
 		}
 		$('span', '#db-currentpath').html(path);
