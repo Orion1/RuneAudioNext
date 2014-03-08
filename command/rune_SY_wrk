@@ -253,9 +253,9 @@ sysCmd('systemctl start mpdscribble');
 
 // start rpi volume switch helpers
 if ($_SESSION['hwplatformid'] == '01') {
-runelog("helpers: rune_rpi_oJack/rune_rpi_oHdmi start",'');
-sysCmd('systemctl start rune_rpi_oJack');
-sysCmd('systemctl start rune_rpi_oHdmi');
+// runelog("helpers: rune_rpi_oJack/rune_rpi_oHdmi start",'');
+// sysCmd('systemctl start rune_rpi_oJack');
+// sysCmd('systemctl start rune_rpi_oHdmi');
 // AnalogJack / HDMI selection
 	if ($_SESSION['ao'] == 2 OR $_SESSION['ao'] == 3) {
 		sleep(1);
