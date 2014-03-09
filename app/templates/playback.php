@@ -81,7 +81,7 @@
                     </div>
                 </div>
 				<div class="col-md-4 col-sm-6">
-                    <div id="home-webradio" class="home-block" data-path="Dirble">
+                    <div id="home-webradio" class="home-block" data-path="Dirble" data-plugin="Dirble">
                         <i class="fa fa-folder-open-o"></i>
                         <h3>Dirble</h3>
                         Radio stations Open Directory
