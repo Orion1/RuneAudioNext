@@ -342,10 +342,9 @@ function parseResponse(inputArr,respType,i,inpath) {
 					content += ' - ';
 					content +=  inputArr[i].Album;
 					content += '</span></div></li>';
-
 				} else {
 					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
-					content += inputArr[i].file;					
+					content += inputArr[i].file;
 					if (inpath !== 'Webradio') {
 						content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
 						content += inputArr[i].file.replace(inpath + '/', '') + ' <em class="songtime">' + timeConvert(inputArr[i].Time) + '</em>';
@@ -374,6 +373,16 @@ function parseResponse(inputArr,respType,i,inpath) {
 				content += inputArr[i].directory.replace(inpath + '/', '');
 				content += '</div></li>';
 			}
+		break;
+		
+		case 'webradio':
+			content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+			content += inputArr[i].streamurl;
+			content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+			content += inputArr[i].name + ' <em class="songtime">' + inputArr[i].bitrate + '</em>';
+			content += ' <span>';
+			content += inputArr[i].website;
+			content += '</span></div></li>';
 		break;
 		
 	}
@@ -416,10 +425,16 @@ function getDB(cmd, path, browsemode, uplevel){
 			populateDB(data, path, uplevel, keyword);
 		}, 'json');
 	} else if (cmd == 'filepath') {
-		$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
-			populateDB(data, path, uplevel);
-    }, 'json');
-  } else {
+		if (path === 'Dirble') {
+			$.get('/db/?cmd=dirble', function(data){
+				populateDB(data, path);
+			}, 'json');
+		} else {
+			$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
+				populateDB(data, path, uplevel);
+			}, 'json');
+		}
+	} else {
     /* cmd === 'update', 'addplay', 'addreplaceplay', 'update' */
 		$.post('/db/?cmd='+cmd, { 'path': path }, function(path) {
 			// console.log('add= ', path);
@@ -427,16 +442,7 @@ function getDB(cmd, path, browsemode, uplevel){
 	}
 
 }
-
-function parseDirble(){
-	$.ajax({
-		url: 'http://dirble.com/dirapi/stations/apikey/134aabbce2878ce0dbfdb23fb3b46265eded085b/id/1',
-		success: function(data){
-			console.log(data);
-		}
-    });
-}
-
+ 
 function populateDB(data, path, uplevel, keyword){
 	// console.log('PATH =', path);
 	// console.log('KEYWORD =', keyword);
@@ -461,11 +467,14 @@ function populateDB(data, path, uplevel, keyword){
 		}
 		var content = '';
 		var i = 0;
-		if (path === 'Webradio') {
-			parseDirble();
-		}
-		for (i = 0; i < data.length; i++){
-			content += parseResponse(data, 'db', i, path);
+		if (path === 'Dirble') {
+			for (i = 0; i < data.length; i++){
+				content += parseResponse(data, 'webradio', i);
+			}
+		} else {
+			for (i = 0; i < data.length; i++){
+				content += parseResponse(data, 'db', i, path);
+			}
 		}
 		document.getElementById('database-entries').innerHTML = content;
 		$('span', '#db-currentpath').html(path);

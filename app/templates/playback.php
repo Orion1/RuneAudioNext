@@ -59,38 +59,38 @@
                 <div class="col-sm-12">
                     <h1 class="txtmid">Browse your library</h1>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div id="home-nas" class="home-block" data-path="NAS/Musica">
                         <i class="fa fa-star"></i>
                         <h3>Musica</h3>
                         bookmark
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div id="home-nas" class="home-block" data-path="Cristian">
-                        <i class="fa fa-star"></i>
-                        <h3>Cristian</h3>
-                        bookmark
-                    </div>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div id="home-nas" class="home-block" data-path="NAS">
                         <i class="fa fa-sitemap"></i>
                         <h3>Network mounts (2)</h3>
                         2 items available
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div id="home-usb" class="home-block" data-path="USB">
                         <i class="fa fa-hdd-o"></i>
                         <h3>USB storage (1)</h3>
                         1 item available
                     </div>
                 </div>
-                <div class="col-sm-6">
+				<div class="col-md-4 col-sm-6">
+                    <div id="home-webradio" class="home-block" data-path="Dirble">
+                        <i class="fa fa-folder-open-o"></i>
+                        <h3>Dirble</h3>
+                        Radio stations Open Directory
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
                     <div id="home-webradio" class="home-block" data-path="Webradio">
-                        <i class="fa fa-bullseye"></i>
-                        <h3>Webradios (0)</h3>
+                        <i class="fa fa-microphone"></i>
+                        <h3>My Webradios (0)</h3>
                         click to add some
                     </div>
                 </div>
