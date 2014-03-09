@@ -26,6 +26,7 @@
                 <?php if ($this->coverart == 1): ?>
 				<div class="col-sm-<?=$this->colspan ?> coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+					<a href="#" id="social-overlay-open" class="btn btn-default" title="Share this track"><i class="fa fa-share"></i></a>
 				</div>
 				<?php endif ?>
                 <div class="col-sm-<?=$this->colspan ?> volume <?=$this->volume['divclass'] ?>">
@@ -172,6 +173,15 @@
             <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
         </ul>
     </div>
+	<div id="context-menu-webradio" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#notarget" data-cmd="wradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="#notarget" data-cmd="wraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="#notarget" data-cmd="wraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="#notarget" data-cmd="wredit"><i class="fa fa-edit sx"></i> Edit</a></li>
+            <li><a href="#notarget" data-cmd="wrdelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
+        </ul>
+    </div>
 	<div id="context-menu-playlist" class="context-menu">
         <ul class="dropdown-menu" role="menu">
             <li><a href="#notarget" data-cmd=""><i class="fa fa-plus-circle sx"></i> Add to queue</a></li>
@@ -216,4 +226,16 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="social-overlay" class="overlay-scale closed">
+	<nav>
+		<ul>
+			<li><span>Share this track</span></li>
+			<li><a href="#" class="btn btn-default btn-lg btn-block share-twitter"><i class="fa fa-twitter sx"></i> Share on Twitter</a></li>
+			<li><a href="#" class="btn btn-default btn-lg btn-block share-facebook"><i class="fa fa-facebook sx"></i> Share on Facebook</a></li>
+			<li><a href="#" class="btn btn-default btn-lg btn-block share-google-plus"><i class="fa fa-google-plus sx"></i> Share on Google+</a></li>
+			<li><button type="button" class="overlay-close btn btn-link"><i class="fa fa-times"></i> close this screen</button></li>
+		</ul>
+	</nav>
 </div>

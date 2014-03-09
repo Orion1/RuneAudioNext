@@ -33,6 +33,7 @@
 <script src="<?=$this->asset('/js/vendor/pushstream.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery-ui-1.10.3.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/modernizr.custom.js')?>"></script>
 <script src="<?=$this->asset('/js/notify.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
 <script src="<?=$this->asset('/js/player_lib.js')?>"></script>
