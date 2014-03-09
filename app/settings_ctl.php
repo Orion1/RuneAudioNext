@@ -123,10 +123,11 @@ if (isset($_POST)) {
 				// save new value on SQLite datastore
 				playerSession('write',$db,'airplay',1);
 				// setup worker queue (start shairport)
-				$wrkdata = array('action' => 'start', 'jobid' => '000001');
+				// $wrkdata = array('action' => 'start', 'jobid' => '000001');
 				// $wrkdata = "start";
 				// invoke worker
-				wrk_control('exec','airplay',$wrkdata);
+				// wrk_control('exec','airplay',$wrkdata);
+				wrk_control('newjob',$data = array('wrkcmd' => 'airplay','action' => 'start','args' => array('mp1' => 10,'mp2' => 11)));
 				session_write_close();
 			} else {
 				if ($_SESSION['airplay'] != 0) {

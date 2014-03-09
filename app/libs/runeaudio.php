@@ -966,7 +966,7 @@ function waitWorker($sleeptime,$section) {
 	}
 } 
 
-function wrk_control($action,$cmd,$data) {
+function wrk_control($action,$data) {
 // debug
 runelog('[wrk] wrk_control('.$action.',$data)',$data);
 runelog('[wrk] current session ID: ',session_id());
@@ -988,7 +988,18 @@ runelog('[wrk] current worker args: ',$data);
 			ui_notify('system worker', 'background job in progress...try again later.');
 			$return = 0;
 			}
-			break;
+		break;
+		
+		case 'newjob':
+			// generate random jobid
+			$wjob = array( 
+				'jobID' => wrk_jobID(),
+				'wrkcmd' => $data['wrkcmd'],
+				'action' => $data['action'],
+				'args' => $data['args']
+			);
+			array_push($_SESSION['w_queue'], $wjob);
+		break;	
 	}
 return $return;
 }
@@ -1107,7 +1118,7 @@ $cmdstring = "tar xzf ".$path." --overwrite --directory /";
 
 function wrk_jobID() {
 $jobID = md5(uniqid(rand(), true));
-return "job_".$jobID;
+return $jobID;
 }
 
 function wrk_checkStrSysfile($sysfile,$searchstr) {
@@ -1762,5 +1773,14 @@ $ch = curl_init($url);
  curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);  // RETURN THE CONTENTS OF THE CALL
  $response = curl_exec($ch);
  curl_close($ch);
+return $response;
+}
+
+function curlGet($url) {
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$response = curl_exec($ch);
+curl_close($ch);
 return $response;
 }

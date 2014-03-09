@@ -123,6 +123,10 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 					echo json_encode(searchDB($mpd,$_GET['querytype'],$_POST['query']));
 					}
 				break;
+				
+				case 'dirble':
+					echo curlGet('http://dirble.com/dirapi/stations/apikey/134aabbce2878ce0dbfdb23fb3b46265eded085b/id/1');
+				break;
 				}
 				
 		closeMpdSocket($mpd);
