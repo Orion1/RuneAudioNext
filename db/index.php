@@ -125,7 +125,9 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				break;
 				
 				case 'dirble':
-					echo curlGet('http://dirble.com/dirapi/stations/apikey/134aabbce2878ce0dbfdb23fb3b46265eded085b/id/1');
+					if (isset($_POST['querytype'])) {
+					echo curlGet('http://dirble.com/dirapi/stations/apikey/134aabbce2878ce0dbfdb23fb3b46265eded085b/'.$_POST['querytype'].'/'.$_POST['args']);
+					}
 				break;
 				}
 				
