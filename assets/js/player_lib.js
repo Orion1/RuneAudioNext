@@ -594,7 +594,16 @@ function refreshState(state) {
         current = $('.playlist').children[current];
         $(current).addClass('active');
     }
-	$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
+	if( GUI.json['song'] && GUI.json['playlistlength'] ){ 
+    $('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
+  } else {
+    $('#playlist-position').html( $('<a>',{
+      text: 'Add the vibe!', 
+      title: 'Load some tracks on your Library',
+      href: '#panel-sx',
+      'data-toggle': 'tab'
+    }) ); // TODO: highlight the "Library" tab
+  }
 	// show UpdateDB icon
 	// console.log('dbupdate = ', GUI.json['updating_db']);
 	if (typeof GUI.json['updating_db'] != 'undefined') {
