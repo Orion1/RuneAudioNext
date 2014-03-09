@@ -577,7 +577,6 @@ jQuery(document).ready(function($){ 'use strict';
 		support = { transitions : Modernizr.csstransitions };
 	function toggleOverlay() {
 		if (overlay.hasClass('open')) {
-			console.log('open');
 			overlay.removeClass('open');
 			overlay.addClass('closed');
 			var onEndTransitionFn = function(ev) {
@@ -587,12 +586,12 @@ jQuery(document).ready(function($){ 'use strict';
 				}
 				overlay.removeClass('closed');
 			};
-			if (support.transitions) {
-				overlay.addEventListener( transEndEventName, onEndTransitionFn );
-			}
-			else {
-				onEndTransitionFn();
-			}
+			// if (support.transitions) {
+				// overlay.addEventListener( transEndEventName, onEndTransitionFn );
+			// }
+			// else {
+				// onEndTransitionFn();
+			// }
 		}
 		else if (overlay.hasClass('closed')) {
 			overlay.addClass('open');

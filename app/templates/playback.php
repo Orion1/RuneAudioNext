@@ -26,7 +26,7 @@
                 <?php if ($this->coverart == 1): ?>
 				<div class="col-sm-<?=$this->colspan ?> coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-					<p class="txtmid"><a href="#" id="social-overlay-open" class="btn btn-default" title="Share this track"><i class="fa fa-share"></i></a></p>
+					<a href="#" id="social-overlay-open" class="btn btn-default" title="Share this track"><i class="fa fa-share"></i></a>
 				</div>
 				<?php endif ?>
                 <div class="col-sm-<?=$this->colspan ?> volume <?=$this->volume['divclass'] ?>">

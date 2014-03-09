@@ -428,6 +428,15 @@ function getDB(cmd, path, browsemode, uplevel){
 
 }
 
+function parseDirble(){
+	$.ajax({
+		url: 'http://dirble.com/dirapi/stations/apikey/134aabbce2878ce0dbfdb23fb3b46265eded085b/id/1',
+		success: function(data){
+			console.log(data);
+		}
+    });
+}
+
 function populateDB(data, path, uplevel, keyword){
 	// console.log('PATH =', path);
 	// console.log('KEYWORD =', keyword);
@@ -443,8 +452,7 @@ function populateDB(data, path, uplevel, keyword){
 		$('#home-blocks').addClass('hide');
 		if (path) GUI.currentpath = path;
 		// console.log(' new GUI.currentpath = ', GUI.currentpath);
-		var DBlist = $('ul.database');
-		DBlist.html('');
+		document.getElementById('database-entries').innerHTML = '';
 		if (keyword) {
 			var results = (data.length) ? data.length : '0';
 			var s = (data.length == 1) ? '' : 's'
@@ -453,10 +461,13 @@ function populateDB(data, path, uplevel, keyword){
 		}
 		var content = '';
 		var i = 0;
-		for (i = 0; i < data.length; i++){
-			content = parseResponse(data, 'db', i, path);
-			DBlist.append(content);
+		if (path === 'Webradio') {
+			parseDirble();
 		}
+		for (i = 0; i < data.length; i++){
+			content += parseResponse(data, 'db', i, path);
+		}
+		document.getElementById('database-entries').innerHTML = content;
 		$('span', '#db-currentpath').html(path);
 		if (uplevel) {
 			// console.log('PREV LEVEL');
