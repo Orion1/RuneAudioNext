@@ -423,12 +423,23 @@ jQuery(document).ready(function($){ 'use strict';
         var el = $(this);
         db.find('li').removeClass('active');
         el.parent().addClass('active');
-        if ( !el.hasClass('sx') ) {
-            var path = el.parent().data('path');
-			if ( el.hasClass('db-dirble-folder') ) {
-				
+        if ( !el.hasClass('sx') ) { // TODO: check this conditional
+			if ( el.hasClass('db-dirble') ) {
+				if ( el.hasClass('db-folder') ) {
+					var path = $('span', '#db-currentpath').html();
+					var querytype = 'stations';
+					var args = el.parent().data('path');
+				}
+				getDB({
+					path: path,
+					browsemode: GUI.browsemode,
+					plugin: 'Dirble',
+					querytype: querytype,
+					args : args
+				});
 			} else if ( el.hasClass('db-folder') ) {
-                //GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);
+                var path = el.parent().data('path');
+				//GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);
                 var entryID = el.parent().attr('id');
                 entryID = entryID.replace('db-','');
                 GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;

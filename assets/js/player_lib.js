@@ -322,7 +322,8 @@ function getDB(options){
 		browsemode = options.browsemode || '',
 		uplevel = options.uplevel || '',
 		plugin = options.plugin || '',
-		querytype = options.querytype || '';
+		querytype = options.querytype || '',
+		args = options.args || '';
 		
 	// DEBUG
 	// console.log('OPTIONS: cmd = ' + cmd + ', path = ' + path + ', browsemode = ' + browsemode + ', uplevel = ' + uplevel + ', plugin = ' + plugin);
@@ -330,7 +331,7 @@ function getDB(options){
 	if (plugin !== '') {
 	// plugins
 		if (plugin === 'Dirble') {
-			$.post('/db/?cmd=dirble', { 'querytype': (querytype === '') ? 'categories' : querytype, 'args': '' }, function(data){
+			$.post('/db/?cmd=dirble', { 'querytype': (querytype === '') ? 'categories' : querytype, 'args': args }, function(data){
 				populateDB({
 					data: data,
 					path: path,
@@ -523,7 +524,7 @@ function parseResponse(options) {
 			if (querytype === '') {
 				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 				content += inputArr[i].id;
-				content += '"><i class="fa fa-folder-open db-icon db-folder db-browse"></i><div class="db-entry db-dirble-folder db-browse">';
+				content += '"><i class="fa fa-folder-open db-icon db-folder db-browse"></i><div class="db-entry db-folder db-dirble db-browse">';
 				content += inputArr[i].name;
 				content += '</div></li>';
 			} else if (querytype === 'stations') {
