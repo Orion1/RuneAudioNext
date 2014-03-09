@@ -65,7 +65,10 @@ jQuery(document).ready(function($){ 'use strict';
 
     // first GUI update
     updateGUI( GUI.json );
-    getDB('filepath', GUI.currentpath, GUI.browsemode);
+    getDB({
+		path: GUI.currentpath,
+		browsemode: GUI.browsemode
+	});
     
     // hide "connecting" layer
     if (GUI.state != 'disconnected') {
@@ -406,10 +409,13 @@ jQuery(document).ready(function($){ 'use strict';
 	
     // click on Library home block
     $('.home-block').click(function(){
-		var path = $(this).data('path');
-		// console.log('CLICKED! ', path);
 		++GUI.currentDBpos[10];
-		getDB('filepath', path, GUI.browsemode, 0);
+		getDB({
+			path: $(this).data('path'),
+			browsemode: GUI.browsemode,
+			uplevel: 0,
+			plugin: $(this).data('plugin')
+		});
     });
 	
     // click on Library list entry
@@ -426,7 +432,11 @@ jQuery(document).ready(function($){ 'use strict';
                 GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
                 ++GUI.currentDBpos[10];
                 // console.log('getDB path = ', path);
-                getDB('filepath', path, GUI.browsemode, 0);
+                getDB({
+					path: path,
+					browsemode: GUI.browsemode,
+					uplevel: 0
+				});
             }
         }
     });
@@ -442,7 +452,11 @@ jQuery(document).ready(function($){ 'use strict';
 			path = cutpos !=-1 ? path.slice(0,cutpos):'';
 		}
 		// console.log('PATH =', path);
-		getDB('filepath', path, GUI.browsemode, 1);
+		getDB({
+			path: path,
+			browsemode: GUI.browsemode,
+			uplevel: 1
+		});
     });
     
     db.on('dblclick', '.db-song', function() {
@@ -450,7 +464,10 @@ jQuery(document).ready(function($){ 'use strict';
         $(this).parent().addClass('active');
         var path = $(this).parent().data('path');
         // console.log('doubleclicked path = ', path);
-        getDB('addplay', path);
+        getDB({
+			cmd: 'addplay',
+			path: path
+		});
         notify('add', path);
     });
 
@@ -465,7 +482,9 @@ jQuery(document).ready(function($){ 'use strict';
 	$('#db-search-results').click(function(){
 		$(this).addClass('hide')
 		$('#db-level-up').removeClass('hide');
-		getDB('filepath', GUI.currentpath);
+		getDB({
+			path: GUI.currentpath
+		});
     });
 
 	// context dropdown menu
@@ -474,19 +493,31 @@ jQuery(document).ready(function($){ 'use strict';
         var path = GUI.DBentry[0];
         GUI.DBentry[0] = '';
         if (dataCmd == 'add') {
-            getDB('add', path);
+            getDB({
+				cmd: 'add',
+				path: path
+			});
             notify('add', path);
         }
         if (dataCmd == 'addplay') {
-            getDB('addplay', path);
+			getDB({
+				cmd: 'addplay',
+				path: path
+			});
             notify('add', path);
         }
         if (dataCmd == 'addreplaceplay') {
-            getDB('addreplaceplay', path);
+			getDB({
+				cmd: 'addreplaceplay',
+				path: path
+			});
             notify('addreplaceplay', path);
         }
         if (dataCmd == 'update') {
-            getDB('update', path);
+			getDB({
+				cmd: 'update',
+				path: path
+			});
             notify('update', path);
         }
     });
@@ -498,7 +529,10 @@ jQuery(document).ready(function($){ 'use strict';
         var browsemode = $(this).find('span').html();
         GUI.browsemode = browsemode.slice(0,-1);
         $('#browse-mode-current').html(GUI.browsemode);
-        getDB('filepath', '', GUI.browsemode);
+		getDB({
+			path: '',
+			browsemode: GUI.browsemode
+		});
         // console.log('Browse mode set to: ', GUI.browsemode);
     });
 	

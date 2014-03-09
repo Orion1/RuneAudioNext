@@ -389,58 +389,49 @@ function parseResponse(inputArr,respType,i,inpath) {
 	return content;
 } // end parseResponse()
 
-function getDB(cmd, path, browsemode, uplevel){
-  /*
-	if (cmd == 'filepath') {
-		$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
-			populateDB(data, path, uplevel);
-		}, 'json');
-	} else if (cmd == 'add') {
-		$.post('/db/?cmd=add', { 'path': path }, function(path) {
-			// console.log('add= ', path);
-		}, 'json');
-	} else if (cmd == 'addplay') {
-		$.post('/db/?cmd=addplay', { 'path': path }, function(path) {
-			// console.log('addplay= ',path);
-		}, 'json');
-	} else if (cmd == 'addreplaceplay') {
-		$.post('/db/?cmd=addreplaceplay', { 'path': path }, function(path) {
-			// console.log('addreplaceplay= ',path);
-		}, 'json');
-	} else if (cmd == 'update') {
-		$.post('/db/?cmd=update', { 'path': path }, function(path) {
-			// console.log('update= ',path);
-		}, 'json');
-	} else if (cmd == 'search') {
-		var keyword = $('#db-search-keyword').val();
-		$.post('/db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
-			populateDB(data, path, uplevel, keyword);
-		}, 'json');
-	}
-	*/
-	// console.log('getDB', cmd+', '+path+', '+browsemode+', '+uplevel)
-	if (cmd == 'search') {
-		var keyword = $('#db-search-keyword').val();
-		$.post('/db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
-			populateDB(data, path, uplevel, keyword);
-		}, 'json');
-	} else if (cmd == 'filepath') {
-		if (path === 'Dirble') {
-			$.get('/db/?cmd=dirble', function(data){
+function getDB(options){
+	// DEFAULTS
+	var cmd = options.cmd || 'filepath';
+	var path = options.path || '';
+	var browsemode = options.browsemode || '';
+	var uplevel = options.uplevel || '';
+	var plugin = options.plugin || '';
+	console.log('OPTIONS: cmd = ' + cmd + ', path = ' + path + ', browsemode = ' + browsemode + ', uplevel = ' + uplevel + ', plugin = ' + plugin);
+	
+	if (plugin !== '') {
+		if (plugin === 'Dirble') {
+			// $.post('/db/?cmd=dirble', { 'args': args, 'querytype': querytype }, function(data){
+			$.post('/db/?cmd=dirble', { 'args': 1, 'querytype': 'id' }, function(data){
 				populateDB(data, path);
-			}, 'json');
-		} else {
-			$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
-				populateDB(data, path, uplevel);
 			}, 'json');
 		}
 	} else {
-    /* cmd === 'update', 'addplay', 'addreplaceplay', 'update' */
-		$.post('/db/?cmd='+cmd, { 'path': path }, function(path) {
-			// console.log('add= ', path);
-		}, 'json');
+		if (cmd === 'search') {
+			var keyword = $('#db-search-keyword').val();
+			$.post('/db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
+				populateDB(data, path, uplevel, keyword);
+			}, 'json');
+		} else if (cmd === 'filepath') {	
+			$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
+				populateDB(data, path, uplevel);
+			}, 'json');
+		} else {
+		/* cmd === 'update', 'addplay', 'addreplaceplay', 'update' */
+			$.post('/db/?cmd='+cmd, { 'path': path }, function(path) {
+				// console.log('add= ', path);
+			}, 'json');
+		}
 	}
+}
 
+function Dirble(cmd, path, browsemode, uplevel){
+	if (path === 'Dirble') {
+		$.post('/db/?cmd=dirble', { 'args': args, 'querytype': querytype }, function(data){
+			populateDB(data, path);
+		}, 'json');
+	} else {
+		// something
+	}
 }
  
 function populateDB(data, path, uplevel, keyword){
