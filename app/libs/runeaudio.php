@@ -949,11 +949,12 @@ echo $output;
 }
 
 function waitWorker($sleeptime,$section) {
+session_start();
 	if ($_SESSION['w_active'] == 1) {
 		do {
-			sleep($sleeptime);
-			session_start();
 			session_write_close();
+			session_start();
+			sleep($sleeptime);
 		} while ($_SESSION['w_active'] != 0);
 
 		switch ($section) {
@@ -964,32 +965,19 @@ function waitWorker($sleeptime,$section) {
 			break;
 		}
 	}
+session_write_close();
 } 
 
 function wrk_control($action,$data) {
+session_start();
 // debug
 runelog('[wrk] wrk_control('.$action.',$data)',$data);
 runelog('[wrk] current session ID: ',session_id());
-runelog('[wrk] current worker lock state ($_SESSION[w_lock]): ',$_SESSION['w_lock']);
 runelog('[wrk] current worker state(1) ($_SESSION[w_active]): ',$_SESSION['w_active']);
 runelog('[wrk] current worker action: ',$action);
 runelog('[wrk] current worker args: ',$data);
 // accept $data['action'] $data['args'] from controller 
 	switch ($action) {
-		case 'exec':
-			// if($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-			if($_SESSION['w_lock'] != 1) {
-			$_SESSION['w_queue'] = $cmd;
-			$_SESSION['w_queueargs'] = $data;
-			runelog('[wrk] current worker state(2) ($_SESSION[w_active]): ',$_SESSION['w_active']);
-			$_SESSION['w_active'] = 1;
-			$return = 1;
-			} else {
-			ui_notify('system worker', 'background job in progress...try again later.');
-			$return = 0;
-			}
-		break;
-		
 		case 'newjob':
 			// generate random jobid
 			$wjob = array( 
@@ -1001,6 +989,7 @@ runelog('[wrk] current worker args: ',$data);
 			array_push($_SESSION['w_queue'], $wjob);
 		break;	
 	}
+session_write_close();
 return $return;
 }
 
