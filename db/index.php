@@ -148,7 +148,7 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 						echo curlGet('http://dirble.com/dirapi/continent/apikey'.$dirblekey.'/continent/'.$_POST['args']);
 						}
 						// Get stations by country
-						if ($_POST['querytype'] === 'continent' && isset($_POST['args'])) {
+						if ($_POST['querytype'] === 'country' && isset($_POST['args'])) {
 						echo curlGet('http://dirble.com/dirapi/country/apikey'.$dirblekey.'/country/'.$_POST['args']);
 						}
 						// Add station
