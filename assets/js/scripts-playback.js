@@ -425,7 +425,9 @@ jQuery(document).ready(function($){ 'use strict';
         el.parent().addClass('active');
         if ( !el.hasClass('sx') ) {
             var path = el.parent().data('path');
-			if ( el.hasClass('db-folder') ) {
+			if ( el.hasClass('db-dirble-folder') ) {
+				
+			} else if ( el.hasClass('db-folder') ) {
                 //GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);
                 var entryID = el.parent().attr('id');
                 entryID = entryID.replace('db-','');
@@ -480,7 +482,7 @@ jQuery(document).ready(function($){ 'use strict';
 
 	// close search results
 	$('#db-search-results').click(function(){
-		$(this).addClass('hide')
+		$(this).addClass('hide');
 		$('#db-level-up').removeClass('hide');
 		getDB({
 			path: GUI.currentpath

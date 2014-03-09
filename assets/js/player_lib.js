@@ -314,20 +314,164 @@ function parsePath(str) {
 	return songpath;
 }
 
-function parseResponse(inputArr,respType,i,inpath) {		
+// launch the right AJAX call for Library rendering
+function getDB(options){
+	// DEFAULTS
+	var cmd = options.cmd || 'filepath',
+		path = options.path || '',
+		browsemode = options.browsemode || '',
+		uplevel = options.uplevel || '',
+		plugin = options.plugin || '',
+		querytype = options.querytype || '';
+		
+	// DEBUG
+	// console.log('OPTIONS: cmd = ' + cmd + ', path = ' + path + ', browsemode = ' + browsemode + ', uplevel = ' + uplevel + ', plugin = ' + plugin);
+	
+	if (plugin !== '') {
+	// plugins
+		if (plugin === 'Dirble') {
+			$.post('/db/?cmd=dirble', { 'querytype': (querytype === '') ? 'categories' : querytype, 'args': '' }, function(data){
+				populateDB({
+					data: data,
+					path: path,
+					plugin: plugin,
+					querytype: querytype
+				});
+			}, 'json');
+		}
+	} else {
+	// normal browsing
+		if (cmd === 'search') {
+			var keyword = $('#db-search-keyword').val();
+			$.post('/db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
+				populateDB({
+					data: data,
+					path: path,
+					uplevel: uplevel,
+					keyword: keyword
+				});
+			}, 'json');
+		} else if (cmd === 'filepath') {	
+			$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
+				populateDB({
+					data: data,
+					path: path,
+					uplevel: uplevel
+				});
+			}, 'json');
+		} else {
+		// EXAMPLE: cmd === 'update', 'addplay', 'addreplaceplay', 'update'
+			$.post('/db/?cmd='+cmd, { 'path': path }, function(path) {
+				// console.log('add= ', path);
+			}, 'json');
+		}
+	}
+}
+
+// populate the Library view lists with entries
+function populateDB(options){
+	// DEFAULTS
+	var data = options.data || '',
+		path = options.path || '',
+		uplevel = options.uplevel || 0,
+		keyword = options.keyword || '',
+		plugin = options.plugin || '',
+		querytype = options.querytype || '';
+		
+	// DEBUG
+	// console.log('OPTIONS: data = ' + data + ', path = ' + path + ', uplevel = ' + uplevel + ', keyword = ' + keyword +', querytype = ' + querytype);
+
+	if (plugin !== '') {
+		if (plugin === 'Dirble') {
+			$('#database-entries').removeClass('hide');
+			$('#db-level-up').removeClass('hide');
+			$('#home-blocks').addClass('hide');
+			if (path) GUI.currentpath = path;
+			document.getElementById('database-entries').innerHTML = '';
+			var content = '';
+			var i = 0;
+			for (i = 0; i < data.length; i++){
+				content += parseResponse({
+					inputArr: data,
+					respType: 'Dirble',
+					i: i,
+					querytype: querytype
+				});
+			}
+			document.getElementById('database-entries').innerHTML = content;
+			$('span', '#db-currentpath').html(path);
+		}
+	} else {
+		if (path === '' && keyword === '') {
+			$('#database-entries').addClass('hide');
+			$('#db-level-up').addClass('hide');
+			$('#home-blocks').removeClass('hide');
+			$('span', '#db-currentpath').html('');
+			return;
+		} else {
+			$('#database-entries').removeClass('hide');
+			$('#db-level-up').removeClass('hide');
+			$('#home-blocks').addClass('hide');
+			if (path) GUI.currentpath = path;
+			// console.log(' new GUI.currentpath = ', GUI.currentpath);
+			document.getElementById('database-entries').innerHTML = '';
+			if (keyword !== '') {
+				var results = (data.length) ? data.length : '0';
+				var s = (data.length == 1) ? '' : 's'
+				$('#db-level-up').addClass('hide');
+				$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
+			}
+			var content = '';
+			var i = 0;
+			for (i = 0; i < data.length; i++){
+				content += parseResponse({
+					inputArr: data,
+					respType: 'db',
+					i: i,
+					inpath: path
+				});
+			}
+			document.getElementById('database-entries').innerHTML = content;
+			$('span', '#db-currentpath').html(path);
+			if (uplevel) {
+				// console.log('PREV LEVEL');
+				$('#db-' + GUI.currentDBpos[GUI.currentDBpos[10]]).addClass('active');
+				customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
+			} else {
+				// console.log('NEXT LEVEL');
+				customScroll('db', 0, 0);
+			}
+			// DEBUG
+			// console.log('GUI.currentDBpos = ', GUI.currentDBpos);
+			// console.log('level = ', GUI.currentDBpos[10]);
+			// console.log('highlighted entry = ', GUI.currentDBpos[GUI.currentDBpos[10]]);
+		}
+	}
+} // end populateDB()
+
+// parse the JSON response and return the formatted code
+function parseResponse(options) {
+	// DEFAULTS
+	var inputArr = options.inputArr || '',
+		respType = options.respType || '',
+		i = options.i || 0,
+		inpath = options.inpath || '',
+		querytype = options.querytype || '';
+		
+	// DEBUG
+	// console.log('OPTIONS: inputArr = ' + inputArr + ', respType = ' + respType + ', i = ' + i + ', inpath = ' + inpath +', querytype = ' + querytype);
+		
 	switch (respType) {
 		case 'playlist':		
 			// code placeholder
 		break;
 		
 		case 'db':
-			// console.log('inpath = ',inpath);
-			// console.log('inputArr[i].file= :',inputArr[i].file);
 			if (inpath === '' && inputArr[i].file !== undefined) {
 				inpath = parsePath(inputArr[i].file)
 			}
 			if (inputArr[i].file !== undefined || inpath === 'Webradio') {
-				//debug
+				// DEBUG
 				// console.log('inputArr[i].file: ', inputArr[i].file);
 				// console.log('inputArr[i].Title: ', inputArr[i].Title);
 				// console.log('inputArr[i].Artist: ', inputArr[i].Artist);
@@ -375,114 +519,27 @@ function parseResponse(inputArr,respType,i,inpath) {
 			}
 		break;
 		
-		case 'webradio':
-			content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
-			content += inputArr[i].streamurl;
-			content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
-			content += inputArr[i].name + ' <em class="songtime">' + inputArr[i].bitrate + '</em>';
-			content += ' <span>';
-			content += inputArr[i].website;
-			content += '</span></div></li>';
+		case 'Dirble':
+			if (querytype === '') {
+				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+				content += inputArr[i].id;
+				content += '"><i class="fa fa-folder-open db-icon db-folder db-browse"></i><div class="db-entry db-dirble-folder db-browse">';
+				content += inputArr[i].name;
+				content += '</div></li>';
+			} else if (querytype === 'stations') {
+				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+				content += inputArr[i].streamurl;
+				content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+				content += inputArr[i].name + ' <em class="songtime">' + inputArr[i].bitrate + '</em>';
+				content += ' <span>';
+				content += inputArr[i].website;
+				content += '</span></div></li>';
+			}
 		break;
 		
 	}
 	return content;
 } // end parseResponse()
-
-function getDB(options){
-	// DEFAULTS
-	var cmd = options.cmd || 'filepath';
-	var path = options.path || '';
-	var browsemode = options.browsemode || '';
-	var uplevel = options.uplevel || '';
-	var plugin = options.plugin || '';
-	console.log('OPTIONS: cmd = ' + cmd + ', path = ' + path + ', browsemode = ' + browsemode + ', uplevel = ' + uplevel + ', plugin = ' + plugin);
-	
-	if (plugin !== '') {
-		if (plugin === 'Dirble') {
-			// $.post('/db/?cmd=dirble', { 'args': args, 'querytype': querytype }, function(data){
-			$.post('/db/?cmd=dirble', { 'args': 1, 'querytype': 'id' }, function(data){
-				populateDB(data, path);
-			}, 'json');
-		}
-	} else {
-		if (cmd === 'search') {
-			var keyword = $('#db-search-keyword').val();
-			$.post('/db/?querytype=' + browsemode + '&cmd=search', { 'query': keyword }, function(data) {
-				populateDB(data, path, uplevel, keyword);
-			}, 'json');
-		} else if (cmd === 'filepath') {	
-			$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
-				populateDB(data, path, uplevel);
-			}, 'json');
-		} else {
-		/* cmd === 'update', 'addplay', 'addreplaceplay', 'update' */
-			$.post('/db/?cmd='+cmd, { 'path': path }, function(path) {
-				// console.log('add= ', path);
-			}, 'json');
-		}
-	}
-}
-
-function Dirble(cmd, path, browsemode, uplevel){
-	if (path === 'Dirble') {
-		$.post('/db/?cmd=dirble', { 'args': args, 'querytype': querytype }, function(data){
-			populateDB(data, path);
-		}, 'json');
-	} else {
-		// something
-	}
-}
- 
-function populateDB(data, path, uplevel, keyword){
-	// console.log('PATH =', path);
-	// console.log('KEYWORD =', keyword);
-	if (path === '' && keyword === undefined) {
-		$('#database-entries').addClass('hide');
-		$('#db-level-up').addClass('hide');
-		$('#home-blocks').removeClass('hide');
-		$('span', '#db-currentpath').html('');
-		return;
-	} else {
-		$('#database-entries').removeClass('hide');
-		$('#db-level-up').removeClass('hide');
-		$('#home-blocks').addClass('hide');
-		if (path) GUI.currentpath = path;
-		// console.log(' new GUI.currentpath = ', GUI.currentpath);
-		document.getElementById('database-entries').innerHTML = '';
-		if (keyword) {
-			var results = (data.length) ? data.length : '0';
-			var s = (data.length == 1) ? '' : 's'
-			$('#db-level-up').addClass('hide');
-			$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
-		}
-		var content = '';
-		var i = 0;
-		if (path === 'Dirble') {
-			for (i = 0; i < data.length; i++){
-				content += parseResponse(data, 'webradio', i);
-			}
-		} else {
-			for (i = 0; i < data.length; i++){
-				content += parseResponse(data, 'db', i, path);
-			}
-		}
-		document.getElementById('database-entries').innerHTML = content;
-		$('span', '#db-currentpath').html(path);
-		if (uplevel) {
-			// console.log('PREV LEVEL');
-			$('#db-' + GUI.currentDBpos[GUI.currentDBpos[10]]).addClass('active');
-			customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
-		} else {
-			// console.log('NEXT LEVEL');
-			customScroll('db', 0, 0);
-		}
-		// DEBUG
-		// console.log('GUI.currentDBpos = ', GUI.currentDBpos);
-		// console.log('livello = ', GUI.currentDBpos[10]);
-		// console.log('elemento da illuminare = ', GUI.currentDBpos[GUI.currentDBpos[10]]);
-	}
-}
 
 // update the Playback UI
 function updateGUI(json){
