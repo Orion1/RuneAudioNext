@@ -125,8 +125,38 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				break;
 				
 				case 'dirble':
+					$dirblekey= '134aabbce2878ce0dbfdb23fb3b46265eded085b';
 					if (isset($_POST['querytype'])) {
-					echo curlGet('http://dirble.com/dirapi/stations/apikey/134aabbce2878ce0dbfdb23fb3b46265eded085b/'.$_POST['querytype'].'/'.$_POST['args']);
+						// Get primaryCategories
+						if ($_POST['querytype'] === 'categories' OR $_POST['querytype'] === 'primaryCategories' ) {
+						echo curlGet('http://dirble.com/dirapi/'. $_POST['querytype'].'/apikey/'.$dirblekey);
+						}
+						// Get childCategories by primaryid
+						if ($_POST['querytype'] === 'childCategories' && isset($_POST['args'])) {
+						echo curlGet('http://dirble.com/dirapi/childCategories/apikey/'.$dirblekey.'/primaryid/'.$_POST['args']);
+						}
+						// Get station by ID
+						if ($_POST['querytype'] === 'stations' && isset($_POST['args'])) {
+						echo curlGet('http://dirble.com/dirapi/stations/apikey/'.$dirblekey.'/id/'.$_POST['args']);
+						}
+						// Search radio station
+						if ($_POST['querytype'] === 'search' && isset($_POST['args'])) {
+						echo curlGet('http://dirble.com/dirapi/search/apikey/'.$dirblekey.'/search/'.$_POST['args']);
+						}
+						// Get stations by continent
+						if ($_POST['querytype'] === 'continent' && isset($_POST['args'])) {
+						echo curlGet('http://dirble.com/dirapi/continent/apikey'.$dirblekey.'/continent/'.$_POST['args']);
+						}
+						// Get stations by country
+						if ($_POST['querytype'] === 'continent' && isset($_POST['args'])) {
+						echo curlGet('http://dirble.com/dirapi/country/apikey'.$dirblekey.'/country/'.$_POST['args']);
+						}
+						// Add station
+						if ($_POST['querytype'] === 'addstation' && isset($_POST['args'])) {
+						// input array $_POST['args'] = array('name' => 'value', 'streamurl' => 'value', 'website' => 'value', 'country' => 'value', 'directory' => 'value') 
+						echo curlPost('http://dirble.com/dirapi/station/apikey/'.$dirblekey, $_POST['args']);
+						}
+
 					}
 				break;
 				}
