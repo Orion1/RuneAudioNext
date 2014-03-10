@@ -54,4 +54,7 @@ $db = 'sqlite:'.$_SERVER['HOME'].'/db/player.db';
 runelog('--- [connection.php] >>> OPEN MPD SOCKET --- [connection.php] ---','');
 // connect to MPD daemon
 $mpd = openMpdSocket('/run/mpd.sock') ;
+// Connect to Redis backend
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
 ?>

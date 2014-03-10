@@ -121,13 +121,14 @@ if (isset($_POST)) {
 
 			if (isset($_POST['features']['airplay'])) {
 				// create worker job (start shairport)
-				wrk_control('newjob', $data = array( 'wrkcmd' => 'airplay','action' => 'start' ));
+				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay','action' => 'start' ));
 			} else {
 				if ($_SESSION['airplay'] != 0) {
 				// create worker job (stop shairport)
-				wrk_control('newjob', $data = array( 'wrkcmd' => 'airplay','action' => 'stop' ));
+				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay','action' => 'stop' ));
 				}
 			}
+			
 	/*
 			if (isset($_POST['features']['udevil'])) {
 				// save new value on SQLite datastore
@@ -204,5 +205,6 @@ if (isset($_POST)) {
 */
 }
 // wait for worker output if $_SESSION['w_active'] = 1
-waitWorker(1);
+waitSyWrk($redis,$jobID);
+$template->airplay = $redis->get('airplay');
 ?>

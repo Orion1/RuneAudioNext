@@ -65,7 +65,7 @@
 				<label for="airplay" class="control-label col-sm-2">AirPlay</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="features[airplay]" type="checkbox" value="1"<?php if($_SESSION['airplay'] == 1): ?> checked="checked" <?php endif ?>>
+						<input name="features[airplay]" type="checkbox" value="1"<?php if($this->airplay == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>

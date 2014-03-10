@@ -968,29 +968,34 @@ session_start();
 session_write_close();
 } 
 
-function wrk_control($action,$data) {
-session_start();
-// debug
-runelog('[wrk] wrk_control('.$action.',$data)',$data);
-runelog('[wrk] current session ID: ',session_id());
-runelog('[wrk] current worker state(1) ($_SESSION[w_active]): ',$_SESSION['w_active']);
-runelog('[wrk] current worker action: ',$action);
-runelog('[wrk] current worker args: ',$data);
+function waitSyWrk($redis,$jobID) {
+if (isset($jobID)) {
+usleep(450000);
+} else {
+$jobID = 'fake';
+}
+	while ($redis->sIsMember('w_lock', $jobID)) {
+		usleep(450000);
+		} 
+}
+
+function wrk_control($redis,$action,$data) {
 // accept $data['action'] $data['args'] from controller 
 	switch ($action) {
 		case 'newjob':
 			// generate random jobid
+			$jobID = wrk_jobID();
 			$wjob = array( 
-				'jobID' => wrk_jobID(),
 				'wrkcmd' => $data['wrkcmd'],
 				'action' => $data['action'],
 				'args' => $data['args']
 			);
-			array_push($_SESSION['w_queue'], $wjob);
+			$redis->hSet('w_queue', $jobID, json_encode($wjob));
 		break;	
 	}
-session_write_close();
-return $return;
+// debug
+runelog('[wrk] wrk_control($redis,'.$action.','.$data.') jobID=', $jobID);
+return $jobID;
 }
 
 // search a string in a file and replace with another string the whole line.
@@ -1688,6 +1693,7 @@ return $hwmixerdev;
 }
 
 function ui_notify($title = null, $text, $icon = null, $opacity = null, $hide = null) {
+	usleep(500000);
 	$output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide );
 	ui_render('notify',json_encode($output));
 }
