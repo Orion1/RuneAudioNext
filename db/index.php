@@ -127,6 +127,11 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				case 'dirble':
 					$dirblekey= '134aabbce2878ce0dbfdb23fb3b46265eded085b';
 					if (isset($_POST['querytype'])) {
+						// if ($_POST['querytype'] === 'amountStation') {
+						if ($_POST['querytype'] === 'amountStation') {
+						$dirble = json_decode(curlGet('http://dirble.com/dirapi/amountStation/apikey/'.$dirblekey));
+						echo $dirble->amount;
+						}
 						// Get primaryCategories
 						if ($_POST['querytype'] === 'categories' OR $_POST['querytype'] === 'primaryCategories' ) {
 						echo curlGet('http://dirble.com/dirapi/'. $_POST['querytype'].'/apikey/'.$dirblekey);
@@ -156,7 +161,7 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 						// input array $_POST['args'] = array('name' => 'value', 'streamurl' => 'value', 'website' => 'value', 'country' => 'value', 'directory' => 'value') 
 						echo curlPost('http://dirble.com/dirapi/station/apikey/'.$dirblekey, $_POST['args']);
 						}
-
+						
 					}
 				break;
 				}
