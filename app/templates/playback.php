@@ -175,9 +175,9 @@
     </div>
 	<div id="context-menu-webradio" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="wradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="#notarget" data-cmd="wraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="#notarget" data-cmd="wraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="#notarget" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="#notarget" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
             <li><a href="#notarget" data-cmd="wredit"><i class="fa fa-edit sx"></i> Edit</a></li>
             <li><a href="#notarget" data-cmd="wrdelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
         </ul>

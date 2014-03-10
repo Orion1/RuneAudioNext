@@ -489,8 +489,8 @@ function parseResponse(options) {
 					content += '</span></div></li>';
 				} else {
 					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
-					content += inputArr[i].file;
 					if (inpath !== 'Webradio') {
+						content += inputArr[i].file;
 						content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
 						content += inputArr[i].file.replace(inpath + '/', '') + ' <em class="songtime">' + timeConvert(inputArr[i].Time) + '</em>';
 						content += ' <span>';
@@ -499,6 +499,7 @@ function parseResponse(options) {
 						content += '</span></div></li>';
 					} else {
 					// case Webradio
+						content += inputArr[i].playlist;
 						content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
 						content += inputArr[i].playlist.replace(inpath + '/', '').replace('.' + inputArr[i].fileext , '');
 						content += ' <span>';
