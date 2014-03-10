@@ -423,10 +423,10 @@ jQuery(document).ready(function($){ 'use strict';
         var el = $(this);
         db.find('li').removeClass('active');
         el.parent().addClass('active');
-        if ( !el.hasClass('sx') ) { // TODO: check this conditional
-			if ( el.hasClass('db-dirble') ) {
-				if ( el.hasClass('db-folder') ) {
-					var path = $('span', '#db-currentpath').html();
+        if (!el.hasClass('sx')) { // TODO: check this conditional
+			if (el.hasClass('db-dirble')) {
+				if (el.hasClass('db-folder')) {
+					var path = GUI.currentpath  + '/' + el.html();
 					var querytype = 'stations';
 					var args = el.parent().data('path');
 				}
@@ -588,7 +588,7 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// open tab from external link
     var url = document.location.toString();
-	console.log('url = ', url);
+	// console.log('url = ', url);
     if ( url.match('#') ) {
 		$('#menu-bottom a[href="/#' + url.split('#')[1] + '"]').tab('show');
     }

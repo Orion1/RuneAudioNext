@@ -332,13 +332,18 @@ function getDB(options){
 	// plugins
 		if (plugin === 'Dirble') {
 			$.post('/db/?cmd=dirble', { 'querytype': (querytype === '') ? 'categories' : querytype, 'args': args }, function(data){
-				populateDB({
-					data: data,
-					path: path,
-					plugin: plugin,
-					querytype: querytype
-				});
+				if (querytype === 'amountStation') {
+					$('#home-count-dirble').html('(' + data + ')');
+				} else {
+					populateDB({
+						data: data,
+						path: path,
+						plugin: plugin,
+						querytype: querytype
+					});
+				}
 			}, 'json');
+			
 		}
 	} else {
 	// normal browsing
@@ -654,15 +659,15 @@ function refreshState(state) {
         $(current).addClass('active');
     }
 	if( GUI.json['song'] && GUI.json['playlistlength'] ){ 
-    $('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
-  } else {
-    $('#playlist-position').html( $('<a>',{
-      text: 'Add the vibe!', 
-      title: 'Load some tracks on your Library',
-      href: '#panel-sx',
-      'data-toggle': 'tab'
-    }) ); // TODO: highlight the "Library" tab
-  }
+		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
+	} else {
+		$('#playlist-position').html( $('<a>',{
+			text: 'Add the vibe!', 
+			title: 'Load some tracks on your Library',
+			href: '#panel-sx',
+			'data-toggle': 'tab'
+		}) ); // TODO: highlight the "Library" tab
+	}
 	// show UpdateDB icon
 	// console.log('dbupdate = ', GUI.json['updating_db']);
 	if (typeof GUI.json['updating_db'] != 'undefined') {
@@ -670,6 +675,12 @@ function refreshState(state) {
 	} else {
 		$('.open-panel-sx').html('<i class="fa fa-music sx"></i> Library');
 	}
+	
+	// Library main screen counters
+	getDB({
+		plugin: 'Dirble',
+		querytype: 'amountStation',
+	});
 }
 
 // update countdown
