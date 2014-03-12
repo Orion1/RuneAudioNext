@@ -309,7 +309,7 @@ html, body {
     margin-bottom: 20px;
 }
 #playlist-position, #format-bitrate {
-	color: lighten(@brand-alt, 30%);
+	color: lighten(@brand-alt, 20%);
 }
 .knobs {
 	margin-top: 30px;
@@ -452,7 +452,8 @@ html, body {
     width: auto;
     height: 40px;
     padding: 0;
-    background: #111D29;
+    // background: #111D29;
+    background: darken(@brand-alt, 16%);
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;
@@ -481,12 +482,12 @@ html, body {
 .pl-prevPage, .db-prevPage, .pl-firstPage, .db-firstPage, .btnlist-top {
 	top: 40px;
 	padding: 0 10px;
-	border-top: 1px solid #1B2D3F;
+	// border-top: 1px solid darken(@brand-alt, 20%);
 }
 .pl-nextPage, .db-nextPage, .pl-lastPage, .db-lastPage, .btnlist-bottom {
 	bottom: 40px;
 	padding: 0 10px;
-	border-bottom: 1px solid #1B2D3F;
+	// border-bottom: 1px solid darken(@brand-alt, 20%);
 }
 .keyword {
     color: @brand-primary;
@@ -506,7 +507,7 @@ html, body {
     height: 49px;
     margin: 0;
     background: #000;
-    border-bottom: 1px solid #111D29;
+    border-bottom: 1px solid darken(@brand-alt, 16%);
     color: @text-color;
     cursor: pointer;
     font-size: 15px;
@@ -684,7 +685,7 @@ html, body {
     display: block;
 	white-space: nowrap;
     float: right;
-    margin: 3px 0 0 20px;
+    margin: 4px 0 0 20px;
     z-index: 1001;
 	input {
 		display: inline-block;
@@ -713,17 +714,19 @@ html, body {
 	padding: 20px 30px;
 	background: darken(@brand-alt, 20%);
 	border-radius: @border-radius-base;
-	color: lighten(@brand-alt, 30%);
+	color: lighten(@brand-alt, 20%);
 	text-align: center;
 	i {
 		display: inline-block;
-		width: 50px;
-		height: 50px;
-		line-height: 50px;
-		font-size: 50px;
+		width: 40px;
+		height: 40px;
+		line-height: 40px;
+		font-size: 40px;
 		text-align: center;
+		color: lighten(@brand-alt, 20%);
 	}
 	h3 {
+		margin-top: 10px;
 		color: @text-color;
 	}
 	.home-action {
