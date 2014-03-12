@@ -232,9 +232,9 @@
 	<nav>
 		<ul>
 			<li><span>Share this track</span></li>
-			<li><a href="#" class="btn btn-default btn-lg btn-block share-twitter"><i class="fa fa-twitter sx"></i> Share on Twitter</a></li>
-			<li><a href="#" class="btn btn-default btn-lg btn-block share-facebook"><i class="fa fa-facebook sx"></i> Share on Facebook</a></li>
-			<li><a href="#" class="btn btn-default btn-lg btn-block share-google-plus"><i class="fa fa-google-plus sx"></i> Share on Google+</a></li>
+			<li><a id="urlTwitter" href="#" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-twitter"><i class="fa fa-twitter sx"></i> Share on Twitter</a></li>
+			<li><a id="urlFacebook" href="#" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-facebook"><i class="fa fa-facebook sx"></i> Share on Facebook</a></li>
+			<li><a id="urlGooglePlus" href="#" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-google-plus"><i class="fa fa-google-plus sx"></i> Share on Google+</a></li>
 			<li><button type="button" class="overlay-close btn btn-link"><i class="fa fa-times"></i> close this screen</button></li>
 		</ul>
 	</nav>

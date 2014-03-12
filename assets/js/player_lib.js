@@ -270,7 +270,7 @@ function getPlaylistPlain(data, json){
 			}
 			if (name !== '') {
 				title = '<i class="fa fa-microphone"></i>' + name;
-				bottomline = 'URL: ' + path;
+				bottomline = 'URL: ' + (path === '') ? str : path;
 				totaltime = '';
 			} else {
 				totaltime = '<em class="songtime">' + timeConvert2(time) + '</em>';

@@ -309,7 +309,7 @@ html, body {
     margin-bottom: 20px;
 }
 #playlist-position, #format-bitrate {
-    color: #8FA7BF;
+	color: lighten(@brand-alt, 30%);
 }
 .knobs {
 	margin-top: 30px;
@@ -713,6 +713,7 @@ html, body {
 	padding: 20px 30px;
 	background: darken(@brand-alt, 20%);
 	border-radius: @border-radius-base;
+	color: lighten(@brand-alt, 30%);
 	text-align: center;
 	i {
 		display: inline-block;
@@ -721,6 +722,9 @@ html, body {
 		line-height: 50px;
 		font-size: 50px;
 		text-align: center;
+	}
+	h3 {
+		color: @text-color;
 	}
 	.home-action {
 		display: block;

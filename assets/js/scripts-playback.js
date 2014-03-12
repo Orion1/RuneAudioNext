@@ -642,6 +642,12 @@ jQuery(document).ready(function($){ 'use strict';
 		}
 		else if (overlay.hasClass('closed')) {
 			overlay.addClass('open');
+			var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.json['currentsong'].replace(/\s+/g, '+') + '+by+' + GUI.json['currentartist'].replace(/\s+/g, '+') + '+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
+			var urlFacebook = 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup';
+			var urlGooglePlus = 'https://plus.google.com/share?url=http%3A%2F%2Fwww.runeaudio.com%2F';
+			$('#urlTwitter').attr('href', urlTwitter);
+			$('#urlFacebook').attr('href', urlFacebook);
+			$('#urlGooglePlus').attr('href', urlGooglePlus);
 		}
 	}
 	triggerBttn.click(function(){
