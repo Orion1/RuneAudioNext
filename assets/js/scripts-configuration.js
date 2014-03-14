@@ -245,16 +245,13 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	if( $('#section-settings').length ){
 	
-		// show/hide Last.fm user/pass form based on select value (section Features management)       
-		$('#toggleScrobblingLastfm2').change(function(){          
-			if ($(this).val() == '0') {
-				$('#lastfmAuth').hide();
-			}                                                          
-		});
-		$('#toggleScrobblingLastfm1').change(function(){          
-			if ($(this).val() == '1') {
-				$('#lastfmAuth').show();
-			}                                                       
+		// show/hide Last.fm user/pass form  
+		$('#scrobbling-lastfm').change(function(){
+			if ($(this).prop('checked')) {
+				$('#lastfmAuth').removeClass('hide');
+			} else {
+				$('#lastfmAuth').addClass('hide');
+			}                                                      
 		});
 	}
 	

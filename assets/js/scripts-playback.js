@@ -394,7 +394,6 @@ jQuery(document).ready(function($){ 'use strict';
 	// sort Queue entries
 	var sortlist = document.getElementById('playlist-entries');
 	new Sortable(sortlist, {
-		group: 'queue',
 		ghostClass: 'sortable-ghost',
 		onAdd: function (evt){
 			var itemEl = evt.item;
