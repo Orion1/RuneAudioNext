@@ -329,12 +329,14 @@ jQuery(document).ready(function($){ 'use strict';
     // click on playlist actions
     playlist.on('click', '.pl-action', function(event) {
         event.preventDefault();
-        var pos = playlist.find('.pl-action').index(this);
-        var cmd = 'trackremove&songid=' + pos;
-        var path = $(this).parent().data('path');
+        // var pos = playlist.find('.pl-action').index(this);
+        var id = $(this).parent().attr('id');
+		id = parseInt(id.replace('pl-', ''))
+        var cmd = 'deleteid ' + id;
+        // var path = $(this).parent().data('path');
         // recover datapath
 		notify('remove', '');
-        sendPLCmd(cmd);
+        sendCmd(cmd);
     });
 
     // on ready playlist tab
@@ -395,19 +397,8 @@ jQuery(document).ready(function($){ 'use strict';
 	var sortlist = document.getElementById('playlist-entries');
 	new Sortable(sortlist, {
 		ghostClass: 'sortable-ghost',
-		onAdd: function (evt){
-			var itemEl = evt.item;
-			console.log('onAdd = ', itemEl);
-		},
-
 		onUpdate: function (evt){
-			var itemEl = evt.item; // the current dragged HTMLElement
-			console.log('onUpdate = ', itemEl);
-		},
-
-		onRemove: function (evt){
-			var itemEl = evt.item;
-			console.log('onRemove = ', itemEl);
+			sortOrder(evt.item.getAttribute('id'));	
 		}
 	});
 	

@@ -63,34 +63,6 @@ function sendCmd(inputcmd) {
 	request = null;
 }
 
-// send a Library or Queue related command
-function sendPLCmd(inputcmd) {
-	/*
-	$.ajax({
-		url: '/db/?cmd='+inputcmd,
-		success: function(data){
-			GUI.halt = 1;
-			// console.log('GUI.halt (sendPLcmd)= ', GUI.halt);
-		},
-	});
-	*/
-	var request = new XMLHttpRequest;
-	request.open('GET', '/db/?cmd='+inputcmd, true);
-	request.onreadystatechange = function() {
-		if (this.readyState === 4){
-			if (this.status >= 200 && this.status < 400){
-				// Success! resp = this.responseText;
-				GUI.halt = 1;
-				// console.log('GUI.halt (sendCmd)= ', GUI.halt);
-			} else {
-				// Error
-			}
-		}
-	}
-	request.send();
-	request = null;
-}
-
 // [!] discontinued function, see displayChannel() below
 function backendRequest(){
     $.ajax({
@@ -230,7 +202,7 @@ function getPlaylist(data, json){
 function getPlaylistPlain(data, json){
 	var current = parseInt(json['song']) + 1;
 	var state = json['state'];
-	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, bottomline = '', totaltime = '';
+	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '';
 	var i, line, lines=data.split('\n'), infos=[];
 	//while( line = lines[i++] ){
 	for (i = 0; i < lines.length; i+=1){
@@ -255,7 +227,8 @@ function getPlaylistPlain(data, json){
 			str = infos[1];
 		}
 		else if( 'Id' === infos[0] ){
-			++id;
+			songid = infos[1];
+			// ++id;
 			if (title === '' || album === '') {
 				path = parsePath(str);
 				filename = str.split('/').pop();
@@ -275,7 +248,7 @@ function getPlaylistPlain(data, json){
 			} else {
 				totaltime = '<em class="songtime">' + timeConvert2(time) + '</em>';
 			}
-			content += '<li id="pl-'+id+'" class="'+ (state != "stop" && id == current ? 'active' : '') + ' clearfix"><a class="pl-action" href="#notarget" title="Remove song from playlist"><i class="fa fa-times-circle"></i></a><div class="pl-entry">' + title + totaltime + '<span>' + bottomline + '</span></div></li>';
+			content += '<li id="pl-' + songid + '" class="'+ (state != "stop" && id == current ? 'active' : '') + ' clearfix"><a class="pl-action" href="#notarget" title="Remove song from playlist"><i class="fa fa-times-circle"></i></a><div class="pl-entry">' + title + totaltime + '<span>' + bottomline + '</span></div></li>';
 			time = '', artist = '', album = '', title = '', name = '';
 		}
 	}
@@ -802,6 +775,15 @@ function renderMSG(text) {
 		hide: (notify['hide'] == undefined)
 	});
 }
+
+// sorting commands
+function sortOrder(id) {
+	var pos = $('#' + id).index();
+	id = parseInt(id.replace('pl-', ''));
+	console.log('id = ' + id + ', pos = ', pos);
+	sendCmd('moveid ' + id + ' ' + pos);
+}
+
 
 // Simple JavaScript Templating
 // John Resig - http://ejohn.org/ - MIT Licensed
