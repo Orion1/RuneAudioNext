@@ -503,16 +503,16 @@ html, body {
 }
 .list-li {
     display: block;
-    position: relative;
+    // position: relative;
     height: 49px;
-    margin: 0;
-    background: #000;
+    // margin: 0;
+    // background: @body-bg;
     border-bottom: 1px solid darken(@brand-alt, 16%);
     color: @text-color;
     cursor: pointer;
     font-size: 15px;
-    text-align: left;
-    //font-weight: bold;
+	// text-align: left;
+	.no-selectable;
 }
 .list-entry {
     margin-right: 70px;
@@ -695,7 +695,7 @@ html, body {
 		.border-right-radius(0);
 	}
 	.btn {
-		margin-top: -2px;
+		margin-top: -3px;
 		.border-left-radius(0);
 	}
 }
@@ -703,6 +703,9 @@ html, body {
 #playlist, #database {
     padding: 80px 0;
     background: #000;
+}
+.sortable-ghost {
+    background: darken(@brand-alt, 10%);
 }
 
 #home-blocks {
@@ -1126,6 +1129,20 @@ select.selectpicker {
 	}
 }
 
+
+
+// Custom mixins
+// --------------------------------------------------------------
+
+.no-selectable {
+	-webkit-user-select: none;  /* Chrome all / Safari all */
+	-moz-user-select: none;     /* Firefox all */
+	-ms-user-select: none;      /* IE 10+ */
+
+	/* No support for these yet, use at own risk */
+	-o-user-select: none;
+	user-select: none;          
+}
 
 
 // Bootstrap addons/overwrites

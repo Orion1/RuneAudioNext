@@ -313,7 +313,7 @@ jQuery(document).ready(function($){ 'use strict';
     // PLAYING QUEUE
     // ----------------------------------------------------------------------------------------------------
 
-    var playlist = $('.playlist');
+    var playlist = $('#playlist-entries');
     
 	// click on playlist entry
     playlist.on('click', '.pl-entry', function() {
@@ -391,6 +391,27 @@ jQuery(document).ready(function($){ 'use strict';
 		getPlaylists();
     });
 	
+	// sort Queue entries
+	var sortlist = document.getElementById('playlist-entries');
+	new Sortable(sortlist, {
+		group: 'queue',
+		ghostClass: 'sortable-ghost',
+		onAdd: function (evt){
+			var itemEl = evt.item;
+			console.log('onAdd = ', itemEl);
+		},
+
+		onUpdate: function (evt){
+			var itemEl = evt.item; // the current dragged HTMLElement
+			console.log('onUpdate = ', itemEl);
+		},
+
+		onRemove: function (evt){
+			var itemEl = evt.item;
+			console.log('onRemove = ', itemEl);
+		}
+	});
+	
 	
     // LIBRARY
     // ----------------------------------------------------------------------------------------------------
@@ -405,7 +426,7 @@ jQuery(document).ready(function($){ 'use strict';
 		customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
     });
     
-    var db = $('.database');
+    var db = $('#database-entries');
 	
     // click on Library home block
     $('.home-block').click(function(){
@@ -605,6 +626,9 @@ jQuery(document).ready(function($){ 'use strict';
     if( $('.ttip').length ){
         $('.ttip').tooltip();
     }
+	
+	// remove the 300ms click delay on mobile browsers
+	FastClick.attach(document.body);
 
 });
 

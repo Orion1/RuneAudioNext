@@ -41,6 +41,8 @@
 <script src="<?=$this->asset('/js/vendor/jquery.knob.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap-contextmenu.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.scrollTo.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/Sortable.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/fastclick.js')?>"></script>
 <script src="<?=$this->asset('/js/scripts-playback.js')?>"></script>
 <?php else: ?>
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
