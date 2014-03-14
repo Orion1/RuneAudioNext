@@ -192,11 +192,9 @@ return $response;
 class globalRandom extends Thread {
 	// mpd status
 	public $status;
-	public $sessionid;
 	
-    public function __construct($status,$sessionid){
+    public function __construct($status){
 		$this->status = $status;
-		// $this->joined = false;
     }
 	
     public function run() {
@@ -1166,7 +1164,7 @@ sysCmd('chmod 777 /var/www/db/player.db');
 sysCmd('poweroff');
 }
 
-function wrk_mpdconf($outpath,$db) {
+function wrk_mpdconf($outpath,$db,$redis) {
 // extract mpd.conf from SQLite datastore
 	$dbh = cfgdb_connect($db);
 	$query_cfg = "SELECT param,value_player FROM cfg_mpd WHERE value_player!=''";
@@ -1211,12 +1209,12 @@ function wrk_mpdconf($outpath,$db) {
 	$jackout = 'no';
 	$hdmiout = 'no';
 	$nullout = 'yes';
-	} else if ($_SESSION['hwplatformid'] == '01' OR $_SESSION['hwplatformid'] == '02') {
+	} else if ($redis->get('hwplatformid') == '01' OR $redis->get('hwplatformid') == '02') {
 	$usbout = 'no';
 	$jackout = 'yes';
 	$hdmiout = 'no';
 	$nullout = 'no';
-	} else if ($_SESSION['hwplatformid'] == '03' OR $_SESSION['hwplatformid'] == '04') {
+	} else if ($redis->get('hwplatformid') == '03' OR $redis->get('hwplatformid') == '04') {
 	$usbout = 'no';
 	$jackout = 'no';
 	$hdmiout = 'no';
@@ -1262,7 +1260,7 @@ function wrk_mpdconf($outpath,$db) {
 	$output .= "name\t\t\"Null\"\n";
 	$output .= "}\n\n";
 	
-	if ($_SESSION['hwplatformid'] == '01' OR $_SESSION['hwplatformid'] == '02') {
+	if ($redis->get('hwplatformid') == '01' OR $redis->get('hwplatformid') == '02') {
 	// Output #index: 2 (AnalogJack/HDMI)
 	$output .= "audio_output {\n";
 	$output .= "enabled\t\t\"".$jackout."\"\n";
@@ -1645,29 +1643,17 @@ function wrk_sysEnvCheck($arch,$install) {
 	}	
 }
 
-function wrk_NTPsync($db,$newserver) {
-$dbh = cfgdb_connect($db);
-// update NTP server in SQLite datastore
-	if (!empty($newserver)){
-			$key = 'server';
-			$value['value'] = $newserver ;
-			$value['plugin_name'] = 'ntp';
-			cfgdb_update('cfg_plugins',$dbh,$key,$value);
-	}
-$param['plugin_name'] = 'ntp';
-$param['plugin_param'] = 'server'; 
-$ntp = cfgdb_read('cfg_plugins',$dbh,$param);
-$dbh = null;
+function wrk_NTPsync($ntpserver) {
 // debug
-runelog('NTP SERVER',$ntp[0]['value']);
-	if (sysCmd('ntpdate '.$ntp[0]['value'])) {
-		return $ntp[0]['value'];
+runelog('NTP SERVER',$ntpserver);
+	if (sysCmd('ntpdate '.$ntpserver)) {
+		return $ntpserver;
 	} else {
 		return false;
 	}
 }
 
-function wrk_changeHostname($db,$newhostname) {
+function wrk_changeHostname($db,$newhostname,$redis) {
 // change system hostname
 sysCmd('hostnamectl set-hostname '.$newhostname);
 // restart avahi-daemon
@@ -1677,12 +1663,13 @@ sysCmd('systemctl stop mpd');
 $dbh = cfgdb_connect($db);
 cfgdb_update('cfg_mpd',$dbh,'zeroconf_name',$newhostname);
 $dbh = null;
+$redis->set('hostname',$newhostname);
 wrk_mpdconf('/etc',$db);
 // restart MPD
 sysCmd('systemctl start mpd');
 // restart SAMBA << TODO: use systemd!!!
 sysCmd('killall -HUP smbd && killall -HUP nmbd');
-// restart MiniDLNA
+// TODO: restart MiniDLNA
 }
 
 function alsa_findHwMixerControl($cardID) {
@@ -1692,10 +1679,42 @@ $hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"
 return $hwmixerdev;
 }
 
-function ui_notify($title = null, $text, $icon = null, $opacity = null, $hide = null) {
-	usleep(500000);
+function ui_notify($title = null, $text, $icon = null, $opacity = null, $hide = null ) {
 	$output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide );
 	ui_render('notify',json_encode($output));
+}
+
+class ui_notify_async extends Thread {
+
+	public $jobID;
+		
+    public function __construct($title, $text, $icon, $opacity, $hide, $jobID){
+		$this->title = $title;
+		$this->text = $text;
+		$this->icon = $icon;
+		$this->opacity = $opacity;
+		$this->hide = $hide;
+		$this->jobID = $jobID;
+    }
+	
+    public function run() {
+		/*
+		$redisT = new Redis();
+		$redisT->connect('127.0.0.1', 6379);
+		if (!($redisT->sIsMember('w_lock', $this->jobID))) {
+				usleep(850000);
+		} else {
+			while ($redisT->sIsMember('w_lock', $this->jobID)) {
+				// runelog('(ui_notify_async) inside while lock wait cicle',$this->jobID);
+				// usleep(850000);
+				sleep(5);
+			}
+		}
+		*/
+		usleep(850000);
+		ui_notify($this->title, $this->text);
+		// $redisT->close();
+    }
 }
 
 function ui_status($mpd,$status) {

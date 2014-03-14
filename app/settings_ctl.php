@@ -91,71 +91,34 @@ if (isset($_POST)) {
 
 	}
 
-	if (isset($_POST['orionprofile']) && $_POST['orionprofile'] != $_SESSION['orionprofile']){
-		// save new value on SQLite datastore
-		playerSession('write',$db,'orionprofile',$_POST['orionprofile']);
-		// setup worker queue (set optimization profile)
-		$data['args'] = $_POST['orionprofile']." ".$_SESSION['hwplatformid'];
-		// invoke worker
-		wrk_control('exec','orionprofile',$data);
-	}
-
-	if (isset($_POST['cmediafix'])){
-		// save new value on SQLite datastore
-		if ($_POST['cmediafix']['value'] == 1 && $_POST['cmediafix']['value'] != $_SESSION['cmediafix']) {
-		// save new value on SQLite datastore
-		playerSession('write',$db,'cmediafix',1);
-		// send notify message to UI
-		ui_notify('cmediafix', 'enabled');
-		} else {
-		// save new value on SQLite datastore
-		playerSession('write',$db,'cmediafix',0);
-		// send notify message to UI
-		ui_notify('cmediafix', 'disabled');
-		}
-	}
-
 	// ----------------------------------------------------------
 */
 	if (isset($_POST['features'])) {
 
-			if (isset($_POST['features']['airplay'])) {
+			if ($_POST['features']['airplay'] == 1) {
 				// create worker job (start shairport)
-				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay','action' => 'start' ));
+				$redis->get('airplay') == 1 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'start' ));
 			} else {
-				if ($_SESSION['airplay'] != 0) {
 				// create worker job (stop shairport)
-				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay','action' => 'stop' ));
-				}
-			}
-			
-	/*
-			if (isset($_POST['features']['udevil'])) {
-				// save new value on SQLite datastore
-				playerSession('write',$db,'udevil',1);
-				// setup worker queue (disable USB Automount)
-				$data['args'] = 'start';
-				// invoke worker
-				wrk_control('exec','udevil',$data);
-			} else {
-				// save new value on SQLite datastore
-				playerSession('write',$db,'udevil',0);
-				if ($_SESSION['udevil'] != 0) {
-				// setup worker queue (disable USB Automount)
-				$data['args'] = 'stop';
-				// invoke worker
-				wrk_control('exec','udevil',$data);
-				}
+				$redis->get('airplay') == 0 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'stop' ));
 			}
 
-			if (isset($_POST['features']['coverart'])) {
-				// save new value on SQLite datastore
-				playerSession('write',$db,'coverart',1);
+			if ($_POST['features']['udevil'] == 1) {
+				// create worker job (start udevil)
+				$redis->get('udevil') == 1 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'udevil', 'action' => 'start' ));
 			} else {
-				// save new value on SQLite datastore
-				playerSession('write',$db,'coverart',0);
+				// create worker job (stop udevil)
+				$redis->get('udevil') == 0 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'udevil', 'action' => 'stop' ));
+			}	
+
+			if ($_POST['features']['coverart'] == 1 ) {
+				$redis->get('coverart') == 1 || $redis->set('coverart', 1);
+			} else {
+				$redis->get('coverart') == 0 || $redis->set('coverart', 0);
 			}
-	
+
+
+		/*
 			if (isset($_POST['features']['scrobbling_lastfm']) && $_POST['features']['scrobbling_lastfm'] == 1 && ($_POST['features']['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm'] OR ($_POST['features']['scrobbling_lastfm']['lastfm']['pass'] != $template->lastfm['pass'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['pass'])) OR $_POST['features']['scrobbling_lastfm']['lastfm']['user'] != $template->lastfm['user'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['user'])) ) {
 			// save new value on SQLite datastore
 			playerSession('write',$db,'scrobbling_lastfm',1);
@@ -182,29 +145,47 @@ if (isset($_POST)) {
 	}
 	// ------------------------------
 
-/*
-	if (isset($_POST['hostname']) && $_POST['hostname'] != $_SESSION['hostname']) {
-		if (empty($_POST['hostname'])) {	
-		$_POST['hostname'] = 'runeaudio';
-		}
-		// setup worker queue
-		$data['args'] = $_POST['hostname'];
-		// invoke worker
-		wrk_control('exec','hostname',$data);
-	}
+			if (isset($_POST['hostname'])) {
+				if (empty($_POST['hostname']) && $_POST['hostname'] != $redis->get('hostname')) {	
+				$args = 'runeaudio';
+				} else {
+				$args = $_POST['hostname'];
+				}
+				// create worker job (change hostname)
+				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'hostname', 'args' => $args ));
+			} 
 
-	if (isset($_POST['ntpserver']) && $_POST['ntpserver'] != $_SESSION['ntpserver']) {
-		if (empty($_POST['ntpserver'])) {	
-		$_POST['ntpserver'] = 'ntp.inrim.it';
-		}
-		// setup worker queue
-		$data['args'] = $_POST['ntpserver'];
-		// invoke worker
-		wrk_control('exec','ntpserver',$data);
-	}
-*/
+			if (isset($_POST['ntpserver']) && $_POST['ntpserver'] != $redis->get('ntpserver')) {
+				if (empty($_POST['ntpserver'])) {	
+				$args = 'ntp.inrim.it';
+				} else {
+				$args = $_POST['ntpserver'];
+				}
+				// create worker job (change ntpserver)
+				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'ntpserver', 'args' => $args ));
+			} 
+			
+			if (isset($_POST['cmediafix'])){
+				if ($_POST['cmediafix'] != $redis->get('cmediafix')) {
+					$redis->set('cmediafix',$_POST['cmediafix']);
+					$template->cmediafix = $redis->get('cmediafix');
+				} 
+			}
+			
+			if (isset($_POST['orionprofile']) && $_POST['orionprofile'] != $redis->get('orionprofile')){
+				// setup worker queue (set optimization profile)
+				$args = $_POST['orionprofile']." ".$redis->get('hwplatformid');
+				// invoke worker
+				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'orionprofile', 'args' => $args ));
+			}
+			
 }
-// wait for worker output if $_SESSION['w_active'] = 1
 waitSyWrk($redis,$jobID);
+$template->hostname = $redis->get('hostname');
+$template->ntpserver = $redis->get('ntpserver');
 $template->airplay = $redis->get('airplay');
+$template->udevil = $redis->get('udevil');
+$template->coverart = $redis->get('coverart');
+$template->scrobbling_lastfm = $redis->get('scrobbling_lastfm');
+$template->cmediafix = $redis->get('cmediafix');
 ?>

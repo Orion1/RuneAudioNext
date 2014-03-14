@@ -43,6 +43,10 @@ include('/srv/http/app/libs/runeaudio.php');
 // Connect to Redis backend
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
+// initialize Redis worker data tables
+$redis->del('w_lock');
+$redis->del('w_queue');
+
 // reset worker logfile
 sysCmd('echo "--------------- start: rune_SY_wrk.php ---------------" > /var/log/runeaudio/rune_SY_wrk.log');
 runelog("WORKER rune_SY_wrk.php STARTING...",'');
@@ -283,10 +287,6 @@ runelog("env: SETUP SESSION VARS",'');
 // $_SESSION['w_queue'] = array();
 // $_SESSION['w_active'] = 0;
 
-// initialize Redis worker data tables
-$redis->del('w_lock');
-$redis->del('w_queue');
-
 // inizialize debug
 $_SESSION['debug'] = 0;
 $_SESSION['debugdata'] = '';
@@ -375,7 +375,7 @@ runelog("WORKER rune_SY_wrk.php STARTED in ".$starttime." seconds.",'');
 runelog("WORKER MAIN LOOP ---",'');
 // WORKER MAIN LOOP --- //
 while (1) {
-// session_start();
+// runelog('[wrk] loop marker ',microtime(true));
 	// monitor loop
 	if (!empty($redis->hGetAll('w_queue'))) {
 		//debug
@@ -383,6 +383,7 @@ while (1) {
 
 		// switch command queue for predefined jobs
 		foreach ($redis->hGetAll('w_queue') as $jobID => $job) {
+			runelog("(loop) start job",$jobID);
 			// decode redis data
 			$job = json_decode($job);
 			switch($job->wrkcmd) {
@@ -399,26 +400,29 @@ while (1) {
 				
 				case 'airplay':
 				
-					$redis->sAdd('w_lock',$jobID);
+					$redis->sAdd('w_lock',$jobID);			
 					if ($job->action === 'start') {
 					runelog("service: SHAIRPORT start",'');
 					sysCmd('systemctl start shairport');
-					// save new value on SQLite datastore
-					playerSession('write',$db,'airplay',1);
 					$redis->set('airplay', 1);
+					usleep(600000);
 					ui_notify('AirPlay', 'AirPlay feature enabled');
+					// send notfy to UI
+					// $notify = new ui_notify_async('AirPlay', 'AirPlay feature enabled', '', '', '', $jobID);
+					// $notify->start();
 					}
 					if ($job->action === 'stop') {
 					runelog("service: SHAIRPORT stop",'');
 					sysCmd('systemctl stop shairport');
-					// save new value on SQLite datastore
-					playerSession('write',$db,'airplay',0);
 					$redis->set('airplay', 0);
+					usleep(600000);
 					ui_notify('AirPlay', 'AirPlay feature disabled');
+					// send notfy to UI
+					// $notify = new ui_notify_async('AirPlay', 'AirPlay feature disabled', '', '', '', $jobID);
+					// $notify->start();
 					}
 					$redis->sRem('w_lock',$jobID);
-					
-					
+										
 				break;
 				
 				// case 'backup':
@@ -439,12 +443,15 @@ while (1) {
 				
 				case 'hostname':
 
-					wrk_changeHostname($db,$job['args']);
+					$redis->sAdd('w_lock',$jobID);
+					wrk_changeHostname($db,$job['args'],$redis);
 					$hn = sysCmd('hostname');
-					$_SESSION['hostname'] = $hn[0];
+					$redis->set('hostname',$hn[0]);
 					// update hash
 					$hash = md5_file('/etc/mpd.conf');
+					$redis->set('mpdconfhash',$hash);
 					playerSession('write',$db,'mpdconfhash',$hash);
+					$redis->sRem('w_lock',$jobID);
 
 				break;
 				
@@ -539,9 +546,11 @@ while (1) {
 				break;
 				
 				case 'ntpserver':
-				
-					$_SESSION['ntpserver'] = wrk_NTPsync($db,$job['args']);
-				
+					
+					$redis->sAdd('w_lock',$jobID);
+					$redis->set('ntpserver', wrk_NTPsync($redis,$job['args']));
+					$redis->sRem('w_lock',$jobID);
+					
 				break;
 
 				case 'opcache':
@@ -638,16 +647,24 @@ while (1) {
 				// break;
 					
 				case 'udevil':
-				
-					if ($job['action'] == 'start') {
+					
+					$redis->sAdd('w_lock',$jobID);
+					if ($job->action === 'start') {
 					runelog("service: UDEVIL start",'');
 					sysCmd('systemctl start udevil');
+					$redis->set('udevil', 1);
+					usleep(600000);
+					ui_notify('USB-Auto', 'USB-Automount feature enabled');
 					}
-					if ($job['action'] == 'stop') {
+					if ($job->action === 'stop') {
 					runelog("service: UDEVIL stop",'');
 					sysCmd('systemctl stop udevil');
+					$redis->set('udevil', 0);
+					usleep(600000);
+					ui_notify('USB-Auto', 'USB-Automount feature disabled');
 					}
-					
+					$redis->sRem('w_lock',$jobID);
+
 				break;
 				
 				case 'workerrestart':
@@ -657,13 +674,14 @@ while (1) {
 				break;	
 			}
 		// delete processed job from the w_queue
+		
 		$redis->hDel('w_queue',$jobID);
+		runelog("(loop) delete job_queue",$jobID);
 		} // endforeach loop
-
+		
 	} // endif loop
 // unload CPU
 usleep(500000);
 } // endwhile loop
-runelog("--- WORKER MAIN LOOP",'');
 // --- WORKER MAIN LOOP //
 ?>
