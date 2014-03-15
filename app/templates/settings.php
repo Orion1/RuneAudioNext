@@ -66,7 +66,6 @@
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
 						<input name="features[airplay]" type="checkbox" value="1"<?php if($this->airplay == 1): ?> checked="checked" <?php endif ?>>
-						<?php if($this->airplay == 1): ?><input type="hidden" name="features[airplay0]" value="0" /><?php endif ?>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>
@@ -76,7 +75,6 @@
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
 						<input name="features[udevil]" type="checkbox" value="1"<?php if($this->udevil == 1): ?> checked="checked" <?php endif ?>>
-						<?php if($this->udevil == 1): ?><input type="hidden" name="features[udevil0]" value="0" /><?php endif ?>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>
@@ -86,7 +84,6 @@
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
 						<input name="features[coverart]" type="checkbox" value="1"<?php if($this->coverart == 1): ?> checked="checked" <?php endif ?>>
-						<?php if($this->coverart == 1): ?><input type="hidden" name="features[coverart0]" value="0" /><?php endif ?>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>
@@ -96,7 +93,6 @@
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
 						<input id="scrobbling-lastfm" name="features[scrobbling_lastfm]" type="checkbox" value="1"<?php if($this->scrobbling_lastfm == 1): ?> checked="checked" <?php endif ?>>
-						<?php if($this->scrobbling_lastfm == 1): ?><input type="hidden" name="features[scrobbling_lastfm0]" value="0" /><?php endif ?>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 				</div>
@@ -132,8 +128,7 @@
 				<label for="cmediafix" class="control-label col-sm-2">CMedia fix</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="cmediafix" type="checkbox" value="1"<?php if($this->cmediafix == 1): ?> checked="checked" <?php endif ?>>
-						<?php if($this->cmediafix == 1): ?><input type="hidden" name="cmediafix" value="0" /><?php endif ?>
+						<input name="cmediafix[1]" type="checkbox" value="1"<?php if($this->cmediafix == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 					<span class="help-block">For those who have a CM6631 receiver and experiment issues (noise, crackling) between tracks with different sample rates and/or bit depth.<br> 
@@ -142,7 +137,7 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<button class="btn btn-primary btn-lg" value="1" name="apply" type="submit">Apply fixes</button>
+					<button class="btn btn-primary btn-lg" value="1" name="cmediafix[0]" type="submit">Apply fixes</button>
 				</div>
 			</div>
 		</fieldset>

@@ -112,11 +112,11 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 					}
 				break;
 				
-				case 'trackremove':
-					if (isset($_GET['songid'])) {
-					echo json_encode(remTrackQueue($mpd,$_GET['songid']));
-					}
-				break;
+				// case 'trackremove':
+					// if (isset($_GET['songid'])) {
+					// echo json_encode(remTrackQueue($mpd,$_GET['songid']));
+					// }
+				// break;
 				
 				case 'search':
 					if (isset($_POST['query']) && isset($_GET['querytype'])) {

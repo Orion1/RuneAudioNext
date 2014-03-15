@@ -389,7 +389,7 @@ while (1) {
 			switch($job->wrkcmd) {
 			
 				case 'test':
-				
+				runelog('wrk_SY: ',$job->action);
 					$redis->sAdd('w_lock',$jobID);
 					runelog("testjob: action ",$job->action);
 					runelog("testjob: args[] ",$job->args);
@@ -399,7 +399,7 @@ while (1) {
 				break;
 				
 				case 'airplay':
-				
+				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);			
 					if ($job->action === 'start') {
 					runelog("service: SHAIRPORT start",'');
@@ -442,7 +442,7 @@ while (1) {
 				break;
 				
 				case 'hostname':
-
+				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
 					wrk_changeHostname($db,$job['args'],$redis);
 					$hn = sysCmd('hostname');
@@ -546,7 +546,7 @@ while (1) {
 				break;
 				
 				case 'ntpserver':
-					
+				runelog('wrk_SY: ',$job->wrkcmd);	
 					$redis->sAdd('w_lock',$jobID);
 					$redis->set('ntpserver', wrk_NTPsync($redis,$job['args']));
 					$redis->sRem('w_lock',$jobID);
@@ -605,29 +605,33 @@ while (1) {
 				break;
 				
 				case 'scrobbling_lastfm':
-				
-					if ($job['action'] == 'start') {
-						if (isset($job['args']['lastfm'])) {
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);	
+					if ($job->action == 'start') {
+						if ($job->args->user != $redis->hGet('lastfm','user') OR $job->args->pass != $redis->hGet('lastfm','pass')) {
 						// mpdscribble.conf
 						$file = '/etc/mpdscribble.conf';
-						$newArray = wrk_replaceTextLine($file,'','username =','username = '.$job['args']['lastfm']['user'],'last.fm',2);
-						$newArray = wrk_replaceTextLine('',$newArray,'password =','password = '.$job['args']['lastfm']['pass'],'last.fm',3);
+						$newArray = wrk_replaceTextLine($file,'','username =','username = '.$job->args->user,'last.fm',2);
+						$newArray = wrk_replaceTextLine('',$newArray,'password =','password = '.$job->args->pass,'last.fm',3);
 						// Commit changes to /etc/mpdscribble.conf
 						$fp = fopen($file, 'w');
 						fwrite($fp, implode("",$newArray));
 						fclose($fp);
-						// write LastFM auth data to SQLite datastore
-						setLastFMauth($db,$job['args']['lastfm']);
+						// write LastFM auth data to Redis datastore
+						setLastFMauth($redis,$job->args);
 						}
 					sysCmd('systemctl stop mpdscribble');
 					runelog("service: MPDSCRIBBLE start",'');
 					sysCmd('systemctl start mpdscribble');
+					$redis->set('scrobbling_lastfm', 1);
 					}
-					if ($job['action'] == 'stop') {
+					if ($job->action == 'stop') {
 					runelog("service: MPDSCRIBBLE stop",'');
 					sysCmd('systemctl stop mpdscribble');
+					$redis->set('scrobbling_lastfm', 0);
 					}
-				
+					$redis->sRem('w_lock',$jobID);	
+					
 				break;				
 				
 				case 'sourcecfg':
@@ -647,7 +651,7 @@ while (1) {
 				// break;
 					
 				case 'udevil':
-					
+				runelog('wrk_SY: ',$job->wrkcmd);	
 					$redis->sAdd('w_lock',$jobID);
 					if ($job->action === 'start') {
 					runelog("service: UDEVIL start",'');

@@ -115,29 +115,14 @@ $outputs= readMpdResponse($mpd);
 return $outputs;
 }
 
-function getLastFMauth($db) {
-$dbh = cfgdb_connect($db);
-$querystr = "SELECT param,value FROM cfg_plugins WHERE name='lastfm'";
-$result = sdbquery($querystr,$dbh);
-$dbh = null;
-$lastfm['user'] = $result[0]['value'];
-$lastfm['pass'] = $result[1]['value'];
-return $lastfm;
+function getLastFMauth($redis) {
+$lastfmauth = $redis->hGetAll('lastfm');
+return $lastfmauth;
 }
 
-function setLastFMauth($db,$lastfm) {
-$dbh = cfgdb_connect($db);
-// set LastFM username
-$value['plugin_name'] = 'lastfm';
-$value['value'] = $lastfm['user'];
-$key = 'username';
-cfgdb_update('cfg_plugins',$dbh,$key,$value);
-// set LastFM password
-$value['value'] = $lastfm['pass'];
-$key = 'password';
-cfgdb_update('cfg_plugins',$dbh,$key,$value);
-// close DB connection
-$dbh = null;
+function setLastFMauth($redis,$lastfm) {
+$redis->hSet('lastfm','user',$lastfm->user);
+$redis->hSet('lastfm','pass',$lastfm->pass);
 }
 
 function echoTemplate($template) {
@@ -989,6 +974,7 @@ function wrk_control($redis,$action,$data) {
 				'args' => $data['args']
 			);
 			$redis->hSet('w_queue', $jobID, json_encode($wjob));
+			runelog('wrk_control data:', $redis->hGet('w_queue', $jobID));
 		break;	
 	}
 // debug

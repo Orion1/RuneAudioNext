@@ -51,6 +51,7 @@ $controllers = array(
 'coverart',
 'coverart2',
 'dev',
+'debug',
 'help',
 'mpd-config',
 'net-config',
@@ -126,15 +127,14 @@ $_SESSION['controller'] = 'error';
 
 }
 
-if ($_SESSION['hiddendebug'] != 1 && $_SESSION['debug'] > 0) {
-	if (!empty($_POST)) {
-	$debugdata = debug($_POST);
-	}
-ob_start();
-echo debug_footer($db);
-$debugdata .= ob_get_clean();
-$template->debug = $debugdata;
-}
+// if ($_SESSION['hiddendebug'] != 1 && $_SESSION['debug'] > 0) {
+	// if (!empty($_POST)) {
+	// $debugdata = debug($_POST);
+	// }
+// $template->dfooter = $debugdata;
+// }
+$template->dfooter = debug($_POST);
+
 
 // plates: render layout (if you want to output direct, set $tplfile = 0 into controller)
 if (!isset($tplfile) OR $tplfile != 0) {

@@ -31,8 +31,6 @@
  *
  */
 
-// get lastfm auth ENV settings
-$template->lastfm = getLastFMauth($db);
 // handle POST
 if (isset($_POST)) {
 /*
@@ -117,31 +115,14 @@ if (isset($_POST)) {
 				$redis->get('coverart') == 0 || $redis->set('coverart', 0);
 			}
 
-
-		/*
-			if (isset($_POST['features']['scrobbling_lastfm']) && $_POST['features']['scrobbling_lastfm'] == 1 && ($_POST['features']['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm'] OR ($_POST['features']['scrobbling_lastfm']['lastfm']['pass'] != $template->lastfm['pass'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['pass'])) OR $_POST['features']['scrobbling_lastfm']['lastfm']['user'] != $template->lastfm['user'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['user'])) ) {
-			// save new value on SQLite datastore
-			playerSession('write',$db,'scrobbling_lastfm',1);
-				if (($_POST['features']['scrobbling_lastfm']['lastfm']['user'] != $template->lastfm['user'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['user'])) OR ($_POST['features']['scrobbling_lastfm']['lastfm']['pass'] != $_POST['features']['scrobbling_lastfm']['pass'] && !empty($_POST['features']['scrobbling_lastfm']['lastfm']['pass']))) {
-				$data['args']['lastfm'] = $_POST['features']['scrobbling_lastfm']['lastfm'];
-				$_SESSION['notify']['msg'] = '\nLast.FM auth data updated\n';
-				}		
-				// setup worker queue (enable LastFM scrobbling)
-				$data['args']['action'] = 'start';
-				// invoke worker
-				wrk_control('exec','scrobbling_lastfm',$data);
-
+			if ($_POST['features']['scrobbling_lastfm'] == 1) {
+				// create worker job (start shairport)
+				$redis->get('scrobbling_lastfm') == 1 && $_POST['lastfm']['user'] != $redis->hGet('lastfm','user') && $_POST['lastfm']['pass'] != $redis->hGet('lastfm','pass') || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'start', 'args' => $_POST['features']['lastfm']));
 			} else {
-				if (isset($_POST['features']['scrobbling_lastfm']) && $_POST['features']['scrobbling_lastfm'] != $_SESSION['scrobbling_lastfm']) {
-				// save new value on SQLite datastore
-				playerSession('write',$db,'scrobbling_lastfm',0);
-				// setup worker queue (disable LastFM scrobbling)
-				$data['args']['action'] = 'stop';
-				// invoke worker
-				wrk_control('exec','scrobbling_lastfm',$data);
-				}
-			} */
-	
+				// create worker job (stop shairport)
+				$redis->get('scrobbling_lastfm') == 0 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'stop' ));
+			}
+			
 	}
 	// ------------------------------
 
@@ -165,11 +146,10 @@ if (isset($_POST)) {
 				$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'ntpserver', 'args' => $args ));
 			} 
 			
-			if (isset($_POST['cmediafix'])){
-				if ($_POST['cmediafix'] != $redis->get('cmediafix')) {
-					$redis->set('cmediafix',$_POST['cmediafix']);
-					$template->cmediafix = $redis->get('cmediafix');
-				} 
+			if (isset($_POST['cmediafix'][1])){
+				$redis->get('cmediafix') == 1 || $redis->set('cmediafix', 1);
+			} else {
+				$redis->get('cmediafix') == 0 || $redis->set('cmediafix', 0);
 			}
 			
 			if (isset($_POST['orionprofile']) && $_POST['orionprofile'] != $redis->get('orionprofile')){
@@ -187,5 +167,6 @@ $template->airplay = $redis->get('airplay');
 $template->udevil = $redis->get('udevil');
 $template->coverart = $redis->get('coverart');
 $template->scrobbling_lastfm = $redis->get('scrobbling_lastfm');
+$template->lastfm = getLastFMauth($redis);
 $template->cmediafix = $redis->get('cmediafix');
 ?>

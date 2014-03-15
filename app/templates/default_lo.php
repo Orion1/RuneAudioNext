@@ -9,14 +9,14 @@
 <!-- footer -->
 <?php $this->insert('footer') ?>
 <!-- footer -->
-<?php if (isset($this->debug)): ?>
-<!-- debug -->
-<div id="debug">
-<pre>
-<?=$this->e($this->debug) ?>
-</pre>
+<?php if (isset($this->dfooter)): ?>
+<!-- debug_footer -->
+<div id="dfooter">
+	<code>
+		<?=$this->e($this->dfooter) ?>
+	</code>
 </div>
-<!-- debug -->
+<!-- debug_footer -->
 <?php endif ?>
 </body>
 </html>

@@ -1,5 +1,5 @@
-<div id="debug">
-<pre>
-<?=$this->e($this->debug) ?>
-</pre>
+<div>
+<code>
+<?=$this->debug ?>
+</code>
 </div>
