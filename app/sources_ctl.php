@@ -33,96 +33,43 @@
 
 // inspect POST
 if (isset($_POST)) {
-
-
-}
-
-// inspect POST
-if (isset($_GET)) {
 	
-	if (isset($_GET['updatempd'])) sendMpdCommand($mpd,'update');
-
-}
-
-// handle (reset)
-if (isset($_POST['reset']) && $_POST['reset'] == 1) {
-	// tell worker to write new MPD config
-	if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-	$_SESSION['w_queue'] = "sourcecfgman";
-	$_SESSION['w_queueargs']  = 'sourcecfgreset';
-	$_SESSION['w_active'] = 1;
-	// set UI notify
-	$_SESSION['notify']['title'] = 'auto.nas modified';
-	$_SESSION['notify']['msg'] = 'remount shares in progress...';
-	} else {
-	$_SESSION['notify']['title'] = 'Job Failed';
-	$_SESSION['notify']['msg'] = 'background worker is busy.';
-	}
-unset($_POST);
-}
-
-
-// handle POST
-if(isset($_POST['mount']) && !empty($_POST['mount'])) {
-// convert slashes for remotedir path
-$_POST['mount']['remotedir'] = str_replace('\\', '/', $_POST['mount']['remotedir']);
-
-	if ($_POST['mount']['rsize'] == '') {
-	$_POST['mount']['rsize'] = 16384;
-	}
-
-	if ($_POST['mount']['wsize'] == '') {
-	$_POST['mount']['wsize'] = 17408;
-	}
-
-	if ($_POST['mount']['options'] == '') {
-		if ($_POST['mount']['type'] == 'cifs') {
-		$_POST['mount']['options'] = "cache=strict,ro";
-		} else {
-		$_POST['mount']['options'] = "nfsvers=3,ro";
+	if ($_POST['updatempd'] == 1) sendMpdCommand($mpd,'update');
+	
+	if (!empty($_POST['mount'])) {
+		
+		$_POST['mount']['remotedir'] = str_replace('\\', '/', $_POST['mount']['remotedir']);
+		
+		if ($_POST['mount']['rsize'] == '') $_POST['mount']['rsize'] = 16384;
+		
+		if ($_POST['mount']['wsize'] == '') $_POST['mount']['wsize'] = 17408;
+		
+		if ($_POST['mount']['options'] == '') {
+			if ($_POST['mount']['type'] == 'cifs') {
+				$_POST['mount']['options'] = "cache=strict,ro";
+			} else {
+				$_POST['mount']['options'] = "nfsvers=3,ro";
+			}
 		}
+		
+		if ($_POST['action'] == 'add') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'sourcecfg', 'action' => 'add', 'args' => $_POST['mount']));
+		
+		if ($_POST['action'] == 'edit') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'sourcecfg', 'action' => 'edit', 'args' => $_POST['mount']));
+		
+		if ($_POST['action'] == 'delete') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'sourcecfg', 'action' => 'delete', 'args' => $_POST['mount']));
+		
+		if ($_POST['action'] == 'reset') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'sourcecfgman', 'action' => 'reset' ));
+		
 	}
-// activate worker
-if (isset($_POST['delete']) && $_POST['delete'] == 1) {
-// delete an existing entry
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		$_SESSION['w_queue'] = 'sourcecfg';
-		$_POST['mount']['action'] = 'delete';
-		$_SESSION['w_queueargs'] = $_POST;
-		$_SESSION['w_active'] = 1;
-		// set UI notify
-		$_SESSION['notify']['title'] = 'mount point deleted';
-		$_SESSION['notify']['msg'] = 'Update DB in progress...';
-		} else {
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		}
 	
-	} else {
-	
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-		$_SESSION['w_queue'] = 'sourcecfg';
-		$_SESSION['w_queueargs']  = $_POST;
-		$_SESSION['w_active'] = 1;
-		// set UI notify
-		$_SESSION['notify']['title'] = 'mount point modified';
-		$_SESSION['notify']['msg'] = 'Update DB in progress...';
-		} else {
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
-		} 
-	}
 }
-	
-// wait for worker output if $_SESSION['w_active'] = 1
-// waitWorker(5,'sources');
+
+waitSyWrk($redis,$jobID);
 
 $dbh = cfgdb_connect($db);
 $source = cfgdb_read('cfg_source',$dbh);
 $dbh = null;
 
-// set normal config template
-// $tpl = "sources.html";
 foreach ($source as $mp) {
 if (wrk_checkStrSysfile('/proc/mounts',$mp['name']) ) {
 	$mp['status'] = 1;

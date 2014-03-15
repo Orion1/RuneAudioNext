@@ -519,7 +519,7 @@ switch ($table) {
 	break;
 	
 	case 'cfg_source':
-	$querystr = "UPDATE ".$table." SET name='".$value['name']."', type='".$value['type']."', address='".$value['address']."', remotedir='".$value['remotedir']."', username='".$value['username']."', password='".$value['password']."', charset='".$value['charset']."', rsize='".$value['rsize']."', wsize='".$value['wsize']."', options='".$value['options']."', error='".$value['error']."' where id=".$value['id'];
+	$querystr = "UPDATE ".$table." SET name='".($value->name)."', type='".($value->type)."', address='".($value->address)."', remotedir='".($value->remotedir)."', username='".($value->username)."', password='".($value->password)."', charset='".($value->charset)."', rsize='".($value->rsize)."', wsize='".($value->wsize)."', options='".($value->options)."', error='".($value->error)."' where id=".($value->id);
 	break;
 	
 	case 'cfg_plugins':
@@ -1330,41 +1330,22 @@ function wrk_sourcemount($db,$action,$id) {
 return $return;
 }
 
-function wrk_sourcecfg($db,$queueargs) {
-if (isset($queueargs['mount']['action'])) {
-$action = $queueargs['mount']['action'];
-unset($queueargs['mount']['action']);
-} else {
-$action = $queueargs;
-}
-runelog('wrk_sourcecfg($db,'.$queueargs.')',$action);
+function wrk_sourcecfg($db,$action,$args) {
+// if (isset($args->mount->action)) {
+// $action = $args->mount->action;
+// unset($args->mount->action);
+// } else {
+// $action = $args;
+// }
+runelog('wrk_sourcecfg($db,'.$action.')');
 	switch ($action) {
-
-		case 'reset': 
-		$dbh = cfgdb_connect($db);
-		$source = cfgdb_read('cfg_source',$dbh);
-			foreach ($source as $mp) {
-			runelog('wrk_sourcecfg() internal loop $mp[name]',$mp['name']);
-			sysCmd('mpc stop');
-			sysCmd("umount -f \"/mnt/MPD/NAS/".$mp['name']."\"");
-			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
-			}
-		if (cfgdb_delete('cfg_source',$dbh)) {
-		$return = 1;
-		} else {
-		$return = 0;
-		}
-		$dbh = null;
-		break;
 
 		case 'add':
 		$dbh = cfgdb_connect($db);
-		// debug
-		runelog('wrk_sourcecfg($db,$queueargs) $queueargs',var_dump($queueargs));
-		unset($queueargs['mount']['id']);
+		unset($args->id);
 		// format values string
 		$values = null;
-		foreach ($queueargs['mount'] as $key => $value) {
+		foreach ($args as $key => $value) {
 			if ($key == 'error') {
 			$values .= "'".SQLite3::escapeString($value)."'";
 			// debug
@@ -1387,18 +1368,18 @@ runelog('wrk_sourcecfg($db,'.$queueargs.')',$action);
 		$return = 0;
 		}
 		break;
-		
+	
 		case 'edit':
 		$dbh = cfgdb_connect($db);
-		$mp = cfgdb_read('cfg_source',$dbh,'',$queueargs['mount']['id']);
-		cfgdb_update('cfg_source',$dbh,'',$queueargs['mount']);
+		$mp = cfgdb_read('cfg_source',$dbh,'',$args->id);
+		cfgdb_update('cfg_source',$dbh,'',$args);
 		sysCmd('mpc stop');
 		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
-			if ($mp[0]['name'] != $queueargs['mount']['name']) {
+			if ($mp[0]['name'] != $args->name) {
 			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
-			sysCmd("mkdir \"/mnt/MPD/NAS/".$queueargs['mount']['name']."\"");
+			sysCmd("mkdir \"/mnt/MPD/NAS/".$args->name."\"");
 			}
-		if (wrk_sourcemount($db,'mount',$queueargs['mount']['id'])) {
+		if (wrk_sourcemount($db,'mount',$args->id)) {
 		$return = 1;
 		} else {
 		$return = 0;
@@ -1406,21 +1387,39 @@ runelog('wrk_sourcecfg($db,'.$queueargs.')',$action);
 		runelog('wrk_sourcecfg(edit) exit status',$return);
 		$dbh = null;
 		break;
-		
+	
 		case 'delete':
 		$dbh = cfgdb_connect($db);
-		$mp = cfgdb_read('cfg_source',$dbh,'',$queueargs['mount']['id']);
+		$mp = cfgdb_read('cfg_source',$dbh,'',$args->id);
 		sysCmd('mpc stop');
 		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
 		sleep(3);
 		sysCmd("rmdir \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
-		if (cfgdb_delete('cfg_source',$dbh,$queueargs['mount']['id'])) {
+		if (cfgdb_delete('cfg_source',$dbh,$args->id)) {
 		$return = 1;
 		} else {
 		$return = 0;
 		}
 		$dbh = null;
 		break;
+	
+		case 'reset': 
+		$dbh = cfgdb_connect($db);
+		$source = cfgdb_read('cfg_source',$dbh);
+			foreach ($source as $mp) {
+			runelog('wrk_sourcecfg() internal loop $mp[name]',$mp['name']);
+			sysCmd('mpc stop');
+			sysCmd("umount -f \"/mnt/MPD/NAS/".$mp['name']."\"");
+			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+			}
+		if (cfgdb_delete('cfg_source',$dbh)) {
+		$return = 1;
+		} else {
+		$return = 0;
+		}
+		$dbh = null;
+		break;
+		
 	}
 
 return $return;

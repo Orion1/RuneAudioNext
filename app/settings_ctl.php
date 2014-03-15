@@ -93,7 +93,7 @@ if (isset($_POST)) {
 				$redis->get('scrobbling_lastfm') == 0 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'stop' ));
 			}
 			
-	} // ----- FEATURES -----
+	}
 	
 	// ----- C-MEDIA FIX -----
 	if (isset($_POST['cmediafix'][1])){

@@ -640,9 +640,10 @@ while (1) {
 				break;				
 				
 				case 'sourcecfg':
-				
-					wrk_sourcecfg($db,$job['args']);
-				
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
+					wrk_sourcecfg($db,$job->action,$job->args);
+					$redis->sRem('w_lock',$jobID);
 				break;
 
 				case 'syschmod':

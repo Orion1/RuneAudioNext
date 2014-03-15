@@ -12,7 +12,7 @@
 				<div class="col-sm-10">
 					<input class="form-control input-lg" type="text" id="nas-name" name="mount[name]" value="<?=$this->mount['name']?>" data-trigger="change" placeholder="es: Classical">
 					<input type="hidden" name="mount[id]" value="<?=$this->mount['id']?>">
-					<input type="hidden" name="mount[action]" value="<?=$this->mount['action']?>">
+					<input type="hidden" name="action" value="<?=$this->action ?>">
 					<span class="help-block">The name you want to give to this source. It will appear in your database tree structure</span>
 				</div>
 			</div>
@@ -122,23 +122,25 @@
 				<button type="submit" class="btn btn-primary btn-lg" name="save" value="save">Save mount</button>
 			</div>
 		</div>
-		
+	</form>
 		<div id="source-delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="source-delete-modal-label" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h3 class="modal-title" id="source-delete-modal-label">Remove the mount</h3>
-					</div>
-					<div class="modal-body">
-						<p>Are you sure you want to delete this mount?</p>
-					</div>
-					<div class="modal-footer">
-						<button class="btn btn-default btn-lg" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button type="submit" class="btn btn-primary btn-lg" name="delete" value="1">Remove</button>
+			<form class="form-horizontal" method="post" action="/sources/">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h3 class="modal-title" id="source-delete-modal-label">Remove the mount</h3>
+						</div>
+						<div class="modal-body">
+							<p>Are you sure you want to delete this mount?</p>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default btn-lg" data-dismiss="modal" aria-hidden="true">Cancel</button>
+							<button type="submit" class="btn btn-primary btn-lg" name="action" value="delete">Remove</button>
+							<input type="hidden" name="mount[id]" value="<?=$this->mount['id']?>">
+						</div>
 					</div>
 				</div>
-			</div>
+			</form>
 		</div>
-	</form>
 </div>
