@@ -41,7 +41,7 @@ if (isset($_POST)) {
 		} else {
 		$args = $_POST['hostname'];
 		}
-		$redis->get('hostname') == $_POST['hostname'] || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'hostname', 'args' => $args ));		
+		$redis->get('hostname') == $_POST['hostname'] || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'hostname', 'args' => $args ));		
 	} 			
 	
 	// ----- NTP SERVER -----
@@ -51,13 +51,13 @@ if (isset($_POST)) {
 		} else {
 		$args = $_POST['ntpserver'];
 		}
-		$redis->get('ntpserver') == $args || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'ntpserver', 'args' => $args ));		
+		$redis->get('ntpserver') == $args || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'ntpserver', 'args' => $args ));		
 	} 
 	
 	// ----- KERNEL PROFILE -----
 	if (isset($_POST['orionprofile'])) {		
 		// submit worker job
-		$redis->get('orionprofile') == $_POST['orionprofile'] || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'orionprofile', 'args' => $_POST['orionprofile'] ));		
+		$redis->get('orionprofile') == $_POST['orionprofile'] || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'orionprofile', 'args' => $_POST['orionprofile'] ));		
 	} 
 	
 	// ----- FEATURES -----
@@ -65,18 +65,18 @@ if (isset($_POST)) {
 
 			if ($_POST['features']['airplay'] == 1) {
 				// create worker job (start shairport)
-				$redis->get('airplay') == 1 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'start' ));
+				$redis->get('airplay') == 1 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'start' ));
 			} else {
 				// create worker job (stop shairport)
-				$redis->get('airplay') == 0 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'stop' ));
+				$redis->get('airplay') == 0 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'stop' ));
 			}
 
 			if ($_POST['features']['udevil'] == 1) {
 				// create worker job (start udevil)
-				$redis->get('udevil') == 1 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'udevil', 'action' => 'start' ));
+				$redis->get('udevil') == 1 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'udevil', 'action' => 'start' ));
 			} else {
 				// create worker job (stop udevil)
-				$redis->get('udevil') == 0 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'udevil', 'action' => 'stop' ));
+				$redis->get('udevil') == 0 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'udevil', 'action' => 'stop' ));
 			}	
 
 			if ($_POST['features']['coverart'] == 1 ) {
@@ -87,10 +87,10 @@ if (isset($_POST)) {
 
 			if ($_POST['features']['scrobbling_lastfm'] == 1) {
 				// create worker job (start shairport)
-				$redis->get('scrobbling_lastfm') == 1 && $_POST['lastfm']['user'] != $redis->hGet('lastfm','user') && $_POST['lastfm']['pass'] != $redis->hGet('lastfm','pass') || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'start', 'args' => $_POST['features']['lastfm']));
+				$redis->get('scrobbling_lastfm') == 1 && $_POST['features']['lastfm']['user'] != $redis->hGet('lastfm','user') && $_POST['features']['lastfm']['pass'] != $redis->hGet('lastfm','pass') || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'start', 'args' => $_POST['features']['lastfm']));
 			} else {
 				// create worker job (stop shairport)
-				$redis->get('scrobbling_lastfm') == 0 || $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'stop' ));
+				$redis->get('scrobbling_lastfm') == 0 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'stop' ));
 			}
 			
 	} // ----- FEATURES -----
@@ -104,9 +104,9 @@ if (isset($_POST)) {
 	
 	// ----- SYSTEM COMMANDS -----
 	if (isset($_POST['syscmd'])){
-		if ($_POST['syscmd'] == 'reboot') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'reboot' ));
-		if ($_POST['syscmd'] == 'poweroff') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'poweroff' ));
-		if ($_POST['syscmd'] == 'mpdrestart') $jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdrestart' ));
+		if ($_POST['syscmd'] == 'reboot') $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'reboot' ));
+		if ($_POST['syscmd'] == 'poweroff') $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'poweroff' ));
+		if ($_POST['syscmd'] == 'mpdrestart') $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdrestart' ));
 	}
 			
 }

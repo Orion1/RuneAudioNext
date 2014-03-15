@@ -937,35 +937,23 @@ function debug_output($clear) {
 echo $output;
 }
 
-function waitWorker($sleeptime,$section) {
-session_start();
-	if ($_SESSION['w_active'] == 1) {
-		do {
-			session_write_close();
-			session_start();
-			sleep($sleeptime);
-		} while ($_SESSION['w_active'] != 0);
-
-		switch ($section) {
-			case 'sources':
-			$mpd = openMpdSocket('localhost', 6600);
-			sendMpdCommand($mpd,'update');
-			closeMpdSocket($mpd);
-			break;
-		}
-	}
-session_write_close();
-} 
-
 function waitSyWrk($redis,$jobID) {
 if (isset($jobID)) {
 usleep(450000);
 } else {
 $jobID = 'fake';
 }
-	while ($redis->sIsMember('w_lock', $jobID)) {
-		usleep(450000);
+	if (is_array($jobID)){	
+		foreach ($jobID as $job) {
+			while ($redis->sIsMember('w_lock', $job)) {
+				usleep(450000);
+			} 
+		}
+	} else {
+		while ($redis->sIsMember('w_lock', $jobID)) {
+			usleep(450000);
 		} 
+	}
 }
 
 function wrk_control($redis,$action,$data) {
