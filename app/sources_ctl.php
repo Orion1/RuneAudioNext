@@ -31,6 +31,19 @@
  *
  */
 
+// inspect POST
+if (isset($_POST)) {
+
+
+}
+
+// inspect POST
+if (isset($_GET)) {
+	
+	if (isset($_GET['updatempd'])) sendMpdCommand($mpd,'update');
+
+}
+
 // handle (reset)
 if (isset($_POST['reset']) && $_POST['reset'] == 1) {
 	// tell worker to write new MPD config
@@ -48,18 +61,6 @@ if (isset($_POST['reset']) && $_POST['reset'] == 1) {
 unset($_POST);
 }
 
-if (isset($_GET['updatempd']) && $_GET['updatempd'] == '1' ){
-	if ( !$mpd) {
-
-		$_SESSION['notify']['title'] = 'Error';
-		$_SESSION['notify']['msg'] = 'Cannot connect to MPD Daemon';
-	} else {
-		sendMpdCommand($mpd,'update');
-
-		$_SESSION['notify']['title'] = 'MPD Update';
-		$_SESSION['notify']['msg'] = 'database update started...';
-	}
-}
 
 // handle POST
 if(isset($_POST['mount']) && !empty($_POST['mount'])) {
@@ -114,7 +115,7 @@ if (isset($_POST['delete']) && $_POST['delete'] == 1) {
 }
 	
 // wait for worker output if $_SESSION['w_active'] = 1
-waitWorker(5,'sources');
+// waitWorker(5,'sources');
 
 $dbh = cfgdb_connect($db);
 $source = cfgdb_read('cfg_source',$dbh);

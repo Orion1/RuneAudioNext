@@ -220,8 +220,8 @@ runelog('NORMAL STARTUP ---','');
 // NTP sync
 $start2 = microtime(true);
 $firstlap = $start2-$start;
-runelog("NTP sync",'');
-$_SESSION['ntpserver'] = wrk_NTPsync($db);
+runelog("NTP sync",$redis->get('ntpserver'));
+wrk_NTPsync($redis->get('ntpserver'));
 $start3 = microtime(true);
 // check HOSTNAME << TODO: integrate in wrk_sysEnvCheck >>
 $hn = sysCmd('hostname');

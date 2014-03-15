@@ -1,6 +1,6 @@
 <div class="container">
 	<h1>DB sources</h1>
-	<form>
+	<form method="post">
 		<p><button class="btn btn-lg btn-primary" type="submit" name="updatempd" value="1" id="updatempddb"><i class="fa fa-refresh sx"></i>Update MPD Database</button></p>
 	</form>
 	<div class="boxed">
@@ -11,7 +11,6 @@
 			<!-- <li><strong>RAM</strong><br><span class="help-block">the content of the RAMdisk, used for RAM play purposes</span></li> -->
 		</ul>
 	</div>
-	
 	<h2>Network mounts</h2>
 	<p>List of configured network mounts (click to edit)</p>
 	<form id="mount-list" class="button-list" method="post">
