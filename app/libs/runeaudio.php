@@ -36,9 +36,15 @@ define("MPD_GREETING", "OK MPD 0.18.0\n");
 
 function openMpdSocket($path) {
 $sock = socket_create(AF_UNIX, SOCK_STREAM, 0);
-socket_connect($sock, $path);
-runelog("[1][".$sock."]\t>>>>>> OPEN MPD SOCKET <<<<<<\t\t\t",'');
-return $sock;
+$connection = socket_connect($sock, $path);
+	if ($connection) {
+	runelog("[1][".$sock."]\t>>>>>> OPEN MPD SOCKET <<<<<<\t\t\t",'');
+	return $sock;
+	} else {
+	runelog("[1][".$sock."]\t>>>>>> MPD SOCKET ERROR: ".socket_last_error($sock)." <<<<<<\t\t\t",'');
+	ui_notify('MPD sock: '.$sock.'','socket error = '.socket_last_error($sock));
+	return false;
+	}
 }
 
 function closeMpdSocket($sock) {

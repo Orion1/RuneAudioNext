@@ -81,12 +81,9 @@ $db = 'sqlite:/var/www/db/player.db';
 
 // --- WORKER MAIN LOOP --- //
 while (1) {
-runelog("rune_PL_wrk: open MPD local UNIX socket",'');
-$mpd = openMpdSocket('/run/mpd.sock') ;
-if ( !$mpd) {
-		// error message
-		ui_notify('MPD', 'MPD Daemon not responding...');
-} else {
+// check connection
+$mpd = openMpdSocket('/run/mpd.sock') || exit(1);
+
 // read SESSION data
 playerSession('open',$db,'','');
 $status = _parseStatusResponse(MpdStatus($mpd));
@@ -158,6 +155,6 @@ ui_render('display',json_encode($status));
 //ui_render('display',$status);
 runelog("rune_PL_wrk: close MPD local UNIX socket",'');
 closeMpdSocket($mpd);
-}
+
 // --- WORKER MAIN LOOP --- //
 }

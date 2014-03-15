@@ -133,8 +133,6 @@ $_SESSION['controller'] = 'error';
 	// }
 // $template->dfooter = $debugdata;
 // }
-$template->dfooter = debug($_POST);
-
 
 // plates: render layout (if you want to output direct, set $tplfile = 0 into controller)
 if (!isset($tplfile) OR $tplfile != 0) {
