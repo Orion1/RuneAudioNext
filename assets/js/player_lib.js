@@ -137,6 +137,7 @@ function renderUI(text) {
 }
 
 function getPlaylistCmd(json){
+	loadingSpinner('pl');
 	$.ajax({
 		url: '/db/?cmd=playlist',
 		success: function(data){
@@ -144,12 +145,9 @@ function getPlaylistCmd(json){
 			if ( data.length > 4) {
 				$('#playlist-warning').addClass('hide');
 				$('#playlist-entries').removeClass('hide');
-				console.time('getPlaylistPlain timer');
+				// console.time('getPlaylistPlain timer');
 				getPlaylistPlain(data, json);
-				console.timeEnd('getPlaylistPlain timer');
-				// console.time('getPlaylist timer');
-				// getPlaylist(data, json);
-				// console.timeEnd('getPlaylist timer');
+				// console.timeEnd('getPlaylistPlain timer');
 				
 				var current = parseInt(json['song']);
 				if (GUI.halt != 1 && $('#panel-dx').hasClass('active')) {
@@ -159,6 +157,7 @@ function getPlaylistCmd(json){
 				$('#playlist-warning').removeClass('hide');
 				$('#playlist-entries').addClass('hide');
 			}
+			loadingSpinner('pl', 'hide');
 		}
 	});
 }
@@ -301,12 +300,15 @@ function getDB(options){
 	// DEBUG
 	// console.log('OPTIONS: cmd = ' + cmd + ', path = ' + path + ', browsemode = ' + browsemode + ', uplevel = ' + uplevel + ', plugin = ' + plugin);
 	
+	loadingSpinner('db');
+	
 	if (plugin !== '') {
 	// plugins
 		if (plugin === 'Dirble') {
 			$.post('/db/?cmd=dirble', { 'querytype': (querytype === '') ? 'categories' : querytype, 'args': args }, function(data){
 				if (querytype === 'amountStation') {
 					$('#home-count-dirble').html('(' + data + ')');
+					loadingSpinner('db', 'hide');
 				} else {
 					populateDB({
 						data: data,
@@ -386,6 +388,7 @@ function populateDB(options){
 			$('#db-level-up').addClass('hide');
 			$('#home-blocks').removeClass('hide');
 			$('span', '#db-currentpath').html('');
+			loadingSpinner('db', 'hide');
 			return;
 		} else {
 			$('#database-entries').removeClass('hide');
@@ -426,6 +429,7 @@ function populateDB(options){
 			// console.log('highlighted entry = ', GUI.currentDBpos[GUI.currentDBpos[10]]);
 		}
 	}
+	loadingSpinner('db', 'hide');
 } // end populateDB()
 
 // parse the JSON response and return the formatted code
@@ -485,6 +489,8 @@ function parseResponse(options) {
 						content += '</span></div></li>';
 					}
 				}
+			} else if (inputArr[i].playlist !== undefined) {
+				content += '';
 			} else {
 				// console.log('inputArr[i].directory: ', inputArr[i].directory);
 				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
@@ -652,7 +658,7 @@ function refreshState(state) {
 	// Library main screen counters
 	getDB({
 		plugin: 'Dirble',
-		querytype: 'amountStation',
+		querytype: 'amountStation'
 	});
 }
 
@@ -783,6 +789,26 @@ function sortOrder(id) {
 	console.log('id = ' + id + ', pos = ', pos);
 	sendCmd('moveid ' + id + ' ' + pos);
 }
+
+// loading spinner display/hide
+function loadingSpinner(section, hide) {
+	if (hide === 'hide') {
+		if (section === 'db' && $('#panel-sx').hasClass('active')) {
+			$('#spinner').addClass('hide');
+		}
+		if (section === 'pl' && $('#panel-dx').hasClass('active')) {
+			$('#spinner').addClass('hide');
+		}
+	} else {
+		if (section === 'db' && $('#panel-sx').hasClass('active')) {
+			$('#spinner').removeClass('hide');
+		}
+		if (section === 'pl' && $('#panel-dx').hasClass('active')) {
+			$('#spinner').removeClass('hide');
+		}
+	}
+}
+
 
 
 // Simple JavaScript Templating
