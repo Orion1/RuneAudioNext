@@ -20,15 +20,7 @@
 </div>
 <!-- loader -->
 <div id="loader"><div id="loaderbg"></div><div id="loadercontent"><i class="fa fa-refresh fa-spin"></i>connecting...</div></div>
-<div id="spinner" class="hide">
-	<div id="spinner-inner">
-		<div class="rect1"></div>
-		<div class="rect2"></div>
-		<div class="rect3"></div>
-		<div class="rect4"></div>
-		<div class="rect5"></div>
-	</div>
-</div>
+<div id="spinner" class="hide"><i class="fa fa-spinner fa-spin"></i></div>
 <script src="<?=$this->asset('/js/vendor/jquery-2.0.3.min.js')?>"></script>
 <!-- dev only -->
 <!--

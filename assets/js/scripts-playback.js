@@ -321,20 +321,17 @@ jQuery(document).ready(function($){ 'use strict';
         var cmd = 'play ' + pos;
         sendCmd(cmd);
         GUI.halt = 1;
-        // console.log('GUI.halt (playlist)= ', GUI.halt);
-        playlist.find('li').removeClass('active');
+        $('li.active', '#playlist-entries').removeClass('active');
         $(this).parent().addClass('active');
     });
 
     // click on playlist actions
     playlist.on('click', '.pl-action', function(event) {
         event.preventDefault();
-        // var pos = playlist.find('.pl-action').index(this);
         var id = $(this).parent().attr('id');
 		id = parseInt(id.replace('pl-', ''))
         var cmd = 'deleteid ' + id;
         // var path = $(this).parent().data('path');
-        // recover datapath
 		notify('remove', '');
         sendCmd(cmd);
     });
@@ -432,7 +429,7 @@ jQuery(document).ready(function($){ 'use strict';
     // click on Library list entry
     db.on('click', '.db-browse', function(e) {
         var el = $(this);
-        db.find('li').removeClass('active');
+        $('li.active', '#database-entries').removeClass('active');
         el.parent().addClass('active');
         if (!el.hasClass('sx')) { // TODO: check this conditional
 			if (el.hasClass('db-dirble')) {
