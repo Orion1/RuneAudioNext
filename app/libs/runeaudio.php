@@ -381,6 +381,20 @@ $str = substr($strFile, $pos+1);
 return $str;
 }
 
+function OpCacheCtl($basepath,$action){
+if ($action === 'prime') $cmd = 'opcache_compile_file';
+if ($action === 'reset') $cmd = 'opcache_invalidate';
+	if (is_file($basepath)) {
+		if (parseFileStr($basepath,'.') === 'php' && $basepath != '/srv/http/command/cachectl.php' ) $cmd ($basepath);
+	}
+	elseif(is_dir($basepath)) {
+		$scan = glob(rtrim($basepath,'/').'/*');
+		foreach($scan as $index=>$path) {
+			OpCacheCtl($path,$action);
+		}
+	}
+}
+
 function sessionSQLite($sessionsdb) {
 require_once(APP.'libs/vendor/SqliteSessionHandler/SqliteSessionHandler.php');
 $handler = new kafene\SqliteSessionHandler($sessionsdb);
@@ -661,7 +675,7 @@ recursiveDelete('/dev/shm/');
 function recursiveDelete($str){
 	if(is_file($str)){
 		return @unlink($str);
-		// aggiungere ricerca path in playlist e conseguente remove from playlist
+		// TODO: add search path in playlist and remove from playlist
 	}
 	elseif(is_dir($str)){
 		$scan = glob(rtrim($str,'/').'/*');

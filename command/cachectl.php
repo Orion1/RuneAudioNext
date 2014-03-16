@@ -31,60 +31,26 @@
  *
  */
 
+// common include
+include('/srv/http/app/config/config.php');
+ 
 opcache_invalidate ( '/srv/http/command/cachectl.php' );
+
  
 if (isset($_GET['action'])) {
 
 	switch ($_GET['action']) {
 			
 			case 'prime':
-			opcache_compile_file ( '/srv/http/inc/player_lib.php' );
-			opcache_compile_file ( '/srv/http/inc/config.inc' );
-			opcache_compile_file ( '/srv/http/inc/connection.php' );
-			opcache_compile_file ( '/srv/http/command/rune_SY_wrk.php' );
-			opcache_compile_file ( '/srv/http/index.php' );
-			opcache_compile_file ( '/srv/http/_header.php' );
-			opcache_compile_file ( '/srv/http/_footer.php' );
-			opcache_compile_file ( '/srv/http/_player_engine.php' );
-			opcache_compile_file ( '/srv/http/db/index.php' );
-			opcache_compile_file ( '/srv/http/command/index.php' );
-			opcache_compile_file ( '/srv/http/inc/coverart.php' );
-			opcache_compile_file ( '/srv/http/inc/Zend/Media/Flac.php' );
-			opcache_compile_file ( '/srv/http/inc/Zend/Io/Reader.php' );
-			opcache_compile_file ( '/srv/http/sources.php');
-			opcache_compile_file ( '/srv/http/settings.php');
-			opcache_compile_file ( '/srv/http/credits.php' );
-			opcache_compile_file ( '/srv/http/mpd-config.php');
-			opcache_compile_file ( '/srv/http/help.php');
-			opcache_compile_file ( '/srv/http/command/opcache.php' );
-			opcache_compile_file ( '/srv/http/dev.php' );
+				OpCacheCtl('/srv/http/','prime');
 			break;
 			
 			case 'reset':
-			opcache_invalidate ( '/srv/http/inc/player_lib.php' );
-			opcache_invalidate ( '/srv/http/inc/config.inc' );
-			opcache_invalidate ( '/srv/http/inc/connection.php' );
-			opcache_invalidate ( '/srv/http/command/rune_SY_wrk.php' );
-			opcache_invalidate ( '/srv/http/index.php' );
-			opcache_invalidate ( '/srv/http/_header.php' );
-			opcache_invalidate ( '/srv/http/_footer.php' );
-			opcache_invalidate ( '/srv/http/_player_engine.php' );
-			opcache_invalidate ( '/srv/http/db/index.php' );
-			opcache_invalidate ( '/srv/http/command/index.php' );
-			opcache_invalidate ( '/srv/http/inc/coverart.php' );
-			opcache_invalidate ( '/srv/http/inc/Zend/Media/Flac.php' );
-			opcache_invalidate ( '/srv/http/inc/Zend/Io/Reader.php' );
-			opcache_invalidate ( '/srv/http/sources.php');
-			opcache_invalidate ( '/srv/http/settings.php');
-			opcache_invalidate ( '/srv/http/credits.php' );
-			opcache_invalidate ( '/srv/http/mpd-config.php');
-			opcache_invalidate ( '/srv/http/help.php');
-			opcache_invalidate ( '/srv/http/command/opcache.php' );
-			opcache_invalidate ( '/srv/http/dev.php' );
+				OpCacheCtl('/srv/http/','reset');
 			opcache_reset();
 			echo "PHP OPCACHE CLEARED";
 			break;
-			
+					
 			case 'debug':
 			// opcache_reset();
 			echo "<pre>";
