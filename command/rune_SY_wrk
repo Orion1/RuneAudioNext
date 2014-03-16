@@ -642,7 +642,7 @@ while (1) {
 				case 'sourcecfg':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					wrk_sourcecfg($db,$job->action,$job->args);
+					if (wrk_sourcecfg($db,$job->action,$job->args)) sysCmd('mpc update');
 					$redis->sRem('w_lock',$jobID);
 				break;
 
