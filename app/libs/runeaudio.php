@@ -519,7 +519,8 @@ switch ($table) {
 	break;
 	
 	case 'cfg_source':
-	$querystr = "UPDATE ".$table." SET name='".($value->name)."', type='".($value->type)."', address='".($value->address)."', remotedir='".($value->remotedir)."', username='".($value->username)."', password='".($value->password)."', charset='".($value->charset)."', rsize='".($value->rsize)."', wsize='".($value->wsize)."', options='".($value->options)."', error='".($value->error)."' where id=".($value->id);
+	$value = (array) $value;
+	$querystr = "UPDATE ".$table." SET name='".$value['name']."', type='".$value['type']."', address='".$value['address']."', remotedir='".$value['remotedir']."', username='".$value['username']."', password='".$value['password']."', charset='".$value['charset']."', rsize='".$value['rsize']."', wsize='".$value['wsize']."', options='".$value['options']."', error='".$value['error']."' where id=".$value['id'];
 	break;
 	
 	case 'cfg_plugins':
@@ -946,12 +947,12 @@ $jobID = 'fake';
 	if (is_array($jobID)){	
 		foreach ($jobID as $job) {
 			while ($redis->sIsMember('w_lock', $job)) {
-				usleep(450000);
+				usleep(550000);
 			} 
 		}
 	} else {
 		while ($redis->sIsMember('w_lock', $jobID)) {
-			usleep(450000);
+			usleep(550000);
 		} 
 	}
 }
@@ -1374,6 +1375,7 @@ runelog('wrk_sourcecfg($db,'.$action.')');
 		$mp = cfgdb_read('cfg_source',$dbh,'',$args->id);
 		cfgdb_update('cfg_source',$dbh,'',$args);
 		sysCmd('mpc stop');
+		usleep(500000);
 		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
 			if ($mp[0]['name'] != $args->name) {
 			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
@@ -1392,6 +1394,7 @@ runelog('wrk_sourcecfg($db,'.$action.')');
 		$dbh = cfgdb_connect($db);
 		$mp = cfgdb_read('cfg_source',$dbh,'',$args->id);
 		sysCmd('mpc stop');
+		usleep(500000);
 		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
 		sleep(3);
 		sysCmd("rmdir \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
@@ -1409,6 +1412,7 @@ runelog('wrk_sourcecfg($db,'.$action.')');
 			foreach ($source as $mp) {
 			runelog('wrk_sourcecfg() internal loop $mp[name]',$mp['name']);
 			sysCmd('mpc stop');
+			usleep(500000);
 			sysCmd("umount -f \"/mnt/MPD/NAS/".$mp['name']."\"");
 			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
 			}

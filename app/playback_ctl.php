@@ -31,7 +31,7 @@
  *
  */
 
-if ($_SESSION['coverart'] == 1) {
+if ($redis->get('coverart') == 1) {
 
 $template->coverart = 1;
 $template->colspan = 4;
@@ -43,7 +43,7 @@ $template->colspan = 6;
 
 }
 
-if ($_SESSION['volume'] == 1) {
+if ($redis->get('volume') == 1) {
 
 $template->volume['color'] = '#0095D8';
 $template->volume['readonly'] = 'false';
