@@ -89,6 +89,15 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label for="udevil" class="control-label col-sm-2">Global Random mode</label>
+				<div class="col-sm-10">
+					<label class="switch-light well" onclick="">
+						<input name="features[globalrandom]" type="checkbox" value="1"<?php if($this->globalrandom == 1): ?> checked="checked" <?php endif ?>>
+						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
 				<label for="scrobbling_lastfm" class="control-label col-sm-2">Last.FM scrobbling</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">

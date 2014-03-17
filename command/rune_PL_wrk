@@ -36,7 +36,9 @@
 ini_set('display_errors', '1');
 ini_set('error_reporting', -1);
 ini_set('error_log','/var/log/runeaudio/rune_PL_wrk.log');
-define('APP','/srv/http/app/');
+// Connect to Redis backend
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
 include('/var/www/app/libs/runeaudio.php');
 // reset worker logfile
 sysCmd('echo "--------------- start: rune_PL_wrk ---------------" > /var/log/runeaudio/rune_PL_wrk.log');
@@ -88,46 +90,40 @@ if (!$mpd) {
 die();
 
 } else {
-// read SESSION data
-playerSession('open',$db,'','');
 $status = _parseStatusResponse(MpdStatus($mpd));
 // store next songid in PHP SESSION
-$_SESSION['nextsongid'] = $status['nextsongid'];
+$redis->set('nextsongid',$status['nextsongid']);
 // store "lastsongid" in PHP SESSION
-$_SESSION['lastsongid'] = $status['songid'];
+$redis->set('lastsongid',$status['songid']);
 		// check for Ramplay
-		if (isset($_SESSION['ramplay']) && $_SESSION['ramplay'] == 1) {
+		if ($redis->get('ramplay') === '1') {
 			// check ramplay delete
 				// if (!rp_checkPLid($_SESSION['lastsongid'],$mpd)) {
 				// rp_deleteFile($_SESSION['lastsongid'],$mpd);
 				// }
 			// check for CMediaFix
-			if (isset($_SESSION['cmediafix']) && $_SESSION['cmediafix'] == 1) {
-			$_SESSION['lastbitdepth'] = $status['audio'];
+			if ($redis->get('cmediafix') === '1') {
+			$redis->set('lastbitdepth',$status['audio']);
 			}
 		}
 		
-// Unlock SESSION file
-session_write_close(); 
 // idle LOOP
 runelog("rune_PL_wrk: enter idle loop",'');
 $status = monitorMpdState($mpd);
 // idle LOOP
-// inspect session
-session_start();
 
-		$_SESSION['pl_length'] = $status['playlistlength'];
+		$redis->set('pl_length',$status['playlistlength']);
 		$status = ui_status($mpd,$status);
 		// CMediaFix
-		if (isset($_SESSION['cmediafix']) && $_SESSION['cmediafix'] == 1 && $status['state'] == 'play' ) {
-			$status['lastbitdepth'] = $_SESSION['lastbitdepth'];
-				if ($_SESSION['lastbitdepth'] != $status['audio']) {
+		if ($redis->get('cmediafix') === '1' && $status['state'] === 'play' ) {
+			$status['lastbitdepth'] = $redis->get('lastbitdepth');
+				if ($redis->get('lastbitdepth') !== $status['audio']) {
 					sendMpdCommand($mpd,'cmediafix');
 				}
 		}
 		
 		// Ramplay
-		if (isset($_SESSION['ramplay']) && $_SESSION['ramplay'] == 1) {
+		if ($redis->get('ramplay') === '1') {
 				// set consume mode ON
 				// if ($status['consume'] == 0) {
 				// sendMpdCommand($mpd,'consume 1');
@@ -143,12 +139,12 @@ session_start();
 		}
 		
 		// Global Random
-		if ((isset($_SESSION['globalrandom']) && $_SESSION['globalrandom'] == 1) && ($_SESSION['lastsongid'] != $status['songid']) && ($_SESSION['globalrandom_lock'] == 0)) {
-		$addsong = new globalRandom($status,$_SESSION['sessionid']);
+		if (($redis->get('globalrandom') === '1') && ($redis->get('lastsongid') != $status['songid']) && ($redis->get('globalrandom_lock') === '0')) {
+		$addsong = new globalRandom($status);
 		$addsong->start();
-		$_SESSION['globalrandom_lock'] = 1;
+		$redis->set('globalrandom_lock', 1);
 		} else {
-		$_SESSION['globalrandom_lock'] = 0;
+		$redis->set('globalrandom_lock', 0);
 		}
 		
 // unlock session

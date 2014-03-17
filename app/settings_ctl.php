@@ -83,6 +83,12 @@ if (isset($_POST)) {
 				$redis->get('coverart') == 1 || $redis->set('coverart', 1);
 			} else {
 				$redis->get('coverart') == 0 || $redis->set('coverart', 0);
+			}			
+			
+			if ($_POST['features']['globalrandom'] == 1 ) {
+				$redis->get('globalrandom') == 1 || $redis->set('globalrandom', 1);
+			} else {
+				$redis->get('globalrandom') == 0 || $redis->set('globalrandom', 0);
 			}
 
 			if ($_POST['features']['scrobbling_lastfm'] == 1) {
@@ -113,10 +119,11 @@ if (isset($_POST)) {
 waitSyWrk($redis,$jobID);
 $template->hostname = $redis->get('hostname');
 $template->ntpserver = $redis->get('ntpserver');
+$template->orionprofile = $redis->get('orionprofile');
 $template->airplay = $redis->get('airplay');
 $template->udevil = $redis->get('udevil');
 $template->coverart = $redis->get('coverart');
-$template->orionprofile = $redis->get('orionprofile');
+$template->globalrandom = $redis->get('globalrandom');
 $template->scrobbling_lastfm = $redis->get('scrobbling_lastfm');
 $template->lastfm = getLastFMauth($redis);
 $template->cmediafix = $redis->get('cmediafix');

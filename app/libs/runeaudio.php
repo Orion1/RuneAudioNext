@@ -405,6 +405,7 @@ $handler = new kafene\SqliteSessionHandler($sessionsdb);
 	}
 }
 
+/*
 // cfg engine and session management
 function playerSession($action,$db,$var,$value) {
 $status = session_status();	
@@ -484,6 +485,7 @@ $status = session_status();
 	}
 	
 }
+*/
 
 function cfgdb_connect($dbpath) {
 	if ($dbh  = new PDO($dbpath)) {
@@ -493,6 +495,7 @@ function cfgdb_connect($dbpath) {
 	return false;
  }
 }
+
 
 function cfgdb_read($table,$dbh,$param,$id) {
 	if(!isset($param)) {
@@ -705,50 +708,27 @@ function pushFile($filepath) {
 }
 
 // check if mpd.conf or interfaces was modified outside
-function hashCFG($action,$db) {
-playerSession('open',$db);
+function hashCFG($action,$redis) {
 	switch ($action) {
 		
 		case 'check_net':
 		// --- CODE REWORK NEEDED ---
 		$hash = md5_file('/etc/netctl/eth0');
-		if ($hash != $_SESSION['netconfhash']) {
-			if ($_SESSION['netconf_advanced'] != 1) {
-			playerSession('write',$db,'netconf_advanced',1); 
-			}
-		return false;
+		if ($redis->get('netconfhash') !== $hash) {
+		    $redis->set('netconf_advanced', 1);
+		    return false;
 		} else {
-			if ($_SESSION['netconf_advanced'] != 0) {
-			playerSession('write',$db,'netconf_advanced',0);
-			}
+		    $redis->set('netconf_advanced', 0);
 		}
 		break;
 		
 		case 'check_mpd':
 		$hash = md5_file('/etc/mpd.conf');
-		if ($hash != $_SESSION['mpdconfhash']) {
-			if ($_SESSION['mpdconf_advanced'] != 1) {
-			playerSession('write',$db,'mpdconf_advanced',1); 
-			}
-		return false;
+		if ($redis->get('mpdconfhash') !== $hash) {
+		    $redis->set('mpdconf_advanced', 1);
+		    return false;
 		} else {
-			if ($_SESSION['mpdconf_advanced'] != 0) {
-			playerSession('write',$db,'mpdconf_advanced',0); 
-			}
-		}
-		break;
-		
-		case 'check_source':
-		$hash = md5_file('/etc/auto.nas');
-		if ($hash != $_SESSION['sourceconfhash']) {
-			if ($_SESSION['sourceconf_advanced'] != 1) {
-			playerSession('write',$db,'sourceconf_advanced',1); 
-			}
-		return false;
-		} else {
-			if ($_SESSION['sourceconf_advanced'] != 0) {
-			playerSession('write',$db,'sourceconf_advanced',0); 
-			}
+		    $redis->set('mpdconf_advanced', 0);
 		}
 		break;
 		
@@ -762,53 +742,42 @@ playerSession('open',$db);
 		playerSession('write',$db,'mpdconfhash',$hash); 
 		break;
 		
-		case 'hash_source':
-		$hash = md5_file('/etc/auto.nas');
-		playerSession('write',$db,'sourceconfhash',$hash); 
-		break;
 	} 
-playerSession('unlock');
 return true;
 }
 
-// log & debug functions
-function debug($input) {
-session_start();
-	// if $input = 1 clear SESSION debug data else load debug data into session
-	if (isset($input) && $input == 1) {
-	$_SESSION['debugdata'] = '';
-	} else {
-	$_SESSION['debugdata'] = $input;
-	}
-session_write_close();
-}
 
 function runelog($title,$data) {
-	if ($_SESSION['debug'] > 0) {
+// Connect to Redis backend
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
+$debug_level = $redis->get('debug');
+	if ($debug_level > 0) {
 	    if(is_array($data)) {
 		foreach($data as $line) {
-		error_log('[debug='.$_SESSION['debug'].'] ### '.$title.' ###  '.$line,0);
+		error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$line,0);
 		}
 	    } else {
-	    error_log('[debug='.$_SESSION['debug'].'] ### '.$title.' ###  '.$data,0);
+	    error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$data,0);
 	    }
 	}
+$redis->close();
 }
 
 
-function debug_footer($db) {
-		if ($_SESSION['debug'] > 0) {
-		debug_output();
-		debug(1);
+function debug_footer($redis) {
+		if ($redis->get('debug') > 0) {
+		//debug_output();
+		//debug(1);
 		$output .= "\n";
 		$output .= "###### System info ######\n";
 		$output .=  file_get_contents('/proc/version');
 		$output .= "\n";
 		$output .=  "system load:\t".file_get_contents('/proc/loadavg');
 		$output .= "\n";
-		$output .= "HW platform:\t".$_SESSION['hwplatform']." (".$_SESSION['hwplatformid'].")\n";
+		$output .= "HW platform:\t".$redis->get('hwplatform')." (".$redis->get('hwplatformid').")\n";
 		$output .= "\n";
-		$output .= "playerID:\t".$_SESSION['playerid']."\n";
+		$output .= "playerID:\t".$redis->get('playerid')."\n";
 		$output .= "\n";
 		$output .= "\n";
 		$output .= "###### Audio backend ######\n";
@@ -851,8 +820,8 @@ function debug_footer($db) {
 		$output .= implode("\n",$sndusbinfo)."\n\n";
 		$output .= "###### Kernel optimization parameters ######\n";
 		$output .= "\n";
-		$output .= "hardware platform:\t".$_SESSION['hwplatform']."\n";
-		$output .= "current orionprofile:\t".$_SESSION['orionprofile']."\n";
+		$output .= "hardware platform:\t".$redis->get('hwplatform')."\n";
+		$output .= "current orionprofile:\t".$$redis->get('orionprofile')."\n";
 		$output .= "\n";
 		// 		$output .=  "kernel scheduler for mmcblk0:\t\t".((empty(file_get_contents('/sys/block/mmcblk0/queue/scheduler'))) ? "\n" : file_get_contents('/sys/block/mmcblk0/queue/scheduler'));
 		$output .=  "kernel scheduler for mmcblk0:\t\t".file_get_contents('/sys/block/mmcblk0/queue/scheduler');
@@ -872,13 +841,13 @@ function debug_footer($db) {
 		$output .= file_get_contents('/etc/mpd.conf');
 		$output .= "\n";
 		}
-		if ($_SESSION['debug'] > 1) {
+		if ($redis->get('debug') > 1) {
 		$output .= "\n";
 		$output .= "\n";
 		$output .= "###### PHP backend ######\n";
 		$output .= "\n";
 		$output .= "php version:\t".phpVer()."\n";
-		$output .= "debug level:\t".$_SESSION['debug']."\n";
+		$output .= "debug level:\t".$redis->get('debug')."\n";
 		$output .= "\n";
 		$output .= "\n";
 		$output .= "###### SESSION ######\n";
@@ -892,7 +861,7 @@ function debug_footer($db) {
 		$output .= "\n";
 		$output .= print_r($_SESSION);
 		}
-		if ($_SESSION['debug'] > 2) {
+		if ($redis->get('debug') > 2) {
 		$connection = new pdo($db);
 		$querystr="SELECT * FROM cfg_engine";
 		$data['cfg_engine'] = sdbquery($querystr,$connection);
@@ -936,20 +905,13 @@ function debug_footer($db) {
 		$output .= implode("\n",$data['cfg_mpd'])."\n\n";
 		$output .= "\n";
 		}
-		if ($_SESSION['debug'] > 0) {
+		if ($redis->get('debug') > 0) {
 		$output .= "\n";
 		$output .= "Page created ".round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']),3)." seconds. ";
 		$output .= "\n";
 		$output .= "\n";
 		}
 return $output;
-}
-
-function debug_output($clear) {
-	if (!empty($_SESSION['debugdata'])) {
-	$output = print_r($_SESSION['debugdata']);
-	}
-echo $output;
 }
 
 function waitSyWrk($redis,$jobID) {
@@ -1047,10 +1009,10 @@ return $filepath;
 }
 
 
-function wrk_opcache($action) {
+function wrk_opcache($action,$redis) {
 	switch ($action) {
 		case 'prime':
-			if ($_SESSION['opcache'] == 1) {
+			if ($redis->get('opcache') === '1') {
 			$ch = curl_init('http://localhost/command/cachectl.php?action=prime');
 			curl_exec($ch);
 			curl_close($ch);
@@ -1185,19 +1147,20 @@ function wrk_mpdconf($outpath,$db,$redis) {
 		// $hwmixer['device'] = 'hw:0';
 		$hwmixer['control'] = alsa_findHwMixerControl(0);
 		// $hwmixer['index'] = '1';
-		playerSession('write',$db,'volume',1);
+		$redis->set('volume', 1);
 		} else if ($cfg['param'] == 'mixer_type' && $cfg['value_player'] == 'software') {
 		// --- REWORK NEEDED ---
-		playerSession('write',$db,'volume',1);
+		$redis->set('volume', 1);
 		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
 		} else if ($cfg['param'] == 'mixer_type' && $cfg['value_player'] == 'disabled') {
 		// --- REWORK NEEDED ---
-		playerSession('write',$db,'volume',0);
+		$redis->set('volume', 0);
 		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
 		} else {
 		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
 		}
 	}
+	$output .= "max_connections \"20\"\n";
 	
 	if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
 	$usbout = 'yes';
@@ -1717,14 +1680,14 @@ function ui_status($mpd,$status) {
 	$curTrack = getTrackInfo($mpd,$status['song']);
 	if (isset($curTrack[0]['Title'])) {
 		$status['currentartist'] = $curTrack[0]['Artist'];
-		$status['currentsong'] = $curTrack[0]['Title'];
+		$status['currentsong'] = htmlentities($curTrack[0]['Title'],ENT_XML1,'UTF-8');
 		$status['currentalbum'] = $curTrack[0]['Album'];
 		$status['fileext'] = parseFileStr($curTrack[0]['file'],'.');
 	} else {
 		$path = parseFileStr($curTrack[0]['file'],'/');
 		$status['fileext'] = parseFileStr($curTrack[0]['file'],'.');
 		$status['currentartist'] = "";
-		$status['currentsong'] = $song;
+		// $status['currentsong'] = $song;
 		if (!empty($path)){
 			$status['currentalbum'] = $path;
 		} else {
@@ -1763,8 +1726,10 @@ runelog('coverart lastfm query URL',$url);
 // key [3] == extralarge last.fm image
 // key [4] == mega last.fm image
 	if(isset($artist)) {
+	runelog('coverart lastfm query URL',$output['artist']['image'][3]['#text']);
 	return $output['artist']['image'][3]['#text'];
 	} else {
+	runelog('coverart lastfm query URL',$output['album']['image'][3]['#text']);
 	return $output['album']['image'][3]['#text'];
 	}
 }

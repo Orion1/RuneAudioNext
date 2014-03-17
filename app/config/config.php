@@ -33,28 +33,27 @@
  
 // Environment vars
 define('APP',$_SERVER['HOME'].'/app/');
-define('DAEMONIP', '127.0.0.1'); // default = 'localhost'
+// Connect to Redis backend
+$redis = new Redis();
+$redis->connect('127.0.0.1', 6379);
 // extend include path for Vendor Libs
 $libs = APP.'libs/vendor';
 set_include_path(get_include_path() . PATH_SEPARATOR . $libs);
 // RuneAudio Library include
 include(APP.'libs/runeaudio.php');
 // LogSettings
-if ($_SESSION['debug'] > 0 ) {
+if ($redis->get('debug') > 0 ) {
 $activeLog=1;
 } else {
 $activeLog=0;
 }
 ini_set("log_errors" , $activeLog);
 ini_set("error_log" , "/var/log/runeaudio/runeui.log");
-ini_set("display_errors" , 0);
+ini_set("display_errors" , $activeLog);
 // datastore SQLite
 $db = 'sqlite:'.$_SERVER['HOME'].'/db/player.db';
 // debug
 runelog('--- [connection.php] >>> OPEN MPD SOCKET --- [connection.php] ---','');
 // connect to MPD daemon
 $mpd = openMpdSocket('/run/mpd.sock') ;
-// Connect to Redis backend
-$redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
 ?>

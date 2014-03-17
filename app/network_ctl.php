@@ -26,23 +26,8 @@
  * along with RuneAudio; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
- *  file: net-config.php
- *  ver: 1.1
+ *  file: app/network_ctl.php
+ *  ver: 1.3
  *
  */
-
-// common include
-include('config/connection.php');
-playerSession('open',$db,'',''); 
 ?>
-<?php
-$sezione = basename(__FILE__, '.php');
-include('_header.php'); 
-?>
-<!-- content -->
-<?php
-$tpl = "net-config.html";
-eval("echoTemplate(\"".getTemplate("app/templates/$tpl")."\");");
-?>
-<!-- content -->
-<?php include('_footer.php'); ?>

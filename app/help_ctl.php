@@ -30,19 +30,5 @@
  *  version: 1.1
  *
  */
+ ?>
  
-// common include
-include('config/connection.php');
-playerSession('open',$db,'',''); 
-?>
-<?php
-$sezione = basename(__FILE__, '.php');
-include('_header.php'); 
-?>
-<!-- content --!>
-<?php
-$tpl = "help.html";
-eval("echoTemplate(\"".getTemplate("app/templates/$tpl")."\");");
-?>
-<!-- content -->
-<?php include('_footer.php'); ?>

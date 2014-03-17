@@ -33,10 +33,7 @@
 
 // common include
 include($_SERVER['HOME'].'/app/config/config.php');
-// datastore SQLite
 // -- REWORK NEEDED --
-$db = 'sqlite:'.$_SERVER['HOME'].'/db/player.db';
-playerSession('open',$db,'','');
 if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
         if ( !$mpd ) {
         echo 'Error Connecting to MPD daemon ';
@@ -46,7 +43,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
                 $cmdstr .= "pause \n";
                 $i = 0;
                 foreach ($outputs as $output) {
-                    if ($_SESSION['hwplatformid'] == '01' OR $_SESSION['hwplatformid'] == '03') {
+                    if ($redis->get('hwplatformid') == '01' OR $redis->get('hwplatformid') == '03') {
                         if ($i == 2 &&  ($_GET['ao'] == 2 OR $_GET['ao'] == 3)) {
                             $cmdstr .= "enableoutput 2\n";
                         } else if ($i == $_GET['ao']) {
@@ -63,7 +60,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
                 runelog('MPD command (0):',$cmdstr);
                 sendMpdCommand($mpd,$cmdstr);
                 // Audio Output: raspberrypi
-                if ($_SESSION['hwplatformid'] == '01') {
+                if ($redis->get('hwplatformid') == '01') {
                     // AnalogJack
                     if ($_GET['ao'] == 2) {
                     $aosock = openMpdSocket('127.0.0.1', 13501);
@@ -84,12 +81,12 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
             // debug
             runelog('selected output interface:',$_GET['ao']);
             playerSession('write',$db,'ao',$_GET['ao']);
-            } else if (($_SESSION['hwplatformid'] == '01') && ($_SESSION['ao'] == 2 OR $_SESSION['ao'] == 3) && ($_GET['cmd'] == 'next' OR $_GET['cmd'] == 'previous' OR preg_match('/play/', $_GET['cmd']) OR preg_match('/seek/', $_GET['cmd']))) {
+            } else if (($redis->get('hwplatformid') == '01') && ($redis->get('ao') == 2 OR $redis->get('ao') == 3) && ($_GET['cmd'] == 'next' OR $_GET['cmd'] == 'previous' OR preg_match('/play/', $_GET['cmd']) OR preg_match('/seek/', $_GET['cmd']))) {
                 // debug
                 runelog('MPD command (2):','pause');
                 sendMpdCommand($mpd,"pause");
                 // debug
-                if ($_SESSION['state'] == 'stop' && preg_match('/play/', $_GET['cmd'])) {
+                if ($redis->get('state') == 'stop' && preg_match('/play/', $_GET['cmd'])) {
                 runelog('MPD command (3):','play');
                 sendMpdCommand($mpd,"play");
                 }
@@ -124,7 +121,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
                 runelog('MPD command (6):',$_GET['cmd']);
                 if ($_GET['cmd'] == 'renderui') {
 				
-					if ((!isset($_SESSION['pl_length'])) OR ($_SESSION['pl_length'] != 0)) {
+					if (($redis->get('pl_length') !== null) OR ($redis->get('pl_length') != 0)) {
 					sendMpdCommand($mpd,'swap 0 0');
 					} else {
 					sendMpdCommand($mpd,'clear');
@@ -145,5 +142,4 @@ echo 'MPD COMMAND INTERFACE<br>';
 echo 'INTERNAL USE ONLY<br>';
 echo 'hosted on runeaudio.local:82';
 }
-session_write_close();
 ?>

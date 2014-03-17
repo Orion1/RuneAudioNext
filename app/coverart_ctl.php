@@ -33,6 +33,7 @@
  
 require_once('Zend/Media/Flac.php');
 // direct output bypass template system
+$lastfm_apikey = $redis->get('lastfm_apikey');
 $tplfile = 0;
 // fetch MPD status
 $status = _parseStatusResponse(MpdStatus($mpd));
@@ -50,8 +51,8 @@ runelog("MPD current path",$currentpath);
 
 $flac = new Zend_Media_Flac($currentpath);
 
-function getLastFMCover($status) {
-$cover_url = ui_lastFM_coverart($status['currentartist'],$status['currentalbum'],$_SESSION['lastfm_apikey']);
+function getLastFMCover($status,$lastfm_apikey) {
+$cover_url = ui_lastFM_coverart($status['currentartist'],$status['currentalbum'],$lastfm_apikey);
 $ch = curl_init($cover_url);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -69,14 +70,20 @@ if ($flac->hasMetadataBlock(Zend_Media_Flac::PICTURE)) {
 		// debug
 		runelog("coverart match: embedded",'');
 		//Extract picture from file
+		header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+		header('Pragma: no-cache'); // HTTP 1.0.
+		header('Expires: 0'); // Proxies.
 		header('Content-Type: ' . $flac->getPicture()->getMimeType());
 		echo $flac->getPicture()->getData();
 
 
-    } else if ($image = getLastFMCover($status)) {
+    } else if ($image = getLastFMCover($status,$lastfm_apikey)) {
 		// debug
 		runelog("coverart match: lastfm",'');
-		header('Content-Type: ' .mime_content_type($image));
+		header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+		header('Pragma: no-cache'); // HTTP 1.0.
+		header('Expires: 0'); // Proxies.
+		// header('Content-Type: ' .mime_content_type($image));
 		echo $image;
 
 	} else {
@@ -84,7 +91,10 @@ if ($flac->hasMetadataBlock(Zend_Media_Flac::PICTURE)) {
 	// debug
 	runelog("coverart match: cover-default",'');
 	$image = '/var/www/assets/img/cover-default.png';
-    header('Content-Type: ' .mime_content_type($image));
+    header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+	header('Pragma: no-cache'); // HTTP 1.0.
+	header('Expires: 0'); // Proxies.
+	header('Content-Type: ' .mime_content_type($image));
     readfile($image);
 	
 }

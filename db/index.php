@@ -33,7 +33,6 @@
  
 // common include
 include($_SERVER['HOME'].'/app/config/config.php');
-// include('../config/connection.php');
 ini_set('display_errors',1);
 error_reporting('E_ALL');
 
@@ -70,7 +69,7 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 					$pos = $status['playlistlength'] ;
 					addQueue($mpd,$_POST['path']);
 					// -- REWORK NEEDED -- tempfix for analog/hdmi out of raspberrypi (should be integrated with sendMpdCommand() function)
-						if ($_SESSION['hwplatformid'] == '01' && ($_SESSION['ao'] == 2 OR $_SESSION['ao'] == 3)) {
+						if ($redis->get('hwplatformid') == '01' && ($redis->get('ao') == 2 OR $redis->get('ao') == 3)) {
 							$cmdstr = "pause";
 							sendMpdCommand($mpd,$cmdstr);
 							closeMpdSocket($mpd);
@@ -90,7 +89,7 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 					sendMpdCommand($mpd,'clear');
 					addQueue($mpd,$_POST['path']);
 					// -- REWORK NEEDED -- tempfix for analog/hdmi out of raspberrypi (should be integrated with sendMpdCommand() function)
-						if ($_SESSION['hwplatformid'] == '01' && ($_SESSION['ao'] == 2 OR $_SESSION['ao'] == 3)) {
+						if ($redis->get('hwplatformid') == '01' && ($redis->get('ao') == 2 OR $redis->get('ao') == 3)) {
 							$cmdstr = "pause";
 							sendMpdCommand($mpd,$cmdstr);
 							closeMpdSocket($mpd);

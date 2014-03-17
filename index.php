@@ -34,8 +34,8 @@
 include($_SERVER['HOME'].'/app/config/config.php');
 // main include
 include($_SERVER['HOME'].'/app/libs/vendor/autoload.php');
-// start RuneAudio SESSION
-playerSession('open',$db,'',''); 
+// open session
+session_start();
 // plates: create new engine
 $engine = new \League\Plates\Engine('/srv/http/app/templates');
 // plates: load asset extension
@@ -54,7 +54,7 @@ $controllers = array(
 'debug',
 'help',
 'mpd-config',
-'net-config',
+'network',
 'settings',
 'sources',
 'playback',

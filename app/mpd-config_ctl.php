@@ -30,81 +30,36 @@
  *  version: 1.3
  *
  */
-
-$dbh = cfgdb_connect($db);
-
-
-// handle (reset)
-if (isset($_POST['reset']) && $_POST['reset'] == 1) {
-$mpdconfdefault = cfgdb_read('',$dbh,'mpdconfdefault');
-	foreach($mpdconfdefault as $element) {
-		cfgdb_update('cfg_mpd',$dbh,$element['param'],$element['value_default']);
-	}
-	// tell worker to write new MPD config
-	if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-
-	$_SESSION['w_queue'] = "mpdcfg";
-	$_SESSION['w_active'] = 1;
-	// set UI notify
-	$_SESSION['notify']['title'] = 'Reset MPD Config';
-	$_SESSION['notify']['msg'] = 'restarting MPD daemon...';
-
-	} else {
-
-	$_SESSION['notify']['title'] = 'Job Failed';
-	$_SESSION['notify']['msg'] = 'background worker is busy.';
-
-	}
-unset($_POST);
-}
-
-// handle POST
-if(isset($_POST['conf']) && !empty($_POST['conf'])) {
-	foreach ($_POST['conf'] as $key => $value) {
-		cfgdb_update('cfg_mpd',$dbh,$key,$value);
-	}
-	// tell worker to write new MPD config
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-
-		$_SESSION['w_queue'] = "mpdcfg";
-		$_SESSION['w_active'] = 1;
-		// set UI notify
-		$_SESSION['notify']['title'] = 'MPD Config modified';
-		$_SESSION['notify']['msg'] = 'restarting MPD daemon...';
-
-		} else {
-
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
-
+ 
+ $dbh = cfgdb_connect($db);
+ 
+ if (isset($_POST)) {
+	// reset MPD configuration
+	if (isset($_POST['reset'])) {
+		$mpdconfdefault = cfgdb_read('',$dbh,'mpdconfdefault');
+		foreach($mpdconfdefault as $element) {
+			cfgdb_update('cfg_mpd',$dbh,$element['param'],$element['value_default']);
 		}
-}
-	
-// handle manual config
-if(isset($_POST['mpdconf']) && !empty($_POST['mpdconf'])) {
-// tell worker to write new MPD config
-		if ($_SESSION['w_lock'] != 1 && $_SESSION['w_queue'] == '') {
-
-		$_SESSION['w_queue'] = "mpdcfgman";
-		$_SESSION['w_queueargs'] = $_POST['mpdconf'];
-		$_SESSION['w_active'] = 1;
-		// set UI notify
-		$_SESSION['notify']['title'] = 'MPD Config modified';
-		$_SESSION['notify']['msg'] = 'restarting MPD daemon...';
-
-		} else {
-
-		$_SESSION['notify']['title'] = 'Job Failed';
-		$_SESSION['notify']['msg'] = 'background worker is busy.';
-
+		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg' ));
+		unset($_POST); // ??
+	}
+	// update MPD configuration
+	if (isset($_POST['conf'])) {
+		foreach ($_POST['conf'] as $key => $value) {
+			cfgdb_update('cfg_mpd',$dbh,$key,$value);
 		}
-}
-
-// wait for worker output if $_SESSION['w_active'] = 1
-waitWorker(1);
+		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg' ));
+	}
+	// manual MPD configuration
+	if (isset($_POST['mpdconf'])) {
+		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg', 'args' => $_POST['mpdconf'] ));
+	}
+ }
+ 
+waitSyWrk($redis,$jobID);
 
 // check integrity of /etc/network/interfaces
-if(!hashCFG('check_mpd',$db)) {
+if(!hashCFG('check_mpd',$redis)) {
 $template->mpdconf = file_get_contents('/etc/mpd.conf');
 // set manual config template
 $template->content = "mpd-config-manual";
@@ -113,20 +68,20 @@ $template->content = "mpd-config-manual";
 $mpdconf = cfgdb_read('',$dbh,'mpdconf');
 // prepare array
 $_mpd = array (
-										'port' => '',
-										'log_level' => '',
-										'gapless_mp3_playback' => '',
-										'auto_update' => '',
-										'auto_update_depth' => '',
-										'zeroconf_enabled' => '',
-										'zeroconf_name' => '',
-										'audio_output_format' => '',
-										'mixer_type' => '',
-										'audio_buffer_size' => '',
-										'buffer_before_play' => '',
-										'dsd_usb' => '',
-										'volume_normalization' => ''
-									);
+						'port' => '',
+						'log_level' => '',
+						'gapless_mp3_playback' => '',
+						'auto_update' => '',
+						'auto_update_depth' => '',
+						'zeroconf_enabled' => '',
+						'zeroconf_name' => '',
+						'audio_output_format' => '',
+						'mixer_type' => '',
+						'audio_buffer_size' => '',
+						'buffer_before_play' => '',
+						'dsd_usb' => '',
+						'volume_normalization' => ''
+					);
 //debug($mpdconf);							
 // parse output for template $template->conf
 foreach ($mpdconf as $key => $value) {
@@ -145,17 +100,17 @@ $dbh = null;
 
 // check actual active output interface
 //$active_ao = _parseOutputsResponse(getMpdOutputs($mpd),1);
-$active_ao = $_SESSION['ao'];
-$_audioout = '';
-if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
-$_audioout .= "<option value=\"0\" ".(($active_ao == 0) ? "selected" : "").">USB Audio</option>\n";
-}
-if (($_SESSION['hwplatformid'] == '01' OR $_SESSION['hwplatformid'] == '04') && wrk_checkStrSysfile('/proc/asound/card1/pcm0p/info','bcm2835')) {
-$_audioout .= "<option value=\"2\" ".(($active_ao == 2) ? "selected" : "").">Analog Out</option>\n";
-$_audioout .= "<option value=\"3\" ".(($active_ao == 3) ? "selected" : "").">HDMI</option>\n";
-} 
-$_audioout .= "<option value=\"1\" ".(($active_ao == 1) ? "selected" : "").">Null (test output)</option>";
+// $active_ao = $_SESSION['ao'];
+// $_audioout = '';
+// if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
+// $_audioout .= "<option value=\"0\" ".(($active_ao == 0) ? "selected" : "").">USB Audio</option>\n";
+// }
+// if (($_SESSION['hwplatformid'] == '01' OR $_SESSION['hwplatformid'] == '04') && wrk_checkStrSysfile('/proc/asound/card1/pcm0p/info','bcm2835')) {
+// $_audioout .= "<option value=\"2\" ".(($active_ao == 2) ? "selected" : "").">Analog Out</option>\n";
+// $_audioout .= "<option value=\"3\" ".(($active_ao == 3) ? "selected" : "").">HDMI</option>\n";
+// } 
+// $_audioout .= "<option value=\"1\" ".(($active_ao == 1) ? "selected" : "").">Null (test output)</option>";
 
 // wait for worker output if $_SESSION['w_active'] = 1
-waitWorker(1);
+
 ?>

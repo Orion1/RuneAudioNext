@@ -32,6 +32,7 @@
  */
  
 include('getid3/audioinfo.class.php');
+$lastfm_apikey = $redis->get('lastfm_apikey');
 // direct output bypass template system
 $tplfile = 0;
 // fetch MPD status
@@ -64,7 +65,7 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 } else {
 	
 	
-	$cover_url = ui_lastFM_coverart($status['currentartist'],$status['currentalbum'],$_SESSION['lastfm_apikey']);
+	$cover_url = ui_lastFM_coverart($status['currentartist'],$status['currentalbum'],$lastfm_apikey);
 	// debug
 	runelog("coverart match: lastfm (query 1) coverURL=",$cover_url);
 	$ch = curl_init($cover_url);
@@ -76,7 +77,7 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 	if (empty($cover_url)) {
 
 			// fetch artist image
-			$cover_url = ui_lastFM_coverart($status['currentartist'],'',$_SESSION['lastfm_apikey']);
+			$cover_url = ui_lastFM_coverart($status['currentartist'],'',$lastfm_apikey);
 
 			// debug
 			runelog("coverart match: lastfm (query 2) coverURL=",$cover_url);
@@ -89,14 +90,19 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 
 			
 			if (($lastfm_img_mime = $bufferinfo->buffer($lastfm_img)) != 'text/plain') {
+			header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+			header('Pragma: no-cache'); // HTTP 1.0.
+			header('Expires: 0'); // Proxies.
 			header('Content-Type: ' .$lastfm_img_mime);
 			echo $lastfm_img;
-			break;
-			
+				
 			} else {
 				
 				// debug
 				runelog("coverart match: cover-default",'');
+				header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+				header('Pragma: no-cache'); // HTTP 1.0.
+				header('Expires: 0'); // Proxies.
 				header('Content-Type: ' .($bufferinfo->buffer($_SERVER['HOME'].'/assets/images/cover-default.png')));
 				readfile($_SERVER['HOME'].'/assets/images/cover-default.png');
 				
@@ -106,6 +112,9 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 			
 			// debug
 			runelog("coverart match: lastfm",'');
+			header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+			header('Pragma: no-cache'); // HTTP 1.0.
+			header('Expires: 0'); // Proxies.
 			header('Content-Type: ' .$lastfm_img_mime);
 			echo $lastfm_img;
 	}

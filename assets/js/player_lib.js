@@ -583,15 +583,15 @@ function updateGUI(json){
     GUI.currentsong = currentsong;
 	var currentalbumstring = currentartist + ' - ' + currentalbum;
 	if (GUI.currentalbum != currentalbumstring) {
-		$('#cover-art').css('background-image','url(assets/img/cover-default.png');
+		// $('#cover-art').css('background-image','url(assets/img/cover-default.png');
 		if (radioname === null || radioname === undefined || radioname === '') {
 			var covercachenum = Math.floor(Math.random()*1001);
 			$.ajax({
-				url: '/coverart/',
-				data: { v: covercachenum },
+				// url: '/coverart2/',
+				// data: { v: covercachenum },
 				success: function(data){
 					// if ($.parseJSON(data) != 'NOCOVER') {
-						$('#cover-art').css('background-image','url(/coverart/?v=' + covercachenum + ')');
+						$('#cover-art').css('background-image','url(/coverart2/?v=' + covercachenum + ')');
 						// $('#cover-art').css('background-image','url(' + data + ')');
 					// }
 				}
