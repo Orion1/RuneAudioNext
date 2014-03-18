@@ -53,7 +53,7 @@ $controllers = array(
 'dev',
 'debug',
 'help',
-'mpd-config',
+'mpd',
 'network',
 'settings',
 'sources',

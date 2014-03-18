@@ -749,19 +749,19 @@ return true;
 
 function runelog($title,$data) {
 // Connect to Redis backend
-$redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
-$debug_level = $redis->get('debug');
-	if ($debug_level > 0) {
+$store = new Redis();
+$store->connect('127.0.0.1', 6379);
+$debug_level = $store->get('debug');
+	if ($debug_level !== '0') {
 	    if(is_array($data)) {
-		foreach($data as $line) {
-		error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$line,0);
-		}
+			foreach($data as $line) {
+			error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$line,0);
+			}
 	    } else {
-	    error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$data,0);
+			error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$data,0);
 	    }
 	}
-$redis->close();
+$store->close();
 }
 
 

@@ -73,7 +73,8 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$lastfm_img = curl_exec($ch);
 	curl_close($ch);
-	
+	$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
+
 	if (empty($cover_url)) {
 
 			// fetch artist image
@@ -87,9 +88,9 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			$lastfm_img = curl_exec($ch);
 			curl_close($ch);
-
+			$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
 			
-			if (($lastfm_img_mime = $bufferinfo->buffer($lastfm_img)) != 'text/plain') {
+			if (!empty($lastfm_img)) {
 			header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
 			header('Pragma: no-cache'); // HTTP 1.0.
 			header('Expires: 0'); // Proxies.
@@ -103,8 +104,8 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 				header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
 				header('Pragma: no-cache'); // HTTP 1.0.
 				header('Expires: 0'); // Proxies.
-				header('Content-Type: ' .($bufferinfo->buffer($_SERVER['HOME'].'/assets/images/cover-default.png')));
-				readfile($_SERVER['HOME'].'/assets/images/cover-default.png');
+				header('Content-Type: ' .mime_content_type($_SERVER['HOME'].'/assets/img/cover-default.png'));
+				readfile($_SERVER['HOME'].'/assets/img/cover-default.png');
 				
 			}
 			
