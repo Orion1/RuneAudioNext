@@ -27,7 +27,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
  *  file: command/cachectl.php
- *  version: 1.2
+ *  version: 1.3
  *
  */
 
@@ -48,6 +48,7 @@ if (isset($_GET['action'])) {
 			case 'reset':
 				OpCacheCtl('/srv/http/','reset');
 			opcache_reset();
+			runelog('cacheCTL RESET','');
 			echo "PHP OPCACHE CLEARED";
 			break;
 					

@@ -40,6 +40,10 @@ ini_set('error_log','/var/log/runeaudio/rune_SY_wrk.log');
 define('APP','/srv/http/app/');
 opcache_reset();
 include('/srv/http/app/libs/runeaudio.php');
+// prime PHP 5.5 Opcache
+// wrk_opcache('prime',$redis);
+sysCmd("curl -s -X GET 'http://localhost/command/cachectl.php?action=prime'");
+
 // Connect to Redis backend
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
@@ -100,9 +104,6 @@ sysCmd('chmod 777 /run');
 // reset DB permission
 sysCmd('chmod -R 777 /var/www/db');
 
-// prime PHP 5.5 Opcache
-wrk_opcache('prime',$redis);
-
 // mount all sources
 wrk_sourcemount($db,'mountall');
 
@@ -111,11 +112,14 @@ wrk_sourcemount($db,'mountall');
 
 // check Architecture
 $arch = wrk_getHwPlatform();
+runelog('detected architecture: ', $arch);
 
-if ($arch != $redis->get('hwplatformid')) {
+/*
+if ($redis->get('hwplatformid') != $arch) {
 // reset playerID if architectureID not match. This condition "fire" another first-run process
 $redis->set('playerid','');
 }
+*/
 
 if (empty($redis->get('playerid'))) {
 // RUNEAUDIO FIRST RUN PROCESS --- //

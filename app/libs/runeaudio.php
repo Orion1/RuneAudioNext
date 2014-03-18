@@ -26,8 +26,8 @@
  * along with RuneAudio; see the file COPYING.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
- *  file: player_lib.php
- *  version: 1.2
+ *  file: app/libs/runeaudio.php
+ *  version: 1.3
  *
  */
  
@@ -1012,23 +1012,26 @@ return $filepath;
 function wrk_opcache($action,$redis) {
 	switch ($action) {
 		case 'prime':
-			if ($redis->get('opcache') === '1') {
+			if ($redis->get('opcache') == 1) {
 			$ch = curl_init('http://localhost/command/cachectl.php?action=prime');
 			curl_exec($ch);
 			curl_close($ch);
 			}
+		runelog('wrk_opcache ', $action);
 		break;
 		
 		case 'forceprime':
 			$ch = curl_init('http://localhost/command/cachectl.php?action=prime');
 			curl_exec($ch);
 			curl_close($ch);
+		runelog('wrk_opcache ', $action);
 		break;
 		
 		case 'reset':
 			$ch = curl_init('http://localhost/command/cachectl.php?action=reset');
 			curl_exec($ch);
 			curl_close($ch);
+		runelog('wrk_opcache ', $action);
 		break;
 		
 		case 'enable':
@@ -1040,6 +1043,7 @@ function wrk_opcache($action,$redis) {
 		$fp = fopen($file, 'w');
 		fwrite($fp, implode("",$newArray));
 		fclose($fp);
+		runelog('wrk_opcache ', $action);
 		break;
 		
 		case 'disable':
@@ -1052,6 +1056,7 @@ function wrk_opcache($action,$redis) {
 		$fp = fopen($file, 'w');
 		fwrite($fp, implode("",$newArray));
 		fclose($fp);
+		runelog('wrk_opcache ', $action);
 		break;
 	}
 }
@@ -1448,37 +1453,34 @@ $arch = '--';
 return $arch;
 }
 
-function wrk_setHwPlatform($db) {
+function wrk_setHwPlatform($redis) {
 $arch = wrk_getHwPlatform();
 $playerid = wrk_playerID($arch);
-// register playerID into database
-playerSession('write',$db,'playerid',$playerid);
 // register platform into database
 	switch($arch) {
 		case '01':
-		playerSession('write',$db,'hwplatform','RaspberryPi');
-		playerSession('write',$db,'hwplatformid',$arch);
+		$redis->set('hwplatform','RaspberryPi');
+		$redis->set('hwplatformid',$arch);
 		break;
 		
 		case '02':
-		playerSession('write',$db,'hwplatform','UDOO');
-		playerSession('write',$db,'hwplatformid',$arch);
+		$redis->set('hwplatform','UDOO');
+		$redis->set('write',$db,'hwplatformid',$arch);
 		break;
 		
 		case '03':
-		playerSession('write',$db,'hwplatform','CuBox');
-		playerSession('write',$db,'hwplatformid',$arch);
+		$redis->set('hwplatform','CuBox');
+		$redis->set('hwplatformid',$arch);
 		break;
 		
 		case '04':
-		playerSession('write',$db,'hwplatform','BeagleBone Black');
-		playerSession('write',$db,'hwplatformid',$arch);
+		$redis->set('hwplatform','BeagleBone Black');
+		$redis->set('hwplatformid',$arch);
 		break;
 		
 		default:
-		playerSession('write',$db,'hwplatform','unknown');
-		playerSession('write',$db,'hwplatformid',$arch);
-
+		$redis->set('hwplatform','unknown');
+		$redis->set('hwplatformid',$arch);
 	}
 }
 
