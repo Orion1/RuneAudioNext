@@ -765,7 +765,7 @@ $store->close();
 }
 
 
-function debug_footer($redis) {
+function debug_data($redis) {
 		if ($redis->get('debug') > 0) {
 		//debug_output();
 		//debug(1);
@@ -821,7 +821,7 @@ function debug_footer($redis) {
 		$output .= "###### Kernel optimization parameters ######\n";
 		$output .= "\n";
 		$output .= "hardware platform:\t".$redis->get('hwplatform')."\n";
-		$output .= "current orionprofile:\t".$$redis->get('orionprofile')."\n";
+		$output .= "current orionprofile:\t".$redis->get('orionprofile')."\n";
 		$output .= "\n";
 		// 		$output .=  "kernel scheduler for mmcblk0:\t\t".((empty(file_get_contents('/sys/block/mmcblk0/queue/scheduler'))) ? "\n" : file_get_contents('/sys/block/mmcblk0/queue/scheduler'));
 		$output .=  "kernel scheduler for mmcblk0:\t\t".file_get_contents('/sys/block/mmcblk0/queue/scheduler');

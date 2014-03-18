@@ -59,7 +59,7 @@
 waitSyWrk($redis,$jobID);
 
 // check integrity of /etc/network/interfaces
-if(!hashCFG('check_mpd',$redis)) {
+if(hashCFG('check_mpd',$redis)) {
 $template->mpdconf = file_get_contents('/etc/mpd.conf');
 // set manual config template
 $template->content = "mpd_manual";

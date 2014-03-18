@@ -32,6 +32,6 @@
  */
  
 ob_start();
-echo debug_footer($db);
+echo debug_data($redis);
 $debugdata = ob_get_clean();
 $template->debug = $debugdata;

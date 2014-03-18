@@ -100,7 +100,7 @@ if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
 		// load selected APP Controller
 		include(APP.$template->uri(1).'_ctl.php');
 		// register current controller in SESSION
-		if ($template->uri(1) != 'coverart') {
+		if ($template->uri(1) !== 'coverart' && $template->uri(1) !== 'coverart2') {
 		$_SESSION['controller'] = $template->uri(1);
 		}
 
@@ -142,4 +142,6 @@ echo $template->render('default_lo');
 closeMpdSocket($mpd);
 // close Redis connection
 $redis->close();
+// close session
+session_write_close();
 ?>

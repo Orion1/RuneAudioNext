@@ -47,6 +47,8 @@ sysCmd("curl -s -X GET 'http://localhost/command/cachectl.php?action=prime'");
 // Connect to Redis backend
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
+// datastore SQLite
+$db = 'sqlite:'.APP.'db/player.db';
 // initialize Redis worker data tables
 $redis->del('w_lock');
 $redis->del('w_queue');
@@ -54,7 +56,6 @@ $redis->del('w_queue');
 // reset worker logfile
 sysCmd('echo "--------------- start: rune_SY_wrk.php ---------------" > /var/log/runeaudio/rune_SY_wrk.log');
 runelog("WORKER rune_SY_wrk.php STARTING...",'');
-$db = 'sqlite:/var/www/db/player.db';
 
 // DEMONIZE --- //
 runelog("DEMONIZE ---",'');
@@ -121,13 +122,13 @@ $redis->set('playerid','');
 }
 */
 
-if (empty($redis->get('playerid'))) {
+if ($redis->get('playerid') === '') {
 // RUNEAUDIO FIRST RUN PROCESS --- //
 runelog("RUNEAUDIO FIRST RUN PROCESS ---",'');
-
+$dbh = cfgdb_connect($db);
 	// register HW architectureID and playerID
 	runelog("register HW architectureID and playerID",'');
-	wrk_setHwPlatform($db);
+	wrk_setHwPlatform($redis);
 			// destroy actual session
 			// runelog("destroy actual session",'');
 			// playerSession('destroy',$db,'','');
@@ -137,11 +138,10 @@ runelog("RUNEAUDIO FIRST RUN PROCESS ---",'');
 			// reset ENV parameters
 			//runelog("reset ENV parameters",'');
 			//wrk_sysChmod();
-
+/*
 	// reset netconf to defaults
 	runelog("reset netconf to defaults",'');
 	$value = array('ssid' => '', 'encryption' => '', 'password' => '');
-	$dbh = cfgdb_connect($db);
 	cfgdb_update('cfg_wifisec',$dbh,'',$value);
 	// reset eth0 netctl profile
 	sysCmd('cp /var/www/_OS_SETTINGS/etc/netctl/eth0 /etc/netctl/');
@@ -158,7 +158,7 @@ runelog("RUNEAUDIO FIRST RUN PROCESS ---",'');
 	sysCmd('netctl restart eth0');
 
 	// restart wlan0 interface
-/*
+
 		if (strpos($netconf, 'wlan0') != false) {
 		$cmd = "ip addr list wlan0 |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1";
 		$ip_wlan0 = sysCmd($cmd);
@@ -177,7 +177,7 @@ runelog("RUNEAUDIO FIRST RUN PROCESS ---",'');
 
 	// reset sourcecfg to defaults
 	runelog("reset sourcecfg to defaults",'');
-	wrk_sourcecfg($db,'reset');
+	wrk_sourcecfg($db,'reset','');
 	sendMpdCommand($mpd,'update');
 
 	// reset mpdconf to defaults
@@ -200,12 +200,12 @@ runelog("RUNEAUDIO FIRST RUN PROCESS ---",'');
 	}
 	sleep(1);
 	wrk_setMpdStartOut($arch);
-	$dbh = null;
-
+	
 	// system ENV files check and replace
 	// runelog("system ENV files check and replace",'');
 	//	wrk_sysEnvCheck($arch,1);
-
+	
+$dbh = null;
 runelog("--- RUNEAUDIO FIRST RUN PROCESS",'');
 // invoke rune_SY_wrk.php respawn
 sysCmd('systemctl restart rune_SY_wrk');
