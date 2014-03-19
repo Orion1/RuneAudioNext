@@ -507,14 +507,20 @@ html, body {
     display: block;
     // position: relative;
     height: 49px;
+	line-height: 19px;
     // margin: 0;
     // background: @body-bg;
     border-bottom: 1px solid darken(@brand-alt, 16%);
     color: @text-color;
-    cursor: pointer;
     font-size: 15px;
 	// text-align: left;
 	.no-selectable;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	&:hover, &:focus {
+		cursor: pointer;
+	}
 }
 .list-entry {
     margin-right: 70px;
@@ -543,6 +549,11 @@ html, body {
 	text-align: center;
 	color: @text-color;
 	text-decoration: none;
+	&:hover, &:focus {
+		background: darken(@brand-alt, 16%);
+		cursor: pointer;
+		font-size: 20px;
+	}
 }
 .list-active {
     color: @text-color;
@@ -589,27 +600,42 @@ html, body {
 	-webkit-transform: translate3d(0,0,0);
     li {
 		.list-li;
-	}
-	li:before {
-        display: none;
-    }
-	.pl-entry {
-		.list-entry;
 		.fa-microphone {
 			margin-right: 8px;
 		}
 	}
-	span {
-		.list-span;
-	}
 	.active {
 		.list-active;
-	}
-	.active span {
-		color: @brand-alt;
+		.bl {
+			color: @brand-alt;
+		}
 	}
 	.pl-action, .pl-actions {
 		.list-action;
+	}
+	span {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.sn {
+		display: block;
+		padding: 5px 0 0 10px;
+		span {
+			padding-left: 10px;
+			font-size: 14px;
+			font-style: normal;
+			color: @brand-alt;
+			&.infinite {
+				font-size: 28px;
+			}
+		}
+	}
+	.bl {
+		display: block;
+		padding: 0 50px 0 10px;
+		font-size: 12px;
+		color: lighten(@brand-alt, 20%);
 	}
 }
 #db-browse {
@@ -652,16 +678,6 @@ html, body {
 #browse-mode {
     display: none;
 }
-.songtime {
-    padding-left: 10px;
-    font-size: 14px;
-    font-style: normal;
-    color: @brand-alt;
-	&.infinite {
-		font-size: 28px;
-	}
-}
-
 #panel-sx, #panel-dx {
 	.btn.disabled, .btn[disabled] {
 		background-color: @brand-alt;
@@ -1316,24 +1332,26 @@ ul.parsley-error-list {
 			color: @text-color;
 		}
 	}
-	.playlist li:before {
-		display: block;
-        float: left;
-        width: 35px;
-        height: 46px;
-        margin: 2px 0 0 5px;
-        text-align: right;
-        counter-increment: item;
-        content: counter(item) '. ';
-        color: @brand-alt;
-	}
-	.playlist li.sortable-ghost:before {
-		line-height: 46px;
-		margin-top: 0;
-		content: "\f07d";
-		font-family: "FontAwesome";
-		color: @text-color;
-		text-align: left;
+	.playlist {
+		li:before {
+			display: block;
+			float: left;
+			width: 35px;
+			height: 46px;
+			margin: 5px 0 0 5px;
+			text-align: right;
+			counter-increment: item;
+			content: counter(item) '. ';
+			color: @brand-alt;
+		}
+		li.sortable-ghost:before {
+			line-height: 46px;
+			margin-top: 0;
+			content: "\f07d";
+			font-family: "FontAwesome";
+			color: @text-color;
+			text-align: left;
+		}
 	}
 	// #pl-filter-results {
 		// margin: 0 30px 0 10px;
