@@ -47,8 +47,10 @@ sysCmd("curl -s -X GET 'http://localhost/command/cachectl.php?action=prime'");
 // Connect to Redis backend
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
+// check configuration datastore
+redisDatastore($redis,'check');
 // datastore SQLite
-$db = 'sqlite:'.APP.'db/player.db';
+$db = 'sqlite:/srv/http/db/player.db';
 // initialize Redis worker data tables
 $redis->del('w_lock');
 $redis->del('w_queue');

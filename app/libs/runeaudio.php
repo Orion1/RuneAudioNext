@@ -599,6 +599,58 @@ function sdbquery($querystr,$dbh) {
 	}
 }
 
+function redisDatastore($redis,$action) {
+
+	switch ($action) {
+			case 'check':
+			// kernel profile
+			$redis->get('orionprofile') || $redis->set('orionprofile', 'RuneAudio');
+
+			// player features
+			$redis->get('hostname') || $redis->set('hostname', 'runeaudio');
+			$redis->get('ntpserver') || $redis->set('ntpserver', 'pool.ntp.org');
+			$redis->get('airplay') || $redis->set('airplay', 1);
+			$redis->get('udevil') || $redis->set('udevil', 1);
+			$redis->get('coverart') || $redis->set('coverart', 1);
+			$redis->get('playmod') || $redis->set('playmod', 0);
+			$redis->get('ramplay') || $redis->set('ramplay', 0);
+			$redis->get('scrobbling_lastfm') || $redis->set('scrobbling_lastfm', 0);
+			$redis->get('cmediafix') || $redis->set('cmediafix', 0);
+			$redis->get('globalrandom') || $redis->set('globalrandom', 0);
+			$redis->get('globalrandom_lock') || $redis->set('globalrandom_lock', 0);
+
+			// plugins api-keys
+			$redis->get('lastfm_apikey') || $redis->set('lastfm_apikey', 'ba8ad00468a50732a3860832eaed0882');
+			$redis->hGet('jamendo', 'clientid') || $redis->hSet('jamendo', 'clientid', '5f3ed86c');
+			$redis->hGet('jamendo', 'secret') || $redis->hSet('jamendo', 'secret', '1afcdcb13eb5ce8f6e534ac4566a3ab9');
+
+			// internal config hash control
+			$redis->get('mpdconfhash') || $redis->set('mpdconfhash', '');
+			$redis->get('netconfhash') || $redis->set('netconfhash', '');
+			$redis->get('mpdconf_advanced') || $redis->set('mpdconf_advanced', 0);
+			$redis->get('netconf_advanced') || $redis->set('netconf_advanced', 0);
+
+			// developer parameters
+			$redis->get('dev') || $redis->set('dev', 0);
+			$redis->get('debug') || $redis->set('debug', 0);
+			$redis->get('opcache') || $redis->set('opcache', 1);
+
+			// HW platform data
+			$redis->get('playerid') || $redis->set('playerid', '');
+			$redis->get('hwplatform') || $redis->set('hwplatform', '');
+			$redis->get('hwplatformid') || $redis->set('hwplatformid', '');
+
+			// player control
+			$redis->get('ao') || $redis->set('ao', 1);
+			$redis->get('volume') || $redis->set('volume', 0);
+			$redis->get('pl_length') || $redis->set('pl_length', 0);
+			$redis->get('nextsongid') || $redis->set('nextsongid', 0);
+			$redis->get('lastsongid') || $redis->set('lastsongid', 0);
+			break;
+	}
+	
+}
+
 // Ramplay functions
 function rp_checkPLid($id,$mpd) {
 $_SESSION['DEBUG'] .= "rp_checkPLid:$id |";
@@ -1439,6 +1491,11 @@ $file = '/proc/cpuinfo';
 					// BeagleBone Black
 					case 'Generic AM33XX (Flattened Device Tree)':
 					$arch = '04';
+					break;					
+					
+					// Utilite Standard
+					case 'Compulab CM-FX6':
+					$arch = '05';
 					break;
 					
 					default:
@@ -1465,7 +1522,7 @@ $playerid = wrk_playerID($arch);
 		
 		case '02':
 		$redis->set('hwplatform','UDOO');
-		$redis->set('write',$db,'hwplatformid',$arch);
+		$redis->set('hwplatformid',$arch);
 		break;
 		
 		case '03':
@@ -1475,6 +1532,11 @@ $playerid = wrk_playerID($arch);
 		
 		case '04':
 		$redis->set('hwplatform','BeagleBone Black');
+		$redis->set('hwplatformid',$arch);
+		break;
+		
+		case '05':
+		$redis->set('hwplatform','Utilite Standard');
 		$redis->set('hwplatformid',$arch);
 		break;
 		
