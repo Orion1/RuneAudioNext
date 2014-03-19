@@ -602,6 +602,53 @@ function sdbquery($querystr,$dbh) {
 function redisDatastore($redis,$action) {
 
 	switch ($action) {
+			
+			case 'reset':
+			// kernel profile
+			$redis->set('orionprofile', 'RuneAudio');
+
+			// player features
+			$redis->set('hostname', 'runeaudio');
+			$redis->set('ntpserver', 'pool.ntp.org');
+			$redis->set('airplay', 1);
+			$redis->set('udevil', 1);
+			$redis->set('coverart', 1);
+			$redis->set('playmod', 0);
+			$redis->set('ramplay', 0);
+			$redis->set('scrobbling_lastfm', 0);
+			$redis->set('cmediafix', 0);
+			$redis->set('globalrandom', 0);
+			$redis->set('globalrandom_lock', 0);
+
+			// plugins api-keys
+			$redis->set('lastfm_apikey', 'ba8ad00468a50732a3860832eaed0882');
+			$redis->hSet('jamendo', 'clientid', '5f3ed86c');
+			$redis->hSet('jamendo', 'secret', '1afcdcb13eb5ce8f6e534ac4566a3ab9');
+
+			// internal config hash control
+			$redis->set('mpdconfhash', '');
+			$redis->set('netconfhash', '');
+			$redis->set('mpdconf_advanced', 0);
+			$redis->set('netconf_advanced', 0);
+
+			// developer parameters
+			$redis->set('dev', 1);
+			$redis->set('debug', 2);
+			$redis->set('opcache', 1);
+
+			// HW platform data
+			$redis->set('playerid', '');
+			$redis->set('hwplatform', '');
+			$redis->set('hwplatformid', '');
+
+			// player control
+			$redis->set('ao', 1);
+			$redis->set('volume', 0);
+			$redis->set('pl_length', 0);
+			$redis->set('nextsongid', 0);
+			$redis->set('lastsongid', 0);
+			break;
+			
 			case 'check':
 			// kernel profile
 			$redis->get('orionprofile') || $redis->set('orionprofile', 'RuneAudio');
@@ -1213,11 +1260,13 @@ function wrk_mpdconf($outpath,$db,$redis) {
 		// --- REWORK NEEDED ---
 		$redis->set('volume', 0);
 		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
+		} else if ($cfg['param'] == 'bind_to_address') {
+		$output .= "bind_to_address \"/run/mpd.sock\"\n";
+		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
 		} else {
 		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
 		}
 	}
-	$output .= "max_connections \"20\"\n";
 	
 	if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
 	$usbout = 'yes';
@@ -1512,7 +1561,10 @@ return $arch;
 
 function wrk_setHwPlatform($redis) {
 $arch = wrk_getHwPlatform();
+runelog('arch= ',$arch);
 $playerid = wrk_playerID($arch);
+$redis->set('playerid', $playerid);
+runelog('playerid= ',$playerid);
 // register platform into database
 	switch($arch) {
 		case '01':

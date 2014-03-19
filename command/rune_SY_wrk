@@ -42,7 +42,7 @@ opcache_reset();
 include('/srv/http/app/libs/runeaudio.php');
 // prime PHP 5.5 Opcache
 // wrk_opcache('prime',$redis);
-sysCmd("curl -s -X GET 'http://localhost/command/cachectl.php?action=prime'");
+// sysCmd("curl -s -X GET 'http://localhost/command/cachectl.php?action=prime'");
 
 // Connect to Redis backend
 $redis = new Redis();
@@ -51,6 +51,13 @@ $redis->connect('127.0.0.1', 6379);
 redisDatastore($redis,'check');
 // datastore SQLite
 $db = 'sqlite:/srv/http/db/player.db';
+
+// read registered HW architecture
+$arch_db = $redis->get('hwplatformid');
+runelog('registered architecture: ', $arch_db);
+$playerid_db = $redis->get('playerid');
+runelog('registered playerid: ', $playerid_db);
+
 // initialize Redis worker data tables
 $redis->del('w_lock');
 $redis->del('w_queue');
@@ -110,23 +117,22 @@ sysCmd('chmod -R 777 /var/www/db');
 // mount all sources
 wrk_sourcemount($db,'mountall');
 
-// start MPD daemon
-//sysCmd("systemctl start mpd");
-
 // check Architecture
 $arch = wrk_getHwPlatform();
 runelog('detected architecture: ', $arch);
 
-/*
-if ($redis->get('hwplatformid') != $arch) {
+if ($arch_db !== $arch) {
+runelog('architecture mismatch: registered HWID: '.$arch_db.' detected: ', $arch);
 // reset playerID if architectureID not match. This condition "fire" another first-run process
-$redis->set('playerid','');
+$playerid_db = '';
 }
-*/
 
-if ($redis->get('playerid') === '') {
+if ($playerid_db === '') {
 // RUNEAUDIO FIRST RUN PROCESS --- //
-runelog("RUNEAUDIO FIRST RUN PROCESS ---",'');
+runelog(">>>>>>RUNEAUDIO FIRST RUN PROCESS ---",'');
+// reset Redis datatore to defaults
+redisDatastore($redis,'reset');
+
 $dbh = cfgdb_connect($db);
 	// register HW architectureID and playerID
 	runelog("register HW architectureID and playerID",'');
@@ -189,7 +195,7 @@ $dbh = cfgdb_connect($db);
 		cfgdb_update('cfg_mpd',$dbh,$element['param'],$element['value_default']);
 	}
 	// tell worker to write new MPD config
-	wrk_mpdconf('/etc',$db);
+	wrk_mpdconf('/etc',$db,$redis);
 	// update hash
 	$hash = md5_file('/etc/mpd.conf');
 	$redis->set('mpdconfhash',$hash);
@@ -200,8 +206,8 @@ $dbh = cfgdb_connect($db);
 	runelog("restart MPDSCRIBBLE",'');
 	sysCmd('systemctl restart mpdscribble');
 	}
-	sleep(1);
-	wrk_setMpdStartOut($arch);
+	usleep(500000);
+	// wrk_setMpdStartOut($arch);
 	
 	// system ENV files check and replace
 	// runelog("system ENV files check and replace",'');
@@ -211,6 +217,7 @@ $dbh = null;
 runelog("--- RUNEAUDIO FIRST RUN PROCESS",'');
 // invoke rune_SY_wrk.php respawn
 sysCmd('systemctl restart rune_SY_wrk');
+
 // --- RUNEAUDIO FIRST RUN PROCESS //
 
 } else {
