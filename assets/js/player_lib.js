@@ -245,9 +245,9 @@ function getPlaylistPlain(data, json){
 				bottomline = 'URL: ' + (path === '') ? str : path;
 				totaltime = '';
 			} else {
-				totaltime = '<em class="songtime">' + timeConvert2(time) + '</em>';
+				totaltime = '<span>' + timeConvert2(time) + '</span>';
 			}
-			content += '<li id="pl-' + songid + '" class="'+ (state != "stop" && id == current ? 'active' : '') + ' clearfix"><a class="pl-action" href="#notarget" title="Remove song from playlist"><i class="fa fa-times-circle"></i></a><div class="pl-entry">' + title + totaltime + '<span>' + bottomline + '</span></div></li>';
+			content += '<li id="pl-' + songid + '" class="'+ (state != "stop" && id == current ? 'active' : '') + ' clearfix"><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
 			time = '', artist = '', album = '', title = '', name = '';
 		}
 	}

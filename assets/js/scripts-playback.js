@@ -315,26 +315,28 @@ jQuery(document).ready(function($){ 'use strict';
 
     var playlist = $('#playlist-entries');
     
-	// click on playlist entry
-    playlist.on('click', '.pl-entry', function() {
-        var pos = $('.playlist .pl-entry').index(this);
-        var cmd = 'play ' + pos;
-        sendCmd(cmd);
-        GUI.halt = 1;
-        $('li.active', '#playlist-entries').removeClass('active');
-        $(this).parent().addClass('active');
-    });
-
-    // click on playlist actions
-    playlist.on('click', '.pl-action', function(event) {
-        event.preventDefault();
-        var id = $(this).parent().attr('id');
-		id = parseInt(id.replace('pl-', ''))
-        var cmd = 'deleteid ' + id;
-        // var path = $(this).parent().data('path');
-		notify('remove', '');
-        sendCmd(cmd);
-    });
+	// click on queue entry
+	playlist.on('click', 'li', function(e) {
+		if ($(e.target).hasClass('pl-action')) {
+			// remove queue entry
+			e.preventDefault();
+			console.log($(this).parent());
+			var id = $(this).attr('id');
+			id = parseInt(id.replace('pl-', ''))
+			var cmd = 'deleteid ' + id;
+			var path = $(this).parent().data('path');
+			notify('remove', '');
+			sendCmd(cmd);
+		} else {
+			// play queue entry
+			var pos = $('#playlist-entries li').index(this);
+			var cmd = 'play ' + pos;
+			sendCmd(cmd);
+			GUI.halt = 1;
+			$('li.active', '#playlist-entries').removeClass('active');
+			$(this).parent().addClass('active');
+		}
+	});
 
     // on ready playlist tab
     $('a', '#open-panel-dx').click(function(){
@@ -391,13 +393,13 @@ jQuery(document).ready(function($){ 'use strict';
     });
 	
 	// sort Queue entries
-	var sortlist = document.getElementById('playlist-entries');
-	new Sortable(sortlist, {
-		ghostClass: 'sortable-ghost',
-		onUpdate: function (evt){
-			sortOrder(evt.item.getAttribute('id'));	
-		}
-	});
+	// var sortlist = document.getElementById('playlist-entries');
+	// new Sortable(sortlist, {
+		// ghostClass: 'sortable-ghost',
+		// onUpdate: function (evt){
+			// sortOrder(evt.item.getAttribute('id'));	
+		// }
+	// });
 	
 	
     // LIBRARY
