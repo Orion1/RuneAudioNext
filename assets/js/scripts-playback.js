@@ -329,7 +329,7 @@ jQuery(document).ready(function($){ 'use strict';
 			sendCmd(cmd);
 		} else {
 			// play queue entry
-			var pos = $('#playlist-entries li').index(this);
+			var pos = $('li', '#playlist-entries').index(this);
 			var cmd = 'play ' + pos;
 			sendCmd(cmd);
 			GUI.halt = 1;
