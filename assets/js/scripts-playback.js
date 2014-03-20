@@ -447,6 +447,19 @@ jQuery(document).ready(function($){ 'use strict';
 					querytype: querytype,
 					args : args
 				});
+			} else if ( el.hasClass('db-jamendo') ) {
+				if (el.hasClass('db-folder')) {
+					var path = GUI.currentpath  + '/' + el.html();
+					var querytype = 'radio';
+					var args = el.parent().data('path');
+				}
+				getDB({
+					path: path,
+					browsemode: GUI.browsemode,
+					plugin: 'Jamendo',
+					querytype: querytype,
+					args : args
+				});
 			} else if ( el.hasClass('db-folder') ) {
                 var path = el.parent().data('path');
 				//GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);

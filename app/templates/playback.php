@@ -94,6 +94,13 @@
                         Radio stations Open Directory
                     </div>
                 </div>
+				<div class="col-md-4 col-sm-6">
+                    <div id="home-jamendo" class="home-block" data-path="Jamendo" data-plugin="Jamendo">
+                        <i class="fa fa-folder-open-o"></i>
+                        <h3>Jamendo <span id="home-count-jamendo"></span></h3>
+                        the world's largest platform for free music
+                    </div>
+                </div>
             </div>
         </div>
         <div class="btnlist btnlist-bottom">

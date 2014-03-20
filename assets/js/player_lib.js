@@ -319,6 +319,22 @@ function getDB(options){
 				}
 			}, 'json');
 			
+		}		
+		if (plugin === 'Jamendo') {
+			$.post('/db/?cmd=jamendo', { 'querytype': (querytype === '') ? 'radio' : querytype, 'args': args }, function(data){
+				if (querytype === 'amountStation') {
+					$('#home-count-jamendo').html('(' + data + ')');
+					loadingSpinner('db', 'hide');
+				} else {
+					populateDB({
+						data: data,
+						path: path,
+						plugin: plugin,
+						querytype: querytype
+					});
+				}
+			}, 'json');
+			
 		}
 	} else {
 	// normal browsing
@@ -375,6 +391,25 @@ function populateDB(options){
 				content += parseResponse({
 					inputArr: data,
 					respType: 'Dirble',
+					i: i,
+					querytype: querytype
+				});
+			}
+			document.getElementById('database-entries').innerHTML = content;
+			$('span', '#db-currentpath').html(path);
+		}		
+		if (plugin === 'Jamendo') {
+			$('#database-entries').removeClass('hide');
+			$('#db-level-up').removeClass('hide');
+			$('#home-blocks').addClass('hide');
+			if (path) GUI.currentpath = path;
+			document.getElementById('database-entries').innerHTML = '';
+			var content = '';
+			var i = 0;
+			for (i = 0; i < data.length; i++){
+				content += parseResponse({
+					inputArr: data,
+					respType: 'Jamendo',
 					i: i,
 					querytype: querytype
 				});
@@ -519,6 +554,18 @@ function parseResponse(options) {
 				content += inputArr[i].name + ' <em class="songtime">' + inputArr[i].bitrate + '</em>';
 				content += ' <span>';
 				content += inputArr[i].website;
+				content += '</span></div></li>';
+			}
+		break;		
+		
+		case 'Jamendo':
+			if (querytype === 'radio') {
+				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+				content += inputArr[i].stream;
+				content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+				content += inputArr[i].dispname + ' <em class="songtime">' + inputArr[i].playingnow.artist_name + '</em>';
+				content += ' <span>';
+				content += inputArr[i].playingnow.album_name + ' ' + inputArr[i].playingnow.track_name;
 				content += '</span></div></li>';
 			}
 		break;
