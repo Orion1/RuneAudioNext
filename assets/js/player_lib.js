@@ -463,7 +463,7 @@ function parseResponse(options) {
 					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 					content += inputArr[i].file;
 					content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-file"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
-					content += inputArr[i].Title + ' <em class="songtime">' + timeConvert(inputArr[i].Time) + '</em>';
+					content += inputArr[i].Title + ' <span>' + timeConvert(inputArr[i].Time) + '</span>';
 					content += ' <span>';
 					content +=  inputArr[i].Artist;
 					content += ' - ';
@@ -474,7 +474,7 @@ function parseResponse(options) {
 					if (inpath !== 'Webradio') {
 						content += inputArr[i].file;
 						content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
-						content += inputArr[i].file.replace(inpath + '/', '') + ' <em class="songtime">' + timeConvert(inputArr[i].Time) + '</em>';
+						content += inputArr[i].file.replace(inpath + '/', '') + ' <span>' + timeConvert(inputArr[i].Time) + '</span>';
 						content += ' <span>';
 						content += ' path \: ';
 						content += inpath;
@@ -516,7 +516,7 @@ function parseResponse(options) {
 				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 				content += inputArr[i].streamurl;
 				content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
-				content += inputArr[i].name + ' <em class="songtime">' + inputArr[i].bitrate + '</em>';
+				content += inputArr[i].name + ' <span>' + inputArr[i].bitrate + '</span>';
 				content += ' <span>';
 				content += inputArr[i].website;
 				content += '</span></div></li>';
