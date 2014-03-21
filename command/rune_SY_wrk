@@ -274,22 +274,22 @@ if ($redis->get('hwplatformid') === '01') {
 // sysCmd('systemctl start rune_rpi_oJack');
 // sysCmd('systemctl start rune_rpi_oHdmi');
 // AnalogJack / HDMI selection
-$ao = $redis->get('ao');
-	if ($ao === '2' OR $ao === '3') {
-		sleep(1);
-		// AnalogJack
-		if ($ao === '2') {
-		$aosock = openMpdSocket('127.0.0.1', 13501);
-		} 
-		if ($ao === '3') {
-		// HDMI
-		$aosock = openMpdSocket('127.0.0.1', 13502);
-		}
-		sendMpdCommand($aosock,"\n");
-		runelog('selected Rpi jack/hdmi internal switch:',$ao);
-		fclose($aosock);	
-	}
-}
+// $ao = $redis->get('ao');
+	// if ($ao === '2' OR $ao === '3') {
+		// sleep(1);
+		// //AnalogJack
+		// if ($ao === '2') {
+		// $aosock = openMpdSocket('127.0.0.1', 13501);
+		// } 
+		// if ($ao === '3') {
+		// //HDMI
+		// $aosock = openMpdSocket('127.0.0.1', 13502);
+		// }
+		// sendMpdCommand($aosock,"\n");
+		// runelog('selected Rpi jack/hdmi internal switch:',$ao);
+		// fclose($aosock);	
+	// }
+// }
 
 // inizialize worker session vars
 // runelog("env: SETUP SESSION VARS",'');
