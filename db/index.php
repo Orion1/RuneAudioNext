@@ -168,7 +168,15 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				case 'jamendo':
 				$apikey = $redis->hGet('jamendo','clientid');
 						if ($_POST['querytype'] === 'radio') {
-						echo curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200');
+						$jam_channels = json_decode(curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200'));
+							foreach ($jam_channels->results as $station) {
+								$channel = json_decode(curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$station->name));
+								$station->stream = $channel->results[0]->stream;
+							}
+						// TODO: implementare cache canali jamendo su Redis
+						// $redis->hSet('jamendo','ch_cache',json_encode($jam_channels));
+						// echo $redis->hGet('jamendo','ch_cache');
+						echo json_encode($jam_channels);
 						}
 						if ($_POST['querytype'] === 'radio' && !empty($_POST['args'])) {
 						echo curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$_POST['args']);
