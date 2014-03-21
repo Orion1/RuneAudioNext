@@ -319,8 +319,8 @@ function getDB(options){
 				}
 			}, 'json');
 			
-		}		
-		if (plugin === 'Jamendo') {
+		}
+		else if (plugin === 'Jamendo') {
 			$.post('/db/?cmd=jamendo', { 'querytype': (querytype === '') ? 'radio' : querytype, 'args': args }, function(data){
 				if (querytype === 'amountStation') {
 					$('#home-count-jamendo').html('(' + data + ')');
@@ -377,7 +377,7 @@ function populateDB(options){
 		
 	// DEBUG
 	// console.log('OPTIONS: data = ' + data + ', path = ' + path + ', uplevel = ' + uplevel + ', keyword = ' + keyword +', querytype = ' + querytype);
-console.log(data);
+
 	if (plugin !== '') {
 		if (plugin === 'Dirble') {
 			$('#database-entries').removeClass('hide');
@@ -478,7 +478,7 @@ function parseResponse(options) {
 		
 	// DEBUG
 	// console.log('OPTIONS: inputArr = ' + inputArr + ', respType = ' + respType + ', i = ' + i + ', inpath = ' + inpath +', querytype = ' + querytype);
-		
+	console.log(inputArr);	
 	switch (respType) {
 		case 'playlist':		
 			// code placeholder
@@ -517,7 +517,7 @@ function parseResponse(options) {
 					} else {
 					// case Webradio
 						content += inputArr.playlist;
-						content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+						content += '"><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse"><i class="fa fa-microphone db-icon db-radio db-browse"></i>';
 						content += inputArr.playlist.replace(inpath + '/', '').replace('.' + inputArr.fileext , '');
 						content += ' <span>';
 						content += 'webradio';
@@ -550,7 +550,7 @@ function parseResponse(options) {
 			} else if (querytype === 'stations') {
 				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 				content += inputArr.streamurl;
-				content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+				content += '"><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-file"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse"><i class="fa fa-microphone db-icon db-radio db-browse"></i>';
 				content += inputArr.name + ' <span>' + inputArr.bitrate + '</span>';
 				content += ' <span>';
 				content += inputArr.website;
@@ -559,15 +559,12 @@ function parseResponse(options) {
 		break;		
 		
 		case 'Jamendo':
-			if (querytype === 'radio') {
+			// if (querytype === 'radio') {
 				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
 				content += inputArr.stream;
-				content += '"><i class="fa fa-microphone db-icon db-radio db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
-				content += inputArr.dispname + ' <em class="songtime">' + inputArr.playingnow.artist_name + '</em>';
-				content += ' <span>';
-				content += inputArr.playingnow.album_name + ' ' + inputArr.playingnow.track_name;
-				content += '</span></div></li>';
-			}
+				content += '"><img class="jamendo-cover" src="' + inputArr.image + '" alt=""><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-file"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+				content += inputArr.dispname + '</div></li>';
+			// }
 		break;
 		
 	}
