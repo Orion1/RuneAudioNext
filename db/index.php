@@ -124,42 +124,43 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				break;
 				
 				case 'dirble':
+				$proxy = $redis->hGetall('proxy');
 					$apikey = $redis->hGet('dirble','apikey');
 					$dirbleBase = 'http://api.dirble.com/v1/';
 					if (isset($_POST['querytype'])) {
 						// if ($_POST['querytype'] === 'amountStation') {
 						if ($_POST['querytype'] === 'amountStation') {
-						$dirble = json_decode(curlGet($dirbleBase.'amountStation/apikey/'.$apikey));
+						$dirble = json_decode(curlGet($dirbleBase.'amountStation/apikey/'.$apikey,$proxy));
 						echo $dirble->amount;
 						}
 						// Get primaryCategories
 						if ($_POST['querytype'] === 'categories' OR $_POST['querytype'] === 'primaryCategories' ) {
-						echo curlGet($dirbleBase. $_POST['querytype'].'/apikey/'.$apikey);
+						echo curlGet($dirbleBase. $_POST['querytype'].'/apikey/'.$apikey,$proxy);
 						}
 						// Get childCategories by primaryid
 						if ($_POST['querytype'] === 'childCategories' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'childCategories/apikey/'.$apikey.'/primaryid/'.$_POST['args']);
+						echo curlGet($dirbleBase.'childCategories/apikey/'.$apikey.'/primaryid/'.$_POST['args'],$proxy);
 						}
 						// Get station by ID
 						if ($_POST['querytype'] === 'stations' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'stations/apikey/'.$apikey.'/id/'.$_POST['args']);
+						echo curlGet($dirbleBase.'stations/apikey/'.$apikey.'/id/'.$_POST['args'],$proxy);
 						}
 						// Search radio station
 						if ($_POST['querytype'] === 'search' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'search/apikey/'.$apikey.'/search/'.$_POST['args']);
+						echo curlGet($dirbleBase.'search/apikey/'.$apikey.'/search/'.$_POST['args'],$proxy);
 						}
 						// Get stations by continent
 						if ($_POST['querytype'] === 'continent' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'continent/apikey'.$apikey.'/continent/'.$_POST['args']);
+						echo curlGet($dirbleBase.'continent/apikey'.$apikey.'/continent/'.$_POST['args'],$proxy);
 						}
 						// Get stations by country
 						if ($_POST['querytype'] === 'country' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'country/apikey'.$apikey.'/country/'.$_POST['args']);
+						echo curlGet($dirbleBase.'country/apikey'.$apikey.'/country/'.$_POST['args'],$proxy);
 						}
 						// Add station
 						if ($_POST['querytype'] === 'addstation' && isset($_POST['args'])) {
 						// input array $_POST['args'] = array('name' => 'value', 'streamurl' => 'value', 'website' => 'value', 'country' => 'value', 'directory' => 'value') 
-						echo curlPost($dirbleBase.'station/apikey/'.$apikey, $_POST['args']);
+						echo curlPost($dirbleBase.'station/apikey/'.$apikey, $_POST['args'],$proxy);
 						}
 						
 					}
@@ -167,10 +168,11 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				
 				case 'jamendo':
 				$apikey = $redis->hGet('jamendo','clientid');
+				$proxy = $redis->hGetall('proxy');
 						if ($_POST['querytype'] === 'radio') {
-						$jam_channels = json_decode(curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200'));
+						$jam_channels = json_decode(curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200',$proxy));
 							foreach ($jam_channels->results as $station) {
-								$channel = json_decode(curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$station->name));
+								$channel = json_decode(curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$station->name,$proxy));
 								$station->stream = $channel->results[0]->stream;
 							}
 						// TODO: implementare cache canali jamendo su Redis
@@ -179,8 +181,14 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 						echo json_encode($jam_channels);
 						}
 						if ($_POST['querytype'] === 'radio' && !empty($_POST['args'])) {
-						echo curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$_POST['args']);
+						echo curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$_POST['args'],$proxy);
 						}
+				break;
+				
+				
+				case 'test':
+				$proxy = $redis->hGetall('proxy');
+				print_r($proxy);
 				break;
 				}
 				

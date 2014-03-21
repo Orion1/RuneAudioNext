@@ -1857,20 +1857,36 @@ function ui_render($channel,$data) {
 curlPost('http://127.0.0.1/pub?id='.$channel,$data);
 }
 
-function curlPost($url,$data) {
+function curlPost($url,$data,$proxy) {
 $ch = curl_init($url);
- curl_setopt($ch, CURLOPT_POST      ,1);
- curl_setopt($ch, CURLOPT_POSTFIELDS    ,$data);
- curl_setopt($ch, CURLOPT_FOLLOWLOCATION  ,1);
- curl_setopt($ch, CURLOPT_HEADER      ,0);  // DO NOT RETURN HTTP HEADERS
- curl_setopt($ch, CURLOPT_RETURNTRANSFER  ,1);  // RETURN THE CONTENTS OF THE CALL
+if (isset($proxy)) {
+curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
+curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
+//runelog('cURL proxy HOST: ',$proxy['host']);
+//runelog('cURL proxy USER: ',$proxy['user']);
+//runelog('cURL proxy PASS: ',$proxy['pass']);
+}
+ curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+ curl_setopt($ch, CURLOPT_POST, 1);
+ curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+ curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+ curl_setopt($ch, CURLOPT_HEADER, 0);  // DO NOT RETURN HTTP HEADERS
+ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  // RETURN THE CONTENTS OF THE CALL
  $response = curl_exec($ch);
  curl_close($ch);
 return $response;
 }
 
-function curlGet($url) {
+function curlGet($url,$proxy) {
 $ch = curl_init($url);
+if (isset($proxy)) {
+curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
+curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
+//runelog('cURL proxy HOST: ',$proxy['host']);
+//runelog('cURL proxy USER: ',$proxy['user']);
+//runelog('cURL proxy PASS: ',$proxy['pass']);
+}
+curl_setopt($ch, CURLOPT_TIMEOUT, 2);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $response = curl_exec($ch);
