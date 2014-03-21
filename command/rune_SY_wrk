@@ -269,7 +269,7 @@ sysCmd('systemctl start mpdscribble');
 }
 
 // start rpi volume switch helpers
-if ($redis->get('hwplatformid') === '01') {
+// if ($redis->get('hwplatformid') === '01') {
 // runelog("helpers: rune_rpi_oJack/rune_rpi_oHdmi start",'');
 // sysCmd('systemctl start rune_rpi_oJack');
 // sysCmd('systemctl start rune_rpi_oHdmi');
