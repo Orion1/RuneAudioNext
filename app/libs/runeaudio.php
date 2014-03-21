@@ -624,6 +624,7 @@ function redisDatastore($redis,$action) {
 			$redis->set('lastfm_apikey', 'ba8ad00468a50732a3860832eaed0882');
 			$redis->hSet('jamendo', 'clientid', '5f3ed86c');
 			$redis->hSet('jamendo', 'secret', '1afcdcb13eb5ce8f6e534ac4566a3ab9');
+			$redis->hSet('dirble', 'apikey', '134aabbce2878ce0dbfdb23fb3b46265eded085b');
 
 			// internal config hash control
 			$redis->set('mpdconfhash', '');
@@ -670,6 +671,7 @@ function redisDatastore($redis,$action) {
 			$redis->get('lastfm_apikey') || $redis->set('lastfm_apikey', 'ba8ad00468a50732a3860832eaed0882');
 			$redis->hGet('jamendo', 'clientid') || $redis->hSet('jamendo', 'clientid', '5f3ed86c');
 			$redis->hGet('jamendo', 'secret') || $redis->hSet('jamendo', 'secret', '1afcdcb13eb5ce8f6e534ac4566a3ab9');
+			$redis->hGet('dirble','apikey') || $redis->hSet('dirble', 'apikey', '134aabbce2878ce0dbfdb23fb3b46265eded085b');
 
 			// internal config hash control
 			$redis->get('mpdconfhash') || $redis->set('mpdconfhash', '');

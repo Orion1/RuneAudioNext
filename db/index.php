@@ -124,44 +124,54 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				break;
 				
 				case 'dirble':
-					$dirblekey= '134aabbce2878ce0dbfdb23fb3b46265eded085b';
+					$apikey = $redis->hGet('dirble','apikey');
 					if (isset($_POST['querytype'])) {
 						// if ($_POST['querytype'] === 'amountStation') {
 						if ($_POST['querytype'] === 'amountStation') {
-						$dirble = json_decode(curlGet('http://dirble.com/dirapi/amountStation/apikey/'.$dirblekey));
+						$dirble = json_decode(curlGet('http://dirble.com/dirapi/amountStation/apikey/'.$apikey));
 						echo $dirble->amount;
 						}
 						// Get primaryCategories
 						if ($_POST['querytype'] === 'categories' OR $_POST['querytype'] === 'primaryCategories' ) {
-						echo curlGet('http://dirble.com/dirapi/'. $_POST['querytype'].'/apikey/'.$dirblekey);
+						echo curlGet('http://dirble.com/dirapi/'. $_POST['querytype'].'/apikey/'.$apikey);
 						}
 						// Get childCategories by primaryid
 						if ($_POST['querytype'] === 'childCategories' && isset($_POST['args'])) {
-						echo curlGet('http://dirble.com/dirapi/childCategories/apikey/'.$dirblekey.'/primaryid/'.$_POST['args']);
+						echo curlGet('http://dirble.com/dirapi/childCategories/apikey/'.$apikey.'/primaryid/'.$_POST['args']);
 						}
 						// Get station by ID
 						if ($_POST['querytype'] === 'stations' && isset($_POST['args'])) {
-						echo curlGet('http://dirble.com/dirapi/stations/apikey/'.$dirblekey.'/id/'.$_POST['args']);
+						echo curlGet('http://dirble.com/dirapi/stations/apikey/'.$apikey.'/id/'.$_POST['args']);
 						}
 						// Search radio station
 						if ($_POST['querytype'] === 'search' && isset($_POST['args'])) {
-						echo curlGet('http://dirble.com/dirapi/search/apikey/'.$dirblekey.'/search/'.$_POST['args']);
+						echo curlGet('http://dirble.com/dirapi/search/apikey/'.$apikey.'/search/'.$_POST['args']);
 						}
 						// Get stations by continent
 						if ($_POST['querytype'] === 'continent' && isset($_POST['args'])) {
-						echo curlGet('http://dirble.com/dirapi/continent/apikey'.$dirblekey.'/continent/'.$_POST['args']);
+						echo curlGet('http://dirble.com/dirapi/continent/apikey'.$apikey.'/continent/'.$_POST['args']);
 						}
 						// Get stations by country
 						if ($_POST['querytype'] === 'country' && isset($_POST['args'])) {
-						echo curlGet('http://dirble.com/dirapi/country/apikey'.$dirblekey.'/country/'.$_POST['args']);
+						echo curlGet('http://dirble.com/dirapi/country/apikey'.$apikey.'/country/'.$_POST['args']);
 						}
 						// Add station
 						if ($_POST['querytype'] === 'addstation' && isset($_POST['args'])) {
 						// input array $_POST['args'] = array('name' => 'value', 'streamurl' => 'value', 'website' => 'value', 'country' => 'value', 'directory' => 'value') 
-						echo curlPost('http://dirble.com/dirapi/station/apikey/'.$dirblekey, $_POST['args']);
+						echo curlPost('http://dirble.com/dirapi/station/apikey/'.$apikey, $_POST['args']);
 						}
 						
 					}
+				break;
+				
+				case 'jamendo':
+				$apikey = $redis->hGet('jamendo','clientid');
+						if ($_POST['querytype'] === 'radio') {
+						echo curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200');
+						}
+						if ($_POST['querytype'] === 'radio' && !empty($_POST['args'])) {
+						echo curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$_POST['args']);
+						}
 				break;
 				}
 				

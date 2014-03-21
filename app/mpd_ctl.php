@@ -31,7 +31,7 @@
  *
  */
  
- $dbh = cfgdb_connect($db);
+$dbh = cfgdb_connect($db);
  
  if (isset($_POST)) {
 	// reset MPD configuration
