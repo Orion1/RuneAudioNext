@@ -429,52 +429,77 @@ jQuery(document).ready(function($){ 'use strict';
     });
 	
     // click on Library list entry
-    db.on('click', '.db-browse', function(e) {
-        var el = $(this);
-        $('li.active', '#database-entries').removeClass('active');
-        el.parent().addClass('active');
-        if (!el.hasClass('sx')) { // TODO: check this conditional
-			if (el.hasClass('db-dirble')) {
-				if (el.hasClass('db-folder')) {
-					var path = GUI.currentpath  + '/' + el.html();
+    db.on('click', 'li', function(e) {
+		if ($(e.target).hasClass('db-action')) {
+		// actions contextual menu
+			e.preventDefault();
+			if ($('.context-menu.open').length) {
+				// do something to close the contextual menu
+			} else {
+				var path = $(this).attr('data-path');
+				GUI.DBentry[0] = path;
+				// console.log('getDB path = ', GUI.DBentry);
+			}
+		} else {
+			var el = $(this);
+			$('li.active', '#database-entries').removeClass('active');
+			el.addClass('active');
+			if (el.hasClass('db-folder')) {
+				if (el.hasClass('db-dirble')) {
+				// Dirble folders
+					var path = GUI.currentpath  + '/' + el.find('span').text();
 					var querytype = 'stations';
-					var args = el.parent().data('path');
+					var args = el.data('path');
+					getDB({
+						path: path,
+						browsemode: GUI.browsemode,
+						plugin: 'Dirble',
+						querytype: querytype,
+						args : args
+					});
+				} else if (el.hasClass('db-jamendo')) {
+				// Jamendo folders
+					// var path = GUI.currentpath  + '/' + el.find('span').text();
+					// var querytype = 'radio';
+					// var args = el.data('path');
+					// getDB({
+						// path: path,
+						// browsemode: GUI.browsemode,
+						// plugin: 'Jamendo',
+						// querytype: querytype,
+						// args : args
+					// });
+				} else {
+				// normal MPD file browsing
+					var path = el.data('path');
+					//GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);
+					var entryID = el.attr('id');
+					entryID = entryID.replace('db-','');
+					GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
+					++GUI.currentDBpos[10];
+					// console.log('getDB path = ', path);
+					getDB({
+						path: path,
+						browsemode: GUI.browsemode,
+						uplevel: 0
+					});
 				}
-				getDB({
-					path: path,
-					browsemode: GUI.browsemode,
-					plugin: 'Dirble',
-					querytype: querytype,
-					args : args
-				});
-			} else if ( el.hasClass('db-jamendo') ) {
-				if (el.hasClass('db-folder')) {
-					var path = GUI.currentpath  + '/' + el.html();
-					var querytype = 'radio';
-					var args = el.parent().data('path');
-				}
-				getDB({
-					path: path,
-					browsemode: GUI.browsemode,
-					plugin: 'Jamendo',
-					querytype: querytype,
-					args : args
-				});
-			} else if ( el.hasClass('db-folder') ) {
-                var path = el.parent().data('path');
-				//GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);
-                var entryID = el.parent().attr('id');
-                entryID = entryID.replace('db-','');
-                GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
-                ++GUI.currentDBpos[10];
-                // console.log('getDB path = ', path);
-                getDB({
-					path: path,
-					browsemode: GUI.browsemode,
-					uplevel: 0
-				});
-            }
-        }
+			}
+		}
+    });
+	// double click on Library list entry
+	db.on('dblclick', 'li', function(e) {
+		if (!$(e.target).hasClass('db-action')) {
+			$('li.active', '#database-entries').removeClass('active');
+			$(this).addClass('active');
+			var path = $(this).data('path');
+			// console.log('doubleclicked path = ', path);
+			getDB({
+				cmd: 'addplay',
+				path: path
+			});
+			notify('add', path);
+		}
     });
 
     // browse level up
@@ -493,25 +518,6 @@ jQuery(document).ready(function($){ 'use strict';
 			browsemode: GUI.browsemode,
 			uplevel: 1
 		});
-    });
-    
-    db.on('dblclick', '.db-song', function() {
-        db.find('li').removeClass('active');
-        $(this).parent().addClass('active');
-        var path = $(this).parent().data('path');
-        // console.log('doubleclicked path = ', path);
-        getDB({
-			cmd: 'addplay',
-			path: path
-		});
-        notify('add', path);
-    });
-
-    // click on ADD button
-    db.on('click', '.db-action', function() {
-        var path = $(this).parent().attr('data-path');
-        GUI.DBentry[0] = path;
-        // console.log('getDB path = ', GUI.DBentry);
     });
 
 	// close search results

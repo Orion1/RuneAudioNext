@@ -169,9 +169,9 @@ function getPlaylist(data, json){
 	var output = '';
 	for (i = 0; i < data.length; i++){
 		if (json['state'] != 'stop' && i == parseInt(json['song'])) {
-			content = '<li id="pl-' + (i + 1) + '" class="active clearfix">';
+			content = '<li id="pl-' + (i + 1) + '" class="active">';
 		} else {
-			content = '<li id="pl-' + (i + 1) + '" class="clearfix">';
+			content = '<li id="pl-' + (i + 1) + '">';
 		}
 		content += '<a class="pl-action" href="#notarget" title="Remove song from playlist"><i class="fa fa-times-circle"></i></a>';
 		if (typeof data[i].Title != 'undefined') {
@@ -247,7 +247,7 @@ function getPlaylistPlain(data, json){
 			} else {
 				totaltime = '<span>' + timeConvert2(time) + '</span>';
 			}
-			content += '<li id="pl-' + songid + '" class="'+ (state != "stop" && id == current ? 'active' : '') + ' clearfix"><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
+			content += '<li id="pl-' + songid + (state != "stop" && id == current ? ' class="active"' : '') + '"><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
 			time = '', artist = '', album = '', title = '', name = '';
 		}
 	}
@@ -264,7 +264,7 @@ function getPlaylistPlain(data, json){
 function getPlaylists(data, json){	
 	var content = '';
 	for (i = 0; i < 10; i+=1){
-		content += '<li class="clearfix"><a class="pl-actions" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-playlist"><i class="fa fa-bars"></i></a><div class="pl-entry">Nome playlist<span>293 entries</span></div></li>';
+		content += '<li><a class="pl-actions" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-playlist"><i class="fa fa-bars"></i></a><div class="pl-entry">Nome playlist<span>293 entries</span></div></li>';
 	}
 	document.getElementById('playlist-entries').innerHTML = '';
 	$('.playlist').addClass('hide');
@@ -478,13 +478,14 @@ function parseResponse(options) {
 		
 	// DEBUG
 	// console.log('OPTIONS: inputArr = ' + inputArr + ', respType = ' + respType + ', i = ' + i + ', inpath = ' + inpath +', querytype = ' + querytype);
-	console.log(inputArr);	
+	
 	switch (respType) {
 		case 'playlist':		
 			// code placeholder
 		break;
 		
 		case 'db':
+		// normal MPD browsing by file
 			if (inpath === '' && inputArr.file !== undefined) {
 				inpath = parsePath(inputArr.file)
 			}
@@ -494,75 +495,79 @@ function parseResponse(options) {
 				// console.log('inputArr.Title: ', inputArr.Title);
 				// console.log('inputArr.Artist: ', inputArr.Artist);
 				// console.log('inputArr.Album: ', inputArr.Album);
+				content = '<li id="db-' + (i + 1) + '" data-path="';
 				if (inputArr.Title !== undefined) {
-					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+				// files
 					content += inputArr.file;
-					content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-file"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
-					content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span>';
-					content += ' <span>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+					content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+					content += ' <span class="bl">';
 					content +=  inputArr.Artist;
 					content += ' - ';
 					content +=  inputArr.Album;
-					content += '</span></div></li>';
 				} else {
-					content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+				// playlists
 					if (inpath !== 'Webradio') {
+					// ???
 						content += inputArr.file;
-						content += '"><i class="fa fa-music db-icon db-song db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
-						content += inputArr.file.replace(inpath + '/', '') + ' <span>' + timeConvert(inputArr.Time) + '</span>';
-						content += ' <span>';
+						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+						content += inputArr.file.replace(inpath + '/', '') + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+						content += '<span class="bl">';
 						content += ' path \: ';
 						content += inpath;
-						content += '</span></div></li>';
 					} else {
-					// case Webradio
+					// webradios
 						content += inputArr.playlist;
-						content += '"><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-webradio"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse"><i class="fa fa-microphone db-icon db-radio db-browse"></i>';
-						content += inputArr.playlist.replace(inpath + '/', '').replace('.' + inputArr.fileext , '');
-						content += ' <span>';
-						content += 'webradio';
-						content += '</span></div></li>';
+						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-webradio"></i><i class="fa fa-microphone db-icon db-radio"></i>';
+						content += '<span class="sn">' + inputArr.playlist.replace(inpath + '/', '').replace('.' + inputArr.fileext , '');
+						content += '</span><span class="bl">webradio';
 					}
 				}
+				content += '</span></li>';
 			} else if (inputArr.playlist !== undefined) {
+			// nothing to display
 				content += '';
 			} else {
-				// console.log('inputArr.directory: ', inputArr.directory);
-				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+			// folders
+				content = '<li id="db-' + (i + 1) + '" class="db-folder" data-path="';
 				content += inputArr.directory;
 				if (inpath !== '') {
-					content += '"><i class="fa fa-folder-open db-icon db-folder db-browse"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu"><i class="fa fa-bars"></i></a><div class="db-entry db-folder db-browse">';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu"></i><span><i class="fa fa-folder-open"></i>';
 				} else {
-					content += '"><i class="fa fa-hdd-o db-icon db-folder db-browse icon-root"></i><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-root"><i class="fa fa-bars"></i></a><div class="db-entry db-folder db-browse">';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i><span>';
 				}
 				content += inputArr.directory.replace(inpath + '/', '');
-				content += '</div></li>';
+				content += '</span></li>';
 			}
 		break;
 		
 		case 'Dirble':
+		// Dirble plugin
 			if (querytype === '') {
-				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+			// folders
+				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-folder" data-path="';
 				content += inputArr.id;
-				content += '"><i class="fa fa-folder-open db-icon db-folder db-browse"></i><div class="db-entry db-folder db-dirble db-browse">';
+				content += '"><span><i class="fa fa-folder-open"></i>';
 				content += inputArr.name;
-				content += '</div></li>';
+				content += '</span></li>';
 			} else if (querytype === 'stations') {
-				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+			// stations
+				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-radio" data-path="';
 				content += inputArr.streamurl;
-				content += '"><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-file"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse"><i class="fa fa-microphone db-icon db-radio db-browse"></i>';
-				content += inputArr.name + ' <span>' + inputArr.bitrate + '</span>';
-				content += ' <span>';
+				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-microphone db-icon"></i>';
+				content += '<span class="sn">' + inputArr.name + ' <span>' + inputArr.bitrate + '</span></span>';
+				content += '<span class="bl">';
 				content += inputArr.website;
-				content += '</span></div></li>';
+				content += '</span></li>';
 			}
 		break;		
 		
 		case 'Jamendo':
+		// Jamendo plugin
 			// if (querytype === 'radio') {
-				content = '<li id="db-' + (i + 1) + '" class="clearfix" data-path="';
+				content = '<li id="db-' + (i + 1) + '" class="db-jamendo db-folder" data-path="';
 				content += inputArr.stream;
-				content += '"><img class="jamendo-cover" src="' + inputArr.image + '" alt=""><a class="db-action" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-file"><i class="fa fa-bars"></i></a><div class="db-entry db-song db-browse">';
+				content += '"><img class="jamendo-cover" src="' + inputArr.image + '" alt=""><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i>';
 				content += inputArr.dispname + '</div></li>';
 			// }
 		break;

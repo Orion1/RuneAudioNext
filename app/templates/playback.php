@@ -89,14 +89,14 @@
                 </div>
 				<div class="col-md-4 col-sm-6">
                     <div id="home-webradio" class="home-block" data-path="Dirble" data-plugin="Dirble">
-                        <i class="fa fa-folder-open-o"></i>
+                        <i class="fa fa-globe"></i>
                         <h3>Dirble <span id="home-count-dirble"></span></h3>
                         Radio stations Open Directory
                     </div>
                 </div>
 				<div class="col-md-4 col-sm-6">
                     <div id="home-jamendo" class="home-block" data-path="Jamendo" data-plugin="Jamendo">
-                        <i class="fa fa-folder-open-o"></i>
+                        <i class="fa fa-play-circle-o"></i>
                         <h3>Jamendo <span id="home-count-jamendo"></span></h3>
                         the world's largest platform for free music
                     </div>
