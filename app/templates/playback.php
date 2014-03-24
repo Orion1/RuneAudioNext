@@ -46,7 +46,12 @@
     <div id="panel-sx" class="tab-pane">
         <div class="btnlist btnlist-top">
             <form id="db-search" class="form-inline" action="javascript:getDB({cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode});">
-                <input id="db-search-keyword" class="form-control" type="text" value="" placeholder="search in DB..."><button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+				<div class="input-group">
+					<input id="db-search-keyword" class="form-control" type="text" value="" placeholder="search in DB...">
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+					</span>
+				</div>
             </form>
             <button id="db-level-up" class="btn hide" title="Go back one level"><i class="fa fa-arrow-left sx"></i> back</button>
             <button id="db-search-results" class="btn hide" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i> back</button>
@@ -119,7 +124,12 @@
     <div id="panel-dx" class="tab-pane">
         <div class="btnlist btnlist-top">
             <form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
-                <input id="pl-filter" class="form-control ttip" type="text" value="" placeholder="search in playlist..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly"><button class="btn btn-default"><i class="fa fa-search"></i></button>
+                <div class="input-group">
+					<input id="pl-filter" class="form-control ttip" type="text" value="" placeholder="search in playlist..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
+					<span class="input-group-btn">
+						<button class="btn btn-default"><i class="fa fa-search"></i></button>
+					</span>
+				</div>
             </form>
 			<button id="pl-filter-results" class="btn hide" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i> back</button>
         </div>
