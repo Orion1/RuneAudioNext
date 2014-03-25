@@ -160,14 +160,14 @@ html, body {
 	}
 }
 #menu-top .dropdown-menu &>li:first-child &>a,#context-menus .dropdown-menu &>li:first-child &>a {
-    border-top: 1px solid #000;
+    border-top: 1px solid @body-bg;
 }
 #menu-top .dropdown-menu &>li &>a,#context-menus .dropdown-menu &>li &>a {
     line-height: 40px;
     margin: 0;
     padding: 0 10px;
     background: @brand-alt;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid @body-bg;
 }
 #menu-top .dropdown-menu &>li &>a:hover,#menu-top .dropdown-menu &>li &>a:focus,#menu-top .dropdown-menu &>li.active &>a,#context-menus .dropdown-menu &>li &>a:hover,#context-menus .dropdown-menu &>li.active &>a {
     background: @brand-primary;
@@ -187,8 +187,8 @@ html, body {
 		padding-right: 20px;
         min-width: 160px;
         & > li > a {
-			border-left: 1px solid #000;
-			border-right: 1px solid #000;
+			border-left: 1px solid @body-bg;
+			border-right: 1px solid @body-bg;
         }
 		a {
 			text-decoration: none;
@@ -675,9 +675,9 @@ html, body {
         margin: 0;
         min-width: 100px;
         padding: 0;
-        border-top: 1px solid #000;
-        border-left: 1px solid #000;
-        border-right: 1px solid #000;
+        border-top: 1px solid @body-bg;
+        border-left: 1px solid @body-bg;
+        border-right: 1px solid @body-bg;
         position: absolute;
         top: 100%;
         z-index: 1000;
@@ -687,7 +687,7 @@ html, body {
                 margin: 0;
                 padding: 0 10px;
                 background: @brand-alt;
-                border-bottom: 1px solid #000;
+                border-bottom: 1px solid @body-bg;
                 color: @text-color;
             }
         }
@@ -735,7 +735,7 @@ html, body {
 
 #playlist, #database {
     padding: 80px 0;
-    // background: #000;
+    // background: @body-bg;
 }
 .sortable-ghost {
     background: darken(@brand-alt, 10%);
@@ -1381,6 +1381,9 @@ ul.parsley-error-list {
 				color: @brand-primary;
 			}
 		}
+		.active .db-action:hover {
+			color: @text-color;
+		}
 	}
 	#playlist-entries {
 		li:hover {
@@ -1412,6 +1415,9 @@ ul.parsley-error-list {
 				font-size: 24px;
 				color: @brand-primary;
 			}
+		}
+		.active .pl-action:hover {
+			color: @text-color;
 		}
 	}
 	// #pl-filter-results {

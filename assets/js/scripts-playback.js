@@ -29,7 +29,9 @@
  *  version: 1.1
  *
  */
- 
+
+
+
 // Global GUI Array
 // ----------------------------------------------------------------------------------------------------
 var GUI = {
@@ -41,7 +43,6 @@ var GUI = {
     currentknob: null,
     state: '',
     currentpath: '',
-    halt: 0,
     volume: null,
     currentDBpos: new Array(0,0,0,0,0,0,0,0,0,0,0),
     browsemode: 'file',
@@ -126,8 +127,6 @@ jQuery(document).ready(function($){ 'use strict';
         }
         // previous/next
         else if (dataCmd == 'previous' || dataCmd == 'next') {
-            GUI.halt = 1;
-            // console.log('GUI.halt (next/prev)= ', GUI.halt);
             $('#countdown-display').countdown('pause');
             window.clearInterval(GUI.currentKnob);
         }
@@ -227,7 +226,6 @@ jQuery(document).ready(function($){ 'use strict';
         inline: false,
 		    change : function (value) {
             if (GUI.state != 'stop') {
-				// console.log('GUI.halt (Knobs)= ', GUI.halt);
 				window.clearInterval(GUI.currentKnob)
 				//$('#time').val(value);
 				// console.log('click percent = ', value);
@@ -237,8 +235,6 @@ jQuery(document).ready(function($){ 'use strict';
         release : function (value) {
 			if (GUI.state != 'stop') {
 				// console.log('release percent = ', value);
-				GUI.halt = 1;
-				// console.log('GUI.halt (Knobs2)= ', GUI.halt);
 				window.clearInterval(GUI.currentKnob);
 				var seekto = Math.floor((value * parseInt(GUI.json['time'])) / 1000);
 				sendCmd('seek ' + GUI.json['song'] + ' ' + seekto);
@@ -332,9 +328,8 @@ jQuery(document).ready(function($){ 'use strict';
 			var pos = $('li', '#playlist-entries').index(this);
 			var cmd = 'play ' + pos;
 			sendCmd(cmd);
-			GUI.halt = 1;
 			$('li.active', '#playlist-entries').removeClass('active');
-			$(this).parent().addClass('active');
+			$(this).addClass('active');
 		}
 	});
 
@@ -342,7 +337,6 @@ jQuery(document).ready(function($){ 'use strict';
     $('a', '#open-panel-dx').click(function(){
 		if ($('#open-panel-dx').hasClass('active')) {
 			 var current = parseInt(GUI.json['song']);
-			 console.log('CURRENT = ', current);
 			 customScroll('pl', current, 500);
 		}
 	})
@@ -564,7 +558,7 @@ jQuery(document).ready(function($){ 'use strict';
         }
     });
 
-    // browse mode menu
+    // [!] browse mode menu - temporarly disabled
     $('a', '.browse-mode').click(function(){
         $('.browse-mode').removeClass('active');
         $(this).parent().addClass('active').closest('.dropdown').removeClass('open');
@@ -639,96 +633,3 @@ jQuery(document).ready(function($){ 'use strict';
 	FastClick.attach(document.body);
 
 });
-
-// check visibility of the window
-(function() {
-    hidden = 'hidden';
-    // Standards:
-    if (hidden in document)
-        document.addEventListener('visibilitychange', onchange);
-    else if ((hidden = 'mozHidden') in document)
-        document.addEventListener('mozvisibilitychange', onchange);
-    else if ((hidden = "webkitHidden") in document)
-        document.addEventListener('webkitvisibilitychange', onchange);
-    else if ((hidden = "msHidden") in document)
-        document.addEventListener('msvisibilitychange', onchange);
-    // IE 9 and lower:
-    else if ('onfocusin' in document)
-        document.onfocusin = document.onfocusout = onchange;
-    // All others:
-    else
-        window.onpageshow = window.onpagehide
-            = window.onfocus = window.onblur = onchange;
-
-    function onchange (evt) {
-        var v = 'visible', h = 'hidden',
-            evtMap = {
-                focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h
-            };
-
-        evt = evt || window.event;
-        if (evt.type in evtMap) {
-            document.body.className = evtMap[evt.type];
-            //console.log('boh? = ', evtMap[evt.type]);
-        } else {
-            document.body.className = this[hidden] ? 'hidden' : 'visible';
-            if (this[hidden]) {
-                GUI.visibility = 'hidden';
-                //console.log('focus = hidden');
-            } else {
-                GUI.visibility = 'visible';
-                //console.log('focus = visible');
-            }
-        }
-    }
-})();
-
-// trigger social overlay
-(function() {
-	var triggerBttn = $('#social-overlay-open'),
-		overlay = $('#social-overlay'),
-		closeBttn = $('button.overlay-close');
-		transEndEventNames = {
-			'WebkitTransition': 'webkitTransitionEnd',
-			'MozTransition': 'transitionend',
-			'OTransition': 'oTransitionEnd',
-			'msTransition': 'MSTransitionEnd',
-			'transition': 'transitionend'
-		},
-		transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ],
-		support = { transitions : Modernizr.csstransitions };
-	function toggleOverlay() {
-		if (overlay.hasClass('open')) {
-			overlay.removeClass('open');
-			overlay.addClass('closed');
-			var onEndTransitionFn = function(ev) {
-				if (support.transitions) {
-					if (ev.propertyName !== 'visibility') return;
-					this.removeEventListener( transEndEventName, onEndTransitionFn );
-				}
-				overlay.removeClass('closed');
-			};
-			// if (support.transitions) {
-				// overlay.addEventListener( transEndEventName, onEndTransitionFn );
-			// }
-			// else {
-				// onEndTransitionFn();
-			// }
-		}
-		else if (overlay.hasClass('closed')) {
-			overlay.addClass('open');
-			var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.json['currentsong'].replace(/\s+/g, '+') + '+by+' + GUI.json['currentartist'].replace(/\s+/g, '+') + '+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
-			var urlFacebook = 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup';
-			var urlGooglePlus = 'https://plus.google.com/share?url=http%3A%2F%2Fwww.runeaudio.com%2F';
-			$('#urlTwitter').attr('href', urlTwitter);
-			$('#urlFacebook').attr('href', urlFacebook);
-			$('#urlGooglePlus').attr('href', urlGooglePlus);
-		}
-	}
-	triggerBttn.click(function(){
-		toggleOverlay();
-	});
-	closeBttn.click(function(){
-		toggleOverlay();
-	});
-})();
