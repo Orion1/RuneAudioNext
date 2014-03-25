@@ -1816,7 +1816,7 @@ $status['radioname'] = $curTrack[0]['Name'];
 return $status;
 }
 
-function ui_lastFM_coverart($artist,$album,$lastfm_apikey) {
+function ui_lastFM_coverart($artist,$album,$lastfm_apikey,$proxy) {
 if (!empty($album)) {
 $url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&album=".urlencode($album)."&format=json";
 unset($artist);
@@ -1826,13 +1826,13 @@ $artist = 1;
 }
 // debug
 //echo $url;
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_HEADER, 0);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-$output = json_decode($response,true);
-
+// $ch = curl_init($url);
+// curl_setopt($ch, CURLOPT_HEADER, 0);
+// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+// $response = curl_exec($ch);
+// curl_close($ch);
+// $output = json_decode($response,true);
+$output = json_decode(curlGet($url,$proxy),true);
 
 // debug
 runelog('coverart lastfm query URL',$url);
@@ -1857,7 +1857,7 @@ function ui_render($channel,$data) {
 curlPost('http://127.0.0.1/pub?id='.$channel,$data);
 }
 
-function curlPost($url,$data,$proxy) {
+function curlPost($url,$data,$proxy = null) {
 $ch = curl_init($url);
 if (isset($proxy)) {
 curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
@@ -1877,14 +1877,14 @@ curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
 return $response;
 }
 
-function curlGet($url,$proxy) {
+function curlGet($url,$proxy = null) {
 $ch = curl_init($url);
 if (isset($proxy)) {
 curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
 curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
-//runelog('cURL proxy HOST: ',$proxy['host']);
-//runelog('cURL proxy USER: ',$proxy['user']);
-//runelog('cURL proxy PASS: ',$proxy['pass']);
+// runelog('cURL proxy HOST: ',$proxy['host']);
+// runelog('cURL proxy USER: ',$proxy['user']);
+// runelog('cURL proxy PASS: ',$proxy['pass']);
 }
 curl_setopt($ch, CURLOPT_TIMEOUT, 2);
 curl_setopt($ch, CURLOPT_HEADER, 0);

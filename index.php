@@ -53,13 +53,14 @@ $controllers = array(
 'dev',
 'debug',
 'help',
+'index',
 'login',
 'mpd',
 'network',
+'playback',
 'settings',
 'sources',
-'playback',
-'index'
+'tun'
 );
 
 // check page
@@ -127,16 +128,8 @@ $template->content = 'error';
 $_SESSION['controller'] = 'error';
 
 }
-
-// if ($_SESSION['hiddendebug'] != 1 && $_SESSION['debug'] > 0) {
-	// if (!empty($_POST)) {
-	// $debugdata = debug($_POST);
-	// }
-// $template->dfooter = $debugdata;
-// }
-
 // plates: render layout (if you want to output direct, set $tplfile = 0 into controller)
-if (!isset($tplfile) OR $tplfile != 0) {
+ if ($tplfile !== 0) {
 echo $template->render('default_lo');
 }
 // close MPD connection

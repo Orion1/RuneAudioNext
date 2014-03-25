@@ -33,6 +33,7 @@
  
 include('getid3/audioinfo.class.php');
 $lastfm_apikey = $redis->get('lastfm_apikey');
+$proxy = $redis->hGetall('proxy');
 // direct output bypass template system
 $tplfile = 0;
 // fetch MPD status
@@ -65,29 +66,31 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 } else {
 	
 	
-	$cover_url = ui_lastFM_coverart($status['currentartist'],$status['currentalbum'],$lastfm_apikey);
+	$cover_url = ui_lastFM_coverart($status['currentartist'],$status['currentalbum'],$lastfm_apikey,$proxy);
 	// debug
 	runelog("coverart match: lastfm (query 1) coverURL=",$cover_url);
-	$ch = curl_init($cover_url);
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$lastfm_img = curl_exec($ch);
-	curl_close($ch);
+	// $ch = curl_init($cover_url);
+	// curl_setopt($ch, CURLOPT_HEADER, 0);
+	// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	// $lastfm_img = curl_exec($ch);
+	// curl_close($ch);
+	$lastfm_img = curlGet($cover_url,$proxy);
 	$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
 
 	if (empty($cover_url)) {
 
 			// fetch artist image
-			$cover_url = ui_lastFM_coverart($status['currentartist'],'',$lastfm_apikey);
+			$cover_url = ui_lastFM_coverart($status['currentartist'],'',$lastfm_apikey,$proxy);
 
 			// debug
 			runelog("coverart match: lastfm (query 2) coverURL=",$cover_url);
-			$ch = null;
-			$ch = curl_init($cover_url);
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			$lastfm_img = curl_exec($ch);
-			curl_close($ch);
+			// $ch = null;
+			// $ch = curl_init($cover_url);
+			// curl_setopt($ch, CURLOPT_HEADER, 0);
+			// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			// $lastfm_img = curl_exec($ch);
+			// curl_close($ch);
+			$lastfm_img = curlGet($cover_url,$proxy);
 			$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
 			
 			if (!empty($lastfm_img)) {

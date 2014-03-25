@@ -567,7 +567,7 @@ function parseResponse(options) {
 			// if (querytype === 'radio') {
 				content = '<li id="db-' + (i + 1) + '" class="db-jamendo db-folder" data-path="';
 				content += inputArr.stream;
-				content += '"><img class="jamendo-cover" src="' + inputArr.image + '" alt=""><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i>';
+				content += '"><img class="jamendo-cover" src="/tun/' + inputArr.image + '" alt=""><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i>';
 				content += inputArr.dispname + '</div></li>';
 			// }
 		break;
