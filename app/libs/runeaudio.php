@@ -1860,8 +1860,8 @@ curlPost('http://127.0.0.1/pub?id='.$channel,$data);
 function curlPost($url,$data,$proxy = null) {
 $ch = curl_init($url);
 if (isset($proxy)) {
+$proxy['user'] === '' || curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
 curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
-curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
 //runelog('cURL proxy HOST: ',$proxy['host']);
 //runelog('cURL proxy USER: ',$proxy['user']);
 //runelog('cURL proxy PASS: ',$proxy['pass']);
@@ -1880,8 +1880,8 @@ return $response;
 function curlGet($url,$proxy = null) {
 $ch = curl_init($url);
 if (isset($proxy)) {
+$proxy['user'] === '' || curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
 curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
-curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
 // runelog('cURL proxy HOST: ',$proxy['host']);
 // runelog('cURL proxy USER: ',$proxy['user']);
 // runelog('cURL proxy PASS: ',$proxy['pass']);
