@@ -55,7 +55,7 @@ function sendCmd(inputcmd) {
 
 // open the Playback UI refresh channel
 function displayChannel(){
-    var pushstream = new PushStream({
+	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
 		modes: "websocket|longpolling"
@@ -67,7 +67,7 @@ function displayChannel(){
 
 // open the notify messages channel
 function notifyChannel(){
-    var pushstream = new PushStream({
+	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
 		modes: "websocket|longpolling"
@@ -505,19 +505,19 @@ function parseResponse(options) {
 
 // update the Playback UI
 function updateGUI(json){
-    // check MPD status
-    refreshState(GUI.state);
-    // check song update
-    // console.log('A = ', json['currentsong']); console.log('B = ', GUI.currentsong);
-    if (GUI.currentsong != json['currentsong']) {
-        countdownRestart(0);
-        if ($('#panel-dx').hasClass('active')) {
-            var current = parseInt(json['song']);
-            customScroll('pl', current);
-        }
-    }
+	// check MPD status
+	refreshState(GUI.state);
+	// check song update
+	// console.log('A = ', json['currentsong']); console.log('B = ', GUI.currentsong);
+	if (GUI.currentsong != json['currentsong']) {
+		countdownRestart(0);
+		if ($('#panel-dx').hasClass('active')) {
+			var current = parseInt(json['song']);
+			customScroll('pl', current);
+		}
+	}
 	
-    // common actions
+	// common actions
 	var volume = json['volume'];
 	$('#volume').val((volume == '-1') ? 100 : volume).trigger('change');
 	// console.log('currentartist = ', json['currentartist']);
@@ -555,7 +555,7 @@ function updateGUI(json){
 		$('#single').removeClass('btn-primary');
 	}
 	
-    GUI.currentsong = currentsong;
+	GUI.currentsong = currentsong;
 	var currentalbumstring = currentartist + ' - ' + currentalbum;
 	if (GUI.currentalbum != currentalbumstring) {
 		if (radioname === null || radioname === undefined || radioname === '') {
@@ -570,38 +570,38 @@ function updateGUI(json){
 
 // update info and status on Playback tab
 function refreshState(state) {
-    if (state === 'play') {
-        $('#play').addClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-        $('#stop').removeClass('btn-primary');
-    } else if (state === 'pause') {
-        $('#playlist-position').html('Not playing');
-        $('#play').addClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-play').addClass('fa fa-pause');
-        $('#stop').removeClass('btn-primary');
-    } else if (state === 'stop') {
-        $('#play').removeClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-        $('#stop').addClass('btn-primary');
-        $('#countdown-display').countdown('destroy');
-        $('#elapsed').html('00:00');
-        $('#total').html('');
-        $('#time').val(0).trigger('change');
-        $('#format-bitrate').html('&nbsp;');
-        $('li', '#playlist-entries').removeClass('active');
-    }
-    if ( state != 'stop' ) {
-        $('#elapsed').html(timeConvert(GUI.json['elapsed']));
-        $('#total').html(timeConvert(GUI.json['time']));
-        //$('#time').val(json['song_percent']).trigger('change');
-        var fileinfo = (GUI.json['audio_channels'] && GUI.json['audio_sample_depth'] && GUI.json['audio_sample_rate']) ? (GUI.json['audio_channels'] + ', ' + GUI.json['audio_sample_depth'] + ' bit, ' + GUI.json['audio_sample_rate'] +' kHz, '+GUI.json['bitrate']+' kbps') : '&nbsp;';
-        $('#format-bitrate').html(fileinfo);
-        $('li', '#playlist-entries').removeClass('active');
-        var current = parseInt(GUI.json['song']);
-        $('li', '#playlist-entries').eq(current).addClass('active'); // TODO: check efficiency
+	if (state === 'play') {
+		$('#play').addClass('btn-primary');
+		$('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
+		$('#stop').removeClass('btn-primary');
+	} else if (state === 'pause') {
+		$('#playlist-position').html('Not playing');
+		$('#play').addClass('btn-primary');
+		$('i', '#play').removeClass('fa fa-play').addClass('fa fa-pause');
+		$('#stop').removeClass('btn-primary');
+	} else if (state === 'stop') {
+		$('#play').removeClass('btn-primary');
+		$('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
+		$('#stop').addClass('btn-primary');
+		$('#countdown-display').countdown('destroy');
+		$('#elapsed').html('00:00');
+		$('#total').html('');
+		$('#time').val(0).trigger('change');
+		$('#format-bitrate').html('&nbsp;');
+		$('li', '#playlist-entries').removeClass('active');
+	}
+	if ( state != 'stop' ) {
+		$('#elapsed').html(timeConvert(GUI.json['elapsed']));
+		$('#total').html(timeConvert(GUI.json['time']));
+		//$('#time').val(json['song_percent']).trigger('change');
+		var fileinfo = (GUI.json['audio_channels'] && GUI.json['audio_sample_depth'] && GUI.json['audio_sample_rate']) ? (GUI.json['audio_channels'] + ', ' + GUI.json['audio_sample_depth'] + ' bit, ' + GUI.json['audio_sample_rate'] +' kHz, '+GUI.json['bitrate']+' kbps') : '&nbsp;';
+		$('#format-bitrate').html(fileinfo);
+		$('li', '#playlist-entries').removeClass('active');
+		var current = parseInt(GUI.json['song']);
+		$('li', '#playlist-entries').eq(current).addClass('active'); // TODO: check efficiency
 		// current = $('.playlist').children[current];
 		// $(current).addClass('active');
-    }
+	}
 	if( GUI.json['song'] && GUI.json['playlistlength'] ){ 
 		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
 	} else {
@@ -629,42 +629,42 @@ function refreshState(state) {
 
 // update countdown
 function refreshTimer(startFrom, stopTo, state){
-    // console.log('startFrom = ', startFrom);
-    // console.log('state = ', state);
-    var display = $('#countdown-display').countdown('destroy');
-    display.countdown({ since: (state != 'stop'? -startFrom:0), compact: true, format: 'MS' });
-    if( state != 'play' ){
-      // console.log('startFrom = ', startFrom);
-      display.countdown('pause');
-    }
+	// console.log('startFrom = ', startFrom);
+	// console.log('state = ', state);
+	var display = $('#countdown-display').countdown('destroy');
+	display.countdown({ since: (state != 'stop'? -startFrom:0), compact: true, format: 'MS' });
+	if( state != 'play' ){
+	  // console.log('startFrom = ', startFrom);
+	  display.countdown('pause');
+	}
 }
 
 // update playback progress knob
 function refreshKnob(json){
-    window.clearInterval(GUI.currentKnob)
-    var initTime = parseInt(json['song_percent'])*10;
-    var delta = parseInt(json['time']);
-    var step = parseInt(1000/delta);
+	window.clearInterval(GUI.currentKnob)
+	var initTime = parseInt(json['song_percent'])*10;
+	var delta = parseInt(json['time']);
+	var step = parseInt(1000/delta);
 	// console.log('initTime = ' + initTime + ', delta = ' + delta + ', step = ' + step);
-    var time = $('#time');
-    time.val(initTime).trigger('change');
-    if (GUI.state == 'play') {
-        GUI.currentKnob = setInterval(function() {
-          // console.log('initTime = ', initTime);
-          initTime = initTime + (GUI.visibility != 'visible'? parseInt(1000/delta):1);
-          time.val(initTime).trigger('change');
-          //document.title = Math.round(initTime)/10 + '% - ' + GUI.visibility;
-        }, delta);
-    }
+	var time = $('#time');
+	time.val(initTime).trigger('change');
+	if (GUI.state == 'play') {
+		GUI.currentKnob = setInterval(function() {
+		  // console.log('initTime = ', initTime);
+		  initTime = initTime + (GUI.visibility != 'visible'? parseInt(1000/delta):1);
+		  time.val(initTime).trigger('change');
+		  //document.title = Math.round(initTime)/10 + '% - ' + GUI.visibility;
+		}, delta);
+	}
 }
 
 // time conversion
 function timeConvert(seconds) {
-    var minutes = Math.floor(seconds / 60);
-    seconds -= minutes * 60;
-    var mm = (minutes < 10) ? ('0' + minutes) : minutes;
-    var ss = (seconds < 10) ? ('0' + seconds) : seconds;
-    return mm + ':' + ss;
+	var minutes = Math.floor(seconds / 60);
+	seconds -= minutes * 60;
+	var mm = (minutes < 10) ? ('0' + minutes) : minutes;
+	var ss = (seconds < 10) ? ('0' + seconds) : seconds;
+	return mm + ':' + ss;
 }
 function timeConvert2(ss) {
 	var hr = Math.floor(ss/3600);
@@ -683,55 +683,55 @@ function timeConvert2(ss) {
 
 // reset countdown
 function countdownRestart(startFrom) {
-    var display = $('#countdown-display').countdown('destroy');
-    display.countdown({since: -(startFrom), compact: true, format: 'MS'});
+	var display = $('#countdown-display').countdown('destroy');
+	display.countdown({since: -(startFrom), compact: true, format: 'MS'});
 }
 
 // set volume with knob
 function setvol(val) {
-    $('#volume').val(val).trigger('change');
-    GUI.volume = val;
-    $('#volumemute').removeClass('btn-primary');
-    sendCmd('setvol ' + val);
+	$('#volume').val(val).trigger('change');
+	GUI.volume = val;
+	$('#volumemute').removeClass('btn-primary');
+	sendCmd('setvol ' + val);
 }
 
 // custom scrolling
 function customScroll(list, destination, speed) {
-    // console.log('CURRENT = ', destination);
+	// console.log('CURRENT = ', destination);
 	if (typeof(speed) === 'undefined') speed = 500;
-    var entryheight = parseInt(1 + $('#' + list + '-1').height());
-    var centerheight = parseInt($(window).height()/2);
-    var scrolltop = $(window).scrollTop();
-    if (list === 'db') {
-        var scrollcalc = parseInt((destination)*entryheight - centerheight);
-        var scrolloffset = scrollcalc;
-    } else if (list === 'pl') {
-        //var scrolloffset = parseInt((destination + 2)*entryheight - centerheight);
-        var scrollcalc = parseInt((destination + 2)*entryheight - centerheight);
-        var scrolloffset = Math.abs(scrollcalc - scrolltop);
-        scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
-    }
-    // debug
-    // console.log('-------------------------------------------');
-    // console.log('customScroll parameters = ' + list + ', ' + destination + ', ' + speed);
-    // console.log('scrolltop = ', scrolltop);
-    // console.log('scrollcalc = ', scrollcalc);
-    // console.log('scrolloffset = ', scrolloffset);
-    $.scrollTo( (scrollcalc >0? scrolloffset:0), speed);
-    //$('#' + list + '-' + (destination + 1)).addClass('active');
+	var entryheight = parseInt(1 + $('#' + list + '-1').height());
+	var centerheight = parseInt($(window).height()/2);
+	var scrolltop = $(window).scrollTop();
+	if (list === 'db') {
+		var scrollcalc = parseInt((destination)*entryheight - centerheight);
+		var scrolloffset = scrollcalc;
+	} else if (list === 'pl') {
+		//var scrolloffset = parseInt((destination + 2)*entryheight - centerheight);
+		var scrollcalc = parseInt((destination + 2)*entryheight - centerheight);
+		var scrolloffset = Math.abs(scrollcalc - scrolltop);
+		scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
+	}
+	// debug
+	// console.log('-------------------------------------------');
+	// console.log('customScroll parameters = ' + list + ', ' + destination + ', ' + speed);
+	// console.log('scrolltop = ', scrolltop);
+	// console.log('scrollcalc = ', scrollcalc);
+	// console.log('scrolloffset = ', scrolloffset);
+	$.scrollTo( (scrollcalc >0? scrolloffset:0), speed);
+	//$('#' + list + '-' + (destination + 1)).addClass('active');
 	$('li', '#playlist-entries').eq(destination).addClass('active'); // TODO: check efficiency
 }
 
 // [!] scrolling debug purpose only
 function randomScrollPL() {
-    var n = $(".playlist li").size();
-    var random = 1 + Math.floor(Math.random() * n);
-    customScroll('pl', random);
+	var n = $(".playlist li").size();
+	var random = 1 + Math.floor(Math.random() * n);
+	customScroll('pl', random);
 }
 function randomScrollDB() {
-    var n = $(".database li").size();
-    var random = 1 + Math.floor(Math.random() * n);
-    customScroll('db', random);
+	var n = $(".database li").size();
+	var random = 1 + Math.floor(Math.random() * n);
+	customScroll('db', random);
 }
 
 // notify messages rendering
@@ -776,45 +776,45 @@ function loadingSpinner(section, hide) {
 
 // check visibility of the window
 (function() {
-    hidden = 'hidden';
-    // Standards:
-    if (hidden in document)
-        document.addEventListener('visibilitychange', onchange);
-    else if ((hidden = 'mozHidden') in document)
-        document.addEventListener('mozvisibilitychange', onchange);
-    else if ((hidden = "webkitHidden") in document)
-        document.addEventListener('webkitvisibilitychange', onchange);
-    else if ((hidden = "msHidden") in document)
-        document.addEventListener('msvisibilitychange', onchange);
-    // IE 9 and lower:
-    else if ('onfocusin' in document)
-        document.onfocusin = document.onfocusout = onchange;
-    // All others:
-    else
-        window.onpageshow = window.onpagehide
-            = window.onfocus = window.onblur = onchange;
+	hidden = 'hidden';
+	// Standards:
+	if (hidden in document)
+		document.addEventListener('visibilitychange', onchange);
+	else if ((hidden = 'mozHidden') in document)
+		document.addEventListener('mozvisibilitychange', onchange);
+	else if ((hidden = "webkitHidden") in document)
+		document.addEventListener('webkitvisibilitychange', onchange);
+	else if ((hidden = "msHidden") in document)
+		document.addEventListener('msvisibilitychange', onchange);
+	// IE 9 and lower:
+	else if ('onfocusin' in document)
+		document.onfocusin = document.onfocusout = onchange;
+	// All others:
+	else
+		window.onpageshow = window.onpagehide
+			= window.onfocus = window.onblur = onchange;
 
-    function onchange (evt) {
-        var v = 'visible', h = 'hidden',
-            evtMap = {
-                focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h
-            };
+	function onchange (evt) {
+		var v = 'visible', h = 'hidden',
+			evtMap = {
+				focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h
+			};
 
-        evt = evt || window.event;
-        if (evt.type in evtMap) {
-            document.body.className = evtMap[evt.type];
-            //console.log('boh? = ', evtMap[evt.type]);
-        } else {
-            document.body.className = this[hidden] ? 'hidden' : 'visible';
-            if (this[hidden]) {
-                GUI.visibility = 'hidden';
-                //console.log('focus = hidden');
-            } else {
-                GUI.visibility = 'visible';
-                //console.log('focus = visible');
-            }
-        }
-    }
+		evt = evt || window.event;
+		if (evt.type in evtMap) {
+			document.body.className = evtMap[evt.type];
+			//console.log('boh? = ', evtMap[evt.type]);
+		} else {
+			document.body.className = this[hidden] ? 'hidden' : 'visible';
+			if (this[hidden]) {
+				GUI.visibility = 'hidden';
+				//console.log('focus = hidden');
+			} else {
+				GUI.visibility = 'visible';
+				//console.log('focus = visible');
+			}
+		}
+	}
 })();
 
 // trigger social overlay
