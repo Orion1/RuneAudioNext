@@ -118,7 +118,7 @@ function getPlaylistCmd(json){
 				$('#playlist-warning').removeClass('hide');
 				$('#playlist-entries').addClass('hide');
 			}
-			loadingSpinner('pl', 'hide');
+			loadingSpinner('pl', 'force');
 		}
 	});
 }
@@ -764,6 +764,8 @@ function loadingSpinner(section, hide) {
 		if (section === 'pl' && $('#panel-dx').hasClass('active')) {
 			$('#spinner').addClass('hide');
 		}
+	} else if (hide === 'force') {
+		$('#spinner').addClass('hide');
 	} else {
 		if (section === 'db' && $('#panel-sx').hasClass('active')) {
 			$('#spinner').removeClass('hide');

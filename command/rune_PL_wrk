@@ -87,7 +87,8 @@ runelog("rune_PL_wrk: open MPD local UNIX socket",'');
 $mpd = openMpdSocket('/run/mpd.sock') ;
 if (!$mpd) {
 // exit script
-die();
+// die();
+sleep(1);
 
 } else {
 $status = _parseStatusResponse(MpdStatus($mpd));

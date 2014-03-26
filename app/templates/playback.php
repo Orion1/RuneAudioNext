@@ -74,14 +74,14 @@
                 <div class="col-md-4 col-sm-6">
                     <div id="home-nas" class="home-block" data-path="NAS">
                         <i class="fa fa-sitemap"></i>
-                        <h3>Network mounts (1)</h3>
+                        <h3>Network mounts (0)</h3>
                         1 item available
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6">
                     <div id="home-usb" class="home-block" data-path="USB">
                         <i class="fa fa-hdd-o"></i>
-                        <h3>USB storage (0)</h3>
+                        <h3>USB storage (1)</h3>
                         no items available
                     </div>
                 </div>
