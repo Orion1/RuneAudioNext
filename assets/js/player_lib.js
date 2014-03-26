@@ -697,7 +697,8 @@ function setvol(val) {
 
 // custom scrolling
 function customScroll(list, destination, speed) {
-    if (typeof(speed) === 'undefined') speed = 500;
+    // console.log('CURRENT = ', destination);
+	if (typeof(speed) === 'undefined') speed = 500;
     var entryheight = parseInt(1 + $('#' + list + '-1').height());
     var centerheight = parseInt($(window).height()/2);
     var scrolltop = $(window).scrollTop();
