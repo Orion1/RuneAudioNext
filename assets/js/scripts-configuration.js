@@ -41,7 +41,6 @@ var GUI = {
     currentknob: null,
     state: '',
     currentpath: '',
-    halt: 0,
     volume: null,
     currentDBpos: new Array(0,0,0,0,0,0,0,0,0,0,0),
     browsemode: 'file',

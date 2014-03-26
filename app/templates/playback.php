@@ -20,7 +20,7 @@
                         <button type="button" id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Repeat" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
                         <button type="button" id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Random" data-cmd="random"><i class="fa fa-random"></i></button>
                         <button type="button" id="single" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Single" data-cmd="single"><i class="fa fa-refresh"></i></button>
-                        <button type="button" id="consume" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Consume Mode" data-cmd="consume"><i class="fa fa-trash-o"></i></button>
+						<!--<button type="button" id="consume" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Consume Mode" data-cmd="consume"><i class="fa fa-compress"></i></button>-->
                     </div>
                 </div>
                 <?php if ($this->coverart == 1): ?>
@@ -49,7 +49,7 @@
 				<div class="input-group">
 					<input id="db-search-keyword" class="form-control" type="text" value="" placeholder="search in DB...">
 					<span class="input-group-btn">
-						<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+						<button class="btn btn-default" type="submit" title="Search"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
             </form>
@@ -74,15 +74,15 @@
                 <div class="col-md-4 col-sm-6">
                     <div id="home-nas" class="home-block" data-path="NAS">
                         <i class="fa fa-sitemap"></i>
-                        <h3>Network mounts (2)</h3>
-                        2 items available
+                        <h3>Network mounts (1)</h3>
+                        1 item available
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6">
                     <div id="home-usb" class="home-block" data-path="USB">
                         <i class="fa fa-hdd-o"></i>
-                        <h3>USB storage (1)</h3>
-                        1 item available
+                        <h3>USB storage (0)</h3>
+                        no items available
                     </div>
                 </div>
 				<div class="col-md-4 col-sm-6">
@@ -127,7 +127,7 @@
                 <div class="input-group">
 					<input id="pl-filter" class="form-control ttip" type="text" value="" placeholder="search in playlist..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
 					<span class="input-group-btn">
-						<button class="btn btn-default"><i class="fa fa-search"></i></button>
+						<button class="btn btn-default" title="Search"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
             </form>
