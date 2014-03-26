@@ -37,7 +37,7 @@
 
 // send a MPD playback control command
 function sendCmd(inputcmd) {
-	var request = new XMLHttpRequest;
+	var request = new XMLHttpRequest();
 	request.open('GET', '/command/?cmd='+inputcmd, true);
 	request.onreadystatechange = function() {
 		if (this.readyState === 4){
@@ -48,7 +48,7 @@ function sendCmd(inputcmd) {
 				// Error
 			}
 		}
-	}
+	};
 	request.send();
 	request = null;
 }
@@ -81,18 +81,18 @@ function notifyChannel(){
 function renderUI(text) {
 	// update global GUI array
 	GUI.json = text[0];
-	GUI.state = GUI.json['state'];
-	// console.log('current song = ', GUI.json['currentsong']);
+	GUI.state = GUI.json.state;
+	// console.log('current song = ', GUI.json.currentsong);
 	// console.log( 'GUI.state = ', GUI.state );
 	updateGUI(GUI.json);
 	if (GUI.state != 'disconnected') {
-	   $('#loader').hide();
+		$('#loader').hide();
 	}
-	refreshTimer(parseInt(GUI.json['elapsed']), parseInt(GUI.json['time']), GUI.json['state']);
+	refreshTimer(parseInt(GUI.json.elapsed), parseInt(GUI.json.time), GUI.json.state);
 	refreshKnob(GUI.json);
-	if (GUI.json['playlist'] != GUI.playlist) {
+	if (GUI.json.playlist != GUI.playlist) {
 		getPlaylistCmd(GUI.json);
-		GUI.playlist = GUI.json['playlist'];
+		GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
 	}
 }
@@ -110,7 +110,7 @@ function getPlaylistCmd(json){
 				getPlaylistPlain(data, json);
 				// console.timeEnd('getPlaylistPlain timer');
 				
-				var current = parseInt(json['song']);
+				var current = parseInt(json.song);
 				if ($('#panel-dx').hasClass('active')) {
 					customScroll('pl', current, 200); // highlight current song in playlist
 				}
@@ -125,8 +125,8 @@ function getPlaylistCmd(json){
 
 // render the playing queue from the data response 
 function getPlaylistPlain(data, json){
-	var current = parseInt(json['song']) + 1;
-	var state = json['state'];
+	var current = parseInt(json.song) + 1;
+	var state = json.state;
 	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '';
 	var i, line, lines=data.split('\n'), infos=[];
 	//while( line = lines[i++] ){
@@ -134,19 +134,19 @@ function getPlaylistPlain(data, json){
 		line = lines[i];
 		infos = line.split(': ');
 		if( 'Time' === infos[0] ){
-			time = parseInt(infos[1])
+			time = parseInt(infos[1]);
 		}
 		else if( 'Artist' === infos[0] ){
-			artist = infos[1]
+			artist = infos[1];
 		}
 		else if( 'Title' === infos[0] ){
-			title = infos[1]
+			title = infos[1];
 		}
 		else if( 'Name' === infos[0] ){
-			name = infos[1]
+			name = infos[1];
 		}
 		else if( 'Album' === infos[0] ){
-			album = infos[1]
+			album = infos[1];
 		}
 		else if( 'file' === infos[0] ){
 			str = infos[1];
@@ -174,7 +174,7 @@ function getPlaylistPlain(data, json){
 				totaltime = '<span>' + timeConvert2(time) + '</span>';
 			}
 			content += '<li id="pl-' + songid + (state != "stop" && id == current ? ' class="active"' : '') + '"><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
-			time = '', artist = '', album = '', title = '', name = '';
+			time = ''; artist = ''; album = ''; title = ''; name = '';
 		}
 	}
 	$('.playlist').addClass('hide');
@@ -189,6 +189,7 @@ function getPlaylistPlain(data, json){
 // get the list of saved Playlists
 function getPlaylists(data, json){	
 	var content = '';
+	var i = 0;
 	for (i = 0; i < 10; i+=1){
 		content += '<li><a class="pl-actions" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-playlist"><i class="fa fa-bars"></i></a><div class="pl-entry">Nome playlist<span>293 entries</span></div></li>';
 	}
@@ -255,7 +256,7 @@ function getDB(options){
 					loadingSpinner('db', 'hide');
 				} else {
 					populateDB({
-						data: data['results'],
+						data: data.results,
 						path: path,
 						plugin: plugin,
 						querytype: querytype
@@ -301,7 +302,9 @@ function populateDB(options){
 		uplevel = options.uplevel || 0,
 		keyword = options.keyword || '',
 		plugin = options.plugin || '',
-		querytype = options.querytype || '';
+		querytype = options.querytype || '',
+		content = '',
+		i = 0;
 		
 	// DEBUG
 	// console.log('OPTIONS: data = ' + data + ', path = ' + path + ', uplevel = ' + uplevel + ', keyword = ' + keyword +', querytype = ' + querytype);
@@ -313,8 +316,6 @@ function populateDB(options){
 			$('#home-blocks').addClass('hide');
 			if (path) GUI.currentpath = path;
 			document.getElementById('database-entries').innerHTML = '';
-			var content = '';
-			var i = 0;
 			for (i = 0; i < data.length; i++){
 				content += parseResponse({
 					inputArr: data[i],
@@ -332,8 +333,6 @@ function populateDB(options){
 			$('#home-blocks').addClass('hide');
 			if (path) GUI.currentpath = path;
 			document.getElementById('database-entries').innerHTML = '';
-			var content = '';
-			var i = 0;
 			for (i = 0; i < data.length; i++){
 				content += parseResponse({
 					inputArr: data[i],
@@ -362,12 +361,10 @@ function populateDB(options){
 			document.getElementById('database-entries').innerHTML = '';
 			if (keyword !== '') {
 				var results = (data.length) ? data.length : '0';
-				var s = (data.length == 1) ? '' : 's'
+				var s = (data.length == 1) ? '' : 's';
 				$('#db-level-up').addClass('hide');
 				$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
 			}
-			var content = '';
-			var i = 0;
 			for (i = 0; i < data.length; i++){
 				content += parseResponse({
 					inputArr: data[i],
@@ -402,7 +399,8 @@ function parseResponse(options) {
 		respType = options.respType || '',
 		i = options.i || 0,
 		inpath = options.inpath || '',
-		querytype = options.querytype || '';
+		querytype = options.querytype || '',
+		content = '';
 		
 	// DEBUG
 	// console.log('OPTIONS: inputArr = ' + inputArr + ', respType = ' + respType + ', i = ' + i + ', inpath = ' + inpath +', querytype = ' + querytype);
@@ -415,7 +413,7 @@ function parseResponse(options) {
 		case 'db':
 		// normal MPD browsing by file
 			if (inpath === '' && inputArr.file !== undefined) {
-				inpath = parsePath(inputArr.file)
+				inpath = parsePath(inputArr.file);
 			}
 			if (inputArr.file !== undefined || inpath === 'Webradio') {
 				// DEBUG
@@ -508,23 +506,23 @@ function updateGUI(json){
 	// check MPD status
 	refreshState(GUI.state);
 	// check song update
-	// console.log('A = ', json['currentsong']); console.log('B = ', GUI.currentsong);
-	if (GUI.currentsong != json['currentsong']) {
+	// console.log('A = ', json.currentsong); console.log('B = ', GUI.currentsong);
+	if (GUI.currentsong != json.currentsong) {
 		countdownRestart(0);
 		if ($('#panel-dx').hasClass('active')) {
-			var current = parseInt(json['song']);
+			var current = parseInt(json.song);
 			customScroll('pl', current);
 		}
 	}
 	
 	// common actions
-	var volume = json['volume'];
+	var volume = json.volume;
 	$('#volume').val((volume == '-1') ? 100 : volume).trigger('change');
-	// console.log('currentartist = ', json['currentartist']);
-	var radioname = json['radioname'];
-	var currentartist = json['currentartist'];
-	var currentsong = json['currentsong'];
-	var currentalbum = json['currentalbum'];
+	// console.log('currentartist = ', json.currentartist);
+	var radioname = json.radioname;
+	var currentartist = json.currentartist;
+	var currentsong = json.currentsong;
+	var currentalbum = json.currentalbum;
 	if (radioname === null || radioname === undefined || radioname === '') {
 		$('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? '<span class="notag">[no artist]</span>' : currentartist);
 		$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? '<span class="notag">[no title]</span>' : currentsong);
@@ -534,22 +532,22 @@ function updateGUI(json){
 		$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? radioname : currentsong);
 		$('#currentalbum').html('<span class="notag">streaming</span>');
 	}
-	if (json['repeat'] == 1) {
+	if (json.repeat == 1) {
 		$('#repeat').addClass('btn-primary');
 	} else {
 		$('#repeat').removeClass('btn-primary');
 	}
-	if (json['random'] == 1) {
+	if (json.random == 1) {
 		$('#random').addClass('btn-primary');
 	} else {
 		$('#random').removeClass('btn-primary');
 	}
-	if (json['consume'] == 1) {
+	if (json.consume == 1) {
 		$('#consume').addClass('btn-primary');
 	} else {
 		$('#consume').removeClass('btn-primary');
 	}
-	if (json['single'] == 1) {
+	if (json.single == 1) {
 		$('#single').addClass('btn-primary');
 	} else {
 		$('#single').removeClass('btn-primary');
@@ -591,19 +589,19 @@ function refreshState(state) {
 		$('li', '#playlist-entries').removeClass('active');
 	}
 	if ( state != 'stop' ) {
-		$('#elapsed').html(timeConvert(GUI.json['elapsed']));
-		$('#total').html(timeConvert(GUI.json['time']));
-		//$('#time').val(json['song_percent']).trigger('change');
-		var fileinfo = (GUI.json['audio_channels'] && GUI.json['audio_sample_depth'] && GUI.json['audio_sample_rate']) ? (GUI.json['audio_channels'] + ', ' + GUI.json['audio_sample_depth'] + ' bit, ' + GUI.json['audio_sample_rate'] +' kHz, '+GUI.json['bitrate']+' kbps') : '&nbsp;';
+		$('#elapsed').html(timeConvert(GUI.json.elapsed));
+		$('#total').html(timeConvert(GUI.json.time));
+		//$('#time').val(json.song_percent).trigger('change');
+		var fileinfo = (GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate) ? (GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps') : '&nbsp;';
 		$('#format-bitrate').html(fileinfo);
 		$('li', '#playlist-entries').removeClass('active');
-		var current = parseInt(GUI.json['song']);
+		var current = parseInt(GUI.json.song);
 		$('li', '#playlist-entries').eq(current).addClass('active'); // TODO: check efficiency
 		// current = $('.playlist').children[current];
 		// $(current).addClass('active');
 	}
-	if( GUI.json['song'] && GUI.json['playlistlength'] ){ 
-		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json['song']) + 1) +'/'+GUI.json['playlistlength']);
+	if( GUI.json.song && GUI.json.playlistlength ){ 
+		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) +'/'+GUI.json.playlistlength);
 	} else {
 		$('#playlist-position').html( $('<a>',{
 			text: 'Add the vibe!', 
@@ -613,8 +611,8 @@ function refreshState(state) {
 		}) ); // TODO: highlight the "Library" tab
 	}
 	// show UpdateDB icon
-	// console.log('dbupdate = ', GUI.json['updating_db']);
-	if (typeof GUI.json['updating_db'] != 'undefined') {
+	// console.log('dbupdate = ', GUI.json.updating_db);
+	if (typeof GUI.json.updating_db != 'undefined') {
 		$('.open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i> Updating');
 	} else {
 		$('.open-panel-sx').html('<i class="fa fa-music sx"></i> Library');
@@ -633,27 +631,27 @@ function refreshTimer(startFrom, stopTo, state){
 	// console.log('state = ', state);
 	var display = $('#countdown-display').countdown('destroy');
 	display.countdown({ since: (state != 'stop'? -startFrom:0), compact: true, format: 'MS' });
-	if( state != 'play' ){
-	  // console.log('startFrom = ', startFrom);
-	  display.countdown('pause');
+	if (state != 'play'){
+		// console.log('startFrom = ', startFrom);
+		display.countdown('pause');
 	}
 }
 
 // update playback progress knob
 function refreshKnob(json){
-	window.clearInterval(GUI.currentKnob)
-	var initTime = parseInt(json['song_percent'])*10;
-	var delta = parseInt(json['time']);
+	window.clearInterval(GUI.currentKnob);
+	var initTime = parseInt(json.song_percent)*10;
+	var delta = parseInt(json.time);
 	var step = parseInt(1000/delta);
 	// console.log('initTime = ' + initTime + ', delta = ' + delta + ', step = ' + step);
 	var time = $('#time');
 	time.val(initTime).trigger('change');
 	if (GUI.state == 'play') {
 		GUI.currentKnob = setInterval(function() {
-		  // console.log('initTime = ', initTime);
-		  initTime = initTime + (GUI.visibility != 'visible'? parseInt(1000/delta):1);
-		  time.val(initTime).trigger('change');
-		  //document.title = Math.round(initTime)/10 + '% - ' + GUI.visibility;
+			// console.log('initTime = ', initTime);
+			initTime = initTime + (GUI.visibility != 'visible'? parseInt(1000/delta):1);
+			time.val(initTime).trigger('change');
+			//document.title = Math.round(initTime)/10 + '% - ' + GUI.visibility;
 		}, delta);
 	}
 }
@@ -702,13 +700,15 @@ function customScroll(list, destination, speed) {
 	var entryheight = parseInt(1 + $('#' + list + '-1').height());
 	var centerheight = parseInt($(window).height()/2);
 	var scrolltop = $(window).scrollTop();
+	var scrollcalc = 0;
+	var scrolloffset = 0;
 	if (list === 'db') {
-		var scrollcalc = parseInt((destination)*entryheight - centerheight);
-		var scrolloffset = scrollcalc;
+		scrollcalc = parseInt((destination)*entryheight - centerheight);
+		scrolloffset = scrollcalc;
 	} else if (list === 'pl') {
 		//var scrolloffset = parseInt((destination + 2)*entryheight - centerheight);
-		var scrollcalc = parseInt((destination + 2)*entryheight - centerheight);
-		var scrolloffset = Math.abs(scrollcalc - scrolltop);
+		scrollcalc = parseInt((destination + 2)*entryheight - centerheight);
+		scrolloffset = Math.abs(scrollcalc - scrolltop);
 		scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
 	}
 	// debug
@@ -737,13 +737,13 @@ function randomScrollDB() {
 // notify messages rendering
 function renderMSG(text) {
 	notify = text[0];
-	console.log((notify['hide'] === undefined) ? 'undefined' : notify['hide']);
+	console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
 	$.pnotify({
-		title: notify['title'],
-		text: notify['text'],
-		icon: (notify['icon'] == undefined) ? 'fa fa-check' : notify['icon'],
-		opacity: (notify['opacity'] == undefined) ? .9 : notify['opacity'],
-		hide: (notify['hide'] == undefined)
+		title: notify.title,
+		text: notify.text,
+		icon: (notify.icon === undefined) ? 'fa fa-check' : notify.icon,
+		opacity: (notify.opacity === undefined) ? 0.9 : notify.opacity,
+		hide: (notify.hide === undefined)
 	});
 }
 
@@ -791,8 +791,7 @@ function loadingSpinner(section, hide) {
 		document.onfocusin = document.onfocusout = onchange;
 	// All others:
 	else
-		window.onpageshow = window.onpagehide
-			= window.onfocus = window.onblur = onchange;
+		window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
 
 	function onchange (evt) {
 		var v = 'visible', h = 'hidden',
@@ -851,7 +850,7 @@ function loadingSpinner(section, hide) {
 		}
 		else if (overlay.hasClass('closed')) {
 			overlay.addClass('open');
-			var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.json['currentsong'].replace(/\s+/g, '+') + '+by+' + GUI.json['currentartist'].replace(/\s+/g, '+') + '+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
+			var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.json.currentsong.replace(/\s+/g, '+') + '+by+' + GUI.json.currentartist.replace(/\s+/g, '+') + '+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
 			var urlFacebook = 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup';
 			var urlGooglePlus = 'https://plus.google.com/share?url=http%3A%2F%2Fwww.runeaudio.com%2F';
 			$('#urlTwitter').attr('href', urlTwitter);

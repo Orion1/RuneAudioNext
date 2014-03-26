@@ -22,11 +22,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with RuneAudio; see the file COPYING.  If not, see
+ * along with RuneAudio; see the file COPYING.	If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.txt>.
  *
- *  file: scripts-playback.js
- *  version: 1.1
+ *	file: scripts-playback.js
+ *	version: 1.1
  *
  */
 
@@ -57,7 +57,7 @@ jQuery(document).ready(function($){ 'use strict';
 
 	// INITIALIZATION
 	// ----------------------------------------------------------------------------------------------------
-   
+	 
 	// first connection with MPD daemon
 	// open UI rendering channel;
 	displayChannel();
@@ -73,7 +73,7 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// hide "connecting" layer
 	if (GUI.state != 'disconnected') {
-	  $('#loader').hide();
+		$('#loader').hide();
 	}
 	
 	// PNotify init options
@@ -87,22 +87,22 @@ jQuery(document).ready(function($){ 'use strict';
 	// ----------------------------------------------------------------------------------------------------
 	
 	// playback
-	$('.btn-cmd').click(function( e ){
-		var el = $(this)
+	$('.btn-cmd').click(function(){
+		var el = $(this);
 		var dataCmd = el.data('cmd');
 		var cmd;
 		// stop
 		if (dataCmd == 'stop') {
 			el.addClass('btn-primary');
 			$('#play').removeClass('btn-primary');
-			refreshTimer(0, 0, 'stop')
+			refreshTimer(0, 0, 'stop');
 			window.clearInterval(GUI.currentKnob);
 			$('.playlist').find('li').removeClass('active');
 			$('#total').html('');
 		}
 		// play/pause
 		else if (dataCmd == 'play') {
-			//if (json['currentsong'] != null) {
+			//if (json.currentsong != null) {
 				if (GUI.state == 'play') {
 					cmd = 'pause';
 					$('#countdown-display').countdown('pause');
@@ -132,7 +132,7 @@ jQuery(document).ready(function($){ 'use strict';
 		}
 		// step volume control
 		else if ( el.hasClass('btn-volume') ) {
-		  	var vol;
+				var vol;
 			var knobvol = parseInt($('#volume').val());
 			if (GUI.volume === null ) {
 				GUI.volume = knobvol;
@@ -203,7 +203,7 @@ jQuery(document).ready(function($){ 'use strict';
 			}
 			// console.log('GUI.stepVolumeDelta = ', GUI.stepVolumeDelta);
 			$('#volume').val(GUI.stepVolumeDelta).trigger('change');
-		}
+		};
 		volumeStep();
 		// console.log('GUI.volume = ', GUI.volume);
 		
@@ -226,7 +226,7 @@ jQuery(document).ready(function($){ 'use strict';
 		inline: false,
 			change : function (value) {
 			if (GUI.state != 'stop') {
-				window.clearInterval(GUI.currentKnob)
+				window.clearInterval(GUI.currentKnob);
 				//$('#time').val(value);
 				// console.log('click percent = ', value);
 				// add command
@@ -236,8 +236,8 @@ jQuery(document).ready(function($){ 'use strict';
 			if (GUI.state != 'stop') {
 				// console.log('release percent = ', value);
 				window.clearInterval(GUI.currentKnob);
-				var seekto = Math.floor((value * parseInt(GUI.json['time'])) / 1000);
-				sendCmd('seek ' + GUI.json['song'] + ' ' + seekto);
+				var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
+				sendCmd('seek ' + GUI.json.song + ' ' + seekto);
 				// console.log('seekto = ', seekto);
 				$('#time').val(value);
 				$('#countdown-display').countdown('destroy');
@@ -253,7 +253,7 @@ jQuery(document).ready(function($){ 'use strict';
 	// volume knob
 	$('.volumeknob').knob({
 		change : function (value) {
-			//setvol(value);  // disabled until perfomance issues are solved (mouse wheel is not working now)
+			//setvol(value);	// disabled until perfomance issues are solved (mouse wheel is not working now)
 		},
 		release : function (value) {
 			setvol(value);
@@ -265,24 +265,20 @@ jQuery(document).ready(function($){ 'use strict';
 			// "tron" case
 			if(this.$.data('skin') == 'tron') {
 
-				var a = this.angle(this.cv)  // Angle
-					, sa = this.startAngle		  // Previous start angle
-					, sat = this.startAngle		 // Start angle
-					, ea							// Previous end angle
-					, eat = sat + a				 // End angle
-					, r = true;
+				var a = this.angle(this.cv),	// Angle
+					sa = this.startAngle,	// Previous start angle
+					sat = this.startAngle,	// Start angle
+					ea,	// Previous end angle
+					eat = sat + a,	// End angle
+					r = true;
 
 				this.g.lineWidth = this.lineWidth;
 
-				this.o.cursor
-					&& (sat = eat - 0.05)
-					&& (eat = eat + 0.05);
+				this.o.cursor && (sat = eat - 0.05) && (eat = eat + 0.05);
 
 				if (this.o.displayPrevious) {
 					ea = this.startAngle + this.angle(this.value);
-					this.o.cursor
-						&& (sa = ea - 0.1)
-						&& (ea = ea + 0.1);
+					this.o.cursor && (sa = ea - 0.1) && (ea = ea + 0.1);
 					this.g.beginPath();
 					this.g.strokeStyle = this.previousColor;
 					this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false);
@@ -313,20 +309,21 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// click on queue entry
 	playlist.on('click', 'li', function(e) {
+		var cmd = '';
 		if ($(e.target).hasClass('pl-action')) {
 			// remove queue entry
 			e.preventDefault();
 			console.log($(this).parent());
 			var id = $(this).attr('id');
-			id = parseInt(id.replace('pl-', ''))
-			var cmd = 'deleteid ' + id;
-			var path = $(this).parent().data('path');
+			id = parseInt(id.replace('pl-', ''));
+			cmd = 'deleteid ' + id;
+			// var path = $(this).parent().data('path');
 			notify('remove', '');
 			sendCmd(cmd);
 		} else {
 			// play queue entry
 			var pos = $('li', '#playlist-entries').index(this);
-			var cmd = 'play ' + pos;
+			cmd = 'play ' + pos;
 			sendCmd(cmd);
 			$('li.active', '#playlist-entries').removeClass('active');
 			$(this).addClass('active');
@@ -336,12 +333,12 @@ jQuery(document).ready(function($){ 'use strict';
 	// on ready playlist tab
 	$('a', '#open-panel-dx').click(function(){
 		if ($('#open-panel-dx').hasClass('active')) {
-			 var current = parseInt(GUI.json['song']);
-			 customScroll('pl', current, 500);
+			var current = parseInt(GUI.json.song);
+			customScroll('pl', current, 500);
 		}
 	})
 	.on('shown.bs.tab', function (e) {
-		var current = parseInt(GUI.json['song']);
+		var current = parseInt(GUI.json.song);
 		customScroll('pl', current, 0);
 	});
 
@@ -402,7 +399,7 @@ jQuery(document).ready(function($){ 'use strict';
 	// on ready Library tab
 	$('a', '#open-panel-sx').click(function(){
 		if ($('#open-panel-sx').hasClass('active')) {
-			 customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 500);
+			customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 500);
 		}
 	})	
 	.on('shown.bs.tab', function (e) {
@@ -424,13 +421,14 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// click on Library list entry
 	db.on('click', 'li', function(e) {
+		var path = '';
 		if ($(e.target).hasClass('db-action')) {
 		// actions contextual menu
 			e.preventDefault();
 			if ($('.context-menu.open').length) {
 				// do something to close the contextual menu
 			} else {
-				var path = $(this).attr('data-path');
+				path = $(this).attr('data-path');
 				GUI.DBentry[0] = path;
 				// console.log('getDB path = ', GUI.DBentry);
 			}
@@ -441,7 +439,7 @@ jQuery(document).ready(function($){ 'use strict';
 			if (el.hasClass('db-folder')) {
 				if (el.hasClass('db-dirble')) {
 				// Dirble folders
-					var path = GUI.currentpath  + '/' + el.find('span').text();
+					path = GUI.currentpath	+ '/' + el.find('span').text();
 					var querytype = 'stations';
 					var args = el.data('path');
 					getDB({
@@ -453,7 +451,7 @@ jQuery(document).ready(function($){ 'use strict';
 					});
 				} else if (el.hasClass('db-jamendo')) {
 				// Jamendo folders
-					// var path = GUI.currentpath  + '/' + el.find('span').text();
+					// path = GUI.currentpath	+ '/' + el.find('span').text();
 					// var querytype = 'radio';
 					// var args = el.data('path');
 					// getDB({
@@ -465,7 +463,7 @@ jQuery(document).ready(function($){ 'use strict';
 					// });
 				} else {
 				// normal MPD file browsing
-					var path = el.data('path');
+					path = el.data('path');
 					//GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);
 					var entryID = el.attr('id');
 					entryID = entryID.replace('db-','');
