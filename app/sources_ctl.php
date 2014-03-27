@@ -70,14 +70,14 @@ $dbh = cfgdb_connect($db);
 $source = cfgdb_read('cfg_source',$dbh);
 $dbh = null;
 
-foreach ($source as $mp) {
-if (wrk_checkStrSysfile('/proc/mounts',$mp['name']) ) {
-	$mp['status'] = 1;
+if( !empty($source) ){ foreach ($source as $mp) {
+	if (wrk_checkStrSysfile('/proc/mounts',$mp['name']) ) {
+		$mp['status'] = 1;
 	} else {
-	$mp['status'] = 0;
+		$mp['status'] = 0;
 	}
-$mounts[]=$mp;
-}
+	$mounts[]=$mp;
+} }
 
 $template->mounts = $mounts;
 
