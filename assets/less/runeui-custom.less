@@ -265,6 +265,10 @@ html, body {
 		margin: 0;
 		padding: 0;
 	}
+	i {
+		width: 16px;
+		margin-right: 5px;
+	}
 }
 #menu-bottom a:hover, #menu-bottom a:focus {
 	text-decoration: none;
@@ -1165,7 +1169,8 @@ select.selectpicker {
 // Loading spinner
 // --------------------------------------------------------------
 
-#spinner {
+#spinner-db,
+#spinner-pl {
 	position: fixed;
 	top: 50%;
 	left: 50%;
@@ -1337,6 +1342,9 @@ ul.parsley-error-list {
 	}
 	#menu-bottom li a {
 		font-size: 16px;
+		i {
+			margin-right: 10px;
+		}
 	}
 	#playlist-entries li, #database-entries li {
 		font-size: 18px;

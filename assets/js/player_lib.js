@@ -758,20 +758,21 @@ function sortOrder(id) {
 // loading spinner display/hide
 function loadingSpinner(section, hide) {
 	if (hide === 'hide') {
-		if (section === 'db' && $('#panel-sx').hasClass('active')) {
-			$('#spinner').addClass('hide');
+		if (section === 'db') {
+			$('#spinner-db').addClass('hide');
 		}
-		if (section === 'pl' && $('#panel-dx').hasClass('active')) {
-			$('#spinner').addClass('hide');
+		if (section === 'pl') {
+			$('#spinner-pl').addClass('hide');
 		}
 	} else if (hide === 'force') {
-		$('#spinner').addClass('hide');
+		$('#spinner-db').addClass('hide');
+		$('#spinner-pl').addClass('hide');
 	} else {
-		if (section === 'db' && $('#panel-sx').hasClass('active')) {
-			$('#spinner').removeClass('hide');
+		if (section === 'db') {
+			$('#spinner-db').removeClass('hide');
 		}
-		if (section === 'pl' && $('#panel-dx').hasClass('active')) {
-			$('#spinner').removeClass('hide');
+		if (section === 'pl') {
+			$('#spinner-pl').removeClass('hide');
 		}
 	}
 }

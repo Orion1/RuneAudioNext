@@ -20,7 +20,6 @@
 </div>
 <!-- loader -->
 <div id="loader"><div id="loaderbg"></div><div id="loadercontent"><i class="fa fa-refresh fa-spin"></i>connecting...</div></div>
-<div id="spinner" class="hide"><i class="fa fa-spinner fa-spin"></i></div>
 <script src="<?=$this->asset('/js/vendor/jquery-2.0.3.min.js')?>"></script>
 <!-- dev only -->
 <!--

@@ -74,8 +74,8 @@
 </div>
 <div id="menu-bottom" class="ui-footer ui-bar-f ui-footer-fixed slidedown" data-position="fixed" data-role="footer"  role="banner">
 	<ul>
-		<li id="open-panel-sx"><a href="/#panel-sx"<?=$this->uri(1,'','class="open-panel-sx" data-toggle="tab"')?>><i class="fa fa-music sx"></i> Library</a></li>
-		<li id="open-playback" <?=$this->uri(1,'','class="active"')?>><a href="/#playback"<?=$this->uri(1,'','data-toggle="tab"')?>><i class="fa fa-play sx"></i> Playback</a></li>
-		<li id="open-panel-dx"><a href="/#panel-dx"<?=$this->uri(1,'','class="open-panel-dx" data-toggle="tab"')?>><i class="fa fa-list sx"></i> Queue</a></li>
+		<li id="open-panel-sx"><a href="/#panel-sx"<?=$this->uri(1,'','class="open-panel-sx" data-toggle="tab"')?>><i class="fa fa-music"></i> Library</a></li>
+		<li id="open-playback" <?=$this->uri(1,'','class="active"')?>><a href="/#playback"<?=$this->uri(1,'','data-toggle="tab"')?>><i class="fa fa-play"></i> Playback</a></li>
+		<li id="open-panel-dx"><a href="/#panel-dx"<?=$this->uri(1,'','class="open-panel-dx" data-toggle="tab"')?>><i class="fa fa-list"></i> Queue</a></li>
 	</ul>
 </div>

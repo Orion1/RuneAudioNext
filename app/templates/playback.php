@@ -119,6 +119,7 @@
                 <i class="fa fa-folder-open"></i> <span>Home</span>
             </div>
         </div>
+		<div id="spinner-db" class="hide"><i class="fa fa-spinner fa-spin"></i></div>
     </div>
     <!-- QUEUE PANEL -->
     <div id="panel-dx" class="tab-pane">
@@ -171,6 +172,7 @@
                 <button class="btn btn-default" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o"></i></button>
             </div>
         </div>
+		<div id="spinner-pl" class="hide"><i class="fa fa-spinner fa-spin"></i></div>
     </div>
 </div>
 
