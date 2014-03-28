@@ -55,8 +55,6 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// open display channel
 	displayChannel();	
-	// force UI rendering (backend-call)
-	sendCmd('renderui');
 	if (GUI.state != 'disconnected') {
 		$('#loader').hide();
 	}
