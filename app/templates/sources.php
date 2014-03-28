@@ -1,10 +1,10 @@
-<div class="container">../sources_ctl.php
+<div class="container">
 	<h1>DB sources</h1>
 	<form method="post">
 		<p><button class="btn btn-lg btn-primary" type="submit" name="updatempd" value="1" id="updatempddb"><i class="fa fa-refresh sx"></i>Update MPD Database</button></p>
 	</form>
 	<div class="boxed">
-		<p>RuneAudio&#8217;s MPD creates and updates its database scanning the content of the following source directories:</p>
+		<p>RuneAudio&#39;s MPD creates and updates its database scanning the content of the following source directories:</p>
 		<ul>
 			<li><strong>Network mounts</strong><br><span class="help-block">where all network mounts fit</span></li>
 			<li><strong>USB mounts</strong><br><span class="help-block">the content of the USB drive, if plugged</span></li>
