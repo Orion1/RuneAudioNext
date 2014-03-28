@@ -61,6 +61,12 @@ function displayChannel(){
 		modes: "websocket|longpolling"
 	});
 	pushstream.onmessage = renderUI;
+	// pushstream.onstatuschange = renderUI;
+	pushstream.onstatuschange = function(status) {
+    // alert("The new status is: " + status);
+	// force UI rendering (backend-call)
+	sendCmd('renderui');
+	};
 	pushstream.addChannel('display');
 	pushstream.connect();
 }

@@ -61,8 +61,6 @@ jQuery(document).ready(function($){ 'use strict';
 	// first connection with MPD daemon
 	// open UI rendering channel;
 	displayChannel();
-	// force UI rendering (backend-call)
-	sendCmd('renderui');
 
 	// first GUI update
 	updateGUI( GUI.json );
