@@ -267,6 +267,8 @@ if ($redis->get('scrobbling_lastfm') === '1') {
 runelog("service: MPDSCRIBBLE start",'');
 sysCmd('systemctl start mpdscribble');
 }
+// read system network interfaces details
+wrk_netconfig($redis,'nics');
 
 // start rpi volume switch helpers
 // if ($redis->get('hwplatformid') === '01') {

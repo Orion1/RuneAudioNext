@@ -30,4 +30,7 @@
  *  ver: 1.3
  *
  */
+
+$template->nics = wrk_netconfig($redis,'getnics');
+
 ?>

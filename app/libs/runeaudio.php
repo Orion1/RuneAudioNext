@@ -1162,6 +1162,29 @@ function wrk_opcache($action,$redis) {
 	}
 }
 
+function wrk_netconfig($redis,$action) {
+	switch ($action) {
+		case 'setnics':
+			$interfaces = sysCmd("ip addr |grep \"BROADCAST,\" |cut -d':' -f1-2 |cut -d' ' -f2");
+			foreach ($interfaces as $interface) {
+			$ip = sysCmd("ip addr list ".$interface." |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1");
+				if (!empty(sysCmd("iwlist ".$interface." scan 2>&1 | grep \"Interface doesn't support scanning\""))) {
+				$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'wireless' => 0)));
+				} else {
+				$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'wireless' => 1)));
+				}
+			}
+		break;
+		
+		case 'getnics':
+ 			foreach ($redis->hGetAll('nics') as $interface => $details) {
+				$interfaces[$interface] = json_decode($details);
+			}
+			return $interfaces;
+		break;
+		
+	}
+}
 
 function wrk_restore($backupfile) {
 $path = "/run/".$backupfile;

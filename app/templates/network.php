@@ -8,7 +8,8 @@
 	<h2>Network interfaces</h2>
 	<p>List of available network interfaces (click to configure)</p>
 	<form id="network-interface-list" class="button-list" method="post">
-		<p><a href="net-edit-eth.php" class="btn btn-lg btn-default btn-block"> <i class="fa fa-check green sx"></i> <strong>Eth0</strong>&nbsp;&nbsp;&nbsp;&nbsp;<span>172.16.22.23</span></a></p>
-		<p><a href="net-edit-wifi.php" class="btn btn-lg btn-default btn-block"> <i class="fa fa-check green sx"></i> <strong>WiFi0</strong>&nbsp;&nbsp;&nbsp;&nbsp;<span>172.16.22.58</span></a></p>
+	<?php foreach ($this->nics as $key => $value): ?>
+		<p><a href="<?=$key ?>" class="btn btn-lg btn-default btn-block"> <i class="fa <?php if ($value->ip !== null): ?>fa-check green<?php else: ?>fa-times red<?php endif; ?> sx"></i> <strong><?=$key ?> </strong>&nbsp;&nbsp;&nbsp;&nbsp;<span><?=$value->ip ?></span></a></p>
+	<?php endforeach; ?>
 	</form>
 </div>
