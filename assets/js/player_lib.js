@@ -107,19 +107,19 @@ function getPlaylistCmd(json){
 		url: '/db/?cmd=playlist',
 		success: function(data){
 			if ( data.length > 4) {
-				$('#playlist-warning').addClass('hide');
+				$('.playlist').addClass('hide');
 				$('#playlist-entries').removeClass('hide');
-				// console.time('getPlaylistPlain timer');
+				console.time('getPlaylistPlain timer');
 				getPlaylistPlain(data);
-				// console.timeEnd('getPlaylistPlain timer');
+				console.timeEnd('getPlaylistPlain timer');
 				
 				var current = parseInt(GUI.json.song);
 				if ($('#panel-dx').hasClass('active')) {
 					customScroll('pl', current, 200); // highlight current song in playlist
 				}
 			} else {
+				$('.playlist').addClass('hide');
 				$('#playlist-warning').removeClass('hide');
-				$('#playlist-entries').addClass('hide');
 			}
 			loadingSpinner('pl', 'hide');
 		}
@@ -131,29 +131,29 @@ function getPlaylistPlain(data){
 	var current = parseInt(GUI.json.song) + 1;
 	var state = GUI.json.state;
 	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '';
-	var i, line, lines=data.split('\n'), infos=[];
-	for (i = 0; i < lines.length; i+=1){
-		line = lines[i];
+	var i, line, lines = data.split('\n'), infos=[];
+	for (i = 0; line = lines[i]; i += 1) {
+		
 		infos = line.split(': ');
-		if( 'Time' === infos[0] ){
+		if ( 'Time' === infos[0] ) {
 			time = parseInt(infos[1]);
 		}
-		else if( 'Artist' === infos[0] ){
+		else if ( 'Artist' === infos[0] ) {
 			artist = infos[1];
 		}
-		else if( 'Title' === infos[0] ){
+		else if ( 'Title' === infos[0] ) {
 			title = infos[1];
 		}
-		else if( 'Name' === infos[0] ){
+		else if ( 'Name' === infos[0] ) {
 			name = infos[1];
 		}
-		else if( 'Album' === infos[0] ){
+		else if ( 'Album' === infos[0] ) {
 			album = infos[1];
 		}
-		else if( 'file' === infos[0] ){
+		else if ( 'file' === infos[0] ) {
 			str = infos[1];
 		}
-		else if( 'Id' === infos[0] ){
+		else if ( 'Id' === infos[0] ) {
 			songid = infos[1];
 			if (title === '' || album === '') {
 				path = parsePath(str);
@@ -200,13 +200,11 @@ function getPlaylists(){
 
 // render saved playlists
 function renderPlaylists(data){	
-	console.log(data);
 	var content = '', playlistname = '';
 	var i, line, lines=data.split('\n'), infos=[];
-	for (i = 0; i < lines.length; i+=1){
-		line = lines[i];
+	for (i = 0; line = lines[i]; i += 1 ) {
 		infos = line.split(': ');
-		if( 'playlist' === infos[0] ){
+		if( 'playlist' === infos[0] ) {
 			playlistname = infos[1];
 			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action" data-target="#context-menu-playlist" data-toggle="context" title="Actions"></i><span><i class="fa fa-folder-open"></i>' + playlistname + '</span></li>';
 			playlistname = '';

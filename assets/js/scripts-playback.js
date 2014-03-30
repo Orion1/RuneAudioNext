@@ -395,7 +395,14 @@ jQuery(document).ready(function($){ 'use strict';
 		e.preventDefault();
 		var path = $(this).parent().attr('data-path');
 		GUI.DBentry[0] = path;
-		console.log('getDB path = ', GUI.DBentry);
+	});
+	
+	// playlist rename action
+	$('#pl-rename-button').click(function(){
+		var oldname = $('#pl-rename-oldname').text();
+		var newname = $('#pl-rename-name').val();
+		sendCmd('rename "' + oldname + '" "' + newname + '"');
+		getPlaylists();
 	});
 	
 	// sort Queue entries
@@ -577,7 +584,8 @@ jQuery(document).ready(function($){ 'use strict';
 			sendCmd('load "' + path + '"');
 		}
 		if (dataCmd == 'pl-rename') {
-			sendCmd('rename "' + path + '" "ciccio"');
+			$('#modal-pl-rename').modal();
+			$('#pl-rename-oldname').text(path);
 		}
 		if (dataCmd == 'pl-rm') {
 			$.ajax({

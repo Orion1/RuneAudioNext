@@ -126,7 +126,7 @@
         <div class="btnlist btnlist-top">
             <form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
                 <div class="input-group">
-					<input id="pl-filter" class="form-control ttip" type="text" value="" placeholder="search in playlist..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
+					<input id="pl-filter" class="form-control ttip" type="text" value="" placeholder="search in queue..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
 					<span class="input-group-btn">
 						<button class="btn btn-default" title="Search"><i class="fa fa-search"></i></button>
 					</span>
@@ -246,6 +246,24 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary btn-lg btn-cmd" data-cmd="clear" data-dismiss="modal">Clear</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-pl-rename" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-pl-rename-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="modal-pl-rename-label">Rename the playlist</h3>
+            </div>
+            <div class="modal-body">
+                <label for="pl-rename-name">Rename "<strong id="pl-rename-oldname"></strong>" playlist to:</label>
+                <input id="pl-rename-name" class="form-control" type="text" placeholder="Enter playlist name">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
+                <button id="pl-rename-button" type="button" class="btn btn-primary btn-lg" data-dismiss="modal">Rename</button>
             </div>
         </div>
     </div>
