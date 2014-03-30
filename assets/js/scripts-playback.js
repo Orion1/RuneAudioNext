@@ -448,14 +448,11 @@ jQuery(document).ready(function($){ 'use strict';
 		if ($(e.target).hasClass('db-action')) {
 		// actions contextual menu
 			e.preventDefault();
-			if ($('.context-menu.open').length) {
-				// do something to close the contextual menu
-			} else {
-				path = $(this).attr('data-path');
-				GUI.DBentry[0] = path;
-				// console.log('getDB path = ', GUI.DBentry);
-			}
+			path = $(this).attr('data-path');
+			GUI.DBentry[0] = path;
+			// console.log('getDB path = ', GUI.DBentry);
 		} else {
+		// list browsing
 			var el = $(this);
 			$('li.active', '#database-entries').removeClass('active');
 			el.addClass('active');

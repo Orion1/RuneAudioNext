@@ -520,7 +520,7 @@ html, body {
 	// margin: 0;
 	// background: @body-bg;
 	border-bottom: 1px solid darken(@brand-alt, 16%);
-	color: @text-color;
+	// color: @text-color;
 	font-size: 15px;
 	// text-align: left;
 	.no-selectable;
@@ -843,8 +843,11 @@ html, body {
 	width: 100%;
 	height: 100%;
 	background: @body-bg;
-	.opacity(.7);
+	.opacity(.5);
 	z-index: 999;
+	&:hover {
+		cursor: not-allowed;
+	}
 }
 .button-list {
 	.btn {
@@ -1226,6 +1229,24 @@ select.selectpicker {
 
 
 
+// Fix for toggle switch animation on mobile devices
+// --------------------------------------------------------------
+
+#section-sources, #section-network, #section-settings {
+	animation: bugfix infinite 1s;
+	-moz-animation: bugfix infinite 1s;
+	-webkit-animation: bugfix infinite 1s;
+	-o-animation: bugfix infinite 1s;
+	-ms-animation: bugfix infinite 1s;
+}
+@keyframes bugfix { from { padding: 0; } to { padding: 0; } }
+@-moz-keyframes bugfix { from { padding: 0; } to { padding: 0; } }
+@-webkit-keyframes bugfix { from { padding: 0; } to { padding: 0; } }
+@-o-keyframes bugfix { from { padding: 0; } to { padding: 0; } }
+@-ms-keyframes bugfix { from { padding: 0; } to { padding: 0; } }
+
+
+
 // Custom mixins
 // --------------------------------------------------------------
 
@@ -1238,6 +1259,7 @@ select.selectpicker {
 	-o-user-select: none;
 	user-select: none;		  
 }
+
 
 
 // Bootstrap addons/overwrites
@@ -1310,6 +1332,9 @@ label {
 
 select {
 	visibility: hidden;
+}
+fieldset {
+	margin-bottom: 20px;
 }
 /*
 input[disabled],select[disabled],textarea[disabled],input[readonly],select[readonly],textarea[readonly] {
