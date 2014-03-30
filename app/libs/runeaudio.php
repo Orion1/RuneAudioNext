@@ -1899,7 +1899,7 @@ return $response;
 
 function curlGet($url,$proxy = null) {
 $ch = curl_init($url);
-if (isset($proxy)) {
+if ($proxy['enable'] === '1') {
 $proxy['user'] === '' || curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
 curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
 // runelog('cURL proxy HOST: ',$proxy['host']);
