@@ -50,7 +50,8 @@ var GUI = {
 	visibility: 'visible',
 	DBupdate: 0,
 	stepVolumeInt: 0,
-	stepVolumeDelta: 0
+	stepVolumeDelta: 0,
+	stream: ''
 };
 
 jQuery(document).ready(function($){ 'use strict';

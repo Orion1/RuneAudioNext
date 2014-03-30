@@ -93,7 +93,11 @@ function renderUI(text) {
 		$('#loader').hide();
 	}
 	refreshTimer(parseInt(GUI.json.elapsed), parseInt(GUI.json.time), GUI.json.state);
-	refreshKnob(GUI.json);
+	if (GUI.stream !== 'radio') {
+		refreshKnob();
+	} else {
+		$('#time').val(0).trigger('change');
+	}
 	if (GUI.json.playlist != GUI.playlist) {
 		getPlaylistCmd();
 		GUI.playlist = GUI.json.playlist;
@@ -522,7 +526,14 @@ function parseResponse(options) {
 
 // update the Playback UI
 function updateGUI(json){
-	// check MPD status
+	var volume = json.volume;
+	var radioname = json.radioname;
+	var currentartist = json.currentartist;
+	var currentsong = json.currentsong;
+	var currentalbum = json.currentalbum;
+	// set radio mode if stream is present
+	GUI.stream = ((radioname !== null && radioname !== undefined && radioname !== '') ? 'radio' : '');
+	// check MPD status and refresh the UI info
 	refreshState(GUI.state);
 	// check song update
 	// console.log('A = ', json.currentsong); console.log('B = ', GUI.currentsong);
@@ -533,16 +544,10 @@ function updateGUI(json){
 			customScroll('pl', current);
 		}
 	}
-	
 	// common actions
-	var volume = json.volume;
 	$('#volume').val((volume == '-1') ? 100 : volume).trigger('change');
 	// console.log('currentartist = ', json.currentartist);
-	var radioname = json.radioname;
-	var currentartist = json.currentartist;
-	var currentsong = json.currentsong;
-	var currentalbum = json.currentalbum;
-	if (radioname === null || radioname === undefined || radioname === '') {
+	if (GUI.stream !== 'radio') {
 		$('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? '<span class="notag">[no artist]</span>' : currentartist);
 		$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? '<span class="notag">[no title]</span>' : currentsong);
 		$('#currentalbum').html((currentalbum === null || currentalbum === undefined || currentalbum === '') ? '<span class="notag">[no album]</span>' : currentalbum);
@@ -601,23 +606,32 @@ function refreshState(state) {
 		$('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
 		$('#stop').addClass('btn-primary');
 		$('#countdown-display').countdown('destroy');
-		$('#elapsed').html('00:00');
-		$('#total').html('');
+		if (GUI.stream === 'radio') {
+			$('#elapsed').html('&infin;');
+		} else {
+			$('#elapsed').html('00:00');
+		}
+		if (GUI.stream === 'radio') {
+			$('#total').html('<span>&infin;</span>');
+		} else {
+			$('#total').html('');
+		}
 		$('#time').val(0).trigger('change');
 		$('#format-bitrate').html('&nbsp;');
 		$('li', '#playlist-entries').removeClass('active');
 	}
 	if ( state != 'stop' ) {
 		$('#elapsed').html(timeConvert(GUI.json.elapsed));
-		$('#total').html(timeConvert(GUI.json.time));
-		//$('#time').val(json.song_percent).trigger('change');
+		if (GUI.stream === 'radio') {
+			$('#total').html('<span>&infin;</span>');
+		} else {
+			$('#total').html(timeConvert(GUI.json.time));
+		}
 		var fileinfo = (GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate) ? (GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps') : '&nbsp;';
 		$('#format-bitrate').html(fileinfo);
 		$('li', '#playlist-entries').removeClass('active');
 		var current = parseInt(GUI.json.song);
 		$('li', '#playlist-entries').eq(current).addClass('active'); // TODO: check efficiency
-		// current = $('.playlist').children[current];
-		// $(current).addClass('active');
 	}
 	if( GUI.json.song && GUI.json.playlistlength ){ 
 		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) +'/'+GUI.json.playlistlength);
@@ -657,10 +671,10 @@ function refreshTimer(startFrom, stopTo, state){
 }
 
 // update playback progress knob
-function refreshKnob(json){
+function refreshKnob(){
 	window.clearInterval(GUI.currentKnob);
-	var initTime = parseInt(json.song_percent)*10;
-	var delta = parseInt(json.time);
+	var initTime = parseInt(GUI.json.song_percent)*10;
+	var delta = parseInt(GUI.json.time);
 	var step = parseInt(1000/delta);
 	// console.log('initTime = ' + initTime + ', delta = ' + delta + ', step = ' + step);
 	var time = $('#time');
