@@ -1788,7 +1788,7 @@ class ui_notify_async extends Thread {
 
 	public $jobID;
 		
-    public function __construct($title, $text, $icon, $opacity, $hide, $jobID){
+    public function __construct($title = null, $text = null, $icon = null, $opacity = null, $hide = null, $jobID){
 		$this->title = $title;
 		$this->text = $text;
 		$this->icon = $icon;
@@ -1798,22 +1798,19 @@ class ui_notify_async extends Thread {
     }
 	
     public function run() {
-		/*
+		
 		$redisT = new Redis();
 		$redisT->connect('127.0.0.1', 6379);
 		if (!($redisT->sIsMember('w_lock', $this->jobID))) {
 				usleep(850000);
 		} else {
 			while ($redisT->sIsMember('w_lock', $this->jobID)) {
-				// runelog('(ui_notify_async) inside while lock wait cicle',$this->jobID);
-				// usleep(850000);
-				sleep(5);
+				runelog('(ui_notify_async) inside while lock wait cicle',$this->jobID);
+				usleep(850000);
 			}
 		}
-		*/
-		usleep(850000);
-		ui_notify($this->title, $this->text);
-		// $redisT->close();
+		$redisT->close();
+		ui_notify($this->title, htmlentities($this->text,ENT_XML1,'UTF-8'), $this->icon, $this->opacity, $this->hide);
     }
 }
 
