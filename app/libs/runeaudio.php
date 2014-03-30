@@ -497,24 +497,24 @@ function cfgdb_connect($dbpath) {
 }
 
 
-function cfgdb_read($table,$dbh,$param,$id) {
-	if(!isset($param)) {
-	$querystr = "SELECT * FROM ".$table;
-	} else if (isset($id)) {
-	$querystr = "SELECT * FROM ".$table." WHERE id='".$id."'";
-	} else if ($param == 'mpdconf'){
-	$querystr = "SELECT param,value_player FROM cfg_mpd WHERE value_player!=''";
-	} else if ($param == 'mpdconfdefault') {
-	$querystr = "SELECT param,value_default FROM cfg_mpd WHERE value_default!=''";
-	} else if ($table == 'cfg_plugins') {
-	$querystr = "SELECT * FROM ".$table." WHERE name='".$param['plugin_name']."' AND param='".$param['plugin_param']."'";
+function cfgdb_read($table,$dbh,$param=null,$id=null) {
+	if (empty($param)) {
+		$querystr = "SELECT * FROM ".$table;
+	} elseif (!empty($id)) {
+		$querystr = "SELECT * FROM ".$table." WHERE id='".$id."'";
+	} elseif ($param == 'mpdconf'){
+		$querystr = "SELECT param,value_player FROM cfg_mpd WHERE value_player!=''";
+	} elseif ($param == 'mpdconfdefault') {
+		$querystr = "SELECT param,value_default FROM cfg_mpd WHERE value_default!=''";
+	} elseif ($table == 'cfg_plugins') {
+		$querystr = "SELECT * FROM ".$table." WHERE name='".$param['plugin_name']."' AND param='".$param['plugin_param']."'";
 	} else {
-	$querystr = 'SELECT value from '.$table.' WHERE param="'.$param.'"';
+		$querystr = 'SELECT value from '.$table.' WHERE param="'.$param.'"';
 	}
-//debug
-runelog('cfgdb_read('.$table.',dbh,'.$param.','.$id.')',$querystr);
-$result = sdbquery($querystr,$dbh);
-return $result;
+	//debug
+	runelog('cfgdb_read('.$table.',dbh,'.$param.','.$id.')',$querystr);
+	$result = sdbquery($querystr,$dbh);
+	return $result;
 }
 
 function cfgdb_update($table,$dbh,$key,$value) {
