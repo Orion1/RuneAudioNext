@@ -121,7 +121,8 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
                 runelog('MPD command (6):',$_GET['cmd']);
                 if ($_GET['cmd'] == 'renderui') {
 				
-					if (($redis->get('pl_length') !== null) OR ($redis->get('pl_length') != 0)) {
+					// if (($pl_length !== null) OR ($pl_length !== '0')) {
+					if ($redis->get('pl_length') !== '0') {
 					sendMpdCommand($mpd,'swap 0 0');
 					} else {
 					sendMpdCommand($mpd,'clear');
