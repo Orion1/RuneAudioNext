@@ -185,7 +185,8 @@ function getPlaylistPlain(data){
 	$('.playlist').addClass('hide');
 	$('#playlist-entries').removeClass('hide');
 	//$('#playlist-entries').html(content);
-	document.getElementById('playlist-entries').innerHTML = content;
+	var pl_entries = document.getElementById('playlist-entries');
+	if( pl_entries ){ pl_entries.innerHTML = content; }
 	$('#pl-filter-results').addClass('hide').html('');
 	$('#pl-filter').val('');
 	$('#pl-manage').removeClass('hide');
