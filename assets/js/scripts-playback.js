@@ -371,14 +371,31 @@ jQuery(document).ready(function($){ 'use strict';
 	// close filter results
 	$('#pl-filter-results').click(function(){
 		if ($(this).hasClass('back-to-queue')) {
-			$('#pl-editor').addClass('hide');
+			$(this).addClass('hide');
+			$('.playlist').addClass('hide');
+			$('#pl-currentpath').addClass('hide');
+			$('#pl-manage').removeClass('hide');
 		}
-		getPlaylistCmd(GUI.json);
+		getPlaylistCmd();
 	});
 	
 	// playlists management
 	$('#pl-list').click(function(){
 		getPlaylists();
+	});
+	
+	// save current Queue to playlist
+	$('#modal-pl-save-btn').click(function(){
+		var playlistname = $('#pl-save-name').val();
+		sendCmd('save "' + playlistname + '"');
+	});
+	
+	// playlists management - actions context menu
+	$('#pl-editor').on('click', '.pl-action', function(e) {
+		e.preventDefault();
+		var path = $(this).parent().attr('data-path');
+		GUI.DBentry[0] = path;
+		console.log('getDB path = ', GUI.DBentry);
 	});
 	
 	// sort Queue entries
@@ -551,6 +568,24 @@ jQuery(document).ready(function($){ 'use strict';
 				path: path
 			});
 			notify('update', path);
+		}
+		if (dataCmd == 'pl-add') {
+			sendCmd('load "' + path + '"');
+		}
+		if (dataCmd == 'pl-replace') {
+			sendCmd('clear');
+			sendCmd('load "' + path + '"');
+		}
+		if (dataCmd == 'pl-rename') {
+			sendCmd('rename "' + path + '" "ciccio"');
+		}
+		if (dataCmd == 'pl-rm') {
+			$.ajax({
+				url: '/command/?cmd=rm%20%22' + path + '%22',
+				success: function(data){
+					getPlaylists(data);
+				}
+			});
 		}
 	});
 

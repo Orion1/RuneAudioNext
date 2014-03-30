@@ -631,7 +631,7 @@ html, body {
 			color: @brand-alt;
 		}
 	}
-	.pl-action, .pl-actions {
+	.pl-action {
 		.list-action;
 	}
 	span {
@@ -657,6 +657,34 @@ html, body {
 		padding: 0 50px 0 10px;
 		font-size: 12px;
 		color: lighten(@brand-alt, 20%);
+	}
+}
+#pl-editor {
+	.list-main;
+	li {
+		.list-li;
+		.clearfix();
+	}
+	.active, .active:hover, .active:focus {
+		.list-active;
+	}
+	.pl-folder {
+		line-height: 49px;
+		span {
+			display: block;
+			padding-left: 10px;
+		}
+	}
+	.fa-folder-open {
+		display: none;
+	}
+	.pl-action {
+		.list-action;
+	}
+	span {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }
 #db-browse {
@@ -708,7 +736,7 @@ html, body {
 #db-controls, #pl-controls {
 	float: right;
 }
-#db-currentpath {
+#db-currentpath, #pl-currentpath {
 	line-height: 40px;
 	i {
 		margin: 0 3px 0 2px;
@@ -1177,14 +1205,7 @@ select.selectpicker {
 	width: 50px;
 	height: 50px;
 	margin: -20px 0 0 -25px;
-	// background: rgba(0,0,0,0.8);
-	text-align: center;
 	z-index: 1001;
-	i {
-		line-height: 50px;
-		font-size: 50px;
-		color: @text-color;
-	}
 }
 
 
@@ -1346,10 +1367,10 @@ ul.parsley-error-list {
 			margin-right: 10px;
 		}
 	}
-	#playlist-entries li, #database-entries li {
-		font-size: 18px;
-	}
 	#database-entries {
+		li {
+			font-size: 18px;
+		}
 		li:hover {
 			cursor: pointer;
 			background: darken(@brand-alt, 20%);
@@ -1392,6 +1413,9 @@ ul.parsley-error-list {
 		}
 	}
 	#playlist-entries {
+		li {
+			font-size: 18px;
+		}
 		li:hover {
 			cursor: pointer;
 			background: darken(@brand-alt, 20%);
@@ -1424,6 +1448,35 @@ ul.parsley-error-list {
 		}
 		.active .pl-action:hover {
 			color: @text-color;
+		}
+	}
+	#pl-editor {
+		li {
+			font-size: 18px;
+		}
+		li:hover {
+			cursor: default;
+			background: darken(@brand-alt, 20%);
+		}
+		.fa-folder-open {
+			display: inline-block;
+			width: 24px;
+			margin-left: 12px;
+			margin-right: 8px;
+			color: @brand-alt;
+			text-align: center;
+		}
+		.pl-folder {
+			span {
+				padding: 0;
+			}
+		}
+		.pl-action {
+			&:hover {
+				cursor: pointer;
+				font-size: 24px;
+				color: @brand-primary;
+			}
 		}
 	}
 	// #pl-filter-results {

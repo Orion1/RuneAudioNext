@@ -119,7 +119,7 @@
                 <i class="fa fa-folder-open"></i> <span>Home</span>
             </div>
         </div>
-		<div id="spinner-db" class="hide"><i class="fa fa-spinner fa-spin"></i></div>
+		<div id="spinner-db" class="csspinner duo hide"></div>
     </div>
     <!-- QUEUE PANEL -->
     <div id="panel-dx" class="tab-pane">
@@ -144,7 +144,7 @@
             <ul id="pl-detail" class="playlist hide">
                 <!-- playlist entries -->
             </ul>
-            <div id="playlist-warning" class="hide">
+            <div id="playlist-warning" class="playlist hide">
                 <div class="col-sm-12">
                     <h1 class="txtmid">Playing queue</h1>
                 </div>
@@ -171,8 +171,12 @@
                 <button class="btn btn-default" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save"></i></button>
                 <button class="btn btn-default" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o"></i></button>
             </div>
+			<div id="pl-currentpath" class="hide">
+				<i class="fa fa-folder-open"></i>
+				<span>Playlists</span>
+			</div>
         </div>
-		<div id="spinner-pl" class="hide"><i class="fa fa-spinner fa-spin"></i></div>
+		<div id="spinner-pl" class="csspinner duo hide"></div>
     </div>
 </div>
 
@@ -203,10 +207,10 @@
     </div>
 	<div id="context-menu-playlist" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd=""><i class="fa fa-plus-circle sx"></i> Add to queue</a></li>
-            <li><a href="#notarget" data-cmd=""><i class="fa fa-undo sx"></i> Replace the queue</a></li>
-            <li><a href="#notarget" data-cmd=""><i class="fa fa-edit sx"></i> Rename</a></li>
-            <li><a href="#notarget" data-cmd=""><i class="fa fa-trash-o sx"></i> Delete</a></li>
+            <li><a href="#notarget" data-cmd="pl-add"><i class="fa fa-plus-circle sx"></i> Add to queue</a></li>
+            <li><a href="#notarget" data-cmd="pl-replace"><i class="fa fa-undo sx"></i> Replace the queue</a></li>
+            <li><a href="#notarget" data-cmd="pl-rename"><i class="fa fa-edit sx"></i> Rename</a></li>
+            <li><a href="#notarget" data-cmd="pl-rm"><i class="fa fa-trash-o sx"></i> Delete</a></li>
         </ul>
     </div>
 </div>

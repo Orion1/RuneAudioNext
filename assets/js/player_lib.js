@@ -63,7 +63,7 @@ function displayChannel(){
 	pushstream.onmessage = renderUI;
 	pushstream.onstatuschange = function(status) {
 	// force UI rendering (backend-call)
-	if (status === 2) sendCmd('renderui');
+		if (status === 2) sendCmd('renderui');
 	};
 	pushstream.addChannel('display');
 	pushstream.connect();
@@ -95,7 +95,7 @@ function renderUI(text) {
 	refreshTimer(parseInt(GUI.json.elapsed), parseInt(GUI.json.time), GUI.json.state);
 	refreshKnob(GUI.json);
 	if (GUI.json.playlist != GUI.playlist) {
-		getPlaylistCmd(GUI.json);
+		getPlaylistCmd();
 		GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
 	}
@@ -106,15 +106,14 @@ function getPlaylistCmd(json){
 	$.ajax({
 		url: '/db/?cmd=playlist',
 		success: function(data){
-			// console.log('DATA: ', data);
 			if ( data.length > 4) {
 				$('#playlist-warning').addClass('hide');
 				$('#playlist-entries').removeClass('hide');
 				// console.time('getPlaylistPlain timer');
-				getPlaylistPlain(data, json);
+				getPlaylistPlain(data);
 				// console.timeEnd('getPlaylistPlain timer');
 				
-				var current = parseInt(json.song);
+				var current = parseInt(GUI.json.song);
 				if ($('#panel-dx').hasClass('active')) {
 					customScroll('pl', current, 200); // highlight current song in playlist
 				}
@@ -122,18 +121,17 @@ function getPlaylistCmd(json){
 				$('#playlist-warning').removeClass('hide');
 				$('#playlist-entries').addClass('hide');
 			}
-			loadingSpinner('pl', 'force');
+			loadingSpinner('pl', 'hide');
 		}
 	});
 }
 
 // render the playing queue from the data response 
-function getPlaylistPlain(data, json){
-	var current = parseInt(json.song) + 1;
-	var state = json.state;
+function getPlaylistPlain(data){
+	var current = parseInt(GUI.json.song) + 1;
+	var state = GUI.json.state;
 	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '';
 	var i, line, lines=data.split('\n'), infos=[];
-	//while( line = lines[i++] ){
 	for (i = 0; i < lines.length; i+=1){
 		line = lines[i];
 		infos = line.split(': ');
@@ -157,7 +155,6 @@ function getPlaylistPlain(data, json){
 		}
 		else if( 'Id' === infos[0] ){
 			songid = infos[1];
-			// ++id;
 			if (title === '' || album === '') {
 				path = parsePath(str);
 				filename = str.split('/').pop();
@@ -177,7 +174,7 @@ function getPlaylistPlain(data, json){
 			} else {
 				totaltime = '<span>' + timeConvert2(time) + '</span>';
 			}
-			content += '<li id="pl-' + songid + (state != "stop" && id == current ? ' class="active"' : '') + '"><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
+			content += '<li id="pl-' + songid + (state != "stop" && songid == current ? ' class="active"' : '') + '"><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
 			time = ''; artist = ''; album = ''; title = ''; name = '';
 		}
 	}
@@ -190,19 +187,39 @@ function getPlaylistPlain(data, json){
 	$('#pl-manage').removeClass('hide');
 }
 
-// get the list of saved Playlists
-function getPlaylists(data, json){	
-	var content = '';
-	var i = 0;
-	for (i = 0; i < 10; i+=1){
-		content += '<li><a class="pl-actions" href="#notarget" title="Actions" data-toggle="context" data-target="#context-menu-playlist"><i class="fa fa-bars"></i></a><div class="pl-entry">Nome playlist<span>293 entries</span></div></li>';
+// get saved playlists
+function getPlaylists(){
+	loadingSpinner('pl');
+	$.ajax({
+		url: '/command/?cmd=listplaylists',
+		success: function(data){
+			renderPlaylists(data);
+		}
+	});
+}
+
+// render saved playlists
+function renderPlaylists(data){	
+	console.log(data);
+	var content = '', playlistname = '';
+	var i, line, lines=data.split('\n'), infos=[];
+	for (i = 0; i < lines.length; i+=1){
+		line = lines[i];
+		infos = line.split(': ');
+		if( 'playlist' === infos[0] ){
+			playlistname = infos[1];
+			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action" data-target="#context-menu-playlist" data-toggle="context" title="Actions"></i><span><i class="fa fa-folder-open"></i>' + playlistname + '</span></li>';
+			playlistname = '';
+		}
 	}
 	document.getElementById('playlist-entries').innerHTML = '';
 	$('.playlist').addClass('hide');
 	$('#pl-manage').addClass('hide');
-	$('#pl-filter-results').removeClass('hide').addClass('back-to-queue').html('<i class="fa fa-arrow-left sx"></i> back to queue');
+	$('#pl-filter-results').removeClass('hide').addClass('back-to-queue').html('<i class="fa fa-arrow-left sx"></i> to queue');
+	$('#pl-currentpath').removeClass('hide');
 	$('#pl-editor').removeClass('hide');
 	document.getElementById('pl-editor').innerHTML = content;
+	loadingSpinner('pl', 'hide');
 }
 
 // recover the path from input string
@@ -699,9 +716,9 @@ function setvol(val) {
 
 // custom scrolling
 function customScroll(list, destination, speed) {
-	// console.log('CURRENT = ', destination);
+	// console.log('list = ' + list + ', destination = ' + destination + ', speed = ' + speed);
 	if (typeof(speed) === 'undefined') speed = 500;
-	var entryheight = parseInt(1 + $('#' + list + '-1').height());
+	var entryheight = 49;
 	var centerheight = parseInt($(window).height()/2);
 	var scrolltop = $(window).scrollTop();
 	var scrollcalc = 0;
@@ -768,9 +785,6 @@ function loadingSpinner(section, hide) {
 		if (section === 'pl') {
 			$('#spinner-pl').addClass('hide');
 		}
-	} else if (hide === 'force') {
-		$('#spinner-db').addClass('hide');
-		$('#spinner-pl').addClass('hide');
 	} else {
 		if (section === 'db') {
 			$('#spinner-db').removeClass('hide');
