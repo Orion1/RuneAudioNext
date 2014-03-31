@@ -213,7 +213,7 @@ html, body {
 	background: transparent;
 	border: none;
 	border-radius: 0px;
-	box-shadow: none;
+	.box-shadow(none);
 	list-style: none outside none;
 	margin: 0;
 	padding: 0;
@@ -705,7 +705,7 @@ html, body {
 		background: transparent;
 		border: none;
 		border-radius: 0px;
-		box-shadow: none;
+		.box-shadow(none);
 		list-style: none outside none;
 		margin: 0;
 		min-width: 100px;
@@ -983,9 +983,10 @@ html > body .ui-pnotify {
 }
 
 .ui-pnotify .ui-pnotify-shadow {
-	-webkit-box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
-	-moz-box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
-	box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+	// -webkit-box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+	// -moz-box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+	// box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+	.box-shadow(none);
 }
 
 .ui-pnotify-container {
@@ -1310,7 +1311,7 @@ label {
 .modal-content {
 	border: 5px solid @modal-content-fallback-border-color; //old browsers fallback (ie8 etc)
 	border: 5px solid @modal-content-border-color;
-	.box-shadow(0);
+	.box-shadow(none);
 }
 .modal-backdrop {
 	&.in { .opacity(.8); }

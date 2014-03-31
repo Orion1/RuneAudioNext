@@ -20,10 +20,11 @@
 </div>
 <!-- loader -->
 <div id="loader"><div id="loaderbg"></div><div id="loadercontent"><i class="fa fa-refresh fa-spin"></i>connecting...</div></div>
-<script src="<?=$this->asset('/js/vendor/jquery-2.0.3.min.js')?>"></script>
+<!--<script src="<?=$this->asset('/js/vendor/jquery-1.11.0.min.js')?>"></script>-->
+<script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
 <!-- dev only -->
 <!--
-<script src="assets/js/vendor/less-1.6.0.min.js"></script>
+<script src="assets/js/vendor/less-1.7.0.min.js"></script>
     <script type="text/javascript" charset="utf-8">
     less.env = "development";
     less.watch();
@@ -31,9 +32,9 @@
 -->
 <!-- /dev only -->
 <script src="<?=$this->asset('/js/vendor/pushstream.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/jquery-ui-1.10.3.custom.min.js')?>"></script>
+<!--<script src="<?=$this->asset('/js/vendor/jquery-ui-1.10.3.custom.min.js')?>"></script>-->
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/modernizr.custom.js')?>"></script>
+<!--<script src="<?=$this->asset('/js/vendor/modernizr.custom.js')?>"></script>-->
 <script src="<?=$this->asset('/js/notify.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
 <script src="<?=$this->asset('/js/player_lib.js')?>"></script>
@@ -41,16 +42,13 @@
 <script src="<?=$this->asset('/js/vendor/jquery.knob.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap-contextmenu.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.scrollTo.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/Sortable.min.js')?>"></script>
+<!--<script src="<?=$this->asset('/js/vendor/Sortable.min.js')?>"></script>-->
 <script src="<?=$this->asset('/js/vendor/fastclick.js')?>"></script>
 <script src="<?=$this->asset('/js/scripts-playback.js')?>"></script>
 <?php else: ?>
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
 <script src="<?=$this->asset('/js/scripts-configuration.js')?>"></script>
-<?php endif ?>
-<?php if ($this->section == 'settings'): ?>
-<script src="<?=$this->asset('/js/vendor/bootstrap-fileupload.min.js')?>"></script>
 <?php endif ?>
 <script src="<?=$this->asset('/js/vendor/jquery.pnotify.min.js')?>"></script>
 <?php

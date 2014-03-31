@@ -2,16 +2,9 @@
 	<meta charset="utf-8">
 	<title>RuneAudio - RuneUI</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
-	<?php if ($this->section == 'settings'): ?>
-	<link href="<?=$this->asset('/css/bootstrap-fileupload.min.css')?>" rel="stylesheet">
-	<?php endif ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<!-- dev only <link rel="stylesheet/less" href="assets/less/runeui.less"> dev only -->
     <link rel="icon" type="image/x-icon" href="<?=$this->asset('/img/favicon.ico')?>">
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
-    <!--[if lt IE 9]>
-      <script src="assets/js/html5shiv.js"></script>
-    <![endif]-->
 </head>
 <?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>
 <body id="section-index">
