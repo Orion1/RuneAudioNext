@@ -328,21 +328,24 @@ function populateDB(options){
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		content = '',
-		i = 0;
+		i = 0,
+		row = [];
 		
 	// DEBUG
 	// console.log('OPTIONS: data = ' + data + ', path = ' + path + ', uplevel = ' + uplevel + ', keyword = ' + keyword +', querytype = ' + querytype);
 
 	if (plugin !== '') {
+	// plugins
 		if (plugin === 'Dirble') {
+		// Dirble plugin
 			$('#database-entries').removeClass('hide');
 			$('#db-level-up').removeClass('hide');
 			$('#home-blocks').addClass('hide');
 			if (path) GUI.currentpath = path;
 			document.getElementById('database-entries').innerHTML = '';
-			for (i = 0; i < data.length; i++){
+			for (i = 0; row = data[i]; i += 1) {
 				content += parseResponse({
-					inputArr: data[i],
+					inputArr: row,
 					respType: 'Dirble',
 					i: i,
 					querytype: querytype
@@ -352,14 +355,15 @@ function populateDB(options){
 			$('span', '#db-currentpath').html(path);
 		}		
 		if (plugin === 'Jamendo') {
+		// Jamendo plugin
 			$('#database-entries').removeClass('hide');
 			$('#db-level-up').removeClass('hide');
 			$('#home-blocks').addClass('hide');
 			if (path) GUI.currentpath = path;
 			document.getElementById('database-entries').innerHTML = '';
-			for (i = 0; i < data.length; i++){
+			for (i = 0; row = data[i]; i += 1) {
 				content += parseResponse({
-					inputArr: data[i],
+					inputArr: row,
 					respType: 'Jamendo',
 					i: i,
 					querytype: querytype
@@ -369,7 +373,9 @@ function populateDB(options){
 			$('span', '#db-currentpath').html(path);
 		}
 	} else {
+	// normal MPD browsing by file
 		if (path === '' && keyword === '') {
+		// Library home
 			$('#database-entries').addClass('hide');
 			$('#db-level-up').addClass('hide');
 			$('#home-blocks').removeClass('hide');
@@ -377,6 +383,7 @@ function populateDB(options){
 			loadingSpinner('db', 'hide');
 			return;
 		} else {
+		// browsing
 			$('#database-entries').removeClass('hide');
 			$('#db-level-up').removeClass('hide');
 			$('#home-blocks').addClass('hide');
@@ -384,14 +391,15 @@ function populateDB(options){
 			// console.log(' new GUI.currentpath = ', GUI.currentpath);
 			document.getElementById('database-entries').innerHTML = '';
 			if (keyword !== '') {
+			// search results
 				var results = (data.length) ? data.length : '0';
 				var s = (data.length == 1) ? '' : 's';
 				$('#db-level-up').addClass('hide');
 				$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
 			}
-			for (i = 0; i < data.length; i++){
+			for (i = 0; row = data[i]; i += 1) {
 				content += parseResponse({
-					inputArr: data[i],
+					inputArr: row,
 					respType: 'db',
 					i: i,
 					inpath: path
@@ -805,6 +813,13 @@ function loadingSpinner(section, hide) {
 		if (section === 'pl') {
 			$('#spinner-pl').removeClass('hide');
 		}
+	}
+}
+
+// render the Library home screen
+function renderLibraryHome(jsonLib) {
+	for (i = 0; obj = jsonLib[i]; i += 1) {
+	
 	}
 }
 

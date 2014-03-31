@@ -155,7 +155,9 @@ jQuery(document).ready(function($){ 'use strict';
 				}
 			}
 			// console.log('volume = ', GUI.volume);
-			sendCmd('setvol ' + vol);
+			if ((vol >= 0) && (vol <= 100)) {
+				sendCmd('setvol ' + vol);
+			}
 			return;
 		}
 
