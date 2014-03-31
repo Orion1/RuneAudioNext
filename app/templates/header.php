@@ -3,8 +3,7 @@
 	<title>RuneAudio - RuneUI</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
-	<!-- dev only <link rel="stylesheet/less" href="assets/less/runeui.less"> dev only -->
-    <link rel="icon" type="image/x-icon" href="<?=$this->asset('/img/favicon.ico')?>">
+	<link rel="icon" type="image/x-icon" href="<?=$this->asset('/img/favicon.ico')?>">
 </head>
 <?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>
 <body id="section-index">
@@ -67,8 +66,8 @@
 </div>
 <div id="menu-bottom" class="ui-footer ui-bar-f ui-footer-fixed slidedown" data-position="fixed" data-role="footer"  role="banner">
 	<ul>
-		<li id="open-panel-sx"><a href="/#panel-sx"<?=$this->uri(1,'','class="open-panel-sx" data-toggle="tab"')?>><i class="fa fa-music"></i> Library</a></li>
-		<li id="open-playback" <?=$this->uri(1,'','class="active"')?>><a href="/#playback"<?=$this->uri(1,'','data-toggle="tab"')?>><i class="fa fa-play"></i> Playback</a></li>
-		<li id="open-panel-dx"><a href="/#panel-dx"<?=$this->uri(1,'','class="open-panel-dx" data-toggle="tab"')?>><i class="fa fa-list"></i> Queue</a></li>
+		<li id="open-panel-sx"><a href="/#panel-sx"<?=$this->uri(1,'',' class="open-panel-sx" data-toggle="tab"')?>><i class="fa fa-music"></i> Library</a></li>
+		<li id="open-playback"<?=$this->uri(1,'',' class="active"')?>><a href="/#playback"<?=$this->uri(1,'',' data-toggle="tab"')?>><i class="fa fa-play"></i> Playback</a></li>
+		<li id="open-panel-dx"><a href="/#panel-dx"<?=$this->uri(1,'',' class="open-panel-dx" data-toggle="tab"')?>><i class="fa fa-list"></i> Queue</a></li>
 	</ul>
 </div>

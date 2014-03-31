@@ -10,7 +10,7 @@
             <div class="knobs row">
                 <div class="col-sm-<?=$this->colspan ?>">
                     <div id="timeknob">
-                        <div id="countdown" ms-user-select="none">
+                        <div id="countdown">
                             <input id="time" class="playbackknob" value="0" data-width="100%" data-bgColor="#34495E" data-fgcolor="#0095D8" data-thickness="0.30" data-min="0" data-max="1000" data-displayInput="false">
                         </div>
                         <span id="countdown-display"></span>
@@ -25,7 +25,7 @@
                 </div>
                 <?php if ($this->coverart == 1): ?>
 				<div class="col-sm-<?=$this->colspan ?> coverart">
-					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
 					<a href="#" id="social-overlay-open" class="btn btn-default" title="Share this track"><i class="fa fa-share"></i></a>
 				</div>
 				<?php endif ?>
@@ -65,7 +65,7 @@
                     <h1 class="txtmid">Browse your library</h1>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                    <div id="home-nas" class="home-block" data-path="NAS/Musica">
+                    <div id="home-favorite-1" class="home-block" data-path="NAS/Musica">
                         <i class="fa fa-star"></i>
                         <h3>Musica</h3>
                         bookmark
@@ -93,7 +93,7 @@
                     </div>
                 </div>
 				<div class="col-md-4 col-sm-6">
-                    <div id="home-webradio" class="home-block" data-path="Dirble" data-plugin="Dirble">
+                    <div id="home-dirble" class="home-block" data-path="Dirble" data-plugin="Dirble">
                         <i class="fa fa-globe"></i>
                         <h3>Dirble <span id="home-count-dirble"></span></h3>
                         Radio stations Open Directory
