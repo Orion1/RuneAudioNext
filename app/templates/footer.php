@@ -4,7 +4,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="poweroff-modal-label">Turn off the player</h3>
+					<h4 class="modal-title" id="poweroff-modal-label">Turn off the player</h4>
 				</div>
 				<div class="modal-body txtmid">
 					<button id="syscmd-poweroff" name="syscmd" value="poweroff" class="btn btn-primary btn-lg btn-block"><i class="fa fa-power-off sx"></i> Power off</button>
@@ -14,23 +14,14 @@
 				<div class="modal-footer">
 					<button class="btn btn-default btn-lg" data-dismiss="modal" aria-hidden="true">Cancel</button>
 				</div>
-			</form>
+			</div>
 		</div>
-	</div>
+	</form>
 </div>
 <!-- loader -->
 <div id="loader"><div id="loaderbg"></div><div id="loadercontent"><i class="fa fa-refresh fa-spin"></i>connecting...</div></div>
-<!--<script src="<?=$this->asset('/js/vendor/jquery-1.11.0.min.js')?>"></script>-->
 <script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
-<!-- dev only -->
-<!--
-<script src="assets/js/vendor/less-1.7.0.min.js"></script>
-    <script type="text/javascript" charset="utf-8">
-    less.env = "development";
-    less.watch();
-    </script>
--->
-<!-- /dev only -->
+<!--<script src="<?=$this->asset('/js/vendor/jquery-1.11.0.min.js')?>"></script>-->
 <script src="<?=$this->asset('/js/vendor/pushstream.js')?>"></script>
 <!--<script src="<?=$this->asset('/js/vendor/jquery-ui-1.10.3.custom.min.js')?>"></script>-->
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>

@@ -876,9 +876,9 @@ function renderLibraryHome(jsonLib) {
 			'OTransition': 'oTransitionEnd',
 			'msTransition': 'MSTransitionEnd',
 			'transition': 'transitionend'
-		},
-		transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ],
-		support = { transitions : Modernizr.csstransitions };
+		};
+		// transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ],
+		// support = { transitions : Modernizr.csstransitions };
 	function toggleOverlay() {
 		if (overlay.hasClass('open')) {
 			overlay.removeClass('open');
