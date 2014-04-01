@@ -179,7 +179,6 @@
 		<div id="spinner-pl" class="csspinner duo hide"></div>
     </div>
 </div>
-
 <div id="context-menus">
     <div id="context-menu" class="context-menu">
         <ul class="dropdown-menu" role="menu">
@@ -214,7 +213,6 @@
         </ul>
     </div>
 </div>
-
 <div id="modal-pl-save" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-pl-save-label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -268,7 +266,6 @@
         </div>
     </div>
 </div>
-
 <div id="social-overlay" class="overlay-scale closed">
 	<nav>
 		<ul>

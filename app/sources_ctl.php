@@ -69,8 +69,7 @@ waitSyWrk($redis,$jobID);
 $dbh = cfgdb_connect($db);
 $source = cfgdb_read('cfg_source',$dbh);
 $dbh = null;
-
-if( !empty($source) ){ foreach ($source as $mp) {
+if( $source !== true ){ foreach ($source as $mp) {
 	if (wrk_checkStrSysfile('/proc/mounts',$mp['name']) ) {
 		$mp['status'] = 1;
 	} else {

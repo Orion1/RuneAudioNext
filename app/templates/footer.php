@@ -51,13 +51,3 @@
 <script src="<?=$this->asset('/js/scripts-configuration.js')?>"></script>
 <?php endif ?>
 <script src="<?=$this->asset('/js/vendor/jquery.pnotify.min.js')?>"></script>
-<?php
-// write backend response on UI Notify popup
-// if (isset($_SESSION['notify']) && $_SESSION['notify'] != '') {
-// sleep(1);
-// ui_notify($_SESSION['notify']);
-// session_start();
-// $_SESSION['notify'] = '';
-// session_write_close();
-// }
-?>
