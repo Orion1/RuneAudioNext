@@ -46,6 +46,7 @@ var GUI = {
 	volume: null,
 	currentDBpos: new Array(0,0,0,0,0,0,0,0,0,0,0),
 	browsemode: 'file',
+	plugin: '',
 	DBentry: new Array('', '', ''),
 	visibility: 'visible',
 	DBupdate: 0,
@@ -471,6 +472,7 @@ jQuery(document).ready(function($){ 'use strict';
 						querytype: querytype,
 						args : args
 					});
+					GUI.plugin = 'Dirble';
 				} else if (el.hasClass('db-jamendo')) {
 				// Jamendo folders
 					// path = GUI.currentpath	+ '/' + el.find('span').text();
@@ -489,15 +491,15 @@ jQuery(document).ready(function($){ 'use strict';
 					//GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);
 					var entryID = el.attr('id');
 					entryID = entryID.replace('db-','');
-					GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
-					++GUI.currentDBpos[10];
-					// console.log('getDB path = ', path);
 					getDB({
 						path: path,
 						browsemode: GUI.browsemode,
 						uplevel: 0
 					});
 				}
+				GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
+				++GUI.currentDBpos[10];
+				// console.log('getDB path = ', path);
 			}
 		}
 	});
@@ -526,12 +528,14 @@ jQuery(document).ready(function($){ 'use strict';
 			var cutpos = path.lastIndexOf('/');
 			path = cutpos !=-1 ? path.slice(0,cutpos):'';
 		}
-		// console.log('PATH =', path);
+		console.log('PATH =', path);
 		getDB({
 			path: path,
 			browsemode: GUI.browsemode,
+			plugin: GUI.plugin,
 			uplevel: 1
 		});
+		GUI.plugin = '';
 	});
 
 	// close search results
