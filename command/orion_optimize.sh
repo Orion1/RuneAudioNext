@@ -130,6 +130,14 @@ modKschedLatency () {
         sndusb_profile nrpacks=${u04}
         echo "USB nrpacks="${u04}
     fi
+	# Compulab Utilite
+    if ((${hw} == "05")) 
+    then
+        echo ${s04} > /proc/sys/kernel/sched_latency_ns
+        echo "sched_latency_ns = "${s04}
+        sndusb_profile nrpacks=${u04}
+        echo "USB nrpacks="${u04}
+    fi
 }
 
 sndusb_profile() {
@@ -171,7 +179,7 @@ if [ "$1" == "default" ]; then
 ifconfig eth0 mtu 1500
 ifconfig eth0 txqueuelen 1000
 echo 60 > /proc/sys/vm/swappiness
-modKschedLatency hw=$2 s01=6000000 s02=6000000 s03=6000000 s04=6000000 u01=8 u02=8 u03=8 u04=8
+modKschedLatency hw=$2 s01=6000000 s02=6000000 s03=6000000 s04=6000000 s05=6000000 u01=8 u02=8 u03=8 u04=8 u05=8
 mpdprio_defalut
 echo "flush DEFAULT sound profile"
 fi
@@ -181,7 +189,7 @@ if [ "$1" == "RuneAudio" ]; then
 ifconfig eth0 mtu 1500
 ifconfig eth0 txqueuelen 1000
 echo 0 > /proc/sys/vm/swappiness
-modKschedLatency hw=$2 s01=1500000 s02=4500000 s03=4500000 s04=4500000 u01=3 u02=3 u03=3 u04=3
+modKschedLatency hw=$2 s01=1500000 s02=4500000 s03=4500000 s04=4500000 s05=4500000 u01=3 u02=3 u03=3 u04=3 u05=3
 mpdprio_nice
 echo "flush MOD1 RuneAudio sound profile"
 fi
@@ -191,7 +199,7 @@ if [ "$1" == "ACX" ]; then
 ifconfig eth0 mtu 1500
 ifconfig eth0 txqueuelen 4000
 echo 0 > /proc/sys/vm/swappiness
-modKschedLatency hw=$2 s01=850000 s02=3500075 s03=3500075 s04=3500075 u01=2 u02=2 u03=2 u04=2
+modKschedLatency hw=$2 s01=850000 s02=3500075 s03=3500075 s04=3500075 s05=3500075 u01=2 u02=2 u03=2 u04=2 u05=2
 mpdprio_default
 echo "flush MOD2 (ACX)"
 fi
@@ -200,7 +208,7 @@ fi
 if [ "$1" == "Orion" ]; then
 ifconfig eth0 mtu 1000
 echo 20 > /proc/sys/vm/swappiness
-modKschedLatency hw=$2 s01=500000 s02=500000 s03=500000 s04=1000000 u01=1 u02=1 u03=1 u04=1
+modKschedLatency hw=$2 s01=500000 s02=500000 s03=500000 s04=1000000 s05=1000000 u01=1 u02=1 u03=1 u04=1 u05=1
 sleep 2
 mpdprio_default
 echo "flush MOD3 (Orion)"
@@ -211,7 +219,7 @@ if [ "$1" == "OrionV2" ]; then
 ifconfig eth0 mtu 1000
 ifconfig eth0 txqueuelen 4000
 echo 0 > /proc/sys/vm/swappiness
-modKschedLatency hw=$2 s01=120000 s02=2000000 s03=2000000 s04=2000000 u01=2 u02=2 u03=2 u04=2
+modKschedLatency hw=$2 s01=120000 s02=2000000 s03=2000000 s04=2000000 s05=2000000 u01=2 u02=2 u03=2 u04=2 u05=2
 sleep 2
 mpdprio_nice
 echo "flush MOD4 (OrionV2)"
@@ -222,7 +230,7 @@ if [ "$1" == "Um3ggh1U" ]; then
 ifconfig eth0 mtu 1500
 ifconfig eth0 txqueuelen 1000
 echo 0 > /proc/sys/vm/swappiness
-modKschedLatency hw=$2 s01=500000 s02=3700000 s03=3700000 s04=3700000 u01=3 u02=3 u03=3 u04=3
+modKschedLatency hw=$2 s01=500000 s02=3700000 s03=3700000 s04=3700000 s05=3700000 u01=3 u02=3 u03=3 u04=3 u05=3
 mpdprio_default
 echo "flush MOD5 (Um3ggh1U) sound profile "
 fi
@@ -232,7 +240,7 @@ if [ "$1" == "RaspberryPi+i2s" ]; then
 ifconfig eth0 mtu 1000
 ifconfig eth0 txqueuelen 4000
 echo 0 > /proc/sys/vm/swappiness
-modKschedLatency hw=$2 s01=100000 s02=2000000 s03=2000000 s04=2000000 u01=2 u02=2 u03=2 u04=2
+modKschedLatency hw=$2 s01=100000 s02=2000000 s03=2000000 s04=2000000 s05=2000000 u01=2 u02=2 u03=2 u04=2 u05=2
 sleep 2
 mpdprio_nice
 echo "flush MOD4 (RaspberryPi+i2s)"

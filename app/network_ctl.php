@@ -38,7 +38,7 @@ if (isset($template->action)) {
 	if (isset($template->arg)) {
 		$template->nic = json_decode($redis->hGet('nics', $template->arg));
 		}
-var_dump($template->nic);
+// var_dump($template->nic);
 } 
  
 
