@@ -44,10 +44,10 @@ var GUI = {
 	state: '',
 	currentpath: '',
 	volume: null,
-	currentDBpos: new Array(0,0,0,0,0,0,0,0,0,0,0),
+	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
 	browsemode: 'file',
 	plugin: '',
-	DBentry: new Array('', '', ''),
+	DBentry: ['', '', ''],
 	visibility: 'visible',
 	DBupdate: 0,
 	stepVolumeInt: 0,
@@ -315,7 +315,7 @@ jQuery(document).ready(function($){ 'use strict';
 		if ($(e.target).hasClass('pl-action')) {
 			// remove queue entry
 			e.preventDefault();
-			console.log($(this).parent());
+			// console.log($(this).parent());
 			var id = $(this).attr('id');
 			id = parseInt(id.replace('pl-', ''));
 			cmd = 'deleteid ' + id;
@@ -489,14 +489,14 @@ jQuery(document).ready(function($){ 'use strict';
 				// normal MPD file browsing
 					path = el.data('path');
 					//GUI.currentDBpos[GUI.currentDBpos[10]] = $('.database .db-entry').index(this);
-					var entryID = el.attr('id');
-					entryID = entryID.replace('db-','');
 					getDB({
 						path: path,
 						browsemode: GUI.browsemode,
 						uplevel: 0
 					});
 				}
+				var entryID = el.attr('id');
+				entryID = entryID.replace('db-','');
 				GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
 				++GUI.currentDBpos[10];
 				// console.log('getDB path = ', path);
@@ -518,7 +518,7 @@ jQuery(document).ready(function($){ 'use strict';
 		}
 	});
 
-	// browse level up
+	// browse level up (back arrow)
 	$('#db-level-up').click(function(){
 		--GUI.currentDBpos[10];
 		var path = GUI.currentpath;
@@ -528,7 +528,6 @@ jQuery(document).ready(function($){ 'use strict';
 			var cutpos = path.lastIndexOf('/');
 			path = cutpos !=-1 ? path.slice(0,cutpos):'';
 		}
-		console.log('PATH =', path);
 		getDB({
 			path: path,
 			browsemode: GUI.browsemode,

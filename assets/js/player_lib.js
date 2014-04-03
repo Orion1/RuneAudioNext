@@ -266,7 +266,8 @@ function getDB(options){
 						data: data,
 						path: path,
 						plugin: plugin,
-						querytype: querytype
+						querytype: querytype,
+						uplevel: uplevel
 					});
 				}
 			}, 'json');
@@ -352,7 +353,6 @@ function populateDB(options){
 				});
 			}
 			document.getElementById('database-entries').innerHTML = content;
-			$('span', '#db-currentpath').html(path);
 		}		
 		if (plugin === 'Jamendo') {
 		// Jamendo plugin
@@ -370,7 +370,6 @@ function populateDB(options){
 				});
 			}
 			document.getElementById('database-entries').innerHTML = content;
-			$('span', '#db-currentpath').html(path);
 		}
 	} else {
 	// normal MPD browsing by file
@@ -406,20 +405,18 @@ function populateDB(options){
 				});
 			}
 			document.getElementById('database-entries').innerHTML = content;
-			$('span', '#db-currentpath').html(path);
-			if (uplevel) {
-				// console.log('PREV LEVEL');
-				$('#db-' + GUI.currentDBpos[GUI.currentDBpos[10]]).addClass('active');
-				customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
-			} else {
-				// console.log('NEXT LEVEL');
-				customScroll('db', 0, 0);
-			}
 			// DEBUG
 			// console.log('GUI.currentDBpos = ', GUI.currentDBpos);
 			// console.log('level = ', GUI.currentDBpos[10]);
 			// console.log('highlighted entry = ', GUI.currentDBpos[GUI.currentDBpos[10]]);
 		}
+	}
+	$('span', '#db-currentpath').html(path);
+	if (uplevel) {
+		$('#db-' + GUI.currentDBpos[GUI.currentDBpos[10]]).addClass('active');
+		customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
+	} else {
+		customScroll('db', 0, 0);
 	}
 	loadingSpinner('db', 'hide');
 } // end populateDB()
@@ -779,7 +776,7 @@ function randomScrollDB() {
 // notify messages rendering
 function renderMSG(text) {
 	notify = text[0];
-	console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
+	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
 	$.pnotify({
 		title: notify.title,
 		text: notify.text,
@@ -787,6 +784,47 @@ function renderMSG(text) {
 		opacity: (notify.opacity === undefined) ? 0.9 : notify.opacity,
 		hide: (notify.hide === undefined)
 	});
+}
+
+// client side notify
+function notify(command, msg) {
+	switch (command) {
+		case 'add':
+			$.pnotify({
+				title: 'Added to playlist',
+				text: msg,
+				icon: 'icon-ok',
+				opacity: .9
+			});
+		break;
+
+		case 'addreplaceplay':
+			$.pnotify({
+				title: 'Playlist cleared<br> Added to playlist',
+				text: msg,
+				icon: 'icon-remove',
+				opacity: .9
+			});
+		break;
+		
+		case 'update':
+			$.pnotify({
+				title: 'Update path: ',
+				text: msg,
+				icon: 'icon-remove',
+				opacity: .9
+			});
+		break;
+		
+		case 'remove':
+			$.pnotify({
+				title: 'Removed from playlist',
+				text: msg,
+				icon: 'icon-remove',
+				opacity: .9
+			});
+		break;
+	}
 }
 
 // sorting commands
@@ -851,15 +889,15 @@ function renderLibraryHome(jsonLib) {
 		evt = evt || window.event;
 		if (evt.type in evtMap) {
 			document.body.className = evtMap[evt.type];
-			//console.log('boh? = ', evtMap[evt.type]);
+			// console.log('boh? = ', evtMap[evt.type]);
 		} else {
 			document.body.className = this[hidden] ? 'hidden' : 'visible';
 			if (this[hidden]) {
 				GUI.visibility = 'hidden';
-				//console.log('focus = hidden');
+				// console.log('focus = hidden');
 			} else {
 				GUI.visibility = 'visible';
-				//console.log('focus = visible');
+				// console.log('focus = visible');
 			}
 		}
 	}
