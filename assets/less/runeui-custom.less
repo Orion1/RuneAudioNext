@@ -780,6 +780,7 @@ html, body {
 	margin: 0 0 20px;
 }
 .home-block, .empty-block {
+	display: block;
 	position: relative;
 	margin: 10px 0;
 	padding: 20px 30px;
@@ -814,6 +815,9 @@ html, body {
 	&:hover, &:focus {
 		cursor: pointer;
 		background: darken(@brand-alt, 10%);
+		text-decoration: none;
+		outline: none;
+		color: lighten(@brand-alt, 20%);
 	}
 }
 

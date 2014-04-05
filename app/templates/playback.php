@@ -64,7 +64,8 @@
                 <div class="col-sm-12">
                     <h1 class="txtmid">Browse your library</h1>
                 </div>
-                <div class="col-md-4 col-sm-6">
+                <!--
+				<div class="col-md-4 col-sm-6">
                     <div id="home-favorite-1" class="home-block" data-path="NAS/Musica">
                         <i class="fa fa-star"></i>
                         <h3>Musica</h3>
@@ -106,6 +107,7 @@
                         the world's largest platform for free music
                     </div>
                 </div>
+				-->
             </div>
         </div>
         <div class="btnlist btnlist-bottom">

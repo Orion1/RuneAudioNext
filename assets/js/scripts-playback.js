@@ -66,10 +66,7 @@ jQuery(document).ready(function($){ 'use strict';
 
 	// first GUI update
 	updateGUI( GUI.json );
-	getDB({
-		path: GUI.currentpath,
-		browsemode: GUI.browsemode
-	});
+	libraryHome();
 	
 	// hide "connecting" layer
 	if (GUI.state != 'disconnected') {
@@ -435,7 +432,7 @@ jQuery(document).ready(function($){ 'use strict';
 	var db = $('#database-entries');
 	
 	// click on Library home block
-	$('.home-block').click(function(){
+	$('#home-blocks').on('click', '.home-block', function() {
 		++GUI.currentDBpos[10];
 		getDB({
 			path: $(this).data('path'),

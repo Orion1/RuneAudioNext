@@ -251,42 +251,32 @@ function getDB(options){
 	// DEBUG
 	// console.log('OPTIONS: cmd = ' + cmd + ', path = ' + path + ', browsemode = ' + browsemode + ', uplevel = ' + uplevel + ', plugin = ' + plugin);
 	
-	loadingSpinner('db');
+	// loadingSpinner('db');
 	
 	if (plugin !== '') {
 	// plugins
 		if (plugin === 'Dirble') {
 		// Dirble plugin
 			$.post('/db/?cmd=dirble', { 'querytype': (querytype === '') ? 'categories' : querytype, 'args': args }, function(data){
-				if (querytype === 'amountStation') {
-					$('#home-count-dirble').html('(' + data + ')');
-					loadingSpinner('db', 'hide');
-				} else {
-					populateDB({
-						data: data,
-						path: path,
-						plugin: plugin,
-						querytype: querytype,
-						uplevel: uplevel
-					});
-				}
+				populateDB({
+					data: data,
+					path: path,
+					plugin: plugin,
+					querytype: querytype,
+					uplevel: uplevel
+				});
 			}, 'json');
 			
 		}
 		else if (plugin === 'Jamendo') {
 		// Jamendo plugin
 			$.post('/db/?cmd=jamendo', { 'querytype': (querytype === '') ? 'radio' : querytype, 'args': args }, function(data){
-				if (querytype === 'amountStation') {
-					$('#home-count-jamendo').html('(' + data + ')');
-					loadingSpinner('db', 'hide');
-				} else {
-					populateDB({
-						data: data.results,
-						path: path,
-						plugin: plugin,
-						querytype: querytype
-					});
-				}
+				populateDB({
+					data: data.results,
+					path: path,
+					plugin: plugin,
+					querytype: querytype
+				});
 			}, 'json');
 			
 		}
@@ -375,11 +365,7 @@ function populateDB(options){
 	// normal MPD browsing by file
 		if (path === '' && keyword === '') {
 		// Library home
-			$('#database-entries').addClass('hide');
-			$('#db-level-up').addClass('hide');
-			$('#home-blocks').removeClass('hide');
-			$('span', '#db-currentpath').html('');
-			loadingSpinner('db', 'hide');
+			libraryHome();
 			return;
 		} else {
 		// browsing
@@ -656,12 +642,6 @@ function refreshState(state) {
 	} else {
 		$('.open-panel-sx').html('<i class="fa fa-music sx"></i> Library');
 	}
-	
-	// Library main screen counters
-	getDB({
-		plugin: 'Dirble',
-		querytype: 'amountStation'
-	});
 }
 
 // update countdown
@@ -854,11 +834,59 @@ function loadingSpinner(section, hide) {
 	}
 }
 
+// Library home screen
+function libraryHome() {
+	loadingSpinner('db');
+	$('#database-entries').addClass('hide');
+	$('#db-level-up').addClass('hide');
+	$('#home-blocks').removeClass('hide');
+	$.getJSON('/assets/js/json-temp.txt', function(data) {
+		renderLibraryHome(data);
+	});
+	$('span', '#db-currentpath').html('');
+}
+
 // render the Library home screen
 function renderLibraryHome(jsonLib) {
+	// console.log(jsonLib);
+	var i = 0, content = '';
+	content = '<div class="col-sm-12"><h1 class="txtmid">Browse your library</h1></div>';
 	for (i = 0; obj = jsonLib[i]; i += 1) {
-	
+		content += '<div class="col-md-4 col-sm-6">';
+		if (obj.bookmark !== undefined && obj.bookmark !== '') {
+		// bookmark block
+			content += '<div id="home-favorite-' + obj.bookmark + '" class="home-block" data-path="' + obj.path + '"><i class="fa fa-star"></i><h3>' + obj.name + '</h3>bookmark</div>';
+		} else if (obj.networkMounts !== undefined && obj.networkMounts !== '') {
+		// network mounts block
+			if (obj.networkMounts == 0) {
+				content += '<a class="home-block" href="/sources/add/"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3>click to add some</a>';
+			} else {
+				content += '<div id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3>' + obj.networkMounts + ' item available</div>';
+			}
+		} else if (obj.USBMounts !== undefined && obj.USBMounts !== '') {
+		// USB mounts block
+			if (obj.USBMounts == 0) {
+				content += '<a id="home-usb" class="home-block" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>refresh</a>';
+			} else {
+				content += '<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + obj.USBMounts + ')</h3>browse USB drives</div>';
+			}
+		} else if (obj.webradio !== undefined && obj.webradio !== '') {
+		// webradios block
+			if (obj.webradio == 0) {	
+				content += '<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>click to add some</div>';
+			} else {
+				content += '<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + obj.webradio + ')</h3>webradio local playlists</div>';
+			}
+		} else if (obj.Dirble !== undefined && obj.Dirble !== '') {
+		// Dirble block
+			content += '<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble <span id="home-count-dirble">(' + obj.Dirble + ')</span></h3>Radio stations Open Directory</div>';
+		}
+		content += '</div>';
 	}
+	// Jamendo (static)
+	content += '<div class="col-md-4 col-sm-6"><div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h3>Jamendo<span id="home-count-jamendo"></span></h3>the world\'s largest platform for free music</div></div>';
+	document.getElementById('home-blocks').innerHTML = content;
+	loadingSpinner('db', 'hide');
 }
 
 // check visibility of the window
