@@ -302,6 +302,7 @@ function getDB(options){
 			}, 'json');
 		} else {
 		// EXAMPLE: cmd === 'update', 'addplay', 'addreplaceplay', 'update'
+			loadingSpinner('db', 'hide');
 			$.post('/db/?cmd='+cmd, { 'path': path }, function(path) {
 				// console.log('add= ', path);
 			}, 'json');

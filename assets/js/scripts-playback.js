@@ -446,7 +446,7 @@ jQuery(document).ready(function($){ 'use strict';
 	db.on('click', 'li', function(e) {
 		var path = '';
 		if ($(e.target).hasClass('db-action')) {
-		// actions contextual menu
+		// actions context menu
 			e.preventDefault();
 			path = $(this).attr('data-path');
 			GUI.DBentry[0] = path;
