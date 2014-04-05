@@ -251,7 +251,7 @@ function getDB(options){
 	// DEBUG
 	// console.log('OPTIONS: cmd = ' + cmd + ', path = ' + path + ', browsemode = ' + browsemode + ', uplevel = ' + uplevel + ', plugin = ' + plugin);
 	
-	// loadingSpinner('db');
+	loadingSpinner('db');
 	
 	if (plugin !== '') {
 	// plugins
