@@ -1,9 +1,7 @@
 <div class="container">
 	<h1>Network interface</h1>
-	<!--<p>If you mess up with this configuration you can <a data-toggle="modal" href="#net-config-defaults">reset to default</a>.</p>-->
 	<form class="form-horizontal" data-validate="parsley" action="/network" method="post">
 	<input type="hidden" name="nic[name]" value="<?=$this->arg ?>" />
-		<!--$_nic-->
 		<fieldset>
 			<legend>Interface information</legend>
 			<div class="boxed">
@@ -18,7 +16,7 @@
 				</table>
 			</div>
 		</fieldset>
-		<br>
+		<p>If you mess up with this configuration you can <a data-toggle="modal" href="#net-config-defaults">reset to default</a>.</p>
 		<fieldset>
 			<legend>Interface configuration</legend>
 			<div class="form-group">

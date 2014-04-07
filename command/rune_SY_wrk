@@ -509,23 +509,23 @@ while (1) {
 				
 				case 'netcfg':
 				runelog('wrk_SY: ',$job->wrkcmd);
+				runelog('netcfg action: ',$job->action);
+				runelog('netcfg args: ',$job->args);
 					$redis->sAdd('w_lock',$jobID);
 					// reset network configuration to default
 					if ($job->action === 'reset') {
-						runelog('netcfg action: ',$job->action);
-						runelog('netcfg args: ',$job->args);
 						// wrk_netconfig($redis,'reset',$job->args);
 					}
 					// write network configuration
 					if ($job->action === 'config') {
-						runelog('netcfg action: ',$job->action);
-						runelog('netcfg args: ',$job->args);
 						wrk_netconfig($redis,'writecfg',$job->args);
 					}
+					// refresh network configuration
+					if ($job->action === 'refresh') {		
+						wrk_netconfig($redis,'setnics');
+					}
 					// manual network configuration
-					if ($job->action === 'manual') {
-						runelog('netcfg action: ',$job->action);
-						runelog('netcfg args: ',$job->args);						
+					if ($job->action === 'manual') {		
 						// wrk_netconfig($redis,'manual',$job->args);
 					}
 					$redis->sRem('w_lock',$jobID);

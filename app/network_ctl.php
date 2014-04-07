@@ -36,7 +36,11 @@ if (isset($_POST)) {
 
 	if (isset($_POST['nic'])) {
 		$redis->get($_POST['nic']['name']) === json_encode($nic) || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'netcfg', 'action' => 'config', 'args' => $_POST['nic'] ));		
-	} 		
+	}
+	
+	if (isset($_POST['refresh'])) {
+		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'netcfg', 'action' => 'refresh' ));
+	}
 
 }
  
