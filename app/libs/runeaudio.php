@@ -1224,7 +1224,7 @@ $updateh = 0;
 		// activate configuration (RuneOS)
 		sysCmd('netctl stop '.$args->name);
 		sysCmd('netctl reenable '.$args->name);
-		sysCmd('netctl stop mpd');
+		sysCmd('systemctl stop mpd');
 			if ($args->dhcp === '1') {
 			// dhcp configuration
 				sycCmd('systemctl enable ifplugd@'.$args->name);
@@ -1834,7 +1834,8 @@ return $hwmixerdev;
 }
 
 function ui_notify($title = null, $text, $icon = null, $opacity = null, $hide = null ) {
-	$output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide );
+	// $output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide );
+	$output = array( 'title' => $title, 'text' => $text );
 	ui_render('notify',json_encode($output));
 }
 

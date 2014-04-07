@@ -16,15 +16,15 @@
 				</table>
 			</div>
 		</fieldset>
-		<p>If you mess up with this configuration you can <a data-toggle="modal" href="#net-config-defaults">reset to default</a>.</p>
+		<!-- <p>If you mess up with this configuration you can <a data-toggle="modal" href="#net-config-defaults">reset to default</a>.</p> -->
 		<fieldset>
 			<legend>Interface configuration</legend>
 			<div class="form-group">
 				<label class="col-sm-2 control-label" for="nic[dhcp]">IP assignment</label>
 				<div class="col-sm-10">
 					<select id="dhcp" name="nic[dhcp]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="1" <?php if ($this->{$this->uri(3)}->dhcp === '1'): ?> selected <?php endif; ?>>dhcp</option>
-						<option value="0" <?php if ($this->{$this->uri(3)}->dhcp === '0'): ?> selected <?php endif; ?>>static</option>
+						<option value="1" <?php if ($this->{$this->uri(3)}->dhcp === '1'): ?> selected <?php endif; ?>>DHCP</option>
+						<option value="0" <?php if ($this->{$this->uri(3)}->dhcp === '0'): ?> selected <?php endif; ?>>STATIC</option>
 					</select>
 					<span class="help-block">Choose between DHCP and Static configuration</span>
 				</div>
