@@ -317,7 +317,7 @@ jQuery(document).ready(function($){ 'use strict';
 			id = parseInt(id.replace('pl-', ''));
 			cmd = 'deleteid ' + id;
 			// var path = $(this).parent().data('path');
-			notify('remove', '');
+			// notify('remove', '');
 			sendCmd(cmd);
 		} else {
 			// play queue entry
@@ -511,7 +511,7 @@ jQuery(document).ready(function($){ 'use strict';
 				cmd: 'addplay',
 				path: path
 			});
-			notify('add', path);
+			// notify('add', path);
 		}
 	});
 
@@ -553,28 +553,28 @@ jQuery(document).ready(function($){ 'use strict';
 				cmd: 'add',
 				path: path
 			});
-			notify('add', path);
+			// notify('add', path);
 		}
 		if (dataCmd == 'addplay') {
 			getDB({
 				cmd: 'addplay',
 				path: path
 			});
-			notify('add', path);
+			// notify('add', path);
 		}
 		if (dataCmd == 'addreplaceplay') {
 			getDB({
 				cmd: 'addreplaceplay',
 				path: path
 			});
-			notify('addreplaceplay', path);
+			// notify('addreplaceplay', path);
 		}
 		if (dataCmd == 'update') {
 			getDB({
 				cmd: 'update',
 				path: path
 			});
-			notify('update', path);
+			// notify('update', path);
 		}
 		if (dataCmd == 'pl-add') {
 			sendCmd('load "' + path + '"');

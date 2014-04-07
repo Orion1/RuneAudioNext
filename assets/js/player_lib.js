@@ -758,6 +758,7 @@ function randomScrollDB() {
 function renderMSG(text) {
 	notify = text[0];
 	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
+	console.log(text);
 	$.pnotify({
 		title: notify.title,
 		text: notify.text,
