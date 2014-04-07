@@ -1833,7 +1833,7 @@ $hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"
 return $hwmixerdev;
 }
 
-function ui_notify($title = null, $text, $type = '' ) {
+function ui_notify($title = null, $text, $type = null ) {
 	$output = array( 'title' => $title, 'text' => $text, 'type' => $type);
 	ui_render('notify',json_encode($output));
 }
