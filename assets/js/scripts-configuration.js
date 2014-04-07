@@ -223,18 +223,18 @@ jQuery(document).ready(function($){ 'use strict';
 	// NETWORK
 	// ----------------------------------------------------------------------------------------------------
 	
-	if( $('#section-net-edit-eth').length || $('#section-net-edit-wifi').length ){
-	
+	if($('#section-network').length){
+		var netManualConf = $('#network-manual-config');
 		// show/hide static network configuration based on select value
-		if ($('#dhcp').val() == 'false') {
-			$('#network-manual-config').children('.disabler').addClass('hide');
+		if ($('#dhcp').val() == '0') {
+			netManualConf.removeClass('hide');
 		}						
 		$('#dhcp').change(function(){		  
-			if ($(this).val() == 'true') {
-				$('#network-manual-config').children('.disabler').removeClass('hide');
+			if ($(this).val() == '0') {
+				netManualConf.removeClass('hide');
 			}
 			else {
-				$('#network-manual-config').children('.disabler').addClass('hide');
+				netManualConf.addClass('hide');
 			}															
 		});
 	}

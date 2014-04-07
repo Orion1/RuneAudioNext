@@ -1,6 +1,6 @@
 <div class="container">
 	<h1>Network interface</h1>
-	<form class="form-horizontal" data-validate="parsley" action="/network" method="post">
+	<form class="form-horizontal" action="/network" method="post">
 	<input type="hidden" name="nic[name]" value="<?=$this->arg ?>" />
 		<fieldset>
 			<legend>Interface information</legend>
@@ -29,7 +29,7 @@
 					<span class="help-block">Choose between DHCP and Static configuration</span>
 				</div>
 			</div>
-			<div id="network-manual-config" class="optional">		
+			<div id="network-manual-config" class="hide">		
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[ip]">IP address</label>
 					<div class="col-sm-10">
@@ -64,7 +64,6 @@
 						<span class="help-block">Manually set the primary and secondary DNS.</span>
 					</div>
 				</div>
-				<div class="disabler <?php if ($this->{$this->uri(3)}->dhcp === '0'): ?> hide <?php endif; ?>"><!-- disabling layer --></div>
 			</div>
 		</fieldset>
 		<div class="form-group">
