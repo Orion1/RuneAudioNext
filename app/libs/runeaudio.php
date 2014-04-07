@@ -1833,9 +1833,8 @@ $hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"
 return $hwmixerdev;
 }
 
-function ui_notify($title = null, $text, $icon = null, $opacity = null, $hide = null ) {
-	// $output = array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide );
-	$output = array( 'title' => $title, 'text' => $text );
+function ui_notify($title = null, $text, $type = '' ) {
+	$output = array( 'title' => $title, 'text' => $text, 'type' => $type);
 	ui_render('notify',json_encode($output));
 }
 

@@ -80,7 +80,9 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 						} else {
 							sendMpdCommand($mpd,'play '.$pos);
 						}
-					echo json_encode(readMpdResponse($mpd));
+					$response = readMpdResponse($mpd);
+					if ($response !== 'OK') ui_notify('Added to playlist', $_POST['path'] );
+					echo json_encode($response);
 					}
 				break;
 
@@ -100,7 +102,9 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 						} else {
 							sendMpdCommand($mpd,'play');
 						}
-					echo json_encode(readMpdResponse($mpd));
+					$response = readMpdResponse($mpd);
+					if ($response !== 'OK') ui_notify('Playlist cleared<br> Added to playlist', $_POST['path'] );
+					echo json_encode($response);
 					}
 				break;
 				
