@@ -31,15 +31,39 @@
  *
  */
 
+// inspect POST
+if (isset($_POST)) {
+
+	if (isset($_POST['nic'])) {
+		$redis->get($_POST['nic']['name']) === json_encode($nic) || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'netcfg', 'action' => 'config', 'args' => $_POST['nic'] ));		
+	} 		
+
+}
+ 
+waitSyWrk($redis,$jobID);
 $template->nics = wrk_netconfig($redis,'getnics');
 
 if (isset($template->action)) {
 
 	if (isset($template->arg)) {
-		$template->nic = json_decode($redis->hGet('nics', $template->arg));
+	$nic_connection = $redis->hGet('nics', $template->arg);
+		// fetch current nic configuration data
+		if ($redis->get($template->arg)) {
+			$template->{$template->arg} = json_decode($redis->get($template->arg));
+			$template->nic = json_decode($nic_connection);
+		} else if ($nic_connection) {
+		// fetch current nic connection details
+			$template->nic = json_decode($nic_connection);
+		} else {
+		// nonexistant nic
+			$template->content = 'error';
 		}
-// var_dump($template->nic);
+		
+	// debug
+	print_r($template->{$template->arg});
+	}
 } 
  
+
 
 ?>

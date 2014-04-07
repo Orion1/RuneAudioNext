@@ -1,8 +1,9 @@
 <div class="container">
 	<h1>Network interface</h1>
 	<!--<p>If you mess up with this configuration you can <a data-toggle="modal" href="#net-config-defaults">reset to default</a>.</p>-->
-	<form class="form-horizontal" data-validate="parsley" method="post">
-		<!--$_eth0-->
+	<form class="form-horizontal" data-validate="parsley" action="/network" method="post">
+	<input type="hidden" name="nic[name]" value="<?=$this->arg ?>" />
+		<!--$_nic-->
 		<fieldset>
 			<legend>Interface information</legend>
 			<div class="boxed">
@@ -10,7 +11,7 @@
 					<tbody>
 						<tr><th>Interface name:</th><td><?=$this->arg ?></td></tr>
 						<tr><th>Interface type:</th><td><?php if ($this->nic->wireless === 1): ?>wireless<?php else: ?>wired ethernet<?php endif ?></td></tr>
-						<tr><th>Assigned IP address:</th><td><strong><?=$this->nic->ip ?></strong> <i class="fa <?php if ($this->nic !== null): ?>fa-check green<?php else: ?>fa-times red<?php endif; ?> dx"></i></td></tr>
+						<tr><th>Assigned IP address:</th><td><strong><?=$this->nic->ip ?></strong> <i class="fa <?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?>fa-check green<?php else: ?>fa-times red<?php endif; ?> dx"></i></td></tr>
 						<tr><th>Interface speed:</th><td><?=$this->nic->speed ?></td></tr>
 						<tr><th><a href="/network"><i class="fa fa-arrow-left sx"></i> back to the list</a></th><td></td></tr>
 					</tbody>
@@ -21,56 +22,56 @@
 		<fieldset>
 			<legend>Interface configuration</legend>
 			<div class="form-group">
-				<label class="col-sm-2 control-label" for="eth0[dhcp]">IP assignment</label>
+				<label class="col-sm-2 control-label" for="nic[dhcp]">IP assignment</label>
 				<div class="col-sm-10">
-					<select id="dhcp" name="eth0[dhcp]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="1">dhcp</option>
-						<option value="0">static</option>
+					<select id="dhcp" name="nic[dhcp]" class="selectpicker" data-style="btn-default btn-lg">
+						<option value="1" <?php if ($this->{$this->uri(3)}->dhcp === '1'): ?> selected <?php endif; ?>>dhcp</option>
+						<option value="0" <?php if ($this->{$this->uri(3)}->dhcp === '0'): ?> selected <?php endif; ?>>static</option>
 					</select>
 					<span class="help-block">Choose between DHCP and Static configuration</span>
 				</div>
 			</div>
 			<div id="network-manual-config" class="optional">		
 				<div class="form-group">
-					<label class="col-sm-2 control-label" for="eth0[ip]">IP address</label>
+					<label class="col-sm-2 control-label" for="nic[ip]">IP address</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" data-regexp="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="address" name="eth0[ip]" value="<?=$this->nic->ip ?>" data-trigger="change" data-required="true">
+						<input class="form-control input-lg" type="text" data-regexp="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="address" name="nic[ip]" value="<?=$this->{$this->uri(3)}->ip ?>" data-trigger="change" data-required="true">
 						<span class="help-block">Manually set the IP address.</span>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label" for="eth0[netmask]">Netmask</label>
+					<label class="col-sm-2 control-label" for="nic[netmask]">Netmask</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" data-regexp="^[1-2]{1}[2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-2]{1}[0,2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-2]{1}[0,2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-9]{1,3}$" id="netmask" name="eth0[netmask]" value="<?=$this->nic->netmask ?>" data-trigger="change" data-required="true">
+						<input class="form-control input-lg" type="text" data-regexp="^[1-2]{1}[2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-2]{1}[0,2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-2]{1}[0,2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-9]{1,3}$" id="netmask" name="nic[netmask]" value="<?=$this->{$this->uri(3)}->netmask ?>" data-trigger="change" data-required="true">
 						<span class="help-block">Manually set the network mask.</span>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label" for="eth0[gw]">Gateway</label>
+					<label class="col-sm-2 control-label" for="nic[gw]">Gateway</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" data-regexp="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="gateway" name="eth0[gw]" value="<?=$this->nic->gw ?>" data-trigger="change" data-required="true">
+						<input class="form-control input-lg" type="text" data-regexp="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="gateway" name="nic[gw]" value="<?=$this->{$this->uri(3)}->gw ?>" data-trigger="change" data-required="true">
 						<span class="help-block">Manually set the gateway.</span>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label" for="eth0[dns1]">Primary DNS</label>
+					<label class="col-sm-2 control-label" for="nic[dns1]">Primary DNS</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" data-regexp="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="dns1" name="eth0[dns1]" value="<?=$this->nic->dns1 ?>" data-trigger="change" >
+						<input class="form-control input-lg" type="text" data-regexp="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="dns1" name="nic[dns1]" value="<?=$this->{$this->uri(3)}->dns1 ?>" data-trigger="change" >
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-2 control-label" for="eth0[dns2]">Secondary DNS</label>
+					<label class="col-sm-2 control-label" for="nic[dns2]">Secondary DNS</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" data-regexp="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="dns2" name="eth0[dns2]" value="<?=$this->nic->dns2 ?>" data-trigger="change" >
+						<input class="form-control input-lg" type="text" data-regexp="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="dns2" name="nic[dns2]" value="<?=$this->{$this->uri(3)}->dns2 ?>" data-trigger="change" >
 						<span class="help-block">Manually set the primary and secondary DNS.</span>
 					</div>
 				</div>
-				<div class="disabler"><!-- disabling layer --></div>
+				<div class="disabler <?php if ($this->{$this->uri(3)}->dhcp === '0'): ?> hide <?php endif; ?>"><!-- disabling layer --></div>
 			</div>
 		</fieldset>
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-				<a href="net-config.php" class="btn btn-default btn-lg">Cancel</a>
+				<a href="/network" class="btn btn-default btn-lg">Cancel</a>
 				<button type="submit" class="btn btn-primary btn-lg" name="save" value="save">Save and apply</button>
 			</div>
 		</div>

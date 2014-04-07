@@ -98,10 +98,11 @@ runelog("DEMONIZE ---",'');
 	$stdOut = fopen('/dev/null', 'w'); // set fd/1
 	$stdErr = fopen('php://stdout', 'w'); // a hack to duplicate fd/1 to 2
 
-	pcntl_signal(SIGTSTP, SIG_IGN);
-	pcntl_signal(SIGTTOU, SIG_IGN);
-	pcntl_signal(SIGTTIN, SIG_IGN);
-	pcntl_signal(SIGHUP, SIG_IGN);
+	// pcntl_signal(SIGTSTP, SIG_IGN);
+	// pcntl_signal(SIGTTOU, SIG_IGN);
+	// pcntl_signal(SIGTTIN, SIG_IGN);
+	// pcntl_signal(SIGHUP, SIG_IGN);
+	// pcntl_signal(SIGCHLD, SIG_IGN);
 	
 runelog("--- DEMONIZE",'');
 // --- DEMONIZE //
@@ -394,8 +395,8 @@ while (1) {
 					$redis->sAdd('w_lock',$jobID);
 					runelog("testjob: action ",$job->action);
 					runelog("testjob: args[] ",$job->args);
-					$notify = new ui_notify_async('Test', 'text message: jobID='.$jobID, '', '', '', $jobID);
-					$notify->start();
+					// send notfy to UI
+					ui_notify_async('Test', 'text message: jobID='.$jobID, $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -407,16 +408,14 @@ while (1) {
 					sysCmd('systemctl start shairport');
 					$redis->set('airplay', 1);
 					// send notfy to UI
-					$notify = new ui_notify_async('AirPlay', 'AirPlay feature enabled', '', '', '', $jobID);
-					$notify->start();
+					ui_notify_async('AirPlay', 'AirPlay feature enabled', $jobID);
 					}
 					if ($job->action === 'stop') {
 					runelog("service: SHAIRPORT stop",'');
 					sysCmd('systemctl stop shairport');
 					$redis->set('airplay', 0);
 					// send notfy to UI
-					$notify = new ui_notify_async('AirPlay', 'AirPlay feature disabled', '', '', '', $jobID);
-					$notify->start();
+					ui_notify_async('AirPlay', 'AirPlay feature disabled', $jobID);
 					}
 					$redis->sRem('w_lock',$jobID);					
 				break;
@@ -428,13 +427,15 @@ while (1) {
 				// break;
 				
 				case 'clearimg':
-				
+				runelog('wrk_SY: ',$job->wrkcmd);
 					// Clean IMG
 					runelog('Clean IMG','');
 					// enable OPcache
 					wrk_opcache('enable');
 					wrk_cleanDistro();
-				
+					// send notfy to UI
+					ui_notify_async('Clean IMG', 'this image is now clean, ready to publish.', $jobID);
+					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'hostname':
@@ -446,12 +447,16 @@ while (1) {
 					// update hash
 					$hash = md5_file('/etc/mpd.conf');
 					$redis->set('mpdconfhash',$hash);
+					// send notfy to UI
+					ui_notify_async('Hostname', 'Hostname changed to:'.$hn[0], $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'mpdcfg':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
+					// send notfy to UI
+					ui_notify_async('MPD', 'configuration updated', $jobID);
 					runelog('Stop MPD daemon','');
 					sysCmd('systemctl stop mpd');
 					runelog('Reset MPD configuration','');
@@ -474,6 +479,8 @@ while (1) {
 				case 'mpdcfgman':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
+					// send notfy to UI
+					ui_notify_async('MPD', 'configuration updated', $jobID);
 					// write mpd.conf file
 					sysCmd('systemctl stop mpd');
 					$fh = fopen('/etc/mpd.conf', 'w');
@@ -501,45 +508,27 @@ while (1) {
 				break;
 				
 				case 'netcfg':
-/*
-			    		$file = '/etc/netctl/eth0';
-					$fp = fopen($file, 'w');
-					$netconf = $job['args'];
-					fwrite($fp, $netconf);
-					fclose($fp);
-					// update hash
-					$hash = md5_file('/etc/netctl/eth0');
-					playerSession('write',$db,'netconfhash',$hash);
-					// update systemd eth0 configuration
-					sysCmd('netctl reenable eth0');
-					// restart eth0
-					sysCmd('netctl restart eth0');
-					// --- CODE REWORK NEEDED ---
-						if (strpos($netconf, 'wlan0') != false) {
-						$cmd = "ip addr list wlan0 |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1";
-						$ip_wlan0 = sysCmd($cmd);
-							if (!empty($ip_wlan0[0])) {
-							$_SESSION['netconf']['wlan0']['ip'] = $ip_wlan0[0];
-							} else {
-								if (wrk_checkStrSysfile('/proc/net/wireless','wlan0')) {
-								$_SESSION['netconf']['wlan0']['ip'] = '--- NO IP ASSIGNED ---';
-								} else {
-								$_SESSION['netconf']['wlan0']['ip'] = '--- NO INTERFACE PRESENT ---';
-								}
-							}
-						}
-					// --- CODE REWORK NEEDED ---
-*/				
-				break;
-				
-				case 'netcfgman':
-
-					$file = '/etc/network/interfaces';
-					$fp = fopen($file, 'w');
-					fwrite($fp, $job['args']);
-					fclose($fp);
-					//-- valutare inserimento reboot device o restart network
-				
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
+					// reset network configuration to default
+					if ($job->action === 'reset') {
+						runelog('netcfg action: ',$job->action);
+						runelog('netcfg args: ',$job->args);
+						// wrk_netconfig($redis,'reset',$job->args);
+					}
+					// write network configuration
+					if ($job->action === 'config') {
+						runelog('netcfg action: ',$job->action);
+						runelog('netcfg args: ',$job->args);
+						wrk_netconfig($redis,'writecfg',$job->args);
+					}
+					// manual network configuration
+					if ($job->action === 'manual') {
+						runelog('netcfg action: ',$job->action);
+						runelog('netcfg args: ',$job->args);						
+						// wrk_netconfig($redis,'manual',$job->args);
+					}
+					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'ntpserver':
@@ -661,15 +650,13 @@ while (1) {
 					runelog("service: UDEVIL start",'');
 					sysCmd('systemctl start udevil');
 					$redis->set('udevil', 1);
-					usleep(600000);
-					ui_notify('USB-Auto', 'USB-Automount feature enabled');
+					ui_notify_async('USB-Auto', 'USB-Automount feature enabled', $jobID);
 					}
 					if ($job->action === 'stop') {
 					runelog("service: UDEVIL stop",'');
 					sysCmd('systemctl stop udevil');
 					$redis->set('udevil', 0);
-					usleep(600000);
-					ui_notify('USB-Auto', 'USB-Automount feature disabled');
+					ui_notify_async('USB-Auto', 'USB-Automount feature disabled', $jobID);
 					}
 					$redis->sRem('w_lock',$jobID);
 				break;

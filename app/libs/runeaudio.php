@@ -854,7 +854,7 @@ $store = new Redis();
 $store->connect('127.0.0.1', 6379);
 $debug_level = $store->get('debug');
 	if ($debug_level !== '0') {
-	    if(is_array($data)) {
+	    if(is_array($data) OR is_object($data)) {
 			foreach($data as $line) {
 			error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$line,0);
 			}
@@ -1016,21 +1016,16 @@ return $output;
 }
 
 function waitSyWrk($redis,$jobID) {
-if (isset($jobID)) {
-usleep(450000);
-} else {
-$jobID = 'fake';
-}
 	if (is_array($jobID)){	
 		foreach ($jobID as $job) {
-			while ($redis->sIsMember('w_lock', $job)) {
-				usleep(550000);
-			} 
+			do {
+				usleep(650000);
+			} while ($redis->sIsMember('w_lock', $job));
 		}
-	} else {
-		while ($redis->sIsMember('w_lock', $jobID)) {
-			usleep(550000);
-		} 
+	} else if (!empty($jobID)) {
+		do {
+		usleep(650000);
+		} while ($redis->sIsMember('w_lock', $jobID));
 	}
 }
 
@@ -1162,7 +1157,8 @@ function wrk_opcache($action,$redis) {
 	}
 }
 
-function wrk_netconfig($redis,$action) {
+function wrk_netconfig($redis,$action,$args = null) {
+$updateh = 0;
 	switch ($action) {
 		case 'setnics':
 			$interfaces = sysCmd("ip addr |grep \"BROADCAST,\" |cut -d':' -f1-2 |cut -d' ' -f2");
@@ -1184,7 +1180,62 @@ function wrk_netconfig($redis,$action) {
 			return $interfaces;
 		break;
 		
+		case 'writecfg':
+			// ArchLinux netctl config for wired ethernet
+			if ($args->dhcp === '1') {
+				// DHCP configuration
+				$nic = "Description='".$args->name." dhcp connection'\n";
+				$nic .= "Interface=".$args->name."\n";
+				$nic .= "Connection=ethernet\n";
+				$nic .= "IP=dhcp\n";
+				// write current network config
+				$redis->set($args->name,json_encode(array( 'name' => $args->name, 'dhcp' => $args->dhcp )));
+			} else {
+				// STATIC configuration
+				$nic = "Description='".$args->name." static configuration'\n";
+				$nic .= "Interface=".$args->name."\n";
+				$nic .= "Connection=ethernet\n";
+				$nic .= "IP=static\n";
+				$nic .= "Address=('".$args->ip."/".$args->netmask."')\n";
+				$nic .= "Gateway='".$args->gw."'\n";
+				$nic .= "DNS=('".$args->dns1."' '".$args->dns2."')\n";
+				// write current network config
+				$redis->set($args->name,json_encode($args));
+			}
+			$fp = fopen('/etc/netctl/'.$args->name, 'w');
+			fwrite($fp, $nic);
+			fclose($fp);
+			$updateh = 1;
+		break;
+		
+		case 'manual':
+				$file = '/etc/netctl/'.$args['name'];
+				$fp = fopen($file, 'w');
+				fwrite($fp, $args['config']);
+				fclose($fp);
+				$updateh = 1;
+		break;
+		
 	}
+
+	if ($updateh === 1) {
+		// activate configuration (RuneOS)
+		sysCmd('netctl stop '.$args->name);
+		sysCmd('netctl reenable '.$args->name);
+		sysCmd('netctl stop mpd');
+			if ($args->dhcp === '1') {
+			// dhcp configuration
+				sycCmd('systemctl enable ifplugd@'.$args->name);
+			} else {
+			// static configuration
+				sysCmd('killall dhcpcd');
+				sycCmd('systemctl disable ifplugd@'.$args->name);
+			}
+		sysCmd('netctl start '.$args->name);
+		sysCmd('netctl start mpd');
+	}
+// update hash if necessary
+$updateh === 0 || $redis->set($args->name.'_hash',md5_file('/etc/netctl/'.$args->name));
 }
 
 function wrk_restore($backupfile) {
@@ -1785,34 +1836,35 @@ function ui_notify($title = null, $text, $icon = null, $opacity = null, $hide = 
 	ui_render('notify',json_encode($output));
 }
 
-class ui_notify_async extends Thread {
-
-	public $jobID;
-		
-    public function __construct($title = null, $text = null, $icon = null, $opacity = null, $hide = null, $jobID){
-		$this->title = $title;
-		$this->text = $text;
-		$this->icon = $icon;
-		$this->opacity = $opacity;
-		$this->hide = $hide;
-		$this->jobID = $jobID;
-    }
-	
-    public function run() {
-		
-		$redisT = new Redis();
-		$redisT->connect('127.0.0.1', 6379);
-		if (!($redisT->sIsMember('w_lock', $this->jobID))) {
-				usleep(850000);
-		} else {
-			while ($redisT->sIsMember('w_lock', $this->jobID)) {
-				runelog('(ui_notify_async) inside while lock wait cicle',$this->jobID);
-				usleep(850000);
+function ui_notify_async($title, $text, $jobID = null, $icon = null, $opacity = null, $hide = null) {
+$fork_pid = pcntl_fork();
+	if (!$fork_pid) {
+	runelog('fork PID: ', posix_getpid());
+			if (isset($jobID)) {
+				$redisT = new Redis();
+				$redisT->connect('127.0.0.1', 6379);
+				if (!($redisT->sIsMember('w_lock', $jobID))) {
+						usleep(800000);
+				} else {
+					do {
+						runelog('(ui_notify_async) inside while lock wait cicle',$jobID);
+						usleep(600000);
+					} while ($redisT->sIsMember('w_lock', $jobID));
+				}
+				$redisT->close();
+			} else {
+			usleep(650000);
 			}
-		}
-		$redisT->close();
-		ui_notify($this->title, htmlentities($this->text,ENT_XML1,'UTF-8'), $this->icon, $this->opacity, $this->hide);
-    }
+		// $output = json_encode(array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide ));
+		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8') ));
+		runelog('notify JSON string: ', $output);
+		ui_render('notify',$output);
+		exit(0);
+	} else {
+	runelog('parent PID: ', posix_getpid());
+	pcntl_waitpid($fork_pid, $status, WNOHANG|WUNTRACED);
+	runelog('child status: ', $status);
+	}
 }
 
 function ui_status($mpd,$status) {
