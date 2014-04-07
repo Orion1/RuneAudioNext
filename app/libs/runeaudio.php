@@ -1161,6 +1161,8 @@ function wrk_netconfig($redis,$action,$args = null) {
 $updateh = 0;
 	switch ($action) {
 		case 'setnics':
+			// flush nics Redis hash table
+			$redis->del('nics');
 			$interfaces = sysCmd("ip addr |grep \"BROADCAST,\" |cut -d':' -f1-2 |cut -d' ' -f2");
 			foreach ($interfaces as $interface) {
 			$ip = sysCmd("ip addr list ".$interface." |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1");
