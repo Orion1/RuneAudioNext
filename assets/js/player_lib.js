@@ -730,6 +730,7 @@ function customScroll(list, destination, speed) {
 		scrollcalc = parseInt((destination + 2)*entryheight - centerheight);
 		scrolloffset = Math.abs(scrollcalc - scrolltop);
 		scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
+		$('li', '#playlist-entries').eq(destination).addClass('active'); // TODO: check efficiency
 	}
 	// debug
 	// console.log('-------------------------------------------');
@@ -738,8 +739,6 @@ function customScroll(list, destination, speed) {
 	// console.log('scrollcalc = ', scrollcalc);
 	// console.log('scrolloffset = ', scrolloffset);
 	$.scrollTo( (scrollcalc >0? scrolloffset:0), speed);
-	//$('#' + list + '-' + (destination + 1)).addClass('active');
-	$('li', '#playlist-entries').eq(destination).addClass('active'); // TODO: check efficiency
 }
 
 // [!] scrolling debug purpose only

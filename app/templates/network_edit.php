@@ -7,7 +7,7 @@
 			<div class="boxed">
 				<table class="info-table">
 					<tbody>
-						<tr><th>Interface name:</th><td><?=$this->arg ?></td></tr>
+						<tr><th>Interface name:</th><td><strong><?=$this->arg ?></strong></td></tr>
 						<tr><th>Interface type:</th><td><?php if ($this->nic->wireless === 1): ?>wireless<?php else: ?>wired ethernet<?php endif ?></td></tr>
 						<tr><th>Assigned IP address:</th><td><strong><?=$this->nic->ip ?></strong> <i class="fa <?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?>fa-check green<?php else: ?>fa-times red<?php endif; ?> dx"></i></td></tr>
 						<tr><th>Interface speed:</th><td><?=$this->nic->speed ?></td></tr>
@@ -24,7 +24,7 @@
 				<div class="col-sm-10">
 					<select id="dhcp" name="nic[dhcp]" class="selectpicker" data-style="btn-default btn-lg">
 						<option value="1" <?php if ($this->{$this->uri(3)}->dhcp === '1'): ?> selected <?php endif; ?>>DHCP</option>
-						<option value="0" <?php if ($this->{$this->uri(3)}->dhcp === '0'): ?> selected <?php endif; ?>>STATIC</option>
+						<option value="0" <?php if ($this->{$this->uri(3)}->dhcp === '0'): ?> selected <?php endif; ?>>Static</option>
 					</select>
 					<span class="help-block">Choose between DHCP and Static configuration</span>
 				</div>
