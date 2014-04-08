@@ -59,7 +59,9 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 
 				case 'add':
 					if (isset($_POST['path'])) {
-					echo json_encode(addQueue($mpd,$_POST['path']));
+						addQueue($mpd,$_POST['path']);
+					// send MPD response to UI
+					ui_mpd_response($mpd,array('title' => 'Added to playlist', 'text' => $_POST['path']));
 					}
 				break;
 				
@@ -80,9 +82,8 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 						} else {
 							sendMpdCommand($mpd,'play '.$pos);
 						}
-					$response = readMpdResponse($mpd);
-					if ($response !== 'OK') ui_notify('Added to playlist', $_POST['path'] );
-					echo json_encode($response);
+					// send MPD response to UI
+					ui_mpd_response($mpd,array('title' => 'Added to playlist', 'text' => $_POST['path']));
 					}
 				break;
 
@@ -102,24 +103,18 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 						} else {
 							sendMpdCommand($mpd,'play');
 						}
-					$response = readMpdResponse($mpd);
-					if ($response !== 'OK') ui_notify('Playlist cleared<br> Added to playlist', $_POST['path'] );
-					echo json_encode($response);
+					// send MPD response to UI
+					ui_mpd_response($mpd,array('title' => 'Playlist cleared<br> Added to playlist', 'text' => $_POST['path']));
 					}
 				break;
 				
 				case 'update':
 					if (isset($_POST['path'])) {
 					sendMpdCommand($mpd,"update \"".html_entity_decode($_POST['path'])."\"");
-					echo json_encode(readMpdResponse($mpd));
+					// send MPD response to UI
+					ui_mpd_response($mpd,array('title' => 'MPD update DB path:', 'text' => $_POST['path']));
 					}
-				break;
-				
-				// case 'trackremove':
-					// if (isset($_GET['songid'])) {
-					// echo json_encode(remTrackQueue($mpd,$_GET['songid']));
-					// }
-				// break;
+				break;		
 				
 				case 'search':
 					if (isset($_POST['query']) && isset($_GET['querytype'])) {

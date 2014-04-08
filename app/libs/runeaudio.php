@@ -69,11 +69,6 @@ runelog("MPD COMMAND: (socket=".$sock.")",$cmd);
 
 function readMpdResponse($sock) {
 $output = "";
-// if(!isset($type)) {
-// $buffer = 4096;
-// } else {
-// $buffer = 32768;
-// }
 while($resp = socket_read($sock, 32768)) {
    $output .= $resp;
    if ((strpos($output, "OK\n") !== false) OR (strpos($output, "ACK") !== false)) break;
@@ -171,13 +166,11 @@ return $datapath;
 
 function addQueue($sock,$path) {
 $fileext = parseFileStr($path,'.');
-if ($fileext == 'm3u' OR $fileext == 'pls') {
-sendMpdCommand($sock,"load \"".html_entity_decode($path)."\"");
-} else {
-sendMpdCommand($sock,"add \"".html_entity_decode($path)."\"");
-}
-$response = readMpdResponse($sock);
-return $response;
+	if ($fileext == 'm3u' OR $fileext == 'pls') {
+		sendMpdCommand($sock,"load \"".html_entity_decode($path)."\"");
+	} else {
+		sendMpdCommand($sock,"add \"".html_entity_decode($path)."\"");
+	}
 }
 
 class globalRandom extends Thread {
@@ -258,21 +251,23 @@ function _parseFileListResponse($resp) {
 		} else {
 			$plistArray = array();
 			$plistLine = strtok($resp,"\n");
-			$plistFile = "";
+			// $plistFile = "";
 			$plCounter = -1;
 			while ( $plistLine ) {
-				list ( $element, $value ) = explode(": ",$plistLine);
-				if ( $element == "file" OR $element == "playlist") {
+				// TODO: testing!!! (synology @eaDir garbage filtering)
+				// list ( $element, $value ) = explode(": ",$plistLine);
+				if (!strpos($plistLine,'@eaDir')) list ( $element, $value ) = explode(": ",$plistLine);
+				if ( $element === "file" OR $element === "playlist") {
 					$plCounter++;
-					$plistFile = $value;
-					$plistArray[$plCounter][$element] = $plistFile;
-					$plistArray[$plCounter]["fileext"] = parseFileStr($plistFile,'.');
-				} else if ( $element == "directory") {
+					// $plistFile = $value;
+					$plistArray[$plCounter][$element] = $value;
+					$plistArray[$plCounter]["fileext"] = parseFileStr($value,'.');
+				} else if ( $element === "directory" ) {
 					$plCounter++;
 					// record directory index for further processing
 					$dirCounter++;
-					$plistFile = $value;
-					$plistArray[$plCounter]["directory"] = $plistFile;
+					// $plistFile = $value;
+					$plistArray[$plCounter]["directory"] = $value;
 				} else {
 					$plistArray[$plCounter][$element] = $value;
 					$plistArray[$plCounter]["Time2"] = songTime($plistArray[$plCounter]["Time"]);
@@ -281,10 +276,10 @@ function _parseFileListResponse($resp) {
 				$plistLine = strtok("\n");
 			} 
 				// reverse MPD list output
-				if (isset($dirCounter) && isset($plistArray[0]["file"]) ) {
-				$dir = array_splice($plistArray, -$dirCounter);
-				$plistArray = $dir + $plistArray;
-				}
+				// if (isset($dirCounter) && isset($plistArray[0]["file"]) ) {
+				// $dir = array_splice($plistArray, -$dirCounter);
+				// $plistArray = $dir + $plistArray;
+				// }
 		}
 		return $plistArray;
 	}
@@ -333,9 +328,9 @@ function _parseStatusResponse($resp) {
 			 // format "audio_sample_depth" string
 			 	$plistArray['audio_sample_depth'] = $audio_format[1];
 			 // format "audio_channels" string
-			 	if ($audio_format[2] == "2") $plistArray['audio_channels'] = "Stereo";
-			 	if ($audio_format[2] == "1") $plistArray['audio_channels'] = "Mono";
-			 	if ($audio_format[2] > 2) $plistArray['audio_channels'] = "Multichannel";
+			 	if ($audio_format[2] === "2") $plistArray['audio_channels'] = "Stereo";
+			 	if ($audio_format[2] === "1") $plistArray['audio_channels'] = "Mono";
+			 	// if ($audio_format[2] > 2) $plistArray['audio_channels'] = "Multichannel";
 
 		}
 		return $plistArray;
@@ -848,7 +843,7 @@ return true;
 }
 
 
-function runelog($title,$data) {
+function runelog($title,$data = null) {
 // Connect to Redis backend
 $store = new Redis();
 $store->connect('127.0.0.1', 6379);
@@ -1165,12 +1160,20 @@ $updateh = 0;
 			$redis->del('nics');
 			$interfaces = sysCmd("ip addr |grep \"BROADCAST,\" |cut -d':' -f1-2 |cut -d' ' -f2");
 			foreach ($interfaces as $interface) {
-			$ip = sysCmd("ip addr list ".$interface." |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1");
-			$speed = sysCmd("ethtool ".$interface." | grep -i speed | cut -d':' -f2");
-				if (!empty(sysCmd("iwlist ".$interface." scan 2>&1 | grep \"Interface doesn't support scanning\""))) {
-				$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'speed' => $speed[0],'wireless' => 0)));
+				$ip = sysCmd("ip addr list ".$interface." |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1");
+				$netmask = sysCmd("ip addr list ".$interface." |grep \"inet \" |cut -d' ' -f6|cut -d/ -f2");
+				if (isset($netmask[0])) {
+					$netmask = netmask($netmask[0]);
 				} else {
-				$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'speed' => $speed[0],'wireless' => 1)));
+					unset($netmask);
+				}
+				$gw = sysCmd("route -n |grep \"0.0.0.0\" |grep \"UG\" |cut -d' ' -f10");
+				$dns = sysCmd("cat /etc/resolv.conf |grep \"nameserver\" |cut -d' ' -f2");
+				$speed = sysCmd("ethtool ".$interface." | grep -i speed | cut -d':' -f2");
+				if (empty(sysCmd("iwlist ".$interface." scan 2>&1 | grep \"Interface doesn't support scanning : Network is down\""))) {
+					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 0)));
+				} else {
+					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 1)));
 				}
 			}
 		break;
@@ -1189,6 +1192,8 @@ $updateh = 0;
 				$nic = "Description='".$args->name." dhcp connection'\n";
 				$nic .= "Interface=".$args->name."\n";
 				$nic .= "Connection=ethernet\n";
+				$nic .= "ForceConnect=yes\n";
+				$nic .= "SkipNoCarrier=yes\n";
 				$nic .= "IP=dhcp\n";
 				// write current network config
 				$redis->set($args->name,json_encode(array( 'name' => $args->name, 'dhcp' => $args->dhcp )));
@@ -1197,10 +1202,17 @@ $updateh = 0;
 				$nic = "Description='".$args->name." static configuration'\n";
 				$nic .= "Interface=".$args->name."\n";
 				$nic .= "Connection=ethernet\n";
+				$nic .= "AutoWired=yes\n";
+				$nic .= "ForceConnect=yes\n";
+				$nic .= "SkipNoCarrier=yes\n";
 				$nic .= "IP=static\n";
 				$nic .= "Address=('".$args->ip."/".$args->netmask."')\n";
 				$nic .= "Gateway='".$args->gw."'\n";
-				$nic .= "DNS=('".$args->dns1."' '".$args->dns2."')\n";
+				if (!empty($args->dns2)) {
+					$nic .= "DNS=('".$args->dns1."' '".$args->dns2."')\n";
+				} else {
+					$nic .= "DNS=('".$args->dns1."')\n";
+				}
 				// write current network config
 				$redis->set($args->name,json_encode($args));
 			}
@@ -1222,19 +1234,27 @@ $updateh = 0;
 
 	if ($updateh === 1) {
 		// activate configuration (RuneOS)
+		sysCmd('mpc stop');
 		sysCmd('netctl stop '.$args->name);
+		sysCmd('ip addr flush dev '.$args->name);
 		sysCmd('netctl reenable '.$args->name);
-		sysCmd('systemctl stop mpd');
-			if ($args->dhcp === '1') {
-			// dhcp configuration
-				sycCmd('systemctl enable ifplugd@'.$args->name);
-			} else {
-			// static configuration
-				sysCmd('killall dhcpcd');
-				sycCmd('systemctl disable ifplugd@'.$args->name);
-			}
+		if ($args->dhcp === '1') {
+		// dhcp configuration
+			// $cmd = 'systemctl enable ifplugd@'.$args->name;
+			$cmd = "ln -s '/usr/lib/systemd/system/ifplugd@.service' '/etc/systemd/system/multi-user.target.wants/ifplugd@".$args->name.".service'";
+			sysCmd($cmd);
+			sysCmd('systemctl daemon-reload');
+		} else {
+		// static configuration
+			// $cmd = 'systemctl disable ifplugd@'.$args->name;
+			$cmd = "rm '/etc/systemd/system/multi-user.target.wants/ifplugd@".$args->name.".service'";
+			sysCmd($cmd);
+			sysCmd('systemctl daemon-reload');
+			sysCmd('killall dhcpcd');
+			sysCmd('killall ifplugd');
+		}
 		sysCmd('netctl start '.$args->name);
-		sysCmd('netctl start mpd');
+		sysCmd('systemctl restart mpd');
 	}
 // update hash if necessary
 $updateh === 0 || $redis->set($args->name.'_hash',md5_file('/etc/netctl/'.$args->name));
@@ -1932,6 +1952,17 @@ function ui_render($channel,$data) {
 curlPost('http://127.0.0.1/pub?id='.$channel,$data);
 }
 
+function ui_mpd_response($mpd,$notify = null) {
+runelog('ui_mpd_response invoked','');
+$response = json_encode(readMpdResponse($mpd));
+// --- TODO: check this condition
+if (strpos($response, "OK") && isset($notify)) {
+runelog('send UI notify: ', $notify);
+	ui_notify($notify['title'], $notify['text']);
+	}
+echo $response;
+}
+
 function curlPost($url,$data,$proxy = null) {
 $ch = curl_init($url);
 if (isset($proxy)) {
@@ -1967,4 +1998,10 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $response = curl_exec($ch);
 curl_close($ch);
 return $response;
+}
+
+function netmask($bitcount) {
+$netmask = str_split(str_pad(str_pad('', $bitcount, '1'), 32, '0'), 8);
+foreach ($netmask as &$element) $element = bindec($element);
+return join('.', $netmask);
 }

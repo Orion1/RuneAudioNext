@@ -519,6 +519,7 @@ while (1) {
 					// write network configuration
 					if ($job->action === 'config') {
 						wrk_netconfig($redis,'writecfg',$job->args);
+						wrk_netconfig($redis,'setnics');
 					}
 					// refresh network configuration
 					if ($job->action === 'refresh') {		
