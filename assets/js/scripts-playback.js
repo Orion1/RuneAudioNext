@@ -65,7 +65,7 @@ jQuery(document).ready(function($){ 'use strict';
 	displayChannel();
 
 	// first GUI update
-	updateGUI( GUI.json );
+	updateGUI(GUI.json);
 	libraryHome();
 	
 	// hide "connecting" layer
@@ -80,95 +80,14 @@ jQuery(document).ready(function($){ 'use strict';
 	// open notify channel
 	notifyChannel();
 	
+	
 	// BUTTONS
 	// ----------------------------------------------------------------------------------------------------
 	
-	// playback
+	// playback buttons
 	$('.btn-cmd').click(function(){
 		var el = $(this);
-		var dataCmd = el.data('cmd');
-		var cmd;
-		// stop
-		if (dataCmd == 'stop') {
-			el.addClass('btn-primary');
-			$('#play').removeClass('btn-primary');
-			refreshTimer(0, 0, 'stop');
-			window.clearInterval(GUI.currentKnob);
-			$('.playlist').find('li').removeClass('active');
-			$('#total').html('');
-		}
-		// play/pause
-		else if (dataCmd == 'play') {
-			//if (json.currentsong != null) {
-				if (GUI.state == 'play') {
-					cmd = 'pause';
-					$('#countdown-display').countdown('pause');
-				} else if (GUI.state == 'pause') {
-					cmd = 'play';
-					$('#countdown-display').countdown('resume');
-				} else if (GUI.state == 'stop') {
-					cmd = 'play';
-					$('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
-				}
-				//$(this).find('i').toggleClass('fa fa-play').toggleClass('fa fa-pause');
-				window.clearInterval(GUI.currentKnob);
-				sendCmd(cmd);
-				// console.log('sendCmd(' + cmd + ');');
-				return;
-			// } else {
-				// $(this).addClass('btn-primary');
-				// $('#stop').removeClass('btn-primary');
-				// $('#time').val(0).trigger('change');
-				// $('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
-			// }
-		}
-		// previous/next
-		else if (dataCmd == 'previous' || dataCmd == 'next') {
-			$('#countdown-display').countdown('pause');
-			window.clearInterval(GUI.currentKnob);
-		}
-		// step volume control
-		else if ( el.hasClass('btn-volume') ) {
-				var vol;
-			var knobvol = parseInt($('#volume').val());
-			if (GUI.volume === null ) {
-				GUI.volume = knobvol;
-			}
-			if (dataCmd == 'volumedn' && parseInt(GUI.volume) > 0) {
-				vol = parseInt(GUI.volume) - 1;
-				GUI.volume = vol;
-				$('#volumemute').removeClass('btn-primary');
-			} else if (dataCmd == 'volumeup' && parseInt(GUI.volume) < 100) {
-				vol = parseInt(GUI.volume) + 1;
-				GUI.volume = vol;
-				$('#volumemute').removeClass('btn-primary');
-			} else if (dataCmd == 'volumemute') {
-				if (knobvol !== 0 ) {
-					GUI.volume = knobvol;
-					el.addClass('btn-primary');
-					vol = 0;
-				} else {
-					el.removeClass('btn-primary');
-					setvol(GUI.volume);
-				}
-			}
-			// console.log('volume = ', GUI.volume);
-			if ((vol >= 0) && (vol <= 100)) {
-				sendCmd('setvol ' + vol);
-			}
-			return;
-		}
-
-		// toggle buttons
-		if ( el.hasClass('btn-toggle') ) {
-			cmd = dataCmd + (el.hasClass('btn-primary')? ' 0':' 1');
-			el.toggleClass('btn-primary');
-		// send command
-		} else {
-			cmd = dataCmd;
-		}
-		sendCmd(cmd);
-		// console.log('sendCmd(' + cmd + ');');
+		commandButton(el);
 	});
 	
 	$('#volume-step-dn').on({
@@ -188,33 +107,6 @@ jQuery(document).ready(function($){ 'use strict';
 			volumeStepSet();
 		}
 	});
-	
-	function volumeStepCalc(direction) {
-		var i = 0;
-		var way = direction;
-		GUI.volume = parseInt($('#volume').val());
-		var volumeStep = function volumeStepCycle(way){
-			i++;
-			if (direction == 'up') {
-				GUI.stepVolumeDelta = parseInt(GUI.volume) + i;
-			} else if (direction == 'dn') {
-				GUI.stepVolumeDelta = parseInt(GUI.volume) - i;
-			}
-			// console.log('GUI.stepVolumeDelta = ', GUI.stepVolumeDelta);
-			$('#volume').val(GUI.stepVolumeDelta).trigger('change');
-		};
-		volumeStep();
-		// console.log('GUI.volume = ', GUI.volume);
-		
-		GUI.stepVolumeInt = window.setInterval(function() {
-			volumeStep();
-		}, 200);
-	}
-	function volumeStepSet() {
-		window.clearInterval(GUI.stepVolumeInt);
-		setvol(GUI.stepVolumeDelta);
-		// console.log('set volume to = ', GUI.stepVolumeDelta);
-	}
 	
 	
 	// KNOBS

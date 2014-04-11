@@ -30,6 +30,8 @@
  *
  */
 
+ 
+ 
 // Global GUI Array
 // ----------------------------------------------------------------------------------------------------
 var GUI = {
@@ -42,19 +44,30 @@ var GUI = {
 	state: '',
 	currentpath: '',
 	volume: null,
-	currentDBpos: new Array(0,0,0,0,0,0,0,0,0,0,0),
+	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
 	browsemode: 'file',
-	DBentry: new Array('', '', ''),
+	plugin: '',
+	DBentry: ['', '', ''],
 	visibility: 'visible',
 	DBupdate: 0,
 	stepVolumeInt: 0,
-	stepVolumeDelta: 0
+	stepVolumeDelta: 0,
+	stream: ''
 };
 
 jQuery(document).ready(function($){ 'use strict';
 	
-	// open display channel
-	displayChannel();	
+	// INITIALIZATION
+	// ----------------------------------------------------------------------------------------------------
+	 
+	// first connection with MPD daemon
+	// open UI rendering channel;
+	displayChannel();
+	
+	// first GUI update
+	updateGUI(GUI.json);
+	
+	// hide "connecting" layer
 	if (GUI.state != 'disconnected') {
 		$('#loader').hide();
 	}
@@ -69,92 +82,11 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// BUTTONS
 	// ----------------------------------------------------------------------------------------------------
-	// playback
+	
+	// playback buttons
 	$('.btn-cmd').click(function(){
-		var cmd;
-		// stop
-		if ($(this).attr('id') == 'stop') {
-			$(this).addClass('btn-primary');
-			$('#play').removeClass('btn-primary');
-			refreshTimer(0, 0, 'stop')
-			window.clearInterval(GUI.currentKnob);
-			$('.playlist li').removeClass('active');
-			$('#total').html('');
-		}
-		// play/pause
-		else if ($(this).attr('id') == 'play') {
-			//if (json['currentsong'] != null) {
-				if (GUI.state == 'play') {
-					cmd = 'pause';
-					$('#countdown-display').countdown('pause');
-				} else if (GUI.state == 'pause') {
-					cmd = 'play';
-					$('#countdown-display').countdown('resume');
-				} else if (GUI.state == 'stop') {
-					cmd = 'play';
-					$('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
-				}
-				//$(this).find('i').toggleClass('fa fa-play').toggleClass('fa fa-pause');
-				window.clearInterval(GUI.currentKnob);
-				sendCmd(cmd);
-				//console.log('sendCmd(' + cmd + ');');
-				return;
-			// } else {
-				// $(this).addClass('btn-primary');
-				// $('#stop').removeClass('btn-primary');
-				// $('#time').val(0).trigger('change');
-				// $('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
-			// }
-		}
-		// previous/next
-		else if ($(this).attr('id') == 'previous' || $(this).attr('id') == 'next') {
-			GUI.halt = 1;
-			// console.log('GUI.halt (next/prev)= ', GUI.halt);
-			$('#countdown-display').countdown('pause');
-			window.clearInterval(GUI.currentKnob);
-		}
-		// step volume control
-		else if ($(this).hasClass('btn-volume')) {
-			if (GUI.volume == null ) {
-				GUI.volume = $('#volume').val();
-			}
-			if ($(this).attr('id') == 'volumedn') {
-				var vol = parseInt(GUI.volume) - 3;
-				GUI.volume = vol;
-				$('#volumemute').removeClass('btn-primary');
-			} else if ($(this).attr('id') == 'volumeup') {
-				var vol = parseInt(GUI.volume) + 3;
-				GUI.volume = vol;
-				$('#volumemute').removeClass('btn-primary');
-			} else if ($(this).attr('id') == 'volumemute') {
-				if ($('#volume').val() != 0 ) {
-					GUI.volume = $('#volume').val();
-					$(this).addClass('btn-primary');
-					var vol = 0;
-				} else {
-					$(this).removeClass('btn-primary');
-					var vol = GUI.volume;
-				}
-			}
-			//console.log('volume = ', GUI.volume);
-			sendCmd('setvol ' + vol);
-			return;
-		}
-
-		// toggle buttons
-		if ($(this).hasClass('btn-toggle')) {
-			if ($(this).hasClass('btn-primary')) {
-				cmd = $(this).attr('id') + ' 0';
-			} else {
-				cmd = $(this).attr('id') + ' 1';
-			}
-			$(this).toggleClass('btn-primary');
-		// send command
-		} else {
-			cmd = $(this).attr('id');
-		}
-		sendCmd(cmd);
-		//console.log('sendCmd(' + cmd + ');');
+		var el = $(this);
+		commandButton(el);
 	});
 
 	
