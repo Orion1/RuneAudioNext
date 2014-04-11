@@ -42,9 +42,9 @@
  * RuneOS version: 0.3-beta
  */
 -->
-<div id="menu-top" class="ui-header ui-bar-f ui-header-fixed slidedown" data-position="fixed" data-role="header" role="banner">
+<div id="menu-top">
 	<div class="dropdown">
-		<a class="dropdown-toggle" id="menu-settings" role="button" data-toggle="dropdown" data-target="#" href="#">MENU <i class="fa fa-th-list dx"></i></a>
+		<a id="menu-settings" class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#">MENU <i class="fa fa-th-list dx"></i></a>
 		<ul class="dropdown-menu" role="menu" aria-labelledby="menu-settings">
 			<li class="<?=$this->uri(1,'','active')?>"><a href="/"><i class="fa fa-play sx"></i> Playback</a></li>
 			<li class="<?=$this->uri(1,'sources','active')?>"><a href="/sources/"><i class="fa fa-folder-open sx"></i> Sources</a></li>
@@ -64,7 +64,7 @@
 	</div>
 	<a class="home" href="/"><img src="<?=$this->asset('/img/logo.png')?>" class="logo" alt="RuneAudio"></a>
 </div>
-<div id="menu-bottom" class="ui-footer ui-bar-f ui-footer-fixed slidedown" data-position="fixed" data-role="footer"  role="banner">
+<div id="menu-bottom">
 	<ul>
 		<li id="open-panel-sx"><a href="/#panel-sx"<?=$this->uri(1,'',' class="open-panel-sx" data-toggle="tab"')?>><i class="fa fa-music"></i> Library</a></li>
 		<li id="open-playback"<?=$this->uri(1,'',' class="active"')?>><a href="/#playback"<?=$this->uri(1,'',' data-toggle="tab"')?>><i class="fa fa-play"></i> Playback</a></li>
