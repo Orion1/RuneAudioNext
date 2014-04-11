@@ -144,21 +144,22 @@
 				X = {"left": mouseX};
 			}
 			*/
-			var boundsY = $(window).height(),
+			var boundsY = $(document).height(),
 				menuWidth = $menu.find('.dropdown-menu').outerWidth(),
 				menuHeight = $menu.find('.dropdown-menu').outerHeight(),
 				menuOffset = GUI.DBentry[2],
-				tp = {"position":"fixed"},
+				tp = {"position":"absolute"},
 				X, Y;
-			X = {"left": GUI.DBentry[1] - menuWidth + 15};
+			X = {"left": GUI.DBentry[1] - menuWidth + 20};
 			if (menuOffset + menuHeight > boundsY) {
 				Y = {"top": boundsY - menuHeight};
 			} else {
-				Y = {"top": menuOffset};
+				Y = {"top": menuOffset -1};
 			}
 			console.log('altezza finestra = ', boundsY);
 			console.log('offset menu = ', menuOffset);
 			console.log('altezza menu = ', menuHeight);
+			console.log(e);
 
 			return $.extend(tp, Y, X);
 		}

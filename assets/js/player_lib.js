@@ -640,9 +640,9 @@ function refreshState(state) {
 	// console.log('dbupdate = ', GUI.json.updating_db);
 	// if (typeof GUI.json.updating_db !== 'undefined') {
 	if (GUI.json.updating_db !== undefined) {
-		$('.open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i> Updating');
+		$('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i> Updating');
 	} else {
-		$('.open-panel-sx').html('<i class="fa fa-music sx"></i> Library');
+		$('a', '#open-panel-sx').html('<i class="fa fa-music sx"></i> Library');
 	}
 }
 
