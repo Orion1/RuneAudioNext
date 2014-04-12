@@ -88,7 +88,7 @@ function renderUI(text) {
 	GUI.state = GUI.json.state;
 	// console.log('current song = ', GUI.json.currentsong);
 	// console.log( 'GUI.state = ', GUI.state );
-	updateGUI(GUI.json);
+	updateGUI();
 	if (GUI.state != 'disconnected') {
 		$('#loader').hide();
 	}
@@ -105,7 +105,7 @@ function renderUI(text) {
 	}
 }
 
-function getPlaylistCmd(json){
+function getPlaylistCmd(){
 	loadingSpinner('pl');
 	$.ajax({
 		url: '/db/?cmd=playlist',
@@ -113,9 +113,9 @@ function getPlaylistCmd(json){
 			if ( data.length > 4) {
 				$('.playlist').addClass('hide');
 				$('#playlist-entries').removeClass('hide');
-				console.time('getPlaylistPlain timer');
+				// console.time('getPlaylistPlain timer');
 				getPlaylistPlain(data);
-				console.timeEnd('getPlaylistPlain timer');
+				// console.timeEnd('getPlaylistPlain timer');
 				
 				var current = parseInt(GUI.json.song);
 				if ($('#panel-dx').hasClass('active')) {
@@ -136,8 +136,7 @@ function getPlaylistPlain(data){
 	var state = GUI.json.state;
 	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '';
 	var i, line, lines = data.split('\n'), infos=[];
-	for (i = 0; line = lines[i]; i += 1) {
-		
+	for (i = 0; line = lines[i]; i += 1) {		
 		infos = line.split(': ');
 		if ( 'Time' === infos[0] ) {
 			time = parseInt(infos[1]);
@@ -518,28 +517,28 @@ function parseResponse(options) {
 } // end parseResponse()
 
 // update the Playback UI
-function updateGUI(json){
-	var volume = json.volume;
-	var radioname = json.radioname;
-	var currentartist = json.currentartist;
-	var currentsong = json.currentsong;
-	var currentalbum = json.currentalbum;
+function updateGUI(){
+	var volume = GUI.json.volume;
+	var radioname = GUI.json.radioname;
+	var currentartist = GUI.json.currentartist;
+	var currentsong = GUI.json.currentsong;
+	var currentalbum = GUI.json.currentalbum;
 	// set radio mode if stream is present
 	GUI.stream = ((radioname !== null && radioname !== undefined && radioname !== '') ? 'radio' : '');
 	// check MPD status and refresh the UI info
 	refreshState(GUI.state);
 	// check song update
-	// console.log('A = ', json.currentsong); console.log('B = ', GUI.currentsong);
-	if (GUI.currentsong != json.currentsong) {
+	// console.log('A = ', GUI.json.currentsong); console.log('B = ', GUI.currentsong);
+	if (GUI.currentsong != GUI.json.currentsong) {
 		countdownRestart(0);
 		if ($('#panel-dx').hasClass('active')) {
-			var current = parseInt(json.song);
+			var current = parseInt(GUI.json.song);
 			customScroll('pl', current);
 		}
 	}
 	// common actions
 	$('#volume').val((volume == '-1') ? 100 : volume).trigger('change');
-	// console.log('currentartist = ', json.currentartist);
+	// console.log('currentartist = ', GUI.json.currentartist);
 	if (GUI.stream !== 'radio') {
 		$('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? '<span class="notag">[no artist]</span>' : currentartist);
 		$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? '<span class="notag">[no title]</span>' : currentsong);
@@ -549,22 +548,22 @@ function updateGUI(json){
 		$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? radioname : currentsong);
 		$('#currentalbum').html('<span class="notag">streaming</span>');
 	}
-	if (json.repeat == 1) {
+	if (GUI.json.repeat == 1) {
 		$('#repeat').addClass('btn-primary');
 	} else {
 		$('#repeat').removeClass('btn-primary');
 	}
-	if (json.random == 1) {
+	if (GUI.json.random == 1) {
 		$('#random').addClass('btn-primary');
 	} else {
 		$('#random').removeClass('btn-primary');
 	}
-	if (json.consume == 1) {
+	if (GUI.json.consume == 1) {
 		$('#consume').addClass('btn-primary');
 	} else {
 		$('#consume').removeClass('btn-primary');
 	}
-	if (json.single == 1) {
+	if (GUI.json.single == 1) {
 		$('#single').addClass('btn-primary');
 	} else {
 		$('#single').removeClass('btn-primary');
@@ -647,7 +646,7 @@ function refreshState(state) {
 }
 
 // update countdown
-function refreshTimer(startFrom, stopTo, state){
+function refreshTimer(startFrom, stopTo, state) {
 	// console.log('startFrom = ', startFrom);
 	// console.log('state = ', state);
 	var display = $('#countdown-display').countdown('destroy');
@@ -659,7 +658,7 @@ function refreshTimer(startFrom, stopTo, state){
 }
 
 // update playback progress knob
-function refreshKnob(){
+function refreshKnob() {
 	window.clearInterval(GUI.currentKnob);
 	var initTime = parseInt(GUI.json.song_percent)*10;
 	var delta = parseInt(GUI.json.time);

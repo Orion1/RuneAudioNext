@@ -65,7 +65,7 @@ jQuery(document).ready(function($){ 'use strict';
 	displayChannel();
 	
 	// first GUI update
-	updateGUI(GUI.json);
+	updateGUI();
 	
 	// hide "connecting" layer
 	if (GUI.state != 'disconnected') {

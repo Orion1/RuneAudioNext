@@ -65,7 +65,7 @@ jQuery(document).ready(function($){ 'use strict';
 	displayChannel();
 
 	// first GUI update
-	updateGUI(GUI.json);
+	updateGUI();
 	libraryHome();
 	
 	// hide "connecting" layer
