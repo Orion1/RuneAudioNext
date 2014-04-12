@@ -40,7 +40,7 @@
 					<span class="help-block">Specify the directory name on the NAS where to scan music files (case sensitive)</span>
 				</div>
 			</div>
-			<div id="mount-cifs" class="optional ">
+			<div id="mount-cifs" class="optional">
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nas-guest">Guest access</label>
 					<div class="col-sm-10">
@@ -51,7 +51,7 @@
 						<span class="help-block">Log with guest account (no user/password required)</span>
 					</div>
 				</div>
-				<div id="mount-auth" class="optional">
+				<div id="mount-auth" class="optional disabled">
 					<div class="form-group">
 						<label class="col-sm-2 control-label" for="nas-usr">Username</label>
 						<div class="col-sm-10">

@@ -104,14 +104,14 @@ jQuery(document).ready(function($){ 'use strict';
 	
 		// enable/disable CIFS auth section
 		if ($('#mount-type').val() == 'nfs') {
-			$('#mount-cifs').children('.disabler').removeClass('hide');
+			$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 		}						
 		$('#mount-type').change(function(){		  
 			if ($(this).val() == 'cifs') {
-				$('#mount-cifs').children('.disabler').addClass('hide');
+				$('#mount-cifs').removeClass('disabled').children('.disabler').addClass('hide');
 			}
 			else {
-				$('#mount-cifs').children('.disabler').removeClass('hide');
+				$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 			}															
 		});
 		
@@ -119,10 +119,10 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#nas-guest').change(function(){
 			if ($(this).prop('checked')) {
 				//console.log('checked');
-				$('#mount-auth').children('.disabler').removeClass('hide');
+				$('#mount-auth').addClass('disabled').children('.disabler').removeClass('hide');
 			} else {
 				//console.log('unchecked');
-				$('#mount-auth').children('.disabler').addClass('hide');
+				$('#mount-auth').removeClass('disabled').children('.disabler').addClass('hide');
 			}													  
 		});
 		
