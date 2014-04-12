@@ -118,7 +118,7 @@ function getPlaylistCmd(){
 				// console.timeEnd('getPlaylistPlain timer');
 				
 				var current = parseInt(GUI.json.song);
-				if ($('#panel-dx').hasClass('active')) {
+				if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
 					customScroll('pl', current, 200); // highlight current song in playlist
 				}
 			} else {
@@ -517,7 +517,7 @@ function parseResponse(options) {
 } // end parseResponse()
 
 // update the Playback UI
-function updateGUI(){
+function updateGUI() {
 	var volume = GUI.json.volume;
 	var radioname = GUI.json.radioname;
 	var currentartist = GUI.json.currentartist;

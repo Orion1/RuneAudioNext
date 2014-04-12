@@ -154,7 +154,7 @@
 			if (menuOffset + menuHeight > boundsY) {
 				Y = {"top": boundsY - menuHeight};
 			} else {
-				Y = {"top": menuOffset -1};
+				Y = {"top": menuOffset - 1};
 			}
 			console.log('altezza finestra = ', boundsY);
 			console.log('offset menu = ', menuOffset);
