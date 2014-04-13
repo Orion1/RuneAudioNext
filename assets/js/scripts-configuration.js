@@ -161,7 +161,7 @@ jQuery(document).ready(function($){ 'use strict';
 		if ($('#dhcp').val() == '0') {
 			netManualConf.removeClass('hide');
 		}						
-		$('#dhcp').change(function(){		  
+		$('#dhcp').change(function(){
 			if ($(this).val() == '0') {
 				netManualConf.removeClass('hide');
 			}
@@ -191,9 +191,20 @@ jQuery(document).ready(function($){ 'use strict';
 	// MPD
 	// ----------------------------------------------------------------------------------------------------
 	
-	// confirm manual data
-	if( $('.manual-edit-confirm').length ){
-		$(this).find('.btn-primary').click(function(){
+	if( $('#section-mpd').length ){
+		
+		// output interface select
+		$('#audio-output-interface').change(function(){
+			var output = $(this).val();
+			$.ajax({
+				type: 'POST',
+				url: '/mpd/',
+				data: { ao: output }
+			});
+		});
+		
+		// confirm manual data
+		$('.manual-edit-confirm').find('.btn-primary').click(function(){
 			$('#mpdconf_editor').show().removeClass('hide');
 			$(this).hide();
 		});

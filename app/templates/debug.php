@@ -1,10 +1,6 @@
 <div class="container debug">
-<h1>DEBUG DATA</h1>
-	<div class="row">
-		<div class="col-md-8">
-		<code>
+	<h1>DEBUG DATA</h1>
+	<pre>
 		<?=$this->debug ?>
-		</code>
-		</div>
-	</div>
+	<pre>
 </div>
