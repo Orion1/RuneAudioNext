@@ -863,8 +863,6 @@ $store->close();
 
 function debug_data($redis) {
 		if ($redis->get('debug') > 0) {
-		//debug_output();
-		//debug(1);
 		$output .= "\n";
 		$output .= "###### System info ######\n";
 		$output .=  file_get_contents('/proc/version');
@@ -1457,6 +1455,169 @@ function wrk_setMpdStartOut($archID) {
 	sysCmd("mpc enable only 'Null Output'");
 	} else {
 	sysCmd("mpc enable only 'Null Output'");
+	}
+}
+
+function wrk_audioOutput($redis,$action,$args = null) {
+	switch ($action) {
+		case 'refresh':
+			$acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ']' -f 1");
+			runelog('/proc/asound/cards',$acards);
+			$i = 0;
+			foreach ($acards as $card) {
+				// $description = sysCmd("cat /proc/asound/cards | grep : | cut -d ':' -f 2 | cut -d ' ' -f 4-20");
+				// $description = sysCmd("aplay -l -v | grep ".$i."| cut -d ',' -f 2 | cut -d '[' -f 1");
+				$description = sysCmd("aplay -l -v | grep ".$card);
+				$desc = array();
+				$subdeviceid = explode(':',$description[0]);
+				$subdeviceid = explode(',',trim($subdeviceid[1]));
+				$subdeviceid = explode(' ',trim($subdeviceid[1]));
+				$data['device'] = 'hw:'.$i.','.$subdeviceid[1];
+				if ($redis->hGet('acards_details',$card)) {
+					$details = json_decode($redis->hGet('acards_details',$card));
+					if (isset($details->mixer_control)) {
+						$volsteps = sysCmd("amixer -c ".$i." get \"".$details->mixer_control."\" | grep Limits | cut -d ':' -f 2 | cut -d ' ' -f 3,5");
+						$volsteps = explode(' ',$volsteps[0]);
+						$data['volmin'] = $volsteps[0];
+						$data['volmax'] = $volsteps[1];
+						$data['mixer_device'] = "hw:".$details->mixer_numid;
+						$data['mixer_control'] = $details->mixer_control;
+					}
+					$data['extlabel'] = $details->extlabel;
+				} 
+				$data['name'] = $card;
+				$data['type'] = 'alsa';
+				$data['system'] = trim($description[0]);
+				$redis->hSet('acards',$card,json_encode($data));
+				$i++;
+			}
+		break;
+		
+		case 'setdetails':
+			$redis->hSet('acards_labels',$args['card'],json_encode($args['details']));
+		break;
+	}
+}
+
+function wrk_mpdconf2($redis,$action,$args = null) {
+// set mpd.conf file header
+$header = "###################################\n";
+$header .= "# Auto generated mpd.conf file\n";
+$header .= "# please DO NOT edit it manually!\n";
+$header .= "# Use RuneUI MPD config section\n";
+$header .= "###################################\n";
+$header .= "\n";
+	switch ($action) {
+		case 'reset':
+			// default MPD config
+				$redis->hSet('mpdconf','zeroconf_enabled','yes');
+				$redis->hSet('mpdconf','zeroconf_name','runeaudio');
+				$redis->hSet('mpdconf','log_level','verbose');
+				$redis->hSet('mpdconf','bind_to_address','any');
+				$redis->hSet('mpdconf','port','6600');
+				$redis->hSet('mpdconf','max_connections','20');
+				$redis->hSet('mpdconf','user','mpd');
+				$redis->hSet('mpdconf','group','audio');
+				$redis->hSet('mpdconf','db_file','/var/lib/mpd/mpd.db');
+				$redis->hSet('mpdconf','sticker_file','/var/lib/mpd/sticker.sql');
+				$redis->hSet('mpdconf','log_file','/var/log/runeaudio/mpd.log');
+				$redis->hSet('mpdconf','pid_file','/var/run/mpd/pid');
+				$redis->hSet('mpdconf','music_directory','/mnt/MPD');
+				$redis->hSet('mpdconf','playlist_directory','/var/lib/mpd/playlists');
+				$redis->hSet('mpdconf','state_file','/var/lib/mpd/mpdstate');
+				$redis->hSet('mpdconf','follow_outside_symlinks','yes');
+				$redis->hSet('mpdconf','follow_inside_symlinks','yes');
+				$redis->hSet('mpdconf','auto_update','no');
+				$redis->hSet('mpdconf','filesystem_charset','UTF-8');
+				$redis->hSet('mpdconf','id3v1_encoding','UTF-8');
+				$redis->hSet('mpdconf','volume_normalization','no');
+				$redis->hSet('mpdconf','audio_buffer_size','2048');
+				$redis->hSet('mpdconf','buffer_before_play','20%');
+				$redis->hSet('mpdconf','gapless_mp3_playback','yes');
+				$redis->hSet('mpdconf','mixer_type','software');
+				$redis->hSet('mpdconf','curl','yes');
+				$redis->hSet('mpdconf','ffmpeg','no');
+				wrk_mpdconf2($redis,'writecfg');
+		break;
+		
+		case 'writecfg':
+			$mpdcfg = $redis->hGetAll('mpdconf');
+			$output = null;
+			// --- general settings ---
+			foreach ($mpdcfg as $param => $value) {	
+				if ($param === 'mixer_type') {
+					if ($value === 'software' OR $value === 'hardware') {
+						$redis->set('volume', 1);
+						if ($value === 'hardware') break;
+					} else {
+						$redis->set('volume', 0);
+					}
+				} 
+				
+				if ($param === 'bind_to_address') {
+				$output .= "bind_to_address \"/run/mpd.sock\"\n";
+				} 
+			
+				if ($param === 'ffmpeg') {
+				// --- decoder plugin ---
+				$output .="\n";
+				$output .="decoder {\n";
+				$output .="plugin \t\"ffmpeg\"\n";
+                $output .="enabled \"".$value."\"\n";
+				$output .="}\n";
+				break;
+				} 
+				
+				if ($param === 'curl') {
+				// --- input plugin ---
+				$output .="\n";
+				$output .="input {\n";
+				$output .="plugin \t\"curl\"\n";
+					if ($redis->hget('proxy','enable') === '1') {
+						$output .="proxy \t\"".($redis->hget('proxy','host'))."\"\n";
+						if ($redis->hget('proxy','user') !== '') {
+							$output .="proxy_user \t\"".($redis->hget('proxy','user'))."\"\n"; 
+							$output .="proxy_password \t\"".($redis->hget('proxy','pass'))."\"\n"; 
+						}
+					}
+				$output .="}\n";
+				break;
+				}
+				$output .= $param." \t\"".$value."\"\n";
+			}
+			$output = $header.$output;	
+			// --- audio output ---
+			$acards = $redis->hGetAll('acards');
+			foreach ($acards as $card) {
+			$card= json_decode($card);
+			$output .="\n";
+			$output .="audio_output {\n";
+			$output .="name \t\t\"".$card->name."\"\n";
+			$output .="type \t\t\"".$card->type."\"\n";
+			$output .="device \t\t\"".$card->device."\"\n";
+			if (isset($card->mixer_device)) $output .="mixer_device \t\"".$card->mixer_device."\"\n";
+			if (isset($card->mixer_control)) $output .="mixer_control \t\"".$card->mixer_control."\"\n";
+			$output .="auto_resample \t\"no\"\n";
+			$output .="auto_format \t\"no\"\n";
+			if ($redis->get('ao') === $card->name) $output .="enabled \t\"yes\"\n";
+			$output .="}\n";
+			}
+			$output .="\n";
+			// debug
+			// runelog($output);
+			// write mpd.conf file
+			$fh = fopen('/etc/mpd.conf', 'w');
+			fwrite($fh, $output);
+			fclose($fh);
+			sysCmd('systemctl restart mpd');
+		break;
+		
+		case 'update':
+			foreach ($args as $param => $value) {
+				$redis->hSet('mpdconf',$param,$value);
+			}
+			wrk_mpdconf2($redis,'writecfg');
+		break;
 	}
 }
 

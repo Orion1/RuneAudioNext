@@ -149,8 +149,8 @@ echo "options snd-usb-audio nrpacks=${nrpacks}" > /etc/modprobe.d/modprobe.conf
 modprobe snd-usb-audio
 sleep 0.5
 mpc play > /dev/null 2>&1
-mpc pause > /dev/null 2>&1
-mpc play > /dev/null 2>&1
+# mpc pause > /dev/null 2>&1
+# mpc play > /dev/null 2>&1
 }
 
 ##################

@@ -8,7 +8,9 @@
 			<label class="col-sm-2 control-label" for="audio-output-interface">Audio output interface</label>
                 <div class="col-sm-10">
 					<select id="audio-output-interface" name="conf[audio_output_interface]" class="selectpicker" data-style="btn-default btn-lg">
-						$_audioout
+						<?php foreach($this->acards as $card): ?>
+							<option value="<?=$card->name ?>" <?php if($this->ao === $card->name): ?> selected <?php endif ?>><?=$card->name ?></option>
+						<?php endforeach; ?>
 					</select>
 					<span class="help-block">This switches output between audio interfaces. Works <i>"on the fly"</i>.</span>
                 </div>

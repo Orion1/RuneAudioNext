@@ -65,32 +65,15 @@ $template->mpdconf = file_get_contents('/etc/mpd.conf');
 $template->content = "mpd_manual";
 } else {
 
-$mpdconf = cfgdb_read('',$dbh,'mpdconf');
-// prepare array
-$_mpd = array (
-						'port' => '',
-						'log_level' => '',
-						'gapless_mp3_playback' => '',
-						'auto_update' => '',
-						'auto_update_depth' => '',
-						'zeroconf_enabled' => '',
-						'zeroconf_name' => '',
-						'audio_output_format' => '',
-						'mixer_type' => '',
-						'audio_buffer_size' => '',
-						'buffer_before_play' => '',
-						'dsd_usb' => '',
-						'volume_normalization' => ''
-					);
-//debug($mpdconf);							
-// parse output for template $template->conf
-foreach ($mpdconf as $key => $value) {
-	foreach ($_mpd as $key2 => $value2) {
-		if ($value['param'] == $key2) {
-		$template->conf[$key2] = $value['value_player'];	
-		}
-	}
+$template->conf = $redis->hgetall('mpdconf');
+$acards = $redis->hgetall('acards');
+// var_dump($acards);
+foreach ($acards as $card => $data) {
+$audio_cards[] = json_decode($data);
 }
+$template->acards = $audio_cards;
+$template->ao = $redis->get('ao');
+// var_dump($template->acards);
 
 }
 
