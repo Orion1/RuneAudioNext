@@ -67,7 +67,7 @@
 				<label class="control-label col-sm-2" for="i2smodule">I&#178;S kernel module activation / selection</label>
 				<div class="col-sm-10">
 					<select class="selectpicker" name="i2smodule" data-style="btn-default btn-lg">
-						<option value="none" <?php if($this->i2smodule == 'none'): ?> selected <?php endif ?>>I&#178;S &#8722; disabled</option>
+						<option value="none" <?php if($this->i2smodule == 'none'): ?> selected <?php endif ?>>I&#178;S disabled (default)</option>
 						<option value="berrynos" <?php if($this->i2smodule == 'berrynos'): ?> selected <?php endif ?>>G2Labs BerryNOS</option>
 						<option value="berrynosmini" <?php if($this->i2smodule == 'berrynosmini'): ?> selected <?php endif ?>>G2Labs BerryNOS mini</option>
 						<option value="hifiberrydac" <?php if($this->i2smodule == 'hifiberrydac'): ?> selected <?php endif ?>>HiFiBerry DAC</option>
@@ -80,7 +80,7 @@
 			</div>
 			<?php endif;?>
 			<div class="form-group">
-				<label class="control-label col-sm-2" for="orionprofile">Sound Quality optimization profile</label>
+				<label class="control-label col-sm-2" for="orionprofile">Sound Signature (optimization profiles)</label>
 				<div class="col-sm-10">
 					<select class="selectpicker" name="orionprofile" data-style="btn-default btn-lg">
 						<option value="default" <?php if($this->orionprofile == 'default'): ?> selected <?php endif ?>>ArchLinux default</option>
