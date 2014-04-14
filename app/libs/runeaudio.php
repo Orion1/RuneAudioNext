@@ -1322,129 +1322,6 @@ sysCmd('chmod 777 /var/www/db/player.db');
 sysCmd('poweroff');
 }
 
-function wrk_mpdconf($outpath,$db,$redis) {
-// extract mpd.conf from SQLite datastore
-	$dbh = cfgdb_connect($db);
-	$query_cfg = "SELECT param,value_player FROM cfg_mpd WHERE value_player!=''";
-	$mpdcfg = sdbquery($query_cfg,$dbh);
-	$dbh = null;
-
-// set mpd.conf file header
-	$output = "###################################\n";
-	$output .= "# Auto generated mpd.conf file\n";
-	$output .= "# please DO NOT edit it manually!\n";
-	$output .= "# Use RuneUI MPD config section\n";
-	$output .= "###################################\n";
-	$output .= "\n";
-
-// parse DB output
-	foreach ($mpdcfg as $cfg) {
-		if ($cfg['param'] == 'audio_output_format' && $cfg['value_player'] == 'disabled'){
-		$output .= '';
-		} else if ($cfg['param'] == 'dsd_usb') {
-		$dsd = $cfg['value_player'];
-		// $output .= '';
-		} else if ($cfg['param'] == 'mixer_type' && $cfg['value_player'] == 'hardware' ) { 
-		// $hwmixer['device'] = 'hw:0';
-		$hwmixer['control'] = alsa_findHwMixerControl(0);
-		// $hwmixer['index'] = '1';
-		$redis->set('volume', 1);
-		} else if ($cfg['param'] == 'mixer_type' && $cfg['value_player'] == 'software') {
-		// --- REWORK NEEDED ---
-		$redis->set('volume', 1);
-		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
-		} else if ($cfg['param'] == 'mixer_type' && $cfg['value_player'] == 'disabled') {
-		// --- REWORK NEEDED ---
-		$redis->set('volume', 0);
-		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
-		} else if ($cfg['param'] == 'bind_to_address') {
-		$output .= "bind_to_address \"/run/mpd.sock\"\n";
-		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
-		} else {
-		$output .= $cfg['param']." \t\"".$cfg['value_player']."\"\n";
-		}
-	}
-	
-	if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
-	$usbout = 'yes';
-	$jackout = 'no';
-	$hdmiout = 'no';
-	$nullout = 'yes';
-	} else if ($redis->get('hwplatformid') == '01' OR $redis->get('hwplatformid') == '02') {
-	$usbout = 'no';
-	$jackout = 'yes';
-	$hdmiout = 'no';
-	$nullout = 'no';
-	} else if ($redis->get('hwplatformid') == '03' OR $redis->get('hwplatformid') == '04') {
-	$usbout = 'no';
-	$jackout = 'no';
-	$hdmiout = 'no';
-	$nullout = 'yes';
-	} else {
-	$usbout = 'no';
-	$jackout = 'no';
-	$hdmiout = 'no';
-	$nullout = 'yes';
-	}
-	
-	// format audio input / output interfaces
-	$output .= "max_connections \"20\"\n";
-	$output .= "\n";
-	$output .= "decoder {\n";
-	$output .= "\t\tplugin \"ffmpeg\"\n";
-	$output .= "\t\tenabled \"no\"\n";
-	$output .= "}\n";
-	$output .= "\n";
-	$output .= "input {\n";
-	$output .= "\t\tplugin \"curl\"\n";
-	$output .= "}\n";
-	$output .= "\n";
-	
-	// Output #index: 0 (USB-Audio)
-	$output .= "audio_output {\n";
-	$output .= "enabled\t\t\"".$usbout."\"\n";
-	$output .= "type\t\t\"alsa\"\n";
-	$output .= "name\t\t\"USB-Audio\"\n";
-	$output .= "device\t\t\"hw:0,0\"\n";
-	if (isset($hwmixer)) {
-	// $output .= "\t\t mixer_device \t\"".$hwmixer['device']."\"\n";
-	$output .= "mixer_control\t\"".$hwmixer['control']."\"\n";
-	// $output .= "\t\t mixer_index \t\"".$hwmixer['index']."\"\n";
-	}
-	$output .= "dsd_usb\t\t\"".$dsd."\"\n";
-	$output .= "}\n\n";
-	
-	// Output #index: 1 (Null)
-	$output .= "audio_output {\n";
-	$output .= "enabled\t\t\"".$nullout."\"\n";
-	$output .= "type\t\t\"null\"\n";
-	$output .= "name\t\t\"Null\"\n";
-	$output .= "}\n\n";
-	
-	if ($redis->get('hwplatformid') == '01' OR $redis->get('hwplatformid') == '02') {
-	// Output #index: 2 (AnalogJack/HDMI)
-	$output .= "audio_output {\n";
-	$output .= "enabled\t\t\"".$jackout."\"\n";
-	$output .= "type\t\t\"alsa\"\n";
-	$output .= "device\t\t\"hw:1,0\"\n";
-	$output .= "name\t\t\"AnalogJack/HDMI\"\n";
-	$output .= "}\n\n";
-
-	// Output #index: 3 (HDMI)
-	//$output .= "audio_output {\n";
-	//$output .= "enabled\t\t\"".$hdmiout."\"\n";
-	//$output .= "type\t\t\"alsa\"\n";
-	//$output .= "device\t\t\"hw:1,1\"\n";
-	//$output .= "name\t\t\"HDMI\"\n";
-	//$output .= "}\n\n";
-	}
-	
-// write mpd.conf file
-	$fh = fopen($outpath."/mpd.conf", 'w');
-	fwrite($fh, $output);
-	fclose($fh);
-}
-
 function wrk_setMpdStartOut($archID) {
 // -- REWORK NEEDED --
 	if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
@@ -1461,13 +1338,17 @@ function wrk_setMpdStartOut($archID) {
 function wrk_audioOutput($redis,$action,$args = null) {
 	switch ($action) {
 		case 'refresh':
-			$acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ']' -f 1");
+			$redis->del('acards');
+			// $acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ']' -f 1");
+			$acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ':' -f 2");
 			runelog('/proc/asound/cards',$acards);
 			$i = 0;
 			foreach ($acards as $card) {
+				$card = explode(' - ', $card);
 				// $description = sysCmd("cat /proc/asound/cards | grep : | cut -d ':' -f 2 | cut -d ' ' -f 4-20");
-				// $description = sysCmd("aplay -l -v | grep ".$i."| cut -d ',' -f 2 | cut -d '[' -f 1");
-				$description = sysCmd("aplay -l -v | grep ".$card);
+				$card = $card[1];
+				runelog('wrk_audioOutput cart string: ', $card);
+				$description = sysCmd("aplay -l -v | grep \"\[".$card."\]\"");
 				$desc = array();
 				$subdeviceid = explode(':',$description[0]);
 				$subdeviceid = explode(',',trim($subdeviceid[1]));
@@ -1499,7 +1380,7 @@ function wrk_audioOutput($redis,$action,$args = null) {
 	}
 }
 
-function wrk_mpdconf2($redis,$action,$args = null) {
+function wrk_mpdconf($redis,$action,$args = null) {
 // set mpd.conf file header
 $header = "###################################\n";
 $header .= "# Auto generated mpd.conf file\n";
@@ -1537,7 +1418,7 @@ $header .= "\n";
 				$redis->hSet('mpdconf','mixer_type','software');
 				$redis->hSet('mpdconf','curl','yes');
 				$redis->hSet('mpdconf','ffmpeg','no');
-				wrk_mpdconf2($redis,'writecfg');
+				wrk_mpdconf($redis,'writecfg');
 		break;
 		
 		case 'writecfg':
@@ -1609,7 +1490,13 @@ $header .= "\n";
 			$fh = fopen('/etc/mpd.conf', 'w');
 			fwrite($fh, $output);
 			fclose($fh);
+			// update hash
+			$redis->set('mpdconfhash',md5_file('/etc/mpd.conf'));
 			sysCmd('systemctl restart mpd');
+			// restart mpdscribble
+			if ($redis->get('scrobbling_lastfm') === '1') {
+			sysCmd('systemctl restart mpdscribble');
+			}
 		break;
 		
 		case 'update':

@@ -31,9 +31,11 @@
  *
  */
  
-$dbh = cfgdb_connect($db);
- 
  if (isset($_POST)) {
+	// switch audio output
+	if (isset($_POST['ao'])) {
+		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg', 'action' => 'switchao', 'args' => $_POST['ao'] ));
+	}
 	// reset MPD configuration
 	if (isset($_POST['reset'])) {
 		$mpdconfdefault = cfgdb_read('',$dbh,'mpdconfdefault');
@@ -41,19 +43,19 @@ $dbh = cfgdb_connect($db);
 			cfgdb_update('cfg_mpd',$dbh,$element['param'],$element['value_default']);
 		}
 		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg' ));
-		unset($_POST); // ??
 	}
 	// update MPD configuration
 	if (isset($_POST['conf'])) {
-		foreach ($_POST['conf'] as $key => $value) {
-			cfgdb_update('cfg_mpd',$dbh,$key,$value);
-		}
-		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg' ));
+		// foreach ($_POST['conf'] as $key => $value) {
+			// $redis->hSet('mpdconf',$key,$value);
+		// }
+		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg', 'args' => $_POST['conf'] ));
 	}
 	// manual MPD configuration
 	if (isset($_POST['mpdconf'])) {
 		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg', 'args' => $_POST['mpdconf'] ));
 	}
+	
  }
  
 waitSyWrk($redis,$jobID);
@@ -67,33 +69,19 @@ $template->content = "mpd_manual";
 
 $template->conf = $redis->hgetall('mpdconf');
 $acards = $redis->hgetall('acards');
-// var_dump($acards);
+// $acards_details = $redis->hgetall('acards_details');
+// $i = 0;
 foreach ($acards as $card => $data) {
 $audio_cards[] = json_decode($data);
+	// if ($details = $redis->hget('acards_details',$card)) {
+		// $details = json_decode($details);
+		// $audio_cards->{$i}->extlabel = $details->extlabel;
+	// }
+// $i++;
 }
 $template->acards = $audio_cards;
+// $template->acards_details = $audio_cards_details;
 $template->ao = $redis->get('ao');
-// var_dump($template->acards);
 
 }
-
-// close DB connection
-$dbh = null;
-
-
-// check actual active output interface
-//$active_ao = _parseOutputsResponse(getMpdOutputs($mpd),1);
-// $active_ao = $_SESSION['ao'];
-// $_audioout = '';
-// if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
-// $_audioout .= "<option value=\"0\" ".(($active_ao == 0) ? "selected" : "").">USB Audio</option>\n";
-// }
-// if (($_SESSION['hwplatformid'] == '01' OR $_SESSION['hwplatformid'] == '04') && wrk_checkStrSysfile('/proc/asound/card1/pcm0p/info','bcm2835')) {
-// $_audioout .= "<option value=\"2\" ".(($active_ao == 2) ? "selected" : "").">Analog Out</option>\n";
-// $_audioout .= "<option value=\"3\" ".(($active_ao == 3) ? "selected" : "").">HDMI</option>\n";
-// } 
-// $_audioout .= "<option value=\"1\" ".(($active_ao == 1) ? "selected" : "").">Null (test output)</option>";
-
-// wait for worker output if $_SESSION['w_active'] = 1
-
 ?>

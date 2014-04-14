@@ -456,23 +456,10 @@ while (1) {
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
 					// send notfy to UI
-					ui_notify_async('MPD', 'configuration updated', $jobID);
-					runelog('Stop MPD daemon','');
-					sysCmd('systemctl stop mpd');
-					runelog('Reset MPD configuration','');
-					wrk_mpdconf('/etc',$db);
-					// update hash
-					$hash = md5_file('/etc/mpd.conf');
-					runelog('Start MPD daemon','');
-					sysCmd('systemctl start mpd');
-					$redis->set('mpdconfhash',$hash);
-					// restart mpdscribble
-					if ($redis->get('scrobbling_lastfm') === '1') {
-					sysCmd('systemctl restart mpdscribble');
-					}
-					runelog('wrk_setMpdStartOut($archID)',$redis->get('hwplatformid'));
-					sleep(1);
-					wrk_setMpdStartOut($redis->get('hwplatformid'));
+					// ui_notify_async('MPD', 'configuration updated', $jobID);
+					// wrk_setMpdStartOut($redis->get('hwplatformid'));
+					runelog('args',$job->args);
+					wrk_mpdconf($redis,'update',$job->args);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				

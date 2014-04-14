@@ -1,7 +1,6 @@
 <div class="container">
     <h1>MPD Configuration</h1>
     <p>If you mess up with this configuration you can <a data-toggle="modal" href="#mpd-config-defaults">reset to default</a>.</p>
-    <form class="form-horizontal" data-validate="parsley" action="" method="post">
 		<fieldset>
             <legend>Audio Output</legend>
             <div class="form-group">
@@ -15,6 +14,7 @@
 					<span class="help-block">This switches output between audio interfaces. Works <i>"on the fly"</i>.</span>
                 </div>
         </fieldset>
+	<form class="form-horizontal" data-validate="parsley" action="" method="post">
         <fieldset>
 			<legend>Volume control</legend>
             <div class="form-group">
