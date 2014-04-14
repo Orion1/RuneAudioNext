@@ -428,6 +428,19 @@ while (1) {
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
+				case 'i2smodule':
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
+					// if ($_SESSION['dev'] == 1) {
+					// $job->args = 'dev';
+					// }
+					$profile = $job->args." ".$redis->get('hwplatformid');
+					runelog("env: SET I2S MODULE",$job->args);
+					wrk_i2smodule();
+					$redis->set('orionprofile',$job->args);
+					$redis->sRem('w_lock',$jobID);
+				break;
+				
 				case 'mpdcfg':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);

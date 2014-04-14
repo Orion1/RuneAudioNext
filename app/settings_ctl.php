@@ -60,6 +60,11 @@ if (isset($_POST)) {
 		$redis->get('orionprofile') == $_POST['orionprofile'] || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'orionprofile', 'args' => $_POST['orionprofile'] ));		
 	} 
 	
+	if (isset($_POST['i2smodule'])) {		
+		// submit worker job
+		$redis->get('i2smodule') == $_POST['i2smodule'] || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'i2smodule', 'args' => $_POST['i2smodule'] ));	
+	} 
+	
 	// ----- FEATURES -----
 	if (isset($_POST['features'])) {
 
@@ -128,4 +133,5 @@ $template->scrobbling_lastfm = $redis->get('scrobbling_lastfm');
 $template->lastfm = getLastFMauth($redis);
 $template->cmediafix = $redis->get('cmediafix');
 $template->proxy = $redis->hGetall('proxy');
+$template->hwplatformid = $redis->get('hwplatformid');
 ?>
