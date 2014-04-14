@@ -134,4 +134,5 @@ $template->lastfm = getLastFMauth($redis);
 $template->cmediafix = $redis->get('cmediafix');
 $template->proxy = $redis->hGetall('proxy');
 $template->hwplatformid = $redis->get('hwplatformid');
+$template->i2smodule = $redis->get('i2smodule');
 ?>

@@ -60,7 +60,7 @@
 		<fieldset>
 			<legend>RuneOS kernel settings</legend>
 			<p>
-				section description
+				***section description***
 			</p>
 			<?php if($this->hwplatformid === '01'): ?>
 			<div class="form-group">
@@ -75,7 +75,7 @@
 						<option value="iqaudiopidac" <?php if($this->i2smodule == 'iqaudiopidac'): ?> selected <?php endif ?>>IQaudIO Pi-DAC</option>
 						<option value="raspi2splay3" <?php if($this->i2smodule == 'raspi2splay3'): ?> selected <?php endif ?>>RaspI2SPlay3</option>
 					</select>
-					<span class="help-block">feature description</span>
+					<span class="help-block">***feature description***</span>
 				</div>
 			</div>
 			<?php endif;?>

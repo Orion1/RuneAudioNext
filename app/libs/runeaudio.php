@@ -648,6 +648,9 @@ function redisDatastore($redis,$action) {
 			$redis->hSet('acards_details','snd_rpi_hifiberry_dac','{\"extlabel\":\"I&#178;S &#8722; (HiFiBerry DAC)\",\"hwplatformid\":\"01\",\"type\":\"i2s\"}');
 			$redis->hSet('acards_details','snd_rpi_hifiberry_digi','{\"extlabel\":\"I&#178;S &#8722; (HiFiBerry Digi)\",\"hwplatformid\":\"01\",\"type\":\"i2s\"}');
 			$redis->hSet('acards_details','XMOS USB Audio 2.0','{\"extlabel\":\"XMOS AK4399 USB-Audio DAC\",\"mixer_numid\":\"3\",\"mixer_control\":\"XMOS Clock Selector\",\"type\":\"usb\"}');
+			$redis->hSet('acards_details','wm8731-audio','{\"extlabel\":\"Utilite Analog Out\",\"mixer_numid\":\"1\",\"mixer_control\":\"Master\",\"hwplatformid\":\"05\",\"type\":\"integrated\"}');
+			$redis->hSet('acards_details','imx-spdif','{\"extlabel\":\"Utilite Coax SPDIF Out\",\"hwplatformid\":\"05\",\"type\":\"integrated\"}');
+			$redis->hSet('acards_details','imx-hdmi-soc','{\"extlabel\":\"Utilite HDMI Out\",\"hwplatformid\":\"05\",\"type\":\"integrated\"}');
 			break;
 			
 			case 'check':
