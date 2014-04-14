@@ -42,23 +42,13 @@
                 </div>
             </div>
 			<div class="form-group" >
-                <label class="col-sm-2 control-label" for="daemon-user">Daemon user</label>
+                <label class="col-sm-2 control-label" for="daemon-user">Daemon user : group</label>
                 <div class="col-sm-10">
 					<select id="log-level" name="conf[user]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="mpd" <?php if($this->conf['user'] == 'mpd'): ?> selected <?php endif ?>>mpd</option>
-						<option value="root" <?php if($this->conf['user'] == 'root'): ?> selected <?php endif ?>>root</option>
+						<option value="mpd" <?php if($this->conf['user'] == 'mpd'): ?> selected <?php endif ?>>mpd : audio (default)</option>
+						<option value="root" <?php if($this->conf['user'] == 'root'): ?> selected <?php endif ?>>root : root</option>
                     </select> 		
-                    <span class="help-block">This specifies the system user that MPD will run as.</span>
-                </div>
-            </div>
-			<div class="form-group" >
-                <label class="col-sm-2 control-label" for="daemon-group">Daemon group</label>
-                <div class="col-sm-10">
-					<select id="log-level" name="conf[user]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="audio" <?php if($this->conf['group'] == 'audio'): ?> selected <?php endif ?>>audio</option>
-						<option value="root" <?php if($this->conf['group'] == 'root'): ?> selected <?php endif ?>>root</option>
-                    </select> 		
-                    <span class="help-block">This specifies the system group that MPD will run as.</span>
+                    <span class="help-block">This specifies the system user : group that MPD will run as.</span>
                 </div>
             </div>
             <div class="form-group" >

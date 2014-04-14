@@ -643,6 +643,11 @@ function redisDatastore($redis,$action) {
 			$redis->set('pl_length', 0);
 			$redis->set('nextsongid', 0);
 			$redis->set('lastsongid', 0);
+			
+			// acards_details database
+			$redis->hSet('acards_details','snd_rpi_hifiberry_dac','{\"extlabel\":\"I&#178;S &#8722; (HiFiBerry DAC)\",\"hwplatformid\":\"01\",\"type\":\"i2s\"}');
+			$redis->hSet('acards_details','snd_rpi_hifiberry_digi','{\"extlabel\":\"I&#178;S &#8722; (HiFiBerry Digi)\",\"hwplatformid\":\"01\",\"type\":\"i2s\"}');
+			$redis->hSet('acards_details','XMOS USB Audio 2.0','{\"extlabel\":\"XMOS AK4399 USB-Audio DAC\",\"mixer_numid\":\"3\",\"mixer_control\":\"XMOS Clock Selector\",\"type\":\"usb\"}');
 			break;
 			
 			case 'check':
@@ -1322,18 +1327,17 @@ sysCmd('chmod 777 /var/www/db/player.db');
 sysCmd('poweroff');
 }
 
-function wrk_setMpdStartOut($archID) {
-// -- REWORK NEEDED --
-	if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
-	sysCmd("mpc enable only USB-Audio");
-	} else if ($archID == '01' OR $archID == '02') {
-	sysCmd("mpc enable only 'AnalogJack/HDMI'");
-	} else if ($archID == '03' OR $archID == '04') {
-	sysCmd("mpc enable only 'Null Output'");
-	} else {
-	sysCmd("mpc enable only 'Null Output'");
-	}
-}
+// function wrk_setMpdStartOut($archID) {
+	// if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
+	// sysCmd("mpc enable only USB-Audio");
+	// } else if ($archID == '01' OR $archID == '02') {
+	// sysCmd("mpc enable only 'AnalogJack/HDMI'");
+	// } else if ($archID == '03' OR $archID == '04') {
+	// sysCmd("mpc enable only 'Null Output'");
+	// } else {
+	// sysCmd("mpc enable only 'Null Output'");
+	// }
+// }
 
 function wrk_audioOutput($redis,$action,$args = null) {
 	switch ($action) {
@@ -1378,6 +1382,60 @@ function wrk_audioOutput($redis,$action,$args = null) {
 			$redis->hSet('acards_labels',$args['card'],json_encode($args['details']));
 		break;
 	}
+}
+
+function wrk_i2smodule($redis,$args) {
+	switch ($args) {
+		case 'none':
+			sysCmd('rmmod snd_soc_bcm2708_i2s').usleep(300000);
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
+			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
+			sysCmd('modprobe snd_soc_hifiberry_dac');
+		break;
+		
+		case 'berrynos':
+			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
+			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
+			sysCmd('modprobe snd_soc_hifiberry_dac');
+		break;		
+		
+		case 'berrynosmini':
+			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
+			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
+			sysCmd('modprobe snd_soc_hifiberry_dac');
+		break;
+				
+		case 'hifiberrydac':
+			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
+			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
+			sysCmd('modprobe snd_soc_hifiberry_dac');
+		break;
+				
+		case 'berrynosmini':
+			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
+			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
+			sysCmd('modprobe snd_soc_hifiberry_digi');
+		break;
+				
+		case 'iqaudiopidac':
+			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
+			sysCmd('modprobe snd_soc_pcm512x').usleep(300000);
+			sysCmd('modprobe snd_soc_iqaudio_dac');
+		break;
+				
+		case 'raspi2splay3':
+			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
+			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
+			sysCmd('modprobe snd_soc_hifiberry_dac');
+		break;
+	}
+$redis->set('i2smodule',$args);
 }
 
 function wrk_mpdconf($redis,$action,$args = null) {
@@ -1433,6 +1491,14 @@ $header .= "\n";
 					} else {
 						$redis->set('volume', 0);
 					}
+				} 
+				
+				if ($param === 'user' && $value === 'mpd') {
+					$redis->hSet('mpdconf','group','audio');
+				}
+
+				if ($param === 'user' && $value === 'root') {
+					$redis->hSet('mpdconf','group','root');
 				} 
 				
 				if ($param === 'bind_to_address') {

@@ -431,12 +431,9 @@ while (1) {
 				case 'i2smodule':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					// if ($_SESSION['dev'] == 1) {
-					// $job->args = 'dev';
-					// }
 					$profile = $job->args." ".$redis->get('hwplatformid');
 					runelog("env: SET I2S MODULE",$job->args);
-					wrk_i2smodule();
+					wrk_i2smodule($redis,$job->args);
 					$redis->set('orionprofile',$job->args);
 					$redis->sRem('w_lock',$jobID);
 				break;
@@ -537,9 +534,6 @@ while (1) {
 				case 'orionprofile':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					// if ($_SESSION['dev'] == 1) {
-					// $job->args = 'dev';
-					// }
 					$profile = $job->args." ".$redis->get('hwplatformid');
 					runelog("env: SET KERNEL PROFILE",$job->args);
 					sysCmd("/var/www/command/orion_optimize.sh ".$profile);
