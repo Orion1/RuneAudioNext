@@ -59,12 +59,9 @@
 	<form class="form-horizontal" method="post" role="form">
 		<fieldset>
 			<legend>RuneOS kernel settings</legend>
-			<p>
-				***section description***
-			</p>
 			<?php if($this->hwplatformid === '01'): ?>
 			<div class="form-group">
-				<label class="control-label col-sm-2" for="i2smodule">I&#178;S kernel module activation / selection</label>
+				<label class="control-label col-sm-2" for="i2smodule">I&#178;S kernel modules</label>
 				<div class="col-sm-10">
 					<select class="selectpicker" name="i2smodule" data-style="btn-default btn-lg">
 						<option value="none" <?php if($this->i2smodule == 'none'): ?> selected <?php endif ?>>I&#178;S disabled (default)</option>
@@ -75,7 +72,7 @@
 						<option value="iqaudiopidac" <?php if($this->i2smodule == 'iqaudiopidac'): ?> selected <?php endif ?>>IQaudIO Pi-DAC</option>
 						<option value="raspi2splay3" <?php if($this->i2smodule == 'raspi2splay3'): ?> selected <?php endif ?>>RaspI2SPlay3</option>
 					</select>
-					<span class="help-block">***feature description***</span>
+					<span class="help-block">Enable I&#178;S output selecting one of the available sets of modules, specific for each hardware. Once set, the output interface will appear in the <a href="/mpd/">MPD configuration select menu</a>, and modules will also auto-load from the next reboot.</span>
 				</div>
 			</div>
 			<?php endif;?>
@@ -88,14 +85,15 @@
 						<option value="ACX" <?php if($this->orionprofile == 'ACX'): ?> selected <?php endif ?>>ACX</option>
 						<option value="Orion" <?php if($this->orionprofile == 'Orion'): ?> selected <?php endif ?>>Orion</option>
 						<option value="OrionV2" <?php if($this->orionprofile == 'OrionV2'): ?> selected <?php endif ?>>OrionV2</option>
-						<option value="RaspberryPi+i2s" <?php if($this->orionprofile == 'RaspberryPi+i2s'): ?> selected <?php endif ?>>RaspberryPi+i2s</option>
+						<option value="RaspberryPi+i2s" <?php if($this->orionprofile == 'RaspberryPi+i2s'): ?> selected <?php endif ?>>RaspberryPi+I&#178;S</option>
 						<option value="Um3ggh1U" <?php if($this->orionprofile == 'Um3ggh1U'): ?> selected <?php endif ?>>Um3ggh1U</option>
 					</select>
 					<span class="help-block">These profiles include a set of performance tweaks that act on some system kernel parameters.
-				It does not have anything to do with DSPs or other sound effects: the output is kept untouched (bit perfect).
-				It happens that these parameters introduce an audible impact on the overall sound quality, acting on kernel latency parameters (and probably on the amount of overall<a href="http://www.thewelltemperedcomputer.com/KB/BitPerfectJitter.htm" title="Bit Perfect Jitter by Vincent Kars" target="_blank"> jitter</a>).
-				Sound results may vary depending on where music is listened, so choose according to your personal taste.
-				(If you can't hear any tangible differences... nevermind, just stick to the default settings.)</span>
+					It does not have anything to do with DSPs or other sound effects: the output is kept untouched (bit perfect).
+					It happens that these parameters introduce an audible impact on the overall sound quality, acting on kernel latency parameters (and probably on the amount of overall 
+					<a href="http://www.thewelltemperedcomputer.com/KB/BitPerfectJitter.htm" title="Bit Perfect Jitter by Vincent Kars" target="_blank">jitter</a>).
+					Sound results may vary depending on where music is listened, so choose according to your personal taste.
+					(If you can't hear any tangible differences... nevermind, just stick to the default settings.)</span>
 				</div>
 			</div>
 			<div class="form-group">
@@ -108,9 +106,7 @@
 	<form class="form-horizontal" action="" method="post" role="form" data-validate="parsley">
         <fieldset>
             <legend>Features management</legend>
-			<p>
-				Enable/disable optional modules that best suit your needs. Disabling unusued features will free system resources and might improve the overall performance.
-			</p>
+			<p>Enable/disable optional modules that best suit your needs. Disabling unusued features will free system resources and might improve the overall performance.</p>
 			<div class="form-group">
 				<label for="airplay" class="control-label col-sm-2">AirPlay</label>
 				<div class="col-sm-10">
@@ -118,6 +114,7 @@
 						<input name="features[airplay]" type="checkbox" value="1"<?php if($this->airplay == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
+					<span class="help-block">Toggle the capability of receiving wireless streaming of audio via AirPlay protocol</span>
 				</div>
 			</div>
 			<div class="form-group">
@@ -127,6 +124,7 @@
 						<input name="features[udevil]" type="checkbox" value="1"<?php if($this->udevil == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
+					<span class="help-block">Toggle automount for USB drives</span>
 				</div>
 			</div>
 			<div class="form-group">
@@ -136,6 +134,7 @@
 						<input name="features[coverart]" type="checkbox" value="1"<?php if($this->coverart == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
+					<span class="help-block">Toggle the display of album art on the Playback main screen</span>
 				</div>
 			</div>
 			<div class="form-group">
@@ -145,15 +144,17 @@
 						<input name="features[globalrandom]" type="checkbox" value="1"<?php if($this->globalrandom == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
+					<span class="help-block">Toggle random playback on the whole music library [WARNING - BETA]</span>
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="scrobbling_lastfm" class="control-label col-sm-2">Last.FM scrobbling</label>
+				<label for="scrobbling_lastfm" class="control-label col-sm-2">Last.fm scrobbling</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
 						<input id="scrobbling-lastfm" name="features[scrobbling_lastfm]" type="checkbox" value="1"<?php if($this->scrobbling_lastfm == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
+					<span class="help-block">Send to Last.fm informations about the music you are listening to (requires a Last.fm account)</span>
 				</div>
 			</div>
             <div class="<?php if($this->scrobbling_lastfm != 1): ?>hide<?php endif ?>" id="lastfmAuth">
@@ -161,14 +162,14 @@
 					<label class="control-label col-sm-2" for="lastfm-usr">Username</label>
 					<div class="col-sm-10">
 						<input class="form-control input-lg" type="text" id="lastfm_user" name="features[lastfm][user]" value="<?=$this->lastfm['user'] ?>" data-trigger="change" placeholder="user">
-						<span class="help-block">Insert your Last.FM <i>username</i></span>
+						<span class="help-block">Insert your Last.fm <i>username</i></span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="control-label col-sm-2" for="lastfm-pasw">Password</label>
 					<div class="col-sm-10">
 						<input class="form-control input-lg" type="password" id="lastfm_pass" name="features[lastfm][pass]" value="<?=$this->lastfm['pass'] ?>" placeholder="pass" autocomplete="off">
-						<span class="help-block">Insert your Last.FM <i>password</i> (case sensitive)</span>
+						<span class="help-block">Insert your Last.fm <i>password</i> (case sensitive)</span>
 					</div>
 				</div>
             </div>
