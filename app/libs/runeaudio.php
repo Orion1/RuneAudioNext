@@ -1391,10 +1391,11 @@ function wrk_i2smodule($redis,$args) {
 sysCmd('mpc stop').usleep(300000);
 	switch ($args) {
 		case 'none':
-			sysCmd('rmmod snd_soc_bcm2708_i2s').usleep(300000);
-			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
-			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
-			sysCmd('modprobe snd_soc_hifiberry_dac');
+			sysCmd('rmmod -f snd_soc_hifiberry_dac').usleep(300000);
+			sysCmd('rmmod -f snd_soc_pcm512x').usleep(300000);
+			sysCmd('rmmod -f snd_soc_pcm5102a').usleep(300000);
+			// sysCmd('rmmod -f bcm2708_dmaengine').usleep(300000);
+			sysCmd('rmmod -f snd_soc_bcm2708_i2s');
 		break;
 		
 		case 'berrynos':
@@ -1440,6 +1441,7 @@ sysCmd('mpc stop').usleep(300000);
 		break;
 	}
 $redis->set('i2smodule',$args);
+wrk_mpdconf($redis,'refresh');
 }
 
 function wrk_mpdconf($redis,$action,$args = null) {
@@ -1591,6 +1593,12 @@ $header .= "\n";
 			$redis->set('ao',$args);
 			wrk_mpdconf($redis,'writecfg');
 			syscmd('mpc enable only "'.$args.'"');
+		break;
+		
+		case 'refresh':
+			wrk_audioOutput($redis,'refresh');
+			wrk_mpdconf($redis,'writecfg');
+			wrk_mpdconf($redis,'restart');
 		break;
 		
 		case 'restart':

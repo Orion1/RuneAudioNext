@@ -229,6 +229,14 @@ $redis->set('hostname',$hn[0]);
 	}
 }
 
+// load i2smodule
+if ($redis->get('i2smodule') !== 'none') {
+	wrk_i2smodule($redis,$redis->get('i2smodule'));
+}
+
+// refesh audio hardware status (soundcards and MPD config)
+wrk_mpdconf($redis,'refresh');
+
 // start shairport
 if ($redis->set('airplay') === '1') {
 runelog("service: SHAIRPORT start",'');
@@ -257,17 +265,10 @@ if ($redis->get('cmediafix') === '1') {
 	closeMpdSocket($mpd);
 }
 
-// load i2smodule
-if ($redis->get('i2smodule') !== 'none') {
-	wrk_i2smodule($redis,$redis->get('i2smodule'));
-}
-
-
 // initialize OrionProfile
 runelog("env: SET KERNEL PROFILE",$redis->get('orionprofile'));
 $cmd = "/var/www/command/orion_optimize.sh ".$redis->get('orionprofile')." ".$redis->get('hwplatformid') ;
 sysCmd($cmd);
-
  
 runelog("--- NORMAL STARTUP",'');
 // --- NORMAL STARTUP //
