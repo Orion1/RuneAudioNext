@@ -257,6 +257,12 @@ if ($redis->get('cmediafix') === '1') {
 	closeMpdSocket($mpd);
 }
 
+// load i2smodule
+if ($redis->get('i2smodule') !== 'none') {
+	wrk_i2smodule($redis,$redis->get('i2smodule'));
+}
+
+
 // initialize OrionProfile
 runelog("env: SET KERNEL PROFILE",$redis->get('orionprofile'));
 $cmd = "/var/www/command/orion_optimize.sh ".$redis->get('orionprofile')." ".$redis->get('hwplatformid') ;

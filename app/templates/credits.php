@@ -2,7 +2,7 @@
 	<h1>RuneAudio project</h1>
 	<div class="row">
 		<div class="col-md-8">
-			<div class="alert alert-info">release version: <strong>0.3-beta-dev</strong></div>
+			<div class="alert alert-info">release version: <strong>0.3-alpha</strong></div>
 			<h2>RuneAudio team</h2>
 			<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>
 			Andrea Coiutti</strong></a> (aka ACX)<br>
