@@ -1388,6 +1388,7 @@ function wrk_audioOutput($redis,$action,$args = null) {
 }
 
 function wrk_i2smodule($redis,$args) {
+sysCmd('mpc stop').usleep(300000);
 	switch ($args) {
 		case 'none':
 			sysCmd('rmmod snd_soc_bcm2708_i2s').usleep(300000);
@@ -1590,7 +1591,6 @@ $header .= "\n";
 			$redis->set('ao',$args);
 			wrk_mpdconf($redis,'writecfg');
 			syscmd('mpc enable only "'.$args.'"');
-			wrk_mpdconf($redis,'restart');
 		break;
 		
 		case 'restart':

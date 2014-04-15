@@ -246,90 +246,10 @@ sysCmd('systemctl start mpdscribble');
 }
 // read system network interfaces details
 wrk_netconfig($redis,'setnics');
-
-// start rpi volume switch helpers
-// if ($redis->get('hwplatformid') === '01') {
-// runelog("helpers: rune_rpi_oJack/rune_rpi_oHdmi start",'');
-// sysCmd('systemctl start rune_rpi_oJack');
-// sysCmd('systemctl start rune_rpi_oHdmi');
-// AnalogJack / HDMI selection
-// $ao = $redis->get('ao');
-	// if ($ao === '2' OR $ao === '3') {
-		// sleep(1);
-		// //AnalogJack
-		// if ($ao === '2') {
-		// $aosock = openMpdSocket('127.0.0.1', 13501);
-		// } 
-		// if ($ao === '3') {
-		// //HDMI
-		// $aosock = openMpdSocket('127.0.0.1', 13502);
-		// }
-		// sendMpdCommand($aosock,"\n");
-		// runelog('selected Rpi jack/hdmi internal switch:',$ao);
-		// fclose($aosock);	
-	// }
-// }
-
-// inizialize worker session vars
-// runelog("env: SETUP SESSION VARS",'');
-
-// inizialize debug
-// $redis->set('debug', 0);
-
-/*
-// check current eth0 / wlan0 IP Address
-$cmd1 = "ip addr list eth0 |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1";
-$cmd2 = "ip addr list wlan0 |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1";
-$cmd3 = "ip addr list eth0:0 |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1";
-$ip_eth0 = sysCmd($cmd1);
-$ip_wlan0 = sysCmd($cmd2);
-$ip_fallback = "192.168.10.110";
-
-// check IP for minidlna assignment.
-if (isset($ip_eth0) && !empty($ip_eth0) && isset($ip_wlan0) && !empty($ip_wlan0)) {
-$ip = $ip_eth0[0];
-} else  if (isset($ip_eth0) && !empty($ip_eth0)) {
-$ip = $ip_eth0[0];
-} else if (isset($ip_wlan0) && !empty($ip_wlan0)) {
-$ip = $ip_wlan0[0];
-} else {
-$ip = $ip_fallback;
-}
-
-// record current IP addresses in PHP session
-if (!empty($ip_eth0[0])) {
- $_SESSION['netconf']['eth0']['ip'] = $ip_eth0[0];
-}
-if (!empty($ip_wlan0[0])) {
-$_SESSION['netconf']['wlan0']['ip'] = $ip_wlan0[0];
-}
-
-// Copy /etc/minidlna.conf to /run/minidlna.conf
-copy('/etc/minidlna.conf', '/run/minidlna.conf');
-// minidlna.conf
-$file = '/run/minidlna.conf';
-$fileData = file($file);
-$newArray = array();
-foreach($fileData as $line) {
-  // find the line that starts with 'presentation_url"
-  if (substr($line, 0, 16) == 'presentation_url' OR substr($line, 1, 16) == 'presentation_url') {
-	// replace presentation_url with current IP address
-	$line = "presentation_url=http://".$ip.":80\n";
-  }
-  $newArray[] = $line;
-}
-// Commit changes to /run/minidlna.conf
-$fp = fopen($file, 'w');
-fwrite($fp, implode("",$newArray));
-fclose($fp);
-// Start minidlna service
-sysCmd('/usr/bin/minidlna -f /run/minidlna.conf');
-*/
 // check /etc/network/interfaces integrity
 hashCFG('check_net',$redis);
 // check /etc/mpd.conf integrity
 hashCFG('check_mpd',$redis);
-
 // Cmediafix startup check
 if ($redis->get('cmediafix') === '1') {
 	$mpd = openMpdSocket('localhost', 6600) ;
