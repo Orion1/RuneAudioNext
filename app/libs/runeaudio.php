@@ -42,7 +42,7 @@ $connection = socket_connect($sock, $path);
 	return $sock;
 	} else {
 	runelog("[1][".$sock."]\t>>>>>> MPD SOCKET ERROR: ".socket_last_error($sock)." <<<<<<\t\t\t",'');
-	ui_notify('MPD sock: '.$sock.'','socket error = '.socket_last_error($sock));
+	// ui_notify('MPD sock: '.$sock.'','socket error = '.socket_last_error($sock));
 	return false;
 	}
 }
