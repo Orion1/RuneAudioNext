@@ -372,7 +372,7 @@ while (1) {
 					runelog("testjob: action ",$job->action);
 					runelog("testjob: args[] ",$job->args);
 					// send notfy to UI
-					ui_notify_async('Test', 'text message: jobID='.$jobID, $jobID);
+					// ui_notify_async('Test', 'text message: jobID='.$jobID, $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -384,14 +384,14 @@ while (1) {
 					sysCmd('systemctl start shairport');
 					$redis->set('airplay', 1);
 					// send notfy to UI
-					ui_notify_async('AirPlay', 'AirPlay feature enabled', $jobID);
+					// ui_notify_async('AirPlay', 'AirPlay feature enabled', $jobID);
 					}
 					if ($job->action === 'stop') {
 					runelog("service: SHAIRPORT stop",'');
 					sysCmd('systemctl stop shairport');
 					$redis->set('airplay', 0);
 					// send notfy to UI
-					ui_notify_async('AirPlay', 'AirPlay feature disabled', $jobID);
+					// ui_notify_async('AirPlay', 'AirPlay feature disabled', $jobID);
 					}
 					$redis->sRem('w_lock',$jobID);					
 				break;
@@ -410,7 +410,7 @@ while (1) {
 					wrk_opcache('enable');
 					wrk_cleanDistro();
 					// send notfy to UI
-					ui_notify_async('Clean IMG', 'this image is now clean, ready to publish.', $jobID);
+					// ui_notify_async('Clean IMG', 'this image is now clean, ready to publish.', $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -424,7 +424,7 @@ while (1) {
 					$hash = md5_file('/etc/mpd.conf');
 					$redis->set('mpdconfhash',$hash);
 					// send notfy to UI
-					ui_notify_async('Hostname', 'Hostname changed to:'.$hn[0], $jobID);
+					// ui_notify_async('Hostname', 'Hostname changed to:'.$hn[0], $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -439,11 +439,21 @@ while (1) {
 				case 'mpdcfg':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					// send notfy to UI
-					// ui_notify_async('MPD', 'configuration updated', $jobID);
-					// wrk_setMpdStartOut($redis->get('hwplatformid'));
-					runelog('args',$job->args);
-					wrk_mpdconf($redis,'update',$job->args);
+					if ($job->action === 'update') {
+						// send notfy to UI
+						// ui_notify_async('MPD', 'configuration updated', $jobID);
+						runelog('args',$job->args);
+						wrk_mpdconf($redis,'update',$job->args);
+						wrk_mpdconf($redis,'restart');
+					}
+					
+					if ($job->action === 'reset') {
+						wrk_mpdconf($redis,'reset');
+					}		
+					
+					if ($job->action === 'switchao') {
+						wrk_mpdconf($redis,'switchao',$job->args);
+					}
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -451,7 +461,7 @@ while (1) {
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
 					// send notfy to UI
-					ui_notify_async('MPD', 'configuration updated', $jobID);
+					// ui_notify_async('MPD', 'configuration updated', $jobID);
 					// write mpd.conf file
 					sysCmd('systemctl stop mpd');
 					$fh = fopen('/etc/mpd.conf', 'w');
@@ -619,13 +629,13 @@ while (1) {
 					runelog("service: UDEVIL start",'');
 					sysCmd('systemctl start udevil');
 					$redis->set('udevil', 1);
-					ui_notify_async('USB-Auto', 'USB-Automount feature enabled', $jobID);
+					// ui_notify_async('USB-Auto', 'USB-Automount feature enabled', $jobID);
 					}
 					if ($job->action === 'stop') {
 					runelog("service: UDEVIL stop",'');
 					sysCmd('systemctl stop udevil');
 					$redis->set('udevil', 0);
-					ui_notify_async('USB-Auto', 'USB-Automount feature disabled', $jobID);
+					// ui_notify_async('USB-Auto', 'USB-Automount feature disabled', $jobID);
 					}
 					$redis->sRem('w_lock',$jobID);
 				break;

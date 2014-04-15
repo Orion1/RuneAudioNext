@@ -88,7 +88,7 @@ $mpd = openMpdSocket('/run/mpd.sock') ;
 if (!$mpd) {
 // exit script
 // die();
-sleep(1);
+sleep(5);
 
 } else {
 $status = _parseStatusResponse(MpdStatus($mpd));

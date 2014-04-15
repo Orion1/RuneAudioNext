@@ -38,22 +38,15 @@
 	}
 	// reset MPD configuration
 	if (isset($_POST['reset'])) {
-		$mpdconfdefault = cfgdb_read('',$dbh,'mpdconfdefault');
-		foreach($mpdconfdefault as $element) {
-			cfgdb_update('cfg_mpd',$dbh,$element['param'],$element['value_default']);
-		}
-		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg' ));
+		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg', 'action' => 'reset' ));
 	}
 	// update MPD configuration
 	if (isset($_POST['conf'])) {
-		// foreach ($_POST['conf'] as $key => $value) {
-			// $redis->hSet('mpdconf',$key,$value);
-		// }
-		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg', 'args' => $_POST['conf'] ));
+		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg', 'action' => 'update', 'args' => $_POST['conf'] ));
 	}
 	// manual MPD configuration
 	if (isset($_POST['mpdconf'])) {
-		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfg', 'args' => $_POST['mpdconf'] ));
+		$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'mpdcfgman', 'args' => $_POST['mpdconf'] ));
 	}
 	
  }

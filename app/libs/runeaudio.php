@@ -1459,7 +1459,6 @@ $header .= "\n";
 				$redis->hSet('mpdconf','port','6600');
 				$redis->hSet('mpdconf','max_connections','20');
 				$redis->hSet('mpdconf','user','mpd');
-				$redis->hSet('mpdconf','group','audio');
 				$redis->hSet('mpdconf','db_file','/var/lib/mpd/mpd.db');
 				$redis->hSet('mpdconf','sticker_file','/var/lib/mpd/sticker.sql');
 				$redis->hSet('mpdconf','log_file','/var/log/runeaudio/mpd.log');
@@ -1487,6 +1486,10 @@ $header .= "\n";
 			$output = null;
 			// --- general settings ---
 			foreach ($mpdcfg as $param => $value) {	
+				if ($param === 'audio_output_interface' OR $param === 'dsd_usb') {
+					continue;
+				}
+				
 				if ($param === 'mixer_type') {
 					if ($value === 'software' OR $value === 'hardware') {
 						$redis->set('volume', 1);
@@ -1496,12 +1499,25 @@ $header .= "\n";
 					}
 				} 
 				
+				if ($param === 'log_level' && $value === 'none') {
+					$redis->hDel('mpdconf','log_file');
+					continue;
+				}
+				
+				if ($param === 'log_level' && $value !== 'none') {
+					$redis->hSet('mpdconf','log_file','/var/log/runeaudio/mpd.log');
+				}					
+				
 				if ($param === 'user' && $value === 'mpd') {
-					$redis->hSet('mpdconf','group','audio');
+					$output .= $param." \t\"".$value."\"\n";
+					$output .= "group \t\"audio\"\n";
+					continue;
 				}
 
 				if ($param === 'user' && $value === 'root') {
-					$redis->hSet('mpdconf','group','root');
+					$output .= $param." \t\"".$value."\"\n";
+					$output .= "group \t\"root\"\n";
+					continue;
 				} 
 				
 				if ($param === 'bind_to_address') {
@@ -1515,7 +1531,7 @@ $header .= "\n";
 					$output .="plugin \t\"ffmpeg\"\n";
 					$output .="enabled \"".$value."\"\n";
 					$output .="}\n";
-				break;
+				continue;
 				} 
 				
 				if ($param === 'curl') {
@@ -1531,7 +1547,7 @@ $header .= "\n";
 						}
 					}
 				$output .="}\n";
-				break;
+				continue;
 				}
 				$output .= $param." \t\"".$value."\"\n";
 			}
@@ -1561,11 +1577,6 @@ $header .= "\n";
 			fclose($fh);
 			// update hash
 			$redis->set('mpdconfhash',md5_file('/etc/mpd.conf'));
-			sysCmd('systemctl restart mpd');
-			// restart mpdscribble
-			if ($redis->get('scrobbling_lastfm') === '1') {
-			sysCmd('systemctl restart mpdscribble');
-			}
 		break;
 		
 		case 'update':
@@ -1573,6 +1584,21 @@ $header .= "\n";
 				$redis->hSet('mpdconf',$param,$value);
 			}
 			wrk_mpdconf($redis,'writecfg');
+		break;
+		
+		case 'switchao':
+			$redis->set('ao',$args);
+			wrk_mpdconf($redis,'writecfg');
+			syscmd('mpc enable only "'.$args.'"');
+			wrk_mpdconf($redis,'restart');
+		break;
+		
+		case 'restart':
+			sysCmd('systemctl restart mpd');
+			// restart mpdscribble
+			if ($redis->get('scrobbling_lastfm') === '1') {
+			sysCmd('systemctl restart mpdscribble');
+			}
 		break;
 	}
 }
@@ -1631,12 +1657,6 @@ return $return;
 }
 
 function wrk_sourcecfg($db,$action,$args) {
-// if (isset($args->mount->action)) {
-// $action = $args->mount->action;
-// unset($args->mount->action);
-// } else {
-// $action = $args;
-// }
 runelog('wrk_sourcecfg($db,'.$action.')');
 	switch ($action) {
 
