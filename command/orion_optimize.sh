@@ -45,7 +45,7 @@ do
 	if ((count == 3)) 
 	then
 		echo "### Set priority for: mpd-player thread ###";
-		renice 0 $pid;
+		renice -15 $pid;
 	fi
 	if ((count == 4))  
 	then
@@ -55,7 +55,7 @@ do
 	if ((count == 5))
 	then
 		echo "### Set priority for: mpd-decoder thread ###";
-		renice 0 $pid;
+		renice -16 $pid;
 	fi
 count=$((count+1))
 done
@@ -146,11 +146,12 @@ mpc pause > /dev/null 2>&1
 sleep 0.3
 modprobe -r snd-usb-audio
 echo "options snd-usb-audio nrpacks=${nrpacks}" > /etc/modprobe.d/modprobe.conf
+sleep 0.2
 modprobe snd-usb-audio
 sleep 0.5
+#mpc play > /dev/null 2>&1
+#mpc pause > /dev/null 2>&1
 mpc play > /dev/null 2>&1
-# mpc pause > /dev/null 2>&1
-# mpc play > /dev/null 2>&1
 }
 
 ##################

@@ -98,7 +98,10 @@ if (isset($_POST)) {
 
 			if ($_POST['features']['scrobbling_lastfm'] == 1) {
 				// create worker job (start shairport)
-				$redis->get('scrobbling_lastfm') == 1 && $_POST['features']['lastfm']['user'] != $redis->hGet('lastfm','user') && $_POST['features']['lastfm']['pass'] != $redis->hGet('lastfm','pass') || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'start', 'args' => $_POST['features']['lastfm']));
+				// $redis->get('scrobbling_lastfm') == 1 && $_POST['features']['lastfm']['user'] != $redis->hGet('lastfm','user') && $_POST['features']['lastfm']['pass'] != $redis->hGet('lastfm','pass') || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'start', 'args' => $_POST['features']['lastfm']));
+				if (($_POST['features']['lastfm']['user'] != $redis->hGet('lastfm','user') OR $_POST['features']['lastfm']['pass'] != $redis->hGet('lastfm','pass')) OR $redis->get('scrobbling_lastfm') != $_POST['features']['scrobbling_lastfm']) {
+					$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'start', 'args' => $_POST['features']['lastfm']));
+				}
 			} else {
 				// create worker job (stop shairport)
 				$redis->get('scrobbling_lastfm') == 0 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'scrobbling_lastfm', 'action' => 'stop' ));
