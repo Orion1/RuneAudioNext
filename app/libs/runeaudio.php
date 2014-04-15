@@ -256,21 +256,21 @@ function _parseFileListResponse($resp) {
 			while ( $plistLine ) {
 				// TODO: testing!!! (synology @eaDir garbage filtering)
 				// list ( $element, $value ) = explode(": ",$plistLine);
-				if (!strpos($plistLine,'@eaDir')) list ( $element, $value ) = explode(": ",$plistLine);
-				if ( $element === "file" OR $element === "playlist") {
+				if (!strpos($plistLine,'@eaDir')) list ( $element, $value ) = explode(': ',$plistLine);
+				if ( $element === 'file' OR $element === 'playlist') {
 					$plCounter++;
 					// $plistFile = $value;
 					$plistArray[$plCounter][$element] = $value;
-					$plistArray[$plCounter]["fileext"] = parseFileStr($value,'.');
-				} else if ( $element === "directory" ) {
+					$plistArray[$plCounter]['fileext'] = parseFileStr($value,'.');
+				} else if ( $element === 'directory' ) {
 					$plCounter++;
 					// record directory index for further processing
 					$dirCounter++;
 					// $plistFile = $value;
-					$plistArray[$plCounter]["directory"] = $value;
+					$plistArray[$plCounter]['directory'] = $value;
 				} else {
 					$plistArray[$plCounter][$element] = $value;
-					$plistArray[$plCounter]["Time2"] = songTime($plistArray[$plCounter]["Time"]);
+					$plistArray[$plCounter]['Time2'] = songTime($plistArray[$plCounter]['Time']);
 				}
 
 				$plistLine = strtok("\n");
@@ -400,95 +400,13 @@ $handler = new kafene\SqliteSessionHandler($sessionsdb);
 	}
 }
 
-/*
-// cfg engine and session management
-function playerSession($action,$db,$var,$value) {
-$status = session_status();	
-	// open new PHP SESSION
-	if ($action == 'open') {
-		// check the PHP SESSION status
-		if($status != 2) {
-			// check presence of sessionID into SQLite datastore
-			//debug
-			// echo "<br>---------- READ SESSION -------------<br>";
-			$sessionid = playerSession('getsessionid',$db);
-			if (!empty($sessionid)) {
-				// echo "<br>---------- SET SESSION ID-------------<br>";
-				session_id($sessionid);
-				session_start();
-			} else {
-				session_start();
-				// echo "<br>---------- STORE SESSION -------------<br>";
-				playerSession('storesessionid',$db);
-			}
-		}
-		$dbh  = cfgdb_connect($db);
-		// scan cfg_engine and store values in the new session
-		$params = cfgdb_read('cfg_engine',$dbh);
-		foreach ($params as $row) {
-		$_SESSION[$row['param']] = $row['value'];
-		}
-		//debug
-		//print_r($_SESSION);
-	// close SQLite handle
-	$dbh  = null;
-	}
-
-	// unlock PHP SESSION file
-	if ($action == 'unlock') {
-	session_write_close();
-		// if (session_write_close()) {
-			// return true;
-		// }
-	}
-	
-	// unset and destroy current PHP SESSION
-	if ($action == 'destroy') {
-	session_unset();
-		if (session_destroy()) {
-		$dbh  = cfgdb_connect($db);
-			if (cfgdb_update('cfg_engine',$dbh,'sessionid','')) {
-			$dbh = null;
-			return true;
-			} else {
-			echo "cannot reset session on SQLite datastore";
-			return false;
-			}
-		}
-	}
-	
-	// store a value in the cfgdb and in current PHP SESSION
-	if ($action == 'write') {
-	$_SESSION[$var] = $value;
-	$dbh  = cfgdb_connect($db);
-	cfgdb_update('cfg_engine',$dbh,$var,$value);
-	$dbh = null;
-	}
-	
-	// record actual PHP Session ID in SQLite datastore
-	if ($action == 'storesessionid') {
-	$sessionid = session_id();
-	playerSession('write',$db,'sessionid',$sessionid);
-	}
-	
-	// read PHP SESSION ID stored in SQLite datastore and use it to "attatch" the same SESSION (used in worker)
-	if ($action == 'getsessionid') {
-	$dbh  = cfgdb_connect($db);
-	$result = cfgdb_read('cfg_engine',$dbh,'sessionid');
-	$dbh = null;
-	return $result['0']['value'];
-	}
-	
-}
-*/
-
 function cfgdb_connect($dbpath) {
 	if ($dbh  = new PDO($dbpath)) {
 	return $dbh;
 	} else {
 		echo "cannot open the database";
 	return false;
- }
+	}
 }
 
 
@@ -1229,11 +1147,20 @@ $updateh = 0;
 		break;
 		
 		case 'manual':
-				$file = '/etc/netctl/'.$args['name'];
-				$fp = fopen($file, 'w');
-				fwrite($fp, $args['config']);
-				fclose($fp);
-				$updateh = 1;
+			$file = '/etc/netctl/'.$args['name'];
+			$fp = fopen($file, 'w');
+			fwrite($fp, $args['config']);
+			fclose($fp);
+			$updateh = 1;
+		break;
+		
+		case 'reset':
+			wrk_netconfig($redis,'setnics');
+			$args = new stdClass;
+			$args->dhcp = '1';
+			$args->name = 'eth0';
+			wrk_netconfig($redis,'writecfg',$args);
+			$updateh = 1;
 		break;
 		
 	}
@@ -1290,7 +1217,7 @@ runelog('wrk_checkStrSysfile('.$sysfile.','.$searchstr.')',$searchstr);
 	}
 }
 
-function wrk_cleanDistro($db) {
+function wrk_cleanDistro() {
 runelog('function CLEAN DISTRO invoked!!!','');
 // remove mpd.db
 sysCmd('systemctl stop mpd');
@@ -1329,18 +1256,6 @@ sysCmd('cp /var/www/db/player.db.default /var/www/db/player.db');
 sysCmd('chmod 777 /var/www/db/player.db');
 sysCmd('poweroff');
 }
-
-// function wrk_setMpdStartOut($archID) {
-	// if (wrk_checkStrSysfile('/proc/asound/cards','USB-Audio')) {
-	// sysCmd("mpc enable only USB-Audio");
-	// } else if ($archID == '01' OR $archID == '02') {
-	// sysCmd("mpc enable only 'AnalogJack/HDMI'");
-	// } else if ($archID == '03' OR $archID == '04') {
-	// sysCmd("mpc enable only 'Null Output'");
-	// } else {
-	// sysCmd("mpc enable only 'Null Output'");
-	// }
-// }
 
 function wrk_audioOutput($redis,$action,$args = null) {
 	switch ($action) {

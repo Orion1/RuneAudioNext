@@ -133,32 +133,17 @@ if ($playerid_db === '') {
 runelog(">>>>>>RUNEAUDIO FIRST RUN PROCESS ---",'');
 // reset Redis datatore to defaults
 redisDatastore($redis,'reset');
-
 $dbh = cfgdb_connect($db);
+
 	// register HW architectureID and playerID
 	runelog("register HW architectureID and playerID",'');
 	wrk_setHwPlatform($redis);
 
-
 	// reset netconf to defaults
 	runelog("reset netconf to defaults",'');
-	// $value = array('ssid' => '', 'encryption' => '', 'password' => '');
-	// cfgdb_update('cfg_wifisec',$dbh,'',$value);
-	// reset eth0 netctl profile
-	// sysCmd('cp /var/www/_OS_SETTINGS/etc/netctl/eth0 /etc/netctl/');
-	// update hash
-	// $hash = md5_file('/etc/netctl/eth0');
-	// $redis->set('netconfhash',$hash);
-	// update systemd eth0 configuration
-	// sysCmd('netctl disable eth0');
-	// sysCmd('netctl enable eth0');
-	// sysCmd('systemctl disable netctl@eth0');
-	// sysCmd('systemctl disable samba');
-	// restart eth0
-	runelog("restart eth0",'');
-	sysCmd('netctl restart eth0');
 
-	// sysCmd('service networking restart');
+	// read system network interfaces details
+	wrk_netconfig($redis,'reset');
 
 	// reset sourcecfg to defaults
 	runelog("reset sourcecfg to defaults",'');
@@ -167,25 +152,12 @@ $dbh = cfgdb_connect($db);
 
 	// reset mpdconf to defaults
 	runelog("reset mpdconf to defaults",'');
-	$mpdconfdefault = cfgdb_read('',$dbh,'mpdconfdefault');
-	foreach($mpdconfdefault as $element) {
-		cfgdb_update('cfg_mpd',$dbh,$element['param'],$element['value_default']);
-	}
+	wrk_mpdconf($redis,'reset');
+	
 	// tell worker to write new MPD config
 	wrk_mpdconf('/etc',$db,$redis);
-	// update hash
-	$hash = md5_file('/etc/mpd.conf');
-	$redis->set('mpdconfhash',$hash);
-	runelog("restart MPD",'');
-	sysCmd('systemctl restart mpd');
-	// restart mpdscribble
-	if ($redis->get('scrobbling_lastfm') === '1') {
-	runelog("restart MPDSCRIBBLE",'');
-	sysCmd('systemctl restart mpdscribble');
-	}
-	usleep(500000);
-	// wrk_setMpdStartOut($arch);
 	
+	usleep(500000);
 	// system ENV files check and replace
 	// runelog("system ENV files check and replace",'');
 	//	wrk_sysEnvCheck($arch,1);
