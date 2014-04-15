@@ -212,10 +212,10 @@ jQuery(document).ready(function($){ 'use strict';
 			});
 		});
 		
-		// confirm manual data
+		// MPD config manual edit
 		$('.manual-edit-confirm').find('.btn-primary').click(function(){
-			$('#mpdconf_editor').show().removeClass('hide');
-			$(this).hide();
+			$('#mpdconf_editor').removeClass('hide');
+			$('#manual-edit-warning').addClass('hide');
 		});
 	}
 	
