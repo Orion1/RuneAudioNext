@@ -1,19 +1,22 @@
 <div class="container">
     <h1>MPD Configuration</h1>
     <p>If you mess up with this configuration you can <a data-toggle="modal" href="#mpd-config-defaults">reset to default</a>.</p>
+	<form class="form-horizontal" action="" method="post">
 		<fieldset>
             <legend>Audio Output</legend>
             <div class="form-group">
-			<label class="col-sm-2 control-label" for="audio-output-interface">Audio output interface</label>
-                <div class="col-sm-10">
+				<label class="col-sm-2 control-label" for="audio-output-interface">Audio output interface</label>
+				<div class="col-sm-10">
 					<select id="audio-output-interface" name="conf[audio_output_interface]" class="selectpicker" data-style="btn-default btn-lg">
 						<?php foreach($this->acards as $card): ?>
 							<option value="<?=$card->name ?>" <?php if($this->ao === $card->name): ?> selected <?php endif ?>><?=$card->name ?></option>
 						<?php endforeach; ?>
 					</select>
 					<span class="help-block">This switches output between audio interfaces. Works <i>"on the fly"</i>.</span>
-                </div>
+				</div>
+			</div>
         </fieldset>
+	</form>
 	<form class="form-horizontal" data-validate="parsley" action="" method="post">
         <fieldset>
 			<legend>Volume control</legend>
@@ -26,9 +29,10 @@
 						<option value="hardware" <?php if($this->conf['mixer_type'] == 'hardware'): ?> selected <?php endif ?>>enabled - hardware</option>
                     </select>
                     <span class="help-block">
-					<strong>disabled</strong> - Volume knob disabled. Use this option to achieve the <strong>best audio quality</strong>.<br>
-                    <strong>software</strong> - Volume knob enabled, controlled by <strong>software mixer</strong>. This option <strong>reduces the overall sound quality</strong>.<br>
-                    <strong>hardware</strong> - Volume knob enabled, controlled by <strong>hardware mixer</strong>. This option enables the volume control and let you achieve <strong>very good overall sound quality</strong>. <i>NOTE: This option must be supported directly from your sound card hardware.</i></span>
+						<strong>disabled</strong> - Volume knob disabled. Use this option to achieve the <strong>best audio quality</strong>.<br>
+						<strong>software</strong> - Volume knob enabled, controlled by <strong>software mixer</strong>. This option <strong>reduces the overall sound quality</strong>.<br>
+						<strong>hardware</strong> - Volume knob enabled, controlled by <strong>hardware mixer</strong>. This option enables the volume control and let you achieve <strong>very good overall sound quality</strong>. <i>NOTE: This option must be supported directly from your sound card hardware.</i>
+					</span>
                 </div>
             </div>
         </fieldset>
