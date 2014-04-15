@@ -36,7 +36,6 @@
 // ----------------------------------------------------------------------------------------------------
 var GUI = {
 	json: 0,
-	cmd: 'status',
 	playlist: null,
 	currentsong: null,
 	currentalbum: null,

@@ -44,9 +44,9 @@
 	<p><strong>Copyright (C) 2013 RuneAudio Team</strong>
 	<span class="help-block">Andrea Coiutti &amp; Simone De Gregori &amp; Carmelo San Giovanni</span></p>
 	<p><strong>RuneUI</strong>
-	<span class="help-block">copyright (C) 2013 – Andrea Coiutti (aka ACX) & Simone De Gregori (aka Orion)</span>
+	<span class="help-block">copyright (C) 2013 – Andrea Coiutti (aka ACX) &amp; Simone De Gregori (aka Orion)</span>
 	<strong>RuneOS</strong>
-	<span class="help-block">copyright (C) 2013 – Carmelo San Giovanni (aka Um3ggh1U) & Simone De Gregori (aka Orion)</span><br></p>
+	<span class="help-block">copyright (C) 2013 – Carmelo San Giovanni (aka Um3ggh1U) &amp; Simone De Gregori (aka Orion)</span><br></p>
 	<h2>RuneUI credits</h2>
 	<p><strong>PHP language v5.5</strong> by <a href="http://php.net/credits.php" target="_blank" rel="nofollow">PHP Team</a><br /><a href="http://php.net/" target="_blank" rel="nofollow">http://php.net</a></p>
 	<p><strong>PHP pthreads</strong> by <a href="https://github.com/krakjoe" target="_blank" rel="nofollow">Joe Watkins</a><br /><a title="PHP pthreads" href="http://pthreads.org" target="_blank" rel="nofollow">http://pthreads.org</a></p>

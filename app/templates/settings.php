@@ -7,14 +7,14 @@
 				<label class="control-label col-sm-2" for="hostname">Player hostname</label>
 				<div class="col-sm-10">
 					<input class="form-control input-lg" type="text" id="hostname" name="hostname" value="<?=$this->hostname ?>" placeholder="runeaudio" autocomplete="off">
-					<span class="help-block">set <i>player HOSTNAME</i></span>
+					<span class="help-block">Set the player hostname. This will change the address used to reach the RuneUI.</span>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="ntpserver">NTP server</label>
 				<div class="col-sm-10">
 					<input class="form-control input-lg" type="text" id="ntpserver" name="ntpserver" value="<?=$this->ntpserver ?>" placeholder="pool.ntp.org" autocomplete="off">
-					<span class="help-block">set your reference time sync server <i>(NTP server)</i></span>
+					<span class="help-block">Set your reference time sync server <i>(NTP server)</i></span>
 				</div>
 			</div>
 			<div class="form-group">
@@ -104,7 +104,7 @@
 		</fieldset>
 	</form>
 	<form class="form-horizontal" action="" method="post" role="form" data-validate="parsley">
-        <fieldset>
+        <fieldset id="features-management">
             <legend>Features management</legend>
 			<p>Enable/disable optional modules that best suit your needs. Disabling unusued features will free system resources and might improve the overall performance.</p>
 			<div class="form-group">

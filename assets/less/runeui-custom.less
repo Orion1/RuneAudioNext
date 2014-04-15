@@ -1302,6 +1302,9 @@ h1, h2 {
 .btn-lg {
 	.button-size(@padding-btn-vertical; @padding-btn-horizontal; @font-size-large; @line-height-large; @border-radius-large);
 }
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+	background: darken(@btn-default-bg, 10%);
+}
 label {
 	font-weight: normal;
 }
@@ -1321,6 +1324,9 @@ label {
 .help-block, .help-inline {
 	color: lighten(@brand-alt, 20%);
 	font-size: 13px;
+	strong {
+		color: lighten(@brand-alt, 30%);
+	}
 }
 .modal-content {
 	border: 5px solid @modal-content-fallback-border-color; //old browsers fallback (ie8 etc)
@@ -1374,13 +1380,11 @@ hr {
 
 input.parsley-success, textarea.parsley-success, select.parsley-success {
 	color: #468847 !important;
-	background-color: #DFF0D8 !important;
-	border: 1px solid #D6E9C6 !important;
+	border-color: #468847 !important;
 }
 input.parsley-error, textarea.parsley-error, select.parsley-error {
 	color: #B94A48 !important;
-	background-color: #F2DEDE !important;
-	border: 1px solid #EED3D7 !important;
+	border-color: #B94A48 !important;
 }
 ul.parsley-error-list {
 	font-size: 11px;

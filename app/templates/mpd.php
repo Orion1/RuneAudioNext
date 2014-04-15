@@ -12,7 +12,7 @@
 							<option value="<?=$card->name ?>" <?php if($this->ao === $card->name): ?> selected <?php endif ?>><?=$card->name ?></option>
 						<?php endforeach; ?>
 					</select>
-					<span class="help-block">This switches output between audio interfaces. Works <i>"on the fly"</i>.</span>
+					<span class="help-block">This switches output between audio interfaces. Works on the fly.</span>
 				</div>
 			</div>
         </fieldset>
@@ -31,7 +31,8 @@
                     <span class="help-block">
 						<strong>disabled</strong> - Volume knob disabled. Use this option to achieve the <strong>best audio quality</strong>.<br>
 						<strong>software</strong> - Volume knob enabled, controlled by <strong>software mixer</strong>. This option <strong>reduces the overall sound quality</strong>.<br>
-						<strong>hardware</strong> - Volume knob enabled, controlled by <strong>hardware mixer</strong>. This option enables the volume control and let you achieve <strong>very good overall sound quality</strong>. <i>NOTE: This option must be supported directly from your sound card hardware.</i>
+						<strong>hardware</strong> - Volume knob enabled, controlled by <strong>hardware mixer</strong>. This option enables the volume control and let you achieve <strong>very good overall sound quality</strong>.<br>
+						<i>Note: hardware mixer must be supported directly from your sound card hardware.</i>
 					</span>
                 </div>
             </div>
