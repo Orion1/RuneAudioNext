@@ -1306,13 +1306,16 @@ function wrk_i2smodule($redis,$args) {
 sysCmd('mpc stop').usleep(300000);
 	switch ($args) {
 		case 'none':
-			sysCmd('rmmod snd_soc_core').usleep(300000);
-			sysCmd('rmmod snd_soc_wm8804').usleep(300000);
+			sysCmd('rmmod snd_soc_bcm2708_i2s').usleep(300000);
+			sysCmd('rmmod snd_soc_iqaudio_dac').usleep(300000);
+			sysCmd('rmmod snd_soc_hifiberry_digi').usleep(300000);
 			sysCmd('rmmod snd_soc_hifiberry_dac').usleep(300000);
+			sysCmd('rmmod snd_soc_wm8804').usleep(300000);
 			sysCmd('rmmod snd_soc_pcm512x').usleep(300000);
 			sysCmd('rmmod snd_soc_pcm5102a').usleep(300000);
-			sysCmd('rmmod bcm2708_dmaengine').usleep(300000);
-			sysCmd('rmmod snd_soc_bcm2708_i2s');
+			sysCmd('rmmod snd_soc_core').usleep(300000);
+			sysCmd('rmmod bcm2708_dmaengine');
+			
 		break;
 		
 		case 'berrynos':
@@ -1342,7 +1345,7 @@ sysCmd('mpc stop').usleep(300000);
 			sysCmd('modprobe snd_soc_hifiberry_dac');
 		break;
 				
-		case 'berrynosmini':
+		case 'hifiberrydigi':
 			sysCmd('modprobe snd_soc_core').usleep(300000);
 			sysCmd('modprobe snd_soc_wm8804').usleep(300000);
 			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
