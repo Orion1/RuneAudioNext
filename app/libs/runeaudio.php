@@ -1319,55 +1319,55 @@ sysCmd('mpc stop').usleep(300000);
 		break;
 		
 		case 'berrynos':
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_core').usleep(300000);
 			sysCmd('modprobe snd_soc_wm8804').usleep(300000);
 			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
-			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
 			sysCmd('modprobe snd_soc_hifiberry_dac');
 		break;		
 		
 		case 'berrynosmini':
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_core').usleep(300000);
 			sysCmd('modprobe snd_soc_wm8804').usleep(300000);
 			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
-			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
 			sysCmd('modprobe snd_soc_hifiberry_dac');
 		break;
 				
 		case 'hifiberrydac':
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_core').usleep(300000);
 			sysCmd('modprobe snd_soc_wm8804').usleep(300000);
 			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
-			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
 			sysCmd('modprobe snd_soc_hifiberry_dac');
 		break;
 				
 		case 'hifiberrydigi':
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_core').usleep(300000);
 			sysCmd('modprobe snd_soc_wm8804').usleep(300000);
 			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
-			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
 			sysCmd('modprobe snd_soc_hifiberry_digi');
 		break;
 				
 		case 'iqaudiopidac':
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_core').usleep(300000);
 			sysCmd('modprobe snd_soc_wm8804').usleep(300000);
 			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
-			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_pcm512x').usleep(300000);
 			sysCmd('modprobe snd_soc_iqaudio_dac');
 		break;
 				
 		case 'raspi2splay3':
+			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_core').usleep(300000);
 			sysCmd('modprobe snd_soc_wm8804').usleep(300000);
 			sysCmd('modprobe snd_soc_bcm2708_i2s').usleep(300000);
-			sysCmd('modprobe bcm2708_dmaengine').usleep(300000);
 			sysCmd('modprobe snd_soc_pcm5102a').usleep(300000);
 			sysCmd('modprobe snd_soc_hifiberry_dac');
 		break;
