@@ -210,12 +210,12 @@ if ($redis->get('i2smodule') !== 'none') {
 wrk_mpdconf($redis,'refresh');
 
 // start shairport
-if ($redis->set('airplay') === '1') {
+if ($redis->get('airplay') === '1') {
 runelog("service: SHAIRPORT start",'');
 sysCmd('systemctl start shairport');
 }
 // start udevil
-if ($redis->set('udevil') === '1') {
+if ($redis->get('udevil') === '1') {
 runelog("service: UDEVIL start",'');
 sysCmd('systemctl start udevil');
 }
