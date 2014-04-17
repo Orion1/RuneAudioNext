@@ -20,7 +20,7 @@
 				<input type="hidden" name="cmd" value="_s-xclick">
 				<input type="hidden" name="hosted_button_id" value="MV4SLBWUGKCHU">
 				<input type="image" src="assets/img/donate-paypal.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online">
-				<img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1">
+				<img alt="" border="0" src="/tun/https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1">
 			</form>
 			<p class="social-buttons">
 				<a class="btn btn-default btn-lg" target="_blank" rel="nofollow" href="https://github.com/RuneAudio" title="RuneAudio on GitHub"><i class="fa fa-github"></i></a>
