@@ -177,12 +177,21 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	if( $('#section-settings').length ){
 	
-		// show/hide Last.fm user/pass form  
+		// show/hide Last.fm auth form  
 		$('#scrobbling-lastfm').change(function(){
 			if ($(this).prop('checked')) {
 				$('#lastfmAuth').removeClass('hide');
 			} else {
 				$('#lastfmAuth').addClass('hide');
+			}													  
+		});		
+		
+		// show/hide proxy settings form  
+		$('#proxy').change(function(){
+			if ($(this).prop('checked')) {
+				$('#proxyAuth').removeClass('hide');
+			} else {
+				$('#proxyAuth').addClass('hide');
 			}													  
 		});
 	}

@@ -138,51 +138,27 @@ $dbh = cfgdb_connect($db);
 	// register HW architectureID and playerID
 	runelog("register HW architectureID and playerID",'');
 	wrk_setHwPlatform($redis);
-			// destroy actual session
-			// runelog("destroy actual session",'');
-			// playerSession('destroy',$db,'','');
-			// reload session data
-			// playerSession('open',$db,'','');
-			// runelog("reload session data",'');
-			// reset ENV parameters
-			//runelog("reset ENV parameters",'');
-			//wrk_sysChmod();
-/*
+
+
 	// reset netconf to defaults
 	runelog("reset netconf to defaults",'');
-	$value = array('ssid' => '', 'encryption' => '', 'password' => '');
-	cfgdb_update('cfg_wifisec',$dbh,'',$value);
+	// $value = array('ssid' => '', 'encryption' => '', 'password' => '');
+	// cfgdb_update('cfg_wifisec',$dbh,'',$value);
 	// reset eth0 netctl profile
-	sysCmd('cp /var/www/_OS_SETTINGS/etc/netctl/eth0 /etc/netctl/');
+	// sysCmd('cp /var/www/_OS_SETTINGS/etc/netctl/eth0 /etc/netctl/');
 	// update hash
-	$hash = md5_file('/etc/netctl/eth0');
-	$redis->set('netconfhash',$hash);
+	// $hash = md5_file('/etc/netctl/eth0');
+	// $redis->set('netconfhash',$hash);
 	// update systemd eth0 configuration
-	sysCmd('netctl disable eth0');
-	sysCmd('netctl enable eth0');
-	sysCmd('systemctl disable netctl@eth0');
-	sysCmd('systemctl disable samba');
+	// sysCmd('netctl disable eth0');
+	// sysCmd('netctl enable eth0');
+	// sysCmd('systemctl disable netctl@eth0');
+	// sysCmd('systemctl disable samba');
 	// restart eth0
 	runelog("restart eth0",'');
 	sysCmd('netctl restart eth0');
 
-	// restart wlan0 interface
-
-		if (strpos($netconf, 'wlan0') != false) {
-		$cmd = "ip addr list wlan0 |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1";
-		$ip_wlan0 = sysCmd($cmd);
-			if (!empty($ip_wlan0[0])) {
-			$_SESSION['netconf']['wlan0']['ip'] = $ip_wlan0[0];
-			} else {
-				if (wrk_checkStrSysfile('/proc/net/wireless','wlan0')) {
-				$_SESSION['netconf']['wlan0']['ip'] = '--- NO IP ASSIGNED ---';
-				} else {
-				$_SESSION['netconf']['wlan0']['ip'] = '--- NO INTERFACE PRESENT ---';
-				}
-			}
-		}
-	sysCmd('service networking restart');
-*/
+	// sysCmd('service networking restart');
 
 	// reset sourcecfg to defaults
 	runelog("reset sourcecfg to defaults",'');

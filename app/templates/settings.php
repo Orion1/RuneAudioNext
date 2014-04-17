@@ -18,6 +18,38 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label for="proxy" class="control-label col-sm-2">HTTP Proxy server</label>
+				<div class="col-sm-10">
+					<label class="switch-light well" onclick="">
+						<input id="proxy" name="features[proxy]" type="checkbox" value="1"<?php if($this->proxy['enable'] == 1): ?> checked="checked" <?php endif ?>>
+						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
+					</label>
+				</div>
+			</div>
+			<div class="<?php if($this->proxy['enable'] != 1): ?>hide<?php endif ?>" id="proxyAuth">
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="proxy-user">Host</label>
+					<div class="col-sm-10">
+						<input class="form-control input-lg" type="text" id="proxy_host" name="features[proxy][host]" value="<?=$this->proxy['host'] ?>" data-trigger="change" placeholder="<host IP or FQDN>:<port>">
+						<span class="help-block">Insert HTTP Proxy host<i> (format: proxy_address:port)</i></span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="proxy-user">Username</label>
+					<div class="col-sm-10">
+						<input class="form-control input-lg" type="text" id="proxy_user" name="features[proxy][user]" value="<?=$this->proxy['user'] ?>" data-trigger="change" placeholder="user">
+						<span class="help-block">Insert your HTTP Proxy <i>username</i> (leave blank for anonymous authentication)</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="proxy-pass">Password</label>
+					<div class="col-sm-10">
+						<input class="form-control input-lg" type="password" id="proxy_pass" name="features[proxy][pass]" value="<?=$this->proxy['pass'] ?>" placeholder="pass" autocomplete="off">
+						<span class="help-block">Insert your HTTP Proxy <i>password</i> (case sensitive) (leave blank for anonymous authentication)</span>
+					</div>
+				</div>
+            </div>
+			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button class="btn btn-primary btn-lg" value="save" name="save" type="submit">Apply settings</button>
 				</div>
@@ -26,16 +58,12 @@
 	</form>
 	<form class="form-horizontal" method="post" role="form">
 		<fieldset>
-			<legend>Sound quality tweaks</legend>
+			<legend>Kernel settings</legend>
 			<p>
-				These profiles include a set of performance tweaks that act on some system kernel parameters.<br>
-				It does not have anything to do with DSPs or other sound effects: the output is kept untouched (bit perfect).<br>
-				It happens that these parameters introduce an audible impact on the overall sound quality, acting on kernel latency parameters (and probably on the amount of overall<a href="http://www.thewelltemperedcomputer.com/KB/BitPerfectJitter.htm" title="Bit Perfect Jitter by Vincent Kars" target="_blank"> jitter</a>).<br>
-				Sound results may vary depending on where music is listened, so choose according to your personal taste.<br>
-				(If you can't hear any tangible differences... nevermind, just stick to the default settings.)
+				section description
 			</p>
 			<div class="form-group">
-				<label class="control-label col-sm-2" for="orionprofile">Kernel profile</label>
+				<label class="control-label col-sm-2" for="orionprofile">SQ optimization profile</label>
 				<div class="col-sm-10">
 					<select class="selectpicker" name="orionprofile" data-style="btn-default btn-lg">
 						<option value="default" <?php if($this->orionprofile == 'default'): ?> selected <?php endif ?>>ArchLinux default</option>
@@ -46,6 +74,11 @@
 						<option value="RaspberryPi+i2s" <?php if($this->orionprofile == 'RaspberryPi+i2s'): ?> selected <?php endif ?>>RaspberryPi+i2s</option>
 						<option value="Um3ggh1U" <?php if($this->orionprofile == 'Um3ggh1U'): ?> selected <?php endif ?>>Um3ggh1U</option>
 					</select>
+					<span class="help-block">These profiles include a set of performance tweaks that act on some system kernel parameters.
+				It does not have anything to do with DSPs or other sound effects: the output is kept untouched (bit perfect).
+				It happens that these parameters introduce an audible impact on the overall sound quality, acting on kernel latency parameters (and probably on the amount of overall<a href="http://www.thewelltemperedcomputer.com/KB/BitPerfectJitter.htm" title="Bit Perfect Jitter by Vincent Kars" target="_blank"> jitter</a>).
+				Sound results may vary depending on where music is listened, so choose according to your personal taste.
+				(If you can't hear any tangible differences... nevermind, just stick to the default settings.)</span>
 				</div>
 			</div>
 			<div class="form-group">

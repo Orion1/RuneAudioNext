@@ -1436,16 +1436,16 @@ $header .= "\n";
 				} 
 				
 				if ($param === 'bind_to_address') {
-				$output .= "bind_to_address \"/run/mpd.sock\"\n";
+					$output .= "bind_to_address \"/run/mpd.sock\"\n";
 				} 
 			
 				if ($param === 'ffmpeg') {
-				// --- decoder plugin ---
-				$output .="\n";
-				$output .="decoder {\n";
-				$output .="plugin \t\"ffmpeg\"\n";
-                $output .="enabled \"".$value."\"\n";
-				$output .="}\n";
+					// --- decoder plugin ---
+					$output .="\n";
+					$output .="decoder {\n";
+					$output .="plugin \t\"ffmpeg\"\n";
+					$output .="enabled \"".$value."\"\n";
+					$output .="}\n";
 				break;
 				} 
 				
@@ -1470,18 +1470,18 @@ $header .= "\n";
 			// --- audio output ---
 			$acards = $redis->hGetAll('acards');
 			foreach ($acards as $card) {
-			$card= json_decode($card);
-			$output .="\n";
-			$output .="audio_output {\n";
-			$output .="name \t\t\"".$card->name."\"\n";
-			$output .="type \t\t\"".$card->type."\"\n";
-			$output .="device \t\t\"".$card->device."\"\n";
-			if (isset($card->mixer_device)) $output .="mixer_device \t\"".$card->mixer_device."\"\n";
-			if (isset($card->mixer_control)) $output .="mixer_control \t\"".$card->mixer_control."\"\n";
-			$output .="auto_resample \t\"no\"\n";
-			$output .="auto_format \t\"no\"\n";
-			if ($redis->get('ao') === $card->name) $output .="enabled \t\"yes\"\n";
-			$output .="}\n";
+				$card= json_decode($card);
+				$output .="\n";
+				$output .="audio_output {\n";
+				$output .="name \t\t\"".$card->name."\"\n";
+				$output .="type \t\t\"".$card->type."\"\n";
+				$output .="device \t\t\"".$card->device."\"\n";
+				if (isset($card->mixer_device)) $output .="mixer_device \t\"".$card->mixer_device."\"\n";
+				if (isset($card->mixer_control)) $output .="mixer_control \t\"".$card->mixer_control."\"\n";
+				$output .="auto_resample \t\"no\"\n";
+				$output .="auto_format \t\"no\"\n";
+				if ($redis->get('ao') === $card->name) $output .="enabled \t\"yes\"\n";
+				$output .="}\n";
 			}
 			$output .="\n";
 			// debug
@@ -1503,7 +1503,7 @@ $header .= "\n";
 			foreach ($args as $param => $value) {
 				$redis->hSet('mpdconf',$param,$value);
 			}
-			wrk_mpdconf2($redis,'writecfg');
+			wrk_mpdconf($redis,'writecfg');
 		break;
 	}
 }
@@ -1520,12 +1520,12 @@ function wrk_sourcemount($db,$action,$id) {
 			// smb/cifs mount
 			$auth = 'guest';
 			if (!empty($mp[0]['username'])) {
-			$auth = "username=".$mp[0]['username'].",password=".$mp[0]['password'];
+				$auth = "username=".$mp[0]['username'].",password=".$mp[0]['password'];
 			}
-			$mountstr = "mount -t cifs \"//".$mp[0]['address']."/".$mp[0]['remotedir']."\" -o ".$auth.",sec=ntlm,uid=".$mpdproc['uid'].",gid=".$mpdproc['gid'].",rsize=".$mp[0]['rsize'].",wsize=".$mp[0]['wsize'].",iocharset=".$mp[0]['charset'].",".$mp[0]['options']." \"/mnt/MPD/NAS/".$mp[0]['name']."\"";
+				$mountstr = "mount -t cifs \"//".$mp[0]['address']."/".$mp[0]['remotedir']."\" -o ".$auth.",sec=ntlm,uid=".$mpdproc['uid'].",gid=".$mpdproc['gid'].",rsize=".$mp[0]['rsize'].",wsize=".$mp[0]['wsize'].",iocharset=".$mp[0]['charset'].",".$mp[0]['options']." \"/mnt/MPD/NAS/".$mp[0]['name']."\"";
 			} else {
-			// nfs mount
-			$mountstr = "mount -t nfs -o rsize=".$mp[0]['rsize'].",wsize=".$mp[0]['wsize'].",".$mp[0]['options']." \"".$mp[0]['address'].":/".$mp[0]['remotedir']."\" \"/mnt/MPD/NAS/".$mp[0]['name']."\"";
+				// nfs mount
+				$mountstr = "mount -t nfs -o rsize=".$mp[0]['rsize'].",wsize=".$mp[0]['wsize'].",".$mp[0]['options']." \"".$mp[0]['address'].":/".$mp[0]['remotedir']."\" \"/mnt/MPD/NAS/".$mp[0]['name']."\"";
 			}
 			// debug
 			runelog('mount string',$mountstr);

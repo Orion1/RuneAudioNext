@@ -41,10 +41,31 @@
                     <span class="help-block">This setting is the TCP port that is desired for the daemon to get assigned to.</span>
                 </div>
             </div>
+			<div class="form-group" >
+                <label class="col-sm-2 control-label" for="daemon-user">Daemon user</label>
+                <div class="col-sm-10">
+					<select id="log-level" name="conf[user]" class="selectpicker" data-style="btn-default btn-lg">
+						<option value="mpd" <?php if($this->conf['user'] == 'mpd'): ?> selected <?php endif ?>>mpd</option>
+						<option value="root" <?php if($this->conf['user'] == 'root'): ?> selected <?php endif ?>>root</option>
+                    </select> 		
+                    <span class="help-block">This specifies the system user that MPD will run as.</span>
+                </div>
+            </div>
+			<div class="form-group" >
+                <label class="col-sm-2 control-label" for="daemon-group">Daemon group</label>
+                <div class="col-sm-10">
+					<select id="log-level" name="conf[user]" class="selectpicker" data-style="btn-default btn-lg">
+						<option value="audio" <?php if($this->conf['group'] == 'audio'): ?> selected <?php endif ?>>audio</option>
+						<option value="root" <?php if($this->conf['group'] == 'root'): ?> selected <?php endif ?>>root</option>
+                    </select> 		
+                    <span class="help-block">This specifies the system group that MPD will run as.</span>
+                </div>
+            </div>
             <div class="form-group" >
                 <label class="col-sm-2 control-label" for="log-level">Log level</label>
                 <div class="col-sm-10">
 					<select id="log-level" name="conf[log_level]" class="selectpicker" data-style="btn-default btn-lg">
+						<option value="none" <?php if($this->conf['log_level'] == 'none'): ?> selected <?php endif ?>>none</option>
 						<option value="default" <?php if($this->conf['log_level'] == 'default'): ?> selected <?php endif ?>>default</option>
 						<option value="secure" <?php if($this->conf['log_level'] == 'secure'): ?> selected <?php endif ?>>secure</option>	
 						<option value="verbose" <?php if($this->conf['log_level'] == 'verbose'): ?> selected <?php endif ?>>verbose</option>

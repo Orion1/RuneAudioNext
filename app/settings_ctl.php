@@ -127,4 +127,5 @@ $template->globalrandom = $redis->get('globalrandom');
 $template->scrobbling_lastfm = $redis->get('scrobbling_lastfm');
 $template->lastfm = getLastFMauth($redis);
 $template->cmediafix = $redis->get('cmediafix');
+$template->proxy = $redis->hGetall('proxy');
 ?>
