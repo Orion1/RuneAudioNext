@@ -563,6 +563,7 @@ function redisDatastore($redis,$action) {
 			$redis->set('lastsongid', 0);
 			
 			// acards_details database
+			$redis->hSet('acards_details','snd_rpi_iqaudio_dac','{\"extlabel\":\"IQaudIO Pi-DAC\",\"mixer_numid\":\"1\",\"mixer_control\":\"Playback Digital Volume\",\"type\":\"i2s\"}');
 			$redis->hSet('acards_details','snd_rpi_hifiberry_dac','{\"extlabel\":\"I&#178;S &#8722; (HiFiBerry DAC)\",\"hwplatformid\":\"01\",\"type\":\"i2s\"}');
 			$redis->hSet('acards_details','snd_rpi_hifiberry_digi','{\"extlabel\":\"I&#178;S &#8722; (HiFiBerry Digi)\",\"hwplatformid\":\"01\",\"type\":\"i2s\"}');
 			$redis->hSet('acards_details','XMOS USB Audio 2.0','{\"extlabel\":\"XMOS AK4399 USB-Audio DAC\",\"mixer_numid\":\"3\",\"mixer_control\":\"XMOS Clock Selector\",\"type\":\"usb\"}');
