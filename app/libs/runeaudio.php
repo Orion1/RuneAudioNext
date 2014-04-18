@@ -546,8 +546,8 @@ function redisDatastore($redis,$action) {
 			$redis->set('netconf_advanced', 0);
 
 			// developer parameters
-			$redis->set('dev', 1);
-			$redis->set('debug', 2);
+			$redis->set('dev', 0);
+			$redis->set('debug', 0);
 			$redis->set('opcache', 1);
 
 			// HW platform data
@@ -563,7 +563,7 @@ function redisDatastore($redis,$action) {
 			$redis->set('lastsongid', 0);
 			
 			// acards_details database
-			$redis->hSet('acards_details','snd_rpi_iqaudio_dac','{\"extlabel\":\"IQaudIO Pi-DAC\",\"mixer_numid\":\"1\",\"mixer_control\":\"Playback Digital Volume\",\"type\":\"i2s\"}');
+			$redis->hSet('acards_details','snd_rpi_iqaudio_dac','{\"extlabel\":\"IQaudIO Pi-DAC\",\"mixer_numid\":\"1\",\"mixer_control\":\"Playback Digital\",\"type\":\"i2s\"}');
 			$redis->hSet('acards_details','snd_rpi_hifiberry_dac','{\"extlabel\":\"I&#178;S &#8722; (HiFiBerry DAC)\",\"hwplatformid\":\"01\",\"type\":\"i2s\"}');
 			$redis->hSet('acards_details','snd_rpi_hifiberry_digi','{\"extlabel\":\"I&#178;S &#8722; (HiFiBerry Digi)\",\"hwplatformid\":\"01\",\"type\":\"i2s\"}');
 			$redis->hSet('acards_details','XMOS USB Audio 2.0','{\"extlabel\":\"XMOS AK4399 USB-Audio DAC\",\"mixer_numid\":\"3\",\"mixer_control\":\"XMOS Clock Selector\",\"type\":\"usb\"}');
@@ -616,7 +616,7 @@ function redisDatastore($redis,$action) {
 			$redis->get('volume') || $redis->set('volume', 0);
 			$redis->get('pl_length') || $redis->set('pl_length', 0);
 			$redis->get('nextsongid') || $redis->set('nextsongid', 0);
-			$redis->get('lastsongid') || $redis->set('lastsongid', 0);
+			$redis->get('lastsongid') || $redis->set('lastsongid', 0);	
 			break;
 	}
 	
@@ -1218,10 +1218,11 @@ runelog('wrk_checkStrSysfile('.$sysfile.','.$searchstr.')',$searchstr);
 	}
 }
 
-function wrk_cleanDistro() {
+function wrk_cleanDistro($redis) {
 runelog('function CLEAN DISTRO invoked!!!','');
 // remove mpd.db
 sysCmd('systemctl stop mpd');
+redisDatastore($redis,'reset');
 sleep(1);
 sysCmd('rm /var/lib/mpd/mpd.db');
 sysCmd('rm /var/lib/mpd/mpdstate');
@@ -1250,8 +1251,7 @@ sysCmd('systemctl start nginx');
 // reset /var/log/runeaudio/*
 sysCmd('rm -f /var/log/runeaudio/*');
 // rest mpd.conf
-sysCmd('cp /var/www/_OS_SETTINGS/mpd.conf /etc/mpd.conf');
-sysCmd('chown mpd.audio /etc/mpd.conf');
+wrk_mpdconf($redis,'reset');
 // restore default player.db
 sysCmd('cp /var/www/db/player.db.default /var/www/db/player.db');
 sysCmd('chmod 777 /var/www/db/player.db');
@@ -1280,7 +1280,7 @@ function wrk_audioOutput($redis,$action,$args = null) {
 				if ($redis->hGet('acards_details',$card)) {
 					$details = json_decode($redis->hGet('acards_details',$card));
 					if (isset($details->mixer_control)) {
-						$volsteps = sysCmd("amixer -c ".$i." get \"".$details->mixer_control."\" | grep Limits | cut -d ':' -f 2 | cut -d ' ' -f 3,5");
+						$volsteps = sysCmd("amixer -c ".$i." get \"".$details->mixer_control."\" | grep Limits | cut -d ':' -f 2 | cut -d ' ' -f 4,6");
 						$volsteps = explode(' ',$volsteps[0]);
 						$data['volmin'] = $volsteps[0];
 						$data['volmax'] = $volsteps[1];

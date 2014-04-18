@@ -1,7 +1,6 @@
 [Unit]
 Description=RuneAudio Playback Worker
-Requires=dhcpcd@eth0.service
-After=dhcpcd@eth0.service
+After=network.target
 
 [Service]
 Type=forking
