@@ -1,3 +1,4 @@
 db/player.db
 test/
+node_modules
 sync.ffs_db
