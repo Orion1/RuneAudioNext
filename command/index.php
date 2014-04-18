@@ -131,7 +131,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
                 } else if ($_GET['cmd'] == 'renderpl') {
 				// TODO: make it in background
 					sendMpdCommand($mpd,'playlist');
-					ui_render('playlist',readMpdResponse($mpd));
+					$renderpl = 1;
 				} else {
 				sendMpdCommand($mpd,$_GET['cmd']);
 				}
@@ -140,8 +140,12 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
         runelog('--- [command/index.php] --- CLOSE MPD SOCKET <<< (1) ---','');
 		$response = readMpdResponse($mpd);
         closeMpdSocket($mpd);
-		echo $response;
-        }
+			if ($renderpl) {
+			ui_render('playlist',$response);
+			} else {
+			echo $response;
+			}
+		}
 } else {
 echo 'MPD COMMAND INTERFACE<br>';
 echo 'INTERNAL USE ONLY<br>';
