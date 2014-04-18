@@ -128,7 +128,11 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 					sendMpdCommand($mpd,'clear');
 					}
 				
-                } else {
+                } else if ($_GET['cmd'] == 'renderpl') {
+				// TODO: make it in background
+					sendMpdCommand($mpd,'playlist');
+					ui_render('playlist',readMpdResponse($mpd));
+				} else {
 				sendMpdCommand($mpd,$_GET['cmd']);
 				}
             }
