@@ -130,7 +130,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 				
                 } else if ($_GET['cmd'] == 'renderpl') {
 				// TODO: make it in background
-					sendMpdCommand($mpd,'playlist');
+					sendMpdCommand($mpd,'playlistinfo');
 					$renderpl = 1;
 				} else {
 				sendMpdCommand($mpd,$_GET['cmd']);
@@ -141,9 +141,9 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 		$response = readMpdResponse($mpd);
         closeMpdSocket($mpd);
 			if ($renderpl) {
-			ui_render('playlist',$response);
+				ui_render('playlist',json_encode($response));
 			} else {
-			echo $response;
+				echo $response;
 			}
 		}
 } else {

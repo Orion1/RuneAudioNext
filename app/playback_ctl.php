@@ -58,4 +58,6 @@ $template->volume['divclass'] = 'nomixer';
 
 }
 
+$template->dev = $redis->get;
+
 ?>

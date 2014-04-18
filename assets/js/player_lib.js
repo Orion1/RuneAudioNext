@@ -69,6 +69,22 @@ function displayChannel(){
 	pushstream.connect();
 }
 
+// open the Playing Queue channel
+function queueChannel(){
+	var pushstream = new PushStream({
+		host: window.location.hostname,
+		port: window.location.port,
+		modes: "websocket|longpolling"
+	});
+	pushstream.onmessage = getPlaylist;
+	pushstream.onstatuschange = function(status) {
+	// force queue rendering (backend-call)
+		if (status === 2) sendCmd('renderpl');
+	};
+	pushstream.addChannel('playlist');
+	pushstream.connect();
+}
+
 // open the notify messages channel
 function notifyChannel(){
 	var pushstream = new PushStream({
@@ -98,11 +114,11 @@ function renderUI(text) {
 	} else {
 		$('#time').val(0).trigger('change');
 	}
-	if (GUI.json.playlist != GUI.playlist) {
-		getPlaylistCmd();
-		GUI.playlist = GUI.json.playlist;
+	// if (GUI.json.playlist != GUI.playlist) {
+		// getPlaylistCmd();
+		// GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
-	}
+	// }
 }
 
 function getPlaylistCmd(){
@@ -128,6 +144,27 @@ function getPlaylistCmd(){
 			loadingSpinner('pl', 'hide');
 		}
 	});
+}
+
+function getPlaylist(text) {
+	data = text[0];
+	// console.log(data);
+	if ( data.length > 4) {
+		$('.playlist').addClass('hide');
+		$('#playlist-entries').removeClass('hide');
+		// console.time('getPlaylistPlain timer');
+		getPlaylistPlain(data);
+		// console.timeEnd('getPlaylistPlain timer');
+		
+		var current = parseInt(GUI.json.song);
+		if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
+			customScroll('pl', current, 200); // highlight current song in playlist
+		}
+	} else {
+		$('.playlist').addClass('hide');
+		$('#playlist-warning').removeClass('hide');
+	}
+	loadingSpinner('pl', 'hide');
 }
 
 // render the playing queue from the data response 
