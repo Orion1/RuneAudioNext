@@ -1515,6 +1515,7 @@ $header .= "\n";
 		case 'switchao':
 			$redis->set('ao',$args);
 			wrk_mpdconf($redis,'writecfg');
+			wrk_shairportAO($redis,$args);
 			syscmd('mpc enable only "'.$args.'"');
 		break;
 		
@@ -1531,6 +1532,24 @@ $header .= "\n";
 			sysCmd('systemctl restart mpdscribble');
 			}
 		break;
+	}
+}
+
+function wrk_shairportAO($redis,$ao) {
+$acard = json_decode($redis->hget('acards',$ao));
+runelog('acard details: ',$acard);
+$file = '/usr/lib/systemd/system/shairport.service';
+$newArray = wrk_replaceTextLine($file,'','ExecStart','ExecStart=/usr/local/bin/shairport -w --on-start=/var/www/command/airplay.sh --on-stop=/var/www/command/airplay.sh -o alsa -- -d '.$acard->device);
+runelog('shairport.service :',$newArray);
+// Commit changes to /usr/lib/systemd/system/shairport.service
+$fp = fopen($file, 'w');
+fwrite($fp, implode("",$newArray));
+fclose($fp);
+// update systemd
+sysCmd('systemctl daemon-reload');
+	if ($redis->get('airplay') === '1') {
+		runelog('restart shairport');
+		sysCmd('systemctl restart shairport');
 	}
 }
 
