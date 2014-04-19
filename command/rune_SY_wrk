@@ -210,7 +210,7 @@ if ($redis->get('i2smodule') !== 'none') {
 wrk_mpdconf($redis,'refresh');
 
 // start shairport
-if ($redis->get('airplay') === '1') {
+if ($redis->hget('airplay','enable') === '1') {
 runelog("service: SHAIRPORT start",'');
 sysCmd('systemctl start shairport');
 }
@@ -277,18 +277,31 @@ while (1) {
 				
 				case 'airplay':
 				runelog('wrk_SY: ',$job->wrkcmd);
-					$redis->sAdd('w_lock',$jobID);			
+					$redis->sAdd('w_lock',$jobID);
+					if ($job->args !== $redis->hGet('airplay','name')) {
+					$redis->hSet('airplay','name',$job->args);
+					// update shairport startup config
+					wrk_shairport($redis,$redis->get('ao'),$redis->hGet('airplay','name'));
+					$restart = 1;
+					}
+					// start shairport
 					if ($job->action === 'start') {
-					runelog("service: SHAIRPORT start",'');
-					sysCmd('systemctl start shairport');
-					$redis->set('airplay', 1);
+					runelog("service: SHAIRPORT start");
+					// start or re-start shairport service
+						if (isset($restart)) {
+							sysCmd('systemctl restart shairport');
+						} else {
+							sysCmd('systemctl start shairport');
+						}
+					$redis->hSet('airplay','enable', 1);
 					// send notfy to UI
 					// ui_notify_async('AirPlay', 'AirPlay feature enabled', $jobID);
 					}
+					// stop shairport
 					if ($job->action === 'stop') {
-					runelog("service: SHAIRPORT stop",'');
+					runelog("service: SHAIRPORT stop");
 					sysCmd('systemctl stop shairport');
-					$redis->set('airplay', 0);
+					$redis->hSet('airplay','enable', 0);
 					// send notfy to UI
 					// ui_notify_async('AirPlay', 'AirPlay feature disabled', $jobID);
 					}

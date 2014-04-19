@@ -523,7 +523,8 @@ function redisDatastore($redis,$action) {
 			// player features
 			$redis->set('hostname', 'runeaudio');
 			$redis->set('ntpserver', 'pool.ntp.org');
-			$redis->set('airplay', 1);
+			$redis->hSet('airplay','enable', 1);
+			$redis->hSet('airplay','name', 'runeaudio');
 			$redis->set('udevil', 1);
 			$redis->set('coverart', 1);
 			$redis->set('playmod', 0);
@@ -579,7 +580,10 @@ function redisDatastore($redis,$action) {
 			// player features
 			$redis->get('hostname') || $redis->set('hostname', 'runeaudio');
 			$redis->get('ntpserver') || $redis->set('ntpserver', 'pool.ntp.org');
-			$redis->get('airplay') || $redis->set('airplay', 1);
+				// TODO: remove this line // check old control value
+				if ($redis->get('airplay')) $redis->del('airplay');
+			$redis->hGet('airplay','enable') || $redis->hSet('airplay','enable', 1);
+			$redis->hGet('airplay','name') || $redis->hSet('airplay','name', 'runeaudio');
 			$redis->get('udevil') || $redis->set('udevil', 1);
 			$redis->get('coverart') || $redis->set('coverart', 1);
 			$redis->get('playmod') || $redis->set('playmod', 0);
@@ -1515,7 +1519,7 @@ $header .= "\n";
 		case 'switchao':
 			$redis->set('ao',$args);
 			wrk_mpdconf($redis,'writecfg');
-			wrk_shairportAO($redis,$args);
+			wrk_shairport($redis,$args);
 			syscmd('mpc enable only "'.$args.'"');
 		break;
 		
@@ -1535,11 +1539,14 @@ $header .= "\n";
 	}
 }
 
-function wrk_shairportAO($redis,$ao) {
+function wrk_shairport($redis,$ao,$name = null) {
+if (!isset($name)) {
+$name = $redis->hGet('airplay','name');
+}
 $acard = json_decode($redis->hget('acards',$ao));
 runelog('acard details: ',$acard);
 $file = '/usr/lib/systemd/system/shairport.service';
-$newArray = wrk_replaceTextLine($file,'','ExecStart','ExecStart=/usr/local/bin/shairport -w --on-start=/var/www/command/airplay.sh --on-stop=/var/www/command/airplay.sh -o alsa -- -d '.$acard->device);
+$newArray = wrk_replaceTextLine($file,'','ExecStart','ExecStart=/usr/local/bin/shairport -w --name='.$name.' --on-start=/var/www/command/airplay.sh --on-stop=/var/www/command/airplay.sh -o alsa -- -d '.$acard->device);
 runelog('shairport.service :',$newArray);
 // Commit changes to /usr/lib/systemd/system/shairport.service
 $fp = fopen($file, 'w');

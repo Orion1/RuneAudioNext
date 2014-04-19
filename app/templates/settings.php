@@ -111,10 +111,19 @@
 				<label for="airplay" class="control-label col-sm-2">AirPlay</label>
 				<div class="col-sm-10">
 					<label class="switch-light well" onclick="">
-						<input name="features[airplay]" type="checkbox" value="1"<?php if($this->airplay == 1): ?> checked="checked" <?php endif ?>>
+						<input id="airplay" name="features[airplay][enable]" type="checkbox" value="1"<?php if($this->airplay['enable'] == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
 					<span class="help-block">Toggle the capability of receiving wireless streaming of audio via AirPlay protocol</span>
+				</div>
+			</div>
+			<div class="<?php if($this->airplay['enable'] != 1): ?>hide<?php endif ?>" id="airplayName">
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="airplay-name">AirPlay name</label>
+					<div class="col-sm-10">
+						<input class="form-control input-lg" type="text" id="airplay_name" name="features[airplay][name]" value="<?=$this->airplay['name'] ?>" data-trigger="change" placeholder="runeaudio">
+						<span class="help-block">AirPlay broadcast name</span>
+					</div>
 				</div>
 			</div>
 			<div class="form-group">

@@ -68,12 +68,14 @@ if (isset($_POST)) {
 	// ----- FEATURES -----
 	if (isset($_POST['features'])) {
 
-			if ($_POST['features']['airplay'] == 1) {
-				// create worker job (start shairport)
-				$redis->get('airplay') == 1 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'start' ));
+			if ($_POST['features']['airplay']['enable'] == 1) {
+				if ($redis->hGet('airplay','enable') !== $_POST['features']['airplay']['enable'] OR $redis->hGet('airplay','name') !== $_POST['features']['airplay']['name']) {
+					// create worker job (start shairport)
+					$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'start', 'args' => $_POST['features']['airplay']['name'] ));
+				}
 			} else {
 				// create worker job (stop shairport)
-				$redis->get('airplay') == 0 || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'stop' ));
+				$redis->hGet('airplay','enable') === '0' || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'airplay', 'action' => 'stop', 'args' => $_POST['features']['airplay']['name'] ));
 			}
 
 			if ($_POST['features']['udevil'] == 1) {
@@ -128,7 +130,7 @@ waitSyWrk($redis,$jobID);
 $template->hostname = $redis->get('hostname');
 $template->ntpserver = $redis->get('ntpserver');
 $template->orionprofile = $redis->get('orionprofile');
-$template->airplay = $redis->get('airplay');
+$template->airplay = $redis->hGetAll('airplay');
 $template->udevil = $redis->get('udevil');
 $template->coverart = $redis->get('coverart');
 $template->globalrandom = $redis->get('globalrandom');

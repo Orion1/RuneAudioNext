@@ -175,7 +175,16 @@ jQuery(document).ready(function($){ 'use strict';
 	// ----------------------------------------------------------------------------------------------------
 	
 	if( $('#section-settings').length ){
-	
+		
+		// show/hide AirPlay name form  
+		$('#airplay').change(function(){
+			if ($(this).prop('checked')) {
+				$('#airplayName').removeClass('hide');
+			} else {
+				$('#airplayName').addClass('hide');
+			}													  
+		});
+		
 		// show/hide Last.fm auth form  
 		$('#scrobbling-lastfm').change(function(){
 			if ($(this).prop('checked')) {
@@ -192,7 +201,8 @@ jQuery(document).ready(function($){ 'use strict';
 			} else {
 				$('#proxyAuth').addClass('hide');
 			}													  
-		});
+		});		
+		
 	}
 	
 	
