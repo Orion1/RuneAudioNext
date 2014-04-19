@@ -23,6 +23,7 @@
 <script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/pushstream.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/jquery.plugin.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
 <script src="<?=$this->asset('/js/player_lib.js')?>"></script>
 <?php if ($this->section == 'index'): ?>

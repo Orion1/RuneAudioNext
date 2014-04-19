@@ -69,7 +69,7 @@ function displayChannel(){
 	pushstream.connect();
 }
 
-// open the Playing Queue channel
+// open the playing queue channel
 function queueChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
@@ -105,7 +105,7 @@ function renderUI(text) {
 	// console.log('current song = ', GUI.json.currentsong);
 	// console.log( 'GUI.state = ', GUI.state );
 	updateGUI();
-	if (GUI.state != 'disconnected') {
+	if (GUI.state !== 'disconnected') {
 		$('#loader').hide();
 	}
 	refreshTimer(parseInt(GUI.json.elapsed), parseInt(GUI.json.time), GUI.json.state);
@@ -121,6 +121,7 @@ function renderUI(text) {
 	// }
 }
 
+// [!] (discontinued) refresh the queue
 function getPlaylistCmd(){
 	loadingSpinner('pl');
 	$.ajax({
@@ -146,6 +147,7 @@ function getPlaylistCmd(){
 	});
 }
 
+// launch the playing queue refresh
 function getPlaylist(text) {
 	data = text[0];
 	// console.log(data);
@@ -635,11 +637,11 @@ function refreshState(state) {
 		$('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
 		$('#stop').addClass('btn-primary');
 		$('#countdown-display').countdown('destroy');
-		if (GUI.stream === 'radio') {
-			$('#elapsed').html('&infin;');
-		} else {
-			$('#elapsed').html('00:00');
-		}
+		// if (GUI.stream === 'radio') {
+			// $('#elapsed').html('&infin;');
+		// } else {
+			// $('#elapsed').html('00:00');
+		// }
 		if (GUI.stream === 'radio') {
 			$('#total').html('<span>&infin;</span>');
 		} else {
@@ -649,12 +651,13 @@ function refreshState(state) {
 		$('#format-bitrate').html('&nbsp;');
 		$('li', '#playlist-entries').removeClass('active');
 	}
-	if ( state != 'stop' ) {
-		$('#elapsed').html(timeConvert(GUI.json.elapsed));
+	if ( state !== 'stop' ) {
+		// console.log('GUI.json.elapsed =', GUI.json.elapsed);
+		// $('#elapsed').html((GUI.json.elapsed !== undefined)? timeConvert(GUI.json.elapsed) : '00:00');
 		if (GUI.stream === 'radio') {
 			$('#total').html('<span>&infin;</span>');
 		} else {
-			$('#total').html(timeConvert(GUI.json.time));
+			$('#total').html((GUI.json.time !== undefined)? timeConvert(GUI.json.time) : '00:00');
 		}
 		var fileinfo = (GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate) ? (GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps') : '&nbsp;';
 		$('#format-bitrate').html(fileinfo);
@@ -684,10 +687,11 @@ function refreshState(state) {
 
 // update countdown
 function refreshTimer(startFrom, stopTo, state) {
-	// console.log('startFrom = ', startFrom);
+	console.log('startFrom = ', startFrom);
 	// console.log('state = ', state);
-	var display = $('#countdown-display').countdown('destroy');
-	display.countdown({ since: (state != 'stop'? -startFrom:0), compact: true, format: 'MS' });
+	var display = $('#countdown-display');
+	display.countdown('destroy');
+	display.countdown({ since: ((state !== 'stop' || state !== undefined)? -((typeof(startFrom) === 'undefined')? startFrom : 0) : 0), compact: true, format: 'MS' });
 	if (state != 'play'){
 		// console.log('startFrom = ', startFrom);
 		display.countdown('pause');
@@ -753,7 +757,7 @@ function commandButton(el) {
 		refreshTimer(0, 0, 'stop');
 		window.clearInterval(GUI.currentKnob);
 		$('.playlist').find('li').removeClass('active');
-		$('#total').html('');
+		$('#total').html('00:00');
 	}
 	// play/pause
 	else if (dataCmd == 'play') {

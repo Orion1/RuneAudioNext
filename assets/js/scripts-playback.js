@@ -124,8 +124,9 @@ jQuery(document).ready(function($){ 'use strict';
 			} else $('#time').val(0);
 		},
 		release : function (value) {
-			if (GUI.state != 'stop') {
+			if (GUI.state !== 'stop' && GUI.state !== '') {
 				// console.log('release percent = ', value);
+				console.log(GUI.state);
 				window.clearInterval(GUI.currentKnob);
 				var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
 				sendCmd('seek ' + GUI.json.song + ' ' + seekto);
@@ -269,7 +270,7 @@ jQuery(document).ready(function($){ 'use strict';
 			$('#pl-currentpath').addClass('hide');
 			$('#pl-manage').removeClass('hide');
 		}
-		getPlaylistCmd();
+		sendCmd('renderpl');
 	});
 	
 	// playlists management
