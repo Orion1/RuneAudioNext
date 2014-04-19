@@ -1554,7 +1554,7 @@ fwrite($fp, implode("",$newArray));
 fclose($fp);
 // update systemd
 sysCmd('systemctl daemon-reload');
-	if ($redis->get('airplay') === '1') {
+	if ($redis->hGet('airplay','enable') === '1') {
 		runelog('restart shairport');
 		sysCmd('systemctl restart shairport');
 	}
