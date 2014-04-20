@@ -61,16 +61,19 @@ $template->content = "mpd_manual";
 } else {
 
 $template->conf = $redis->hGetAll('mpdconf');
+$i2smodule = $redis->get('i2smodule');
 $acards = $redis->hGetAll('acards');
-// $acards_details = $redis->hgetall('acards_details');
-// $i = 0;
 foreach ($acards as $card => $data) {
-$audio_cards[] = json_decode($data);
-	// if ($details = $redis->hget('acards_details',$card)) {
-		// $details = json_decode($details);
-		// $audio_cards->{$i}->extlabel = $details->extlabel;
-	// }
-// $i++;
+$acard_data = json_decode($data);
+	if ($redis->hGet('acards_details',$card)) {
+		if ($i2smodule !== 'none' && $redis->hGet('acards_details',$i2smodule)) {
+			$details = json_decode($redis->hGet('acards_details',$i2smodule));
+		} else {
+			$details = json_decode($redis->hGet('acards_details',$card));
+		}
+		$acard_data->extlabel = $details->extlabel;
+	}
+$audio_cards[] = $acard_data;
 }
 $template->acards = $audio_cards;
 // $template->acards_details = $audio_cards_details;
