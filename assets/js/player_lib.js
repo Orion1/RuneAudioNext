@@ -108,7 +108,12 @@ function renderUI(text) {
 	if (GUI.state !== 'disconnected') {
 		$('#loader').hide();
 	}
-	refreshTimer(parseInt(GUI.json.elapsed), parseInt(GUI.json.time), GUI.json.state);
+	console.log('GUI.json.elapsed = ', GUI.json.elapsed);
+	console.log('GUI.json.time = ', GUI.json.time);
+	console.log('GUI.json.state = ', GUI.json.state);
+	var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
+	var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
+	refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
 	if (GUI.stream !== 'radio') {
 		refreshKnob();
 	} else {
@@ -645,7 +650,7 @@ function refreshState(state) {
 		if (GUI.stream === 'radio') {
 			$('#total').html('<span>&infin;</span>');
 		} else {
-			$('#total').html('');
+			$('#total').html('00:00');
 		}
 		$('#time').val(0).trigger('change');
 		$('#format-bitrate').html('&nbsp;');
@@ -668,12 +673,7 @@ function refreshState(state) {
 	if( GUI.json.song && GUI.json.playlistlength ){ 
 		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) +'/'+GUI.json.playlistlength);
 	} else {
-		$('#playlist-position').html( $('<a>',{
-			text: 'Add the vibe!', 
-			title: 'Load some tracks on your Library',
-			href: '#panel-sx',
-			'data-toggle': 'tab'
-		}) ); // TODO: highlight the "Library" tab
+		$('#playlist-position').html('Empty queue, add some music!');
 	}
 	// show UpdateDB icon
 	// console.log('dbupdate = ', GUI.json.updating_db);
@@ -691,7 +691,7 @@ function refreshTimer(startFrom, stopTo, state) {
 	// console.log('state = ', state);
 	var display = $('#countdown-display');
 	display.countdown('destroy');
-	display.countdown({ since: ((state !== 'stop' || state !== undefined)? -((typeof(startFrom) === 'undefined')? startFrom : 0) : 0), compact: true, format: 'MS' });
+	display.countdown({ since: ((state !== 'stop' || state !== undefined)? -(startFrom) : 0), compact: true, format: 'MS' });
 	if (state != 'play'){
 		// console.log('startFrom = ', startFrom);
 		display.countdown('pause');
