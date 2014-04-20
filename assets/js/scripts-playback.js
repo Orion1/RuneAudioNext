@@ -125,15 +125,19 @@ jQuery(document).ready(function($){ 'use strict';
 		},
 		release : function (value) {
 			if (GUI.state !== 'stop' && GUI.state !== '') {
-				// console.log('release percent = ', value);
-				console.log(GUI.state);
-				window.clearInterval(GUI.currentKnob);
-				var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
-				sendCmd('seek ' + GUI.json.song + ' ' + seekto);
-				// console.log('seekto = ', seekto);
-				$('#time').val(value);
-				$('#countdown-display').countdown('destroy');
-				$('#countdown-display').countdown({since: -seekto, compact: true, format: 'MS'});
+				if (GUI.stream !== 'radio') {
+					// console.log('release percent = ', value);
+					console.log(GUI.state);
+					window.clearInterval(GUI.currentKnob);
+					var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
+					sendCmd('seek ' + GUI.json.song + ' ' + seekto);
+					// console.log('seekto = ', seekto);
+					$('#time').val(value);
+					$('#countdown-display').countdown('destroy');
+					$('#countdown-display').countdown({since: -seekto, compact: true, format: 'MS'});
+				} else {
+					$('#time').val(0).trigger('change');
+				}
 			}
 		},
 		cancel : function () {
