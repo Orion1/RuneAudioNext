@@ -793,7 +793,6 @@ $store->close();
 
 
 function debug_data($redis) {
-		if ($redis->get('debug') > 0) {
 		$output .= "\n";
 		$output .= "###### System info ######\n";
 		$output .=  file_get_contents('/proc/version');
@@ -865,9 +864,6 @@ function debug_data($redis) {
 		$output .= "\n";
 		$output .= file_get_contents('/etc/mpd.conf');
 		$output .= "\n";
-		}
-		if ($redis->get('debug') > 1) {
-		$output .= "\n";
 		$output .= "\n";
 		$output .= "###### PHP backend ######\n";
 		$output .= "\n";
@@ -875,67 +871,19 @@ function debug_data($redis) {
 		$output .= "debug level:\t".$redis->get('debug')."\n";
 		$output .= "\n";
 		$output .= "\n";
-		$output .= "###### SESSION ######\n";
-		$output .= "\n";
-		$output .= "STATUS:\t\t".session_status()."\n";
-		$output .= "ID:\t\t".session_id()."\n"; 
-		$output .= "SAVE PATH:\t".session_save_path()."\n";
-		$output .= "\n";
-		$output .= "\n";
-		$output .= "###### SESSION DATA ######\n";
-		$output .= "\n";
-		$output .= print_r($_SESSION);
-		}
-		if ($redis->get('debug') > 2) {
-		$connection = new pdo($db);
-		$querystr="SELECT * FROM cfg_engine";
-		$data['cfg_engine'] = sdbquery($querystr,$connection);
-		$querystr="SELECT * FROM cfg_lan";
-		$data['cfg_lan'] = sdbquery($querystr,$connection);
-		$querystr="SELECT * FROM cfg_wifisec";
-		$data['cfg_wifisec'] = sdbquery($querystr,$connection);
-		$querystr="SELECT * FROM cfg_mpd";
-		$data['cfg_mpd'] = sdbquery($querystr,$connection);
-		$querystr="SELECT * FROM cfg_source";
-		$data['cfg_source'] = sdbquery($querystr,$connection);
-		$querystr="SELECT * FROM cfg_plugins";
-		$data['cfg_plugins'] = sdbquery($querystr,$connection);
-		$connection = null;
-		$output .= "\n";
-		$output .= "\n";
-		$output .= "###### SQLite datastore ######\n";
-		$output .= "\n";
-		$output .= "\n";
-		$output .= "### table CFG_ENGINE ###\n";
-		$output .= implode("\n",$data['cfg_engine'])."\n\n";
-		$output .= "\n";
-		$output .= "\n";
-		$output .= "### table CFG_LAN ###\n";
-		$output .= implode("\n",$data['cfg_lan'])."\n\n";
-		$output .= "\n";
-		$output .= "\n";
-		$output .= "### table CFG_WIFISEC ###\n";
-		$output .= implode("\n",$data['cfg_wifisec'])."\n\n";
-		$output .= "\n";
-		$output .= "\n";
-		$output .= "### table CFG_SOURCE ###\n";
-		$output .= implode("\n",$data['cfg_source'])."\n\n";
-		$output .= "\n";
-		$output .= "\n";
-		$output .= "### table CFG_PLUGINS ###\n";
-		$output .= implode("\n",$data['cfg_plugins'])."\n\n";
-		$output .= "\n";
-		$output .= "\n";
-		$output .= "### table CFG_MPD ###\n";
-		$output .= implode("\n",$data['cfg_mpd'])."\n\n";
-		$output .= "\n";
-		}
-		if ($redis->get('debug') > 0) {
-		$output .= "\n";
+		// $output .= "###### SESSION ######\n";
+		// $output .= "\n";
+		// $output .= "STATUS:\t\t".session_status()."\n";
+		// $output .= "ID:\t\t".session_id()."\n"; 
+		// $output .= "SAVE PATH:\t".session_save_path()."\n";
+		// $output .= "\n";
+		// $output .= "\n";
+		// $output .= "###### SESSION DATA ######\n";
+		// $output .= "\n";
+		// $output .= print_r($_SESSION);	
 		$output .= "Page created ".round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']),3)." seconds. ";
 		$output .= "\n";
 		$output .= "\n";
-		}
 return $output;
 }
 

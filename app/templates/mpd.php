@@ -68,6 +68,16 @@
                     <span class="help-block">This setting controls the type of information which is logged. Available setting arguments are "default", "secure" or "verbose".
                     The "verbose" setting argument is recommended for troubleshooting, though can quickly stretch available resources on limited hardware storage.</span>
                 </div>
+            </div>            
+			<div class="form-group" >
+                <label class="col-sm-2 control-label" for="ffmpeg">FFmpeg decoder plugin</label>
+                <div class="col-sm-10">
+					<select id="ffmpeg" name="conf[ffmpeg]" class="selectpicker" data-style="btn-default btn-lg">
+						<option value="yes" <?php if($this->conf['ffmpeg'] === 'yes'): ?> selected <?php endif ?>>yes</option>
+						<option value="no" <?php if($this->conf['ffmpeg'] === 'no'): ?> selected <?php endif ?>>no</option>
+                    </select> 		
+                    <span class="help-block">FFmpeg decoder plugin. Enable this setting if you need AAC / ALAC support. May slow down MPD database refresh.</span>
+                </div>
             </div>
             <div class="form-group" >
                 <label class="col-sm-2 control-label" for="gapless-mp3-playback">Gapless mp3 playback</label>

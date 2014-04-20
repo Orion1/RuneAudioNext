@@ -60,8 +60,8 @@ $template->mpdconf = file_get_contents('/etc/mpd.conf');
 $template->content = "mpd_manual";
 } else {
 
-$template->conf = $redis->hgetall('mpdconf');
-$acards = $redis->hgetall('acards');
+$template->conf = $redis->hGetAll('mpdconf');
+$acards = $redis->hGetAll('acards');
 // $acards_details = $redis->hgetall('acards_details');
 // $i = 0;
 foreach ($acards as $card => $data) {
