@@ -6,5 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'React\\' => array($vendorDir . '/react/react/src'),
     'League\\Plates\\' => array($vendorDir . '/league/plates/src'),
 );

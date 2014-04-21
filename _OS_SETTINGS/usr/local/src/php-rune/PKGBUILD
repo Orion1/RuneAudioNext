@@ -2,23 +2,26 @@
 # Maintainer: Simone De Gregori <orion@runeaudio.com>
 
 pkgbase=php
-pkgname=('php')
+pkgname=php-rune
 pkgdesc="PHP-FPM 5.5.9 (RuneAudio)"
 packager="RuneAudio Team"
-pkgver=5.5.9
+pkgver=5.5.11
 pkgrel=1
+pkgdir=${startdir}/pkg/${pkgname}
 arch=('armv6h')
 license=('PHP')
 url='http://www.php.net'
 makedepends=('sqlite' 'file'
              'libmcrypt' 'tidyhtml' 'libltdl' 'libpng' 'libjpeg' 'icu'
              'curl' 'bzip2' 'db' 'gmp' 'systemd')
-source=("http://www.php.net/distributions/${pkgbase}-${pkgver}.tar.gz"
-        "http://www.php.net/distributions/${pkgbase}-${pkgver}.tar.gz.asc"
+#source=("http://www.php.net/distributions/${pkgbase}-${pkgver}.tar.gz"
+#        "http://www.php.net/distributions/${pkgbase}-${pkgver}.tar.gz.asc"
+source=("php-5.5.11.tar.gz"
+        "php-5.5.11.tar.gz.asc"
         'php.ini.patch' 'php-fpm.conf.in.patch'
         'logrotate.d.php-fpm' 'php-fpm.service' 'php-fpm.tmpfiles')
-md5sums=('c018461604db38af48d1ca304cb592c6'
-'a956b026f1395a89c383ce6fa80340ee'
+md5sums=('9156fcd4b254cbfa9a7535f931da29d5'
+'88517ca48e0b65e5a1db40b642fdaebb'
 '799cd5f91f5253f4b47ec4fd7fccf4f1'
 '9f8263996836e27f5be1483e86ac2e33'
 'e036c721e5ad927cd1613c7475a58b3a'
@@ -27,14 +30,14 @@ md5sums=('c018461604db38af48d1ca304cb592c6'
 )
 
 prepare() {
-	cd ${srcdir}/${pkgbase}-${pkgver}
+	cd ${srcdir}/php-${pkgver}
 
 	patch -p0 -i ${srcdir}/php.ini.patch
 	patch -p0 -i ${srcdir}/php-fpm.conf.in.patch
 }
 
 build() {
-	local _phpconfig="--srcdir=../${pkgbase}-${pkgver} \
+	local _phpconfig="--srcdir=../php-${pkgver} \
 		--config-cache \
 		--prefix=/usr \
 		--sbindir=/usr/bin \
@@ -56,6 +59,7 @@ build() {
 		--enable-pcntl \
 		--enable-bcmath=static \
 		--enable-cli \
+		--enable-ctype \
 		--enable-embed=static \
 		--enable-fileinfo \
 		--enable-mbstring \
@@ -83,9 +87,6 @@ build() {
 		--with-mhash \
 		--with-openssl \
 		--with-pcre-regex=/usr \
-		--with-pdo-sqlite=static,/usr \
-		--with-sqlite3 \
-		--with-tidy \
 		--with-tsrm-pthreads \
 		--with-zlib \
 		--without-pic \
@@ -100,12 +101,12 @@ build() {
 	PEAR_INSTALLDIR=/usr/share/pear
 	export PEAR_INSTALLDIR
 
-	cd ${srcdir}/${pkgbase}-${pkgver}
+	cd ${srcdir}/php-${pkgver}
 
 	# php
 	mkdir ${srcdir}/build-fpm
 	cd ${srcdir}/build-fpm
-	ln -s ../${pkgbase}-${pkgver}/configure
+	ln -s ../php-${pkgver}/configure
 	./configure ${_phpconfig} ${_phpextensions}
 	make
 }
@@ -118,7 +119,7 @@ check() {
  	echo
 }
 
-package_php() {
+package() {
 	pkgdesc='RuneAudio Optimized FastCGI Process Manager for PHP'
 	depends=('pcre' 'libxml2' 'bzip2' 'curl' 'systemd')
 	backup=('etc/php/php.ini')
@@ -130,7 +131,7 @@ package_php() {
 	make -j1 INSTALL_ROOT=${pkgdir} install
 	install -d -m755 ${pkgdir}/usr/share/pear
 	# install php.ini
-	install -D -m644 ${srcdir}/${pkgbase}-${pkgver}/php.ini-production ${pkgdir}/etc/php/php.ini
+	install -D -m644 ${srcdir}/php-${pkgver}/php.ini-production ${pkgdir}/etc/php/php.ini
 	install -d -m755 ${pkgdir}/etc/php/conf.d/
 	install -D -m755 ${srcdir}/build-fpm/sapi/fpm/php-fpm ${pkgdir}/usr/bin/php-fpm
 	install -D -m644 ${srcdir}/build-fpm/sapi/fpm/php-fpm.8 ${pkgdir}/usr/share/man/man8/php-fpm.8
