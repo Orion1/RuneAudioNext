@@ -87,8 +87,8 @@
 				<label class="col-sm-2 control-label" for="nas-charset">Charset</label>
 				<div class="col-sm-10">
 					<select id="log-level" name="mount[charset]" class="selectpicker" data-style="btn-default btn-lg">
-					<option value=\"utf8\" ".(($mount['charset'] == 'utf8') ? "selected" : "")." >UTF8 (default)</option>\n";	
-					<option value=\"iso8859-1\" ".(($mount['charset'] == 'iso8859-1') ? "selected" : "")." >ISO 8859-1</option>
+					<option value="utf8" <?php if($this->mount['charset'] === 'utf8'): ?> selected <?php endif ?>>UTF8 (default)</option>\n";	
+					<option value="iso8859-1" <?php if($this->mount['charset'] === 'iso8859-1'): ?> selected <?php endif ?>>ISO 8859-1</option>
 					</select>
 					<span class="help-block">Change this settings if you experience problems with character encoding</span>
 				</div>
