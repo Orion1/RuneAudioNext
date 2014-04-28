@@ -61,7 +61,7 @@ jQuery(document).ready(function($){ 'use strict';
 	 
 	// first connection with MPD daemon
 	// open UI rendering channel;
-	displayChannel();
+	playbackChannel();
 	queueChannel();
 	
 	// first GUI update
@@ -274,7 +274,6 @@ jQuery(document).ready(function($){ 'use strict';
 			$('#pl-currentpath').addClass('hide');
 			$('#pl-manage').removeClass('hide');
 		}
-		sendCmd('renderpl');
 	});
 	
 	// playlists management

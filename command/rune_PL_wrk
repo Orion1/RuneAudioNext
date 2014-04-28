@@ -161,8 +161,7 @@ $status = monitorMpdState($mpd);
 session_write_close();
 // JSON response for GUI
 runelog("rune_PL_wrk: ui_render() response",json_encode($status));
-ui_render('display',json_encode($status));
-//ui_render('display',$status);
+ui_render('playback',json_encode($status));
 runelog("rune_PL_wrk: close MPD local UNIX socket",'');
 closeMpdSocket($mpd);
 }

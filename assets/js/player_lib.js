@@ -54,7 +54,7 @@ function sendCmd(inputcmd) {
 }
 
 // open the Playback UI refresh channel
-function displayChannel(){
+function playbackChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
@@ -65,7 +65,7 @@ function displayChannel(){
 	// force UI rendering (backend-call)
 		if (status === 2) sendCmd('renderui');
 	};
-	pushstream.addChannel('display');
+	pushstream.addChannel('playback');
 	pushstream.connect();
 }
 
@@ -77,11 +77,11 @@ function queueChannel(){
 		modes: "websocket|longpolling"
 	});
 	pushstream.onmessage = getPlaylist;
-	pushstream.onstatuschange = function(status) {
+	// pushstream.onstatuschange = function(status) {
 	// force queue rendering (backend-call)
-		if (status === 2) sendCmd('renderpl');
-	};
-	pushstream.addChannel('playlist');
+		// if (status === 2) sendCmd('renderpl');
+	// };
+	pushstream.addChannel('queue');
 	pushstream.connect();
 }
 

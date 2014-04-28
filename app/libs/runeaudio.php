@@ -1947,7 +1947,7 @@ class ui_renderQueue extends Thread {
 		$mpd = openMpdSocket('/run/mpd.sock');
 		$queue = getPlayQueue($mpd);
 		closeMpdSocket($mpd);
-		ui_render('playlist',json_encode($queue));
+		ui_render('queue',json_encode($queue));
     }
 }
 
