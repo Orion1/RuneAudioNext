@@ -82,12 +82,15 @@ function sendMpdIdle($sock) {
 //sendMpdCommand($sock,"idle player,playlist"); 
 sendMpdCommand($sock,"idle"); 
 $response = readMpdResponse($sock);
-return true;
+$response = array_map('trim',explode(":",$response));
+return $response;
 }
 
 function monitorMpdState($sock) {
-	if (sendMpdIdle($sock)) {
+	if ($change = sendMpdIdle($sock)) {
 	$status = _parseStatusResponse(MpdStatus($sock));
+	$status['changed'] = substr($change[1], 0, -3);
+	// runelog('monitorMpdState()', $status);
 	return $status;
 	}
 }
@@ -1930,6 +1933,22 @@ $fork_pid = pcntl_fork();
 	pcntl_waitpid($fork_pid, $status, WNOHANG|WUNTRACED);
 	runelog('child status: ', $status);
 	}
+}
+
+class ui_renderQueue extends Thread {
+	// mpd status
+	public $status;
+	
+    public function __construct($status){
+		$this->status = $status;
+    }
+	
+    public function run() {
+		$mpd = openMpdSocket('/run/mpd.sock');
+		$queue = getPlayQueue($mpd);
+		closeMpdSocket($mpd);
+		ui_render('playlist',json_encode($queue));
+    }
 }
 
 function ui_status($mpd,$status) {

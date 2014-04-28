@@ -9,10 +9,10 @@
 			<span class="help-block">RuneUI frontend design - frontend HTML/JS/CSS coding</span>
 			<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>
 			Simone De Gregori</strong></a> (aka Orion)<br>
-			<span class="help-block">RuneUI PHP backend coding - frontend JS coding - RuneOS optimization</span>
+			<span class="help-block">RuneUI PHP backend coding - frontend JS coding - RuneOS distro build &amp; optimization</span>
 			<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>
 			Carmelo San Giovanni</strong></a> (aka Um3ggh1U)<br>
-			<span class="help-block">RuneOS distro build &amp; optimization</span>
+			<span class="help-block">RuneOS distro build &amp; Kernel optimization</span>
 		</div>
 		<div class="col-md-4">
 			<h3 class="txtmid">Support us!</h3>
@@ -46,7 +46,7 @@
 	<p><strong>RuneUI</strong>
 	<span class="help-block">copyright (C) 2013 – Andrea Coiutti (aka ACX) &amp; Simone De Gregori (aka Orion)</span>
 	<strong>RuneOS</strong>
-	<span class="help-block">copyright (C) 2013 – Carmelo San Giovanni (aka Um3ggh1U) &amp; Simone De Gregori (aka Orion)</span><br></p>
+	<span class="help-block">copyright (C) 2013 – Simone De Gregori (aka Orion) &amp; Carmelo San Giovanni (aka Um3ggh1U)</span><br></p>
 	<h2>RuneUI credits</h2>
 	<p><strong>PHP language v5.5</strong> by <a href="http://php.net/credits.php" target="_blank" rel="nofollow">PHP Team</a><br /><a href="http://php.net/" target="_blank" rel="nofollow">http://php.net</a></p>
 	<p><strong>PHP pthreads</strong> by <a href="https://github.com/krakjoe" target="_blank" rel="nofollow">Joe Watkins</a><br /><a title="PHP pthreads" href="http://pthreads.org" target="_blank" rel="nofollow">http://pthreads.org</a></p>
