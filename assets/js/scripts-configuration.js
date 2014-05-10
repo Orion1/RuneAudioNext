@@ -180,8 +180,10 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#airplay').change(function(){
 			if ($(this).prop('checked')) {
 				$('#airplayName').removeClass('hide');
+				$('#airplayBox').addClass('boxed');
 			} else {
 				$('#airplayName').addClass('hide');
+				$('#airplayBox').removeClass('boxed');
 			}													  
 		});
 		
@@ -189,8 +191,10 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#scrobbling-lastfm').change(function(){
 			if ($(this).prop('checked')) {
 				$('#lastfmAuth').removeClass('hide');
+				$('#lastfmBox').addClass('boxed');
 			} else {
 				$('#lastfmAuth').addClass('hide');
+				$('#lastfmBox').removeClass('boxed');
 			}													  
 		});		
 		
@@ -198,8 +202,10 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#proxy').change(function(){
 			if ($(this).prop('checked')) {
 				$('#proxyAuth').removeClass('hide');
+				$('#proxyBox').addClass('boxed');
 			} else {
 				$('#proxyAuth').addClass('hide');
+				$('#proxyBox').removeClass('boxed');
 			}													  
 		});		
 		
