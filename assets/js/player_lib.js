@@ -58,13 +58,26 @@ function playbackChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket|longpolling"
+		modes: "websocket|longpolling",
+		reconnectOnChannelUnavailableInterval: 5000
 	});
 	pushstream.onmessage = renderUI;
 	pushstream.onstatuschange = function(status) {
-	// force UI rendering (backend-call)
-		if (status === 2) sendCmd('renderui');
+		// console.log('[nginx pushtream module] status = ', status);
+		if (status === 2) {
+			sendCmd('renderui'); // force UI rendering (backend-call)
+		} else {
+			// console.log('[nginx pushtream module] status change');
+			if (status === 0) {
+				// console.log('[nginx pushtream module] status disconnected (0)');
+				$('#loader').removeClass('hide');
+			}
+		}
 	};
+	// pushstream.onerror = function() {
+		// $('#loader').removeClass('hide');
+		// console.log('[nginx pushtream module] error');
+	// };
 	pushstream.addChannel('playback');
 	pushstream.connect();
 }
@@ -99,15 +112,13 @@ function notifyChannel(){
 
 // launch the Playback UI refresh from the data response
 function renderUI(text) {
+	$('#loader').addClass('hide');
 	// update global GUI array
 	GUI.json = text[0];
 	GUI.state = GUI.json.state;
 	// console.log('current song = ', GUI.json.currentsong);
 	// console.log( 'GUI.state = ', GUI.state );
 	updateGUI();
-	if (GUI.state !== 'disconnected') {
-		$('#loader').hide();
-	}
 	// console.log('GUI.json.elapsed = ', GUI.json.elapsed);
 	// console.log('GUI.json.time = ', GUI.json.time);
 	// console.log('GUI.json.state = ', GUI.json.state);
