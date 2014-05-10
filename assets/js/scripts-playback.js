@@ -69,6 +69,7 @@ jQuery(document).ready(function($){ 'use strict';
 	libraryHome();
 	
 	// hide "connecting" layer
+	console.log('GUI.state = ', GUI.state);
 	if (GUI.state != 'disconnected') {
 		$('#loader').hide();
 	}

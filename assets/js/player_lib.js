@@ -108,9 +108,9 @@ function renderUI(text) {
 	if (GUI.state !== 'disconnected') {
 		$('#loader').hide();
 	}
-	console.log('GUI.json.elapsed = ', GUI.json.elapsed);
-	console.log('GUI.json.time = ', GUI.json.time);
-	console.log('GUI.json.state = ', GUI.json.state);
+	// console.log('GUI.json.elapsed = ', GUI.json.elapsed);
+	// console.log('GUI.json.time = ', GUI.json.time);
+	// console.log('GUI.json.state = ', GUI.json.state);
 	var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
 	var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
 	refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
@@ -165,7 +165,7 @@ function getPlaylist(text) {
 		
 		var current = parseInt(GUI.json.song);
 		if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
-			customScroll('pl', current, 200); // highlight current song in playlist
+			customScroll('pl', current, 200); // center the scroll and highlight current song in playlist
 		}
 	} else {
 		$('.playlist').addClass('hide');
@@ -570,7 +570,7 @@ function updateGUI() {
 	// set radio mode if stream is present
 	GUI.stream = ((radioname !== null && radioname !== undefined && radioname !== '') ? 'radio' : '');
 	// check MPD status and refresh the UI info
-	refreshState(GUI.state);
+	refreshState();
 	// check song update
 	// console.log('A = ', GUI.json.currentsong); console.log('B = ', GUI.currentsong);
 	if (GUI.currentsong != GUI.json.currentsong) {
@@ -627,7 +627,8 @@ function updateGUI() {
 }
 
 // update info and status on Playback tab
-function refreshState(state) {
+function refreshState() {
+	var state = GUI.state;
 	if (state === 'play') {
 		$('#play').addClass('btn-primary');
 		$('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
@@ -668,7 +669,7 @@ function refreshState(state) {
 		$('#format-bitrate').html(fileinfo);
 		$('li', '#playlist-entries').removeClass('active');
 		var current = parseInt(GUI.json.song);
-		$('li', '#playlist-entries').eq(current).addClass('active'); // TODO: check efficiency
+		$('#playlist-entries').find('li').eq(current).addClass('active');
 	}
 	if( GUI.json.song && GUI.json.playlistlength ){ 
 		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) +'/'+GUI.json.playlistlength);
@@ -687,7 +688,7 @@ function refreshState(state) {
 
 // update countdown
 function refreshTimer(startFrom, stopTo, state) {
-	console.log('startFrom = ', startFrom);
+	// console.log('startFrom = ', startFrom);
 	// console.log('state = ', state);
 	var display = $('#countdown-display');
 	display.countdown('destroy');
@@ -761,22 +762,23 @@ function commandButton(el) {
 	}
 	// play/pause
 	else if (dataCmd == 'play') {
+		var state = GUI.state;
 		//if (json.currentsong != null) {
-			if (GUI.state == 'play') {
-				cmd = 'pause';
-				$('#countdown-display').countdown('pause');
-			} else if (GUI.state == 'pause') {
-				cmd = 'play';
-				$('#countdown-display').countdown('resume');
-			} else if (GUI.state == 'stop') {
-				cmd = 'play';
-				$('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
-			}
-			//$(this).find('i').toggleClass('fa fa-play').toggleClass('fa fa-pause');
-			window.clearInterval(GUI.currentKnob);
-			sendCmd(cmd);
-			// console.log('sendCmd(' + cmd + ');');
-			return;
+		if (state == 'play') {
+			cmd = 'pause';
+			$('#countdown-display').countdown('pause');
+		} else if (state == 'pause') {
+			cmd = 'play';
+			$('#countdown-display').countdown('resume');
+		} else if (state == 'stop') {
+			cmd = 'play';
+			$('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
+		}
+		//$(this).find('i').toggleClass('fa fa-play').toggleClass('fa fa-pause');
+		window.clearInterval(GUI.currentKnob);
+		sendCmd(cmd);
+		// console.log('sendCmd(' + cmd + ');');
+		return;
 		// } else {
 			// $(this).addClass('btn-primary');
 			// $('#stop').removeClass('btn-primary');
@@ -886,7 +888,7 @@ function customScroll(list, destination, speed) {
 		scrollcalc = parseInt((destination + 2)*entryheight - centerheight);
 		scrolloffset = Math.abs(scrollcalc - scrolltop);
 		scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
-		$('li', '#playlist-entries').eq(destination).addClass('active'); // TODO: check efficiency
+		$('#playlist-entries').find('li').eq(destination).addClass('active');
 	}
 	// debug
 	// console.log('-------------------------------------------');
