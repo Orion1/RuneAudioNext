@@ -69,9 +69,7 @@ jQuery(document).ready(function($){ 'use strict';
 	libraryHome();
 	
 	// hide "connecting" layer
-	if (GUI.state != 'disconnected') {
-		$('#loader').hide();
-	}
+	console.log('GUI.state = ', GUI.state);
 	
 	// PNotify init options
 	$.pnotify.defaults.styling = 'bootstrap3';

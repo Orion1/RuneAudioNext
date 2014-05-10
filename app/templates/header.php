@@ -2,8 +2,11 @@
 	<meta charset="utf-8">
 	<title>RuneAudio - RuneUI</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<link rel="icon" type="image/x-icon" href="<?=$this->asset('/img/favicon.ico')?>">
+	<link rel="apple-touch-icon" href="<?=$this->asset('/img/apple-touch-icon.png')?>">
 </head>
 <?php if (empty($this->uri(1)) OR ($this->uri(1) == 'playback')): ?>
 <body id="section-index">
