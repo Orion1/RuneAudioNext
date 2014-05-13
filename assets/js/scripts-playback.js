@@ -391,6 +391,9 @@ jQuery(document).ready(function($){ 'use strict';
 				GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
 				++GUI.currentDBpos[10];
 				// console.log('getDB path = ', path);
+			} else if (el.hasClass('db-webradio-add')) {
+				console.log('CLICKED');
+				$('#modal-webradio-add').modal();
 			}
 		}
 	});
@@ -489,8 +492,44 @@ jQuery(document).ready(function($){ 'use strict';
 				}
 			});
 		}
+		if (dataCmd == 'wredit') {
+			$('#modal-webradio-edit').modal();
+			$.post('/db/?cmd=readradio', { 'filename' : path }, function(data){
+				// get parsed content of .pls file and populate the form fields
+				$('#webradio-edit-name').val('RADIO NAME');
+				$('#webradio-edit-url').val('RADIO URL');
+			}, 'json');
+		}
+		if (dataCmd == 'wrdelete') {
+			$('#modal-webradio-delete').modal();
+			$('#webradio-delete-name').text(path.replace('Webradio/', ''));
+		}
 	});
 
+	// add webradio
+	$('#webradio-add-button').click(function(){
+		var radioname = $('#webradio-add-name').val();
+		var radiourl = $('#webradio-add-url').val();
+		$.post('/db/?cmd=addradio', { 'name' : radioname, 'url' : radiourl }, function(data){
+			// console.log('SENT');
+		}, 'json');
+	});
+	// edit webradio
+	$('#webradio-edit-button').click(function(){
+		var radioname = $('#webradio-edit-name').val();
+		var radiourl = $('#webradio-edit-url').val();
+		$.post('/db/?cmd=editradio', { 'name' : radioname, 'url' : radiourl }, function(data){
+			// console.log('SENT');
+		}, 'json');
+	});
+	// delete webradio
+	$('#webradio-delete-button').click(function(){
+		var radioname = $('#webradio-delete-name').text();
+		$.post('/db/?cmd=deleteradio', { 'name' : path }, function(data){
+			// console.log('SENT');
+		}, 'json');
+	});
+	
 	// [!] browse mode menu - temporarly disabled
 	$('a', '.browse-mode').click(function(){
 		$('.browse-mode').removeClass('active');

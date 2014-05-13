@@ -26,7 +26,7 @@
                 <?php if ($this->coverart == 1): ?>
 				<div class="col-sm-<?=$this->colspan ?> coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
-					<a href="#" id="social-overlay-open" class="btn btn-default" title="Share this track"><i class="fa fa-share"></i></a>
+					<a href="#" id="social-overlay-open" class="btn btn-default" title="Share this track"><i class="fa fa-heart"></i></a>
 				</div>
 				<?php endif ?>
                 <div class="col-sm-<?=$this->colspan ?> volume <?=$this->volume['divclass'] ?>">
@@ -251,7 +251,7 @@
     </div>
 </div>
 <div id="modal-pl-rename" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-pl-rename-label" aria-hidden="true">
-    <div class="modal-dialog">
+	<div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -268,6 +268,67 @@
         </div>
     </div>
 </div>
+<div id="modal-webradio-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-webradio-add-label" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title" id="modal-pl-webradio-add">Add new webradio</h3>
+			</div>
+			<div class="modal-body">
+				<label for="webradio-add-name">Radio name</label>
+				<input id="webradio-add-name" name="radio[label]" class="form-control" type="text" placeholder="Enter webradio name">
+				<br>
+				<label for="webradio-add-url">Radio url</label>
+				<input id="webradio-add-url" name="radio[label]" class="form-control" type="text" placeholder="Enter webradio url">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
+				<button id="webradio-add-button" type="button" class="btn btn-primary btn-lg" data-dismiss="modal">Add to Library</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modal-webradio-edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-webradio-edit-label" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title" id="modal-pl-webradio-edit">Add new webradio</h3>
+			</div>
+			<div class="modal-body">
+				<input id="webradio-edit-oldname" name="radio[oldlabel]" class="form-control" type="hidden" value="">
+				<label for="webradio-edit-name">Radio name</label>
+				<input id="webradio-edit-name" name="radio[label]" class="form-control" type="text" placeholder="Enter webradio name">
+				<br>
+				<label for="webradio-edit-url">Radio url</label>
+				<input id="webradio-edit-url" name="radio[label]" class="form-control" type="text" placeholder="Enter webradio url">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
+				<button id="webradio-edit-button" type="button" class="btn btn-primary btn-lg" data-dismiss="modal">Add to Library</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modal-webradio-delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-webradio-delete-label" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title" id="modal-pl-webradio-delete">Delete the webradio</h3>
+			</div>
+			<div class="modal-body">
+				<p><strong id="webradio-delete-name">Radio.pls</strong><br>
+				Delete this entry from your Library?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
+				<button id="webradio-delete-button" type="button" class="btn btn-primary btn-lg" data-dismiss="modal">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
 <div id="social-overlay" class="overlay-scale closed">
 	<nav>
 		<ul>
@@ -275,7 +336,8 @@
 			<li><a id="urlTwitter" href="#" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-twitter"><i class="fa fa-twitter sx"></i> Share on Twitter</a></li>
 			<li><a id="urlFacebook" href="#" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-facebook"><i class="fa fa-facebook sx"></i> Share on Facebook</a></li>
 			<li><a id="urlGooglePlus" href="#" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-google-plus"><i class="fa fa-google-plus sx"></i> Share on Google+</a></li>
-			<li><button type="button" class="overlay-close btn btn-link"><i class="fa fa-times"></i> close this screen</button></li>
+			<li><button type="button" class="overlay-close btn btn-default btn-lg"><i class="fa fa-times"></i> close this screen</button></li>
+			<li>and don't forget to<br><a href="#">support RuneAudio!</a></li>
 		</ul>
 	</nav>
 </div>

@@ -1899,6 +1899,46 @@ $hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"
 return $hwmixerdev;
 }
 
+// webradio management (via .pls files)
+function addRadio($data) {
+	// create new file
+	// $file = '/mnt/MPD/Webradio/'.$data['label'].'.pls';
+	$file = '/var/www/'.$data['label'].'.pls';
+	$newpls = '[playlist]\n';
+	$newpls .= 'NumberOfEntries=1\n';
+	$newpls .= 'File1='.$data['url'].'\n';
+	$newpls .= 'Title1='.$data['label'];
+	// Commit changes to .pls file
+	$fp = fopen($file, 'w');
+	$return = fwrite($fp, $newpls);
+	fclose($fp);
+	return $return;
+}
+function readRadio($data) {
+	// read .pls file and return the parsed content
+	$file = '/mnt/MPD/'.$data['name'];
+	$fp = fopen($file, 'w');
+	// TODO: parsing
+	fclose($fp);
+	return $return;
+}
+function editRadio($data) {
+	// edit webradio URL in .pls file
+	$file = '/mnt/MPD/Webradio/'.$data['label'].'.pls';
+	$newArray = wrk_replaceTextLine($file,'','File1=',$data['url'],'NumberOfEntries=1',1);
+	// Commit changes to .pls file
+	$fp = fopen($file, 'w');
+	$return = fwrite($fp, implode("",$newArray));
+	fclose($fp);
+	return $return;
+}
+function deleteRadio($data) {
+	// delete .pls file
+	$file = '/mnt/MPD/Webradio/'.$data['label'].'.pls';
+	$return = unlink($file);
+	return $return;
+}
+
 function ui_notify($title = null, $text, $type = null ) {
 	$output = array( 'title' => $title, 'text' => $text, 'type' => $type);
 	ui_render('notify',json_encode($output));

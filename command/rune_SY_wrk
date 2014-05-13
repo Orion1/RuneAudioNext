@@ -483,9 +483,7 @@ while (1) {
 				break;
 				
 				case 'restore':
-				
 					wrk_restore("/run/".$job->args);
-				
 				break;
 				
 				case 'scrobbling_lastfm':

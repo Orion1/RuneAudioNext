@@ -184,10 +184,28 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 						}
 				break;
 				
+				case 'addradio':
+				// input array= $_POST['radio']['label'] $_POST['radio']['url']
+					if (addRadio($_POST['radio'])) {
+						sendMpdCommand($mpd,'update Webradio/');
+						ui_notify('Webradio added', '<radioname> added to the Library');
+					}
+					ui_notify('Webradio added', $_POST['radio'].' added to the Library');
+				break;
+				
+				case 'editradio':
+				// input array= $_POST['radio']['label'] $_POST['radio']['newlabel'] $_POST['radio']['url']
+					if (editRadio($_POST['radio'])) sendMpdCommand($mpd,'update Webradio/');
+				break;
+				
+				case 'deleteradio':
+				// input array= $_POST['radio']['label']
+					if (deleteRadio($_POST['radio'])) sendMpdCommand($mpd,'update Webradio/');
+				break;
 				
 				case 'test':
-				$proxy = $redis->hGetall('proxy');
-				print_r($proxy);
+					$proxy = $redis->hGetall('proxy');
+					print_r($proxy);
 				break;
 				}
 				
