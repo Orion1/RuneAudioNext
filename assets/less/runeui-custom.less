@@ -617,6 +617,15 @@ html, body {
 		font-size: 12px;
 		color: lighten(@brand-alt, 20%);
 	}
+	#webradio-add {
+		background: darken(@brand-alt, 20%);
+		.sn {
+			color: @brand-primary;
+		}
+		i {
+			color: @text-color;
+		}
+	}
 }
 #playlist-entries {
 	.list-main;
@@ -677,7 +686,7 @@ html, body {
 			padding-left: 10px;
 		}
 	}
-	.fa-folder-open {
+	.fa-list-ol {
 		display: none;
 	}
 	.pl-action {
@@ -1504,7 +1513,7 @@ ul.parsley-error-list {
 			cursor: default;
 			background: darken(@brand-alt, 20%);
 		}
-		.fa-folder-open {
+		.fa-list-ol {
 			display: inline-block;
 			width: 24px;
 			margin-left: 12px;

@@ -186,7 +186,13 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				
 				case 'addradio':
 				// input array= $_POST['radio']['label'] $_POST['radio']['url']
-					if (addRadio($_POST['radio'])) sendMpdCommand($mpd,'update Webradio/');
+
+					if (addRadio($_POST['radio'])) {
+						sendMpdCommand($mpd,'update Webradio/');
+						ui_notify('Webradio added', '<radioname> added to the Library');
+					}
+					ui_notify('Webradio added', $_POST['radio'].' added to the Library');
+
 				break;
 				
 				case 'editradio':
@@ -200,8 +206,8 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				break;
 				
 				case 'test':
-				$proxy = $redis->hGetall('proxy');
-				print_r($proxy);
+					$proxy = $redis->hGetall('proxy');
+					print_r($proxy);
 				break;
 				}
 				

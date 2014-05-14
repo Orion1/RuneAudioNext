@@ -265,7 +265,7 @@ function renderPlaylists(data){
 		infos = line.split(': ');
 		if( 'playlist' === infos[0] ) {
 			playlistname = infos[1];
-			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action" data-target="#context-menu-playlist" data-toggle="context" title="Actions"></i><span><i class="fa fa-folder-open"></i>' + playlistname + '</span></li>';
+			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action" data-target="#context-menu-playlist" data-toggle="context" title="Actions"></i><span><i class="fa fa-list-ol"></i>' + playlistname + '</span></li>';
 			playlistname = '';
 		}
 	}
@@ -444,6 +444,9 @@ function populateDB(options){
 					i: i,
 					inpath: path
 				});
+			}
+			if (path === 'Webradio') {
+				content += '<li id="webradio-add" class="db-webradio-add"><i class="fa fa-plus-circle db-icon"></i><span class="sn"><em>add new</em></span><span class="bl">add a webradio to your library</span></li>';
 			}
 			document.getElementById('database-entries').innerHTML = content;
 			// DEBUG

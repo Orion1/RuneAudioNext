@@ -1783,21 +1783,33 @@ sysCmd('killall -HUP smbd && killall -HUP nmbd');
 }
 
 function alsa_findHwMixerControl($cardID) {
-$cmd = "amixer -c ".$cardID." |grep \"mixer control\"";
-$str = sysCmd($cmd);
-$hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"))), strpos($str[0], "'")+1);
+	$cmd = "amixer -c ".$cardID." |grep \"mixer control\"";
+	$str = sysCmd($cmd);
+	$hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"))), strpos($str[0], "'")+1);
 return $hwmixerdev;
 }
 
+// webradio management (via .pls files)
 function addRadio($data) {
 	// create new file
-	$file = '/mnt/MPD/Webradio/'.$data['label'].'.pls';
-	$newpls = '['.$data['label'].']\n';
+	// $file = '/mnt/MPD/Webradio/'.$data['label'].'.pls';
+	$file = '/var/www/'.$data['label'].'.pls';
+	$newpls = '[playlist]\n';
 	$newpls .= 'NumberOfEntries=1\n';
-	$newpls .= 'File1='.$data['url'];
+	$newpls .= 'File1='.$data['url'].'\n';
+	$newpls .= 'Title1='.$data['label'];
 	// Commit changes to .pls file
 	$fp = fopen($file, 'w');
 	$return = fwrite($fp, $newpls);
+	fclose($fp);
+return $return;
+}
+
+function readRadio($data) {
+	// read .pls file and return the parsed content
+	$file = '/mnt/MPD/'.$data['name'];
+	$fp = fopen($file, 'w');
+	// TODO: parsing
 	fclose($fp);
 return $return;
 }
