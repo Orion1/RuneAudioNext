@@ -7,7 +7,7 @@
  * copyright (C) 2013-2014 - Andrea Coiutti (aka ACX) & Simone De Gregori (aka Orion)
  *
  * RuneOS
- * copyright (C) 2013-2014 - Carmelo San Giovanni (aka Um3ggh1U) & Simone De Gregori (aka Orion)
+ * copyright (C) 2013-2014 - Simone De Gregori (aka Orion) & Carmelo San Giovanni (aka Um3ggh1U)
  *
  * RuneAudio website and logo
  * copyright (C) 2013-2014 - ACX webdesign (Andrea Coiutti)
@@ -28,6 +28,7 @@
  *
  *  file: app/libs/runeaudio.php
  *  version: 1.3
+ *  coder: Simone De Gregori
  *
  */
  
@@ -278,11 +279,7 @@ function _parseFileListResponse($resp) {
 
 				$plistLine = strtok("\n");
 			} 
-				// reverse MPD list output
-				// if (isset($dirCounter) && isset($plistArray[0]["file"]) ) {
-				// $dir = array_splice($plistArray, -$dirCounter);
-				// $plistArray = $dir + $plistArray;
-				// }
+
 		}
 		return $plistArray;
 	}
@@ -393,126 +390,55 @@ if ($action === 'reset') $cmd = 'opcache_invalidate';
 	}
 }
 
-function sessionSQLite($sessionsdb) {
-require_once(APP.'libs/vendor/SqliteSessionHandler/SqliteSessionHandler.php');
-$handler = new kafene\SqliteSessionHandler($sessionsdb);
-	if (session_set_save_handler($handler, true)) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function cfgdb_connect($dbpath) {
-	if ($dbh  = new PDO($dbpath)) {
-	return $dbh;
-	} else {
-		echo "cannot open the database";
-	return false;
-	}
-}
-
-
-function cfgdb_read($table,$dbh,$param=null,$id=null) {
-	if (empty($param)) {
-		$querystr = "SELECT * FROM ".$table;
-	} elseif (!empty($id)) {
-		$querystr = "SELECT * FROM ".$table." WHERE id='".$id."'";
-	} elseif ($param == 'mpdconf'){
-		$querystr = "SELECT param,value_player FROM cfg_mpd WHERE value_player!=''";
-	} elseif ($param == 'mpdconfdefault') {
-		$querystr = "SELECT param,value_default FROM cfg_mpd WHERE value_default!=''";
-	} elseif ($table == 'cfg_plugins') {
-		$querystr = "SELECT * FROM ".$table." WHERE name='".$param['plugin_name']."' AND param='".$param['plugin_param']."'";
-	} else {
-		$querystr = 'SELECT value from '.$table.' WHERE param="'.$param.'"';
-	}
-	//debug
-	runelog('cfgdb_read('.$table.',dbh,'.$param.','.$id.')',$querystr);
-	$result = sdbquery($querystr,$dbh);
-	return $result;
-}
-
-function cfgdb_update($table,$dbh,$key,$value) {
-switch ($table) {
-	case 'cfg_engine':
-	$querystr = "UPDATE ".$table." SET value='".$value."' where param='".$key."'";
-	break;
+function netMounts($redis, $action ,$data = null) {
+// mountpoint input format
+// $data = array( 'name' => '', 'type' => '', 'address' => '', 'remotedir' => '', 'username' => '', 'password' => '', 'charset' => '', 'rsize' => '', 'wsize' => '', 'options' => '', 'error' => '' );
+	switch ($action) {
+		case 'list':
+				$mp = $redis->Keys('mount_*');
+				runelog('keys list: ', $mp);
+		break;
 	
-	case 'cfg_lan':
-	$querystr = "UPDATE ".$table." SET dhcp='".$value['dhcp']."', ip='".$value['ip']."', netmask='".$value['netmask']."', gw='".$value['gw']."', dns1='".$value['dns1']."', dns2='".$value['dns2']."' where name='".$value['name']."'";
-	break;
-	
-	case 'cfg_mpd':
-	$querystr = "UPDATE ".$table." set value_player='".$value."' where param='".$key."'";
-	break;
-	
-	case 'cfg_wifisec':
-	$querystr = "UPDATE ".$table." SET ssid='".$value['ssid']."', security='".$value['encryption']."', password='".$value['password']."' where id=1";
-	break;
-	
-	case 'cfg_source':
-	$value = (array) $value;
-	$querystr = "UPDATE ".$table." SET name='".$value['name']."', type='".$value['type']."', address='".$value['address']."', remotedir='".$value['remotedir']."', username='".$value['username']."', password='".$value['password']."', charset='".$value['charset']."', rsize='".$value['rsize']."', wsize='".$value['wsize']."', options='".$value['options']."', error='".$value['error']."' where id=".$value['id'];
-	break;
-	
-	case 'cfg_plugins':
-	$querystr = "UPDATE ".$table." SET value='".$value['value']."' where param='".$key."' AND name='".$value['plugin_name']."'";
-	break;
-}
-//debug
-runelog('cfgdb_update('.$table.',dbh,'.$key.','.$value.')',$querystr);
-	if (sdbquery($querystr,$dbh)) {
-	return true;
-	} else {
-	return false;
+		case 'read':
+				if (isset($data)) {
+					$mp = $redis->hGetAll($data);
+				} else {
+					$mp = array();
+					$mounts = netMounts($redis, 'list');
+					foreach ($mounts as $mount) {
+						$mp[] = netMounts($redis, 'read', $mount);
+					}
+				}
+		break;
+		
+		case 'write':
+				$redis->hSet('mount_'.$data['name'], 'name', $data['name']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'type', $data['type']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'address', $data['address']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'remotedir', $data['remotedir']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'username', $data['username']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'password', $data['password']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'charset', $data['charset']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'rsize', $data['rsize']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'wsize', $data['wsize']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'options', $data['options']) || $mp = 0;
+				$redis->hSet('mount_'.$data['name'], 'error', $data['error']) || $mp = 0;
+				if (!isset($mp)) {
+					$mp = 1;
+				} else {
+					$redis->Del('mount_'.$data['name']);
+				}
+		break;
+		
+		case 'delete':
+				if (isset($data)) {
+					$mp = $redis->Del('mount_'.$data['name']);
+				} else {
+					$mp = sysCmd('redis-cli KEYS "mount_*" | xargs redis-cli DEL');
+				}
+		break;
 	}
-}
-
-function cfgdb_write($table,$dbh,$values) {
-$querystr = "INSERT INTO ".$table." VALUES (NULL, ".$values.")";
-//debug
-runelog('cfgdb_write('.$table.',dbh,'.$values.')',$querystr);
-	if (sdbquery($querystr,$dbh)) {
-	return true;
-	} else {
-	return false;
-	}
-}
-
-function cfgdb_delete($table,$dbh,$id) {
-if (!isset($id)) {
-$querystr = "DELETE FROM ".$table;
-} else {
-$querystr = "DELETE FROM ".$table." WHERE id=".$id;
-}
-//debug
-runelog('cfgdb_delete('.$table.',dbh,'.$id.')',$querystr);
-	if (sdbquery($querystr,$dbh)) {
-	return true;
-	} else {
-	return false;
-	}
-}
-
-function sdbquery($querystr,$dbh) {
-	$query = $dbh->prepare($querystr);
-	if ($query->execute()) {
-			$result = array();
-			  $i = 0;
-				  foreach ($query as $value) {
-					$result[$i] = $value;
-					$i++;
-				  }
-		$dbh = null;
-		if (empty($result)) {
-		return true;
-		} else {
-		return $result;
-		}
-	} else {
-	 return false;
-	}
+return $mp;
 }
 
 function redisDatastore($redis,$action) {
@@ -763,16 +689,6 @@ function hashCFG($action,$redis) {
 		}
 		break;
 		
-		case 'hash_net':
-		$hash = md5_file('/etc/network/interfaces');
-		playerSession('write',$db,'netconfhash',$hash); 
-		break;
-		
-		case 'hash_mpd':
-		$hash = md5_file('/etc/mpd.conf');
-		playerSession('write',$db,'mpdconfhash',$hash); 
-		break;
-		
 	} 
 return true;
 }
@@ -785,8 +701,10 @@ $store->connect('127.0.0.1', 6379);
 $debug_level = $store->get('debug');
 	if ($debug_level !== '0') {
 	    if(is_array($data) OR is_object($data)) {
-			foreach($data as $line) {
-			error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$line,0);
+			if (is_array($data)) error_log('[debug='.$debug_level.'] ### '.$title.' ### $data type = array',0);
+			if (is_object($data)) error_log('[debug='.$debug_level.'] ### '.$title.' ### $data type = object',0);
+			foreach($data as $key => $value) {
+			error_log('[debug='.$debug_level.'] ### '.$title.' ###  [\''.$key.'\'] => '.$value,0);
 			}
 	    } else {
 			error_log('[debug='.$debug_level.'] ### '.$title.' ###  '.$data,0);
@@ -1219,24 +1137,27 @@ function wrk_audioOutput($redis,$action,$args = null) {
 		case 'refresh':
 			$redis->del('acards');
 			// $acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ']' -f 1");
-			$acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ':' -f 2");
+			// $acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ':' -f 2");
+			$acards = sysCmd("cat /proc/asound/cards | grep : | cut -b 1-3,21-");
 			runelog('/proc/asound/cards',$acards);
-			$i = 0;
 			foreach ($acards as $card) {
+				$card_index = explode(' : ', $card);
+				$card_index = trim($card_index[0]);
+				runelog('wrk_audioOutput card index: ', $card_index);
 				$card = explode(' - ', $card);
+				$card = trim($card[1]);
 				// $description = sysCmd("cat /proc/asound/cards | grep : | cut -d ':' -f 2 | cut -d ' ' -f 4-20");
-				$card = $card[1];
-				runelog('wrk_audioOutput cart string: ', $card);
+				runelog('wrk_audioOutput card string: ', $card);
 				$description = sysCmd("aplay -l -v | grep \"\[".$card."\]\"");
 				$desc = array();
 				$subdeviceid = explode(':',$description[0]);
 				$subdeviceid = explode(',',trim($subdeviceid[1]));
 				$subdeviceid = explode(' ',trim($subdeviceid[1]));
-				$data['device'] = 'hw:'.$i.','.$subdeviceid[1];
+				$data['device'] = 'hw:'.$card_index.','.$subdeviceid[1];
 				if ($redis->hGet('acards_details',$card)) {
 					$details = json_decode($redis->hGet('acards_details',$card));
 					if (isset($details->mixer_control)) {
-						$volsteps = sysCmd("amixer -c ".$i." get \"".$details->mixer_control."\" | grep Limits | cut -d ':' -f 2 | cut -d ' ' -f 4,6");
+						$volsteps = sysCmd("amixer -c ".$card_index." get \"".$details->mixer_control."\" | grep Limits | cut -d ':' -f 2 | cut -d ' ' -f 4,6");
 						$volsteps = explode(' ',$volsteps[0]);
 						$data['volmin'] = $volsteps[0];
 						$data['volmax'] = $volsteps[1];
@@ -1249,7 +1170,6 @@ function wrk_audioOutput($redis,$action,$args = null) {
 				$data['type'] = 'alsa';
 				$data['system'] = trim($description[0]);
 				$redis->hSet('acards',$card,json_encode($data));
-				$i++;
 			}
 		break;
 		
@@ -1512,24 +1432,23 @@ sysCmd('systemctl daemon-reload');
 	}
 }
 
-function wrk_sourcemount($db,$action,$id) {
+function wrk_sourcemount($redis,$action,$id) {
 	switch ($action) {
 		
 		case 'mount':
-			$dbh = cfgdb_connect($db);
-			$mp = cfgdb_read('cfg_source',$dbh,'',$id);
+			$mp = $redis->hGetAll('mount_'.$id);
 			$mpdproc = getMpdDaemonDetalis();
-			sysCmd("mkdir \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
-			if ($mp[0]['type'] == 'cifs') {
+			sysCmd("mkdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+			if ($mp['type'] == 'cifs') {
 			// smb/cifs mount
 			$auth = 'guest';
-			if (!empty($mp[0]['username'])) {
-				$auth = "username=".$mp[0]['username'].",password=".$mp[0]['password'];
+			if (!empty($mp['username'])) {
+				$auth = "username=".$mp['username'].",password=".$mp['password'];
 			}
-				$mountstr = "mount -t cifs \"//".$mp[0]['address']."/".$mp[0]['remotedir']."\" -o ".$auth.",sec=ntlm,uid=".$mpdproc['uid'].",gid=".$mpdproc['gid'].",rsize=".$mp[0]['rsize'].",wsize=".$mp[0]['wsize'].",iocharset=".$mp[0]['charset'].",".$mp[0]['options']." \"/mnt/MPD/NAS/".$mp[0]['name']."\"";
+				$mountstr = "mount -t cifs \"//".$mp['address']."/".$mp['remotedir']."\" -o ".$auth.",sec=ntlm,uid=".$mpdproc['uid'].",gid=".$mpdproc['gid'].",rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",iocharset=".$mp['charset'].",".$mp['options']." \"/mnt/MPD/NAS/".$mp['name']."\"";
 			} else {
 				// nfs mount
-				$mountstr = "mount -t nfs -o rsize=".$mp[0]['rsize'].",wsize=".$mp[0]['wsize'].",".$mp[0]['options']." \"".$mp[0]['address'].":/".$mp[0]['remotedir']."\" \"/mnt/MPD/NAS/".$mp[0]['name']."\"";
+				$mountstr = "mount -t nfs -o rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
 			}
 			// debug
 			runelog('mount string',$mountstr);
@@ -1537,119 +1456,83 @@ function wrk_sourcemount($db,$action,$id) {
 			// -- REWORK NEEDED --
 			runelog('system response',var_dump($sysoutput));
 			if (empty($sysoutput)) {
-				if (!empty($mp[0]['error'])) {
-				$mp[0]['error'] = '';
-				cfgdb_update('cfg_source',$dbh,'',$mp[0]);
+				if (!empty($mp['error'])) {
+				$mp['error'] = '';
+				$redis->hMSet('mount_'.$id,$mp);
 				}
 			$return = 1;
 			} else {
-			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
-			$mp[0]['error'] = implode("\n",$sysoutput);
-			cfgdb_update('cfg_source',$dbh,'',$mp[0]);
+			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+			$mp['error'] = implode("\n",$sysoutput);
+			$redis->hMSet('mount_'.$id,$mp);
 			$return = 0;
 			}	
 		break;
 		
 		case 'mountall':
-		$dbh = cfgdb_connect($db);
-		$mounts = cfgdb_read('cfg_source',$dbh);
-		foreach ($mounts as $mp) {
+		$mounts = $redis->keys('mount_*');
+		foreach ($mounts as $key) {
+			$mp = $redis->hGetAll($key);
 			if (!wrk_checkStrSysfile('/proc/mounts',$mp['name']) ) {
-			$return = wrk_sourcemount($db,'mount',$mp['id']);
+			$return = wrk_sourcemount($redis,'mount',$mp['id']);
 			}
 		}
-		$dbh = null;
 		break;
 		
 	}
 return $return;
 }
 
-function wrk_sourcecfg($db,$action,$args) {
-runelog('wrk_sourcecfg($db,'.$action.')');
+function wrk_sourcecfg($redis,$action,$args) {
+runelog('function wrk_sourcecfg('.$action.')',$args);
 	switch ($action) {
 
 		case 'add':
-		$dbh = cfgdb_connect($db);
-		unset($args->id);
-		// format values string
-		$values = null;
-		foreach ($args as $key => $value) {
-			if ($key == 'error') {
-			$values .= "'".SQLite3::escapeString($value)."'";
-			// debug
-			runelog('wrk_sourcecfg($db,$queueargs) case ADD scan $values',$values);
-			} else {
-			$values .= "'".SQLite3::escapeString($value)."',";
-			// debug
-			runelog('wrk_sourcecfg($db,$queueargs) case ADD scan $values',$values);
-			}
-		}
-		// debug
-		runelog('wrk_sourcecfg($db,$queueargs) complete $values string',$values);
-		// write new entry
-		cfgdb_write('cfg_source',$dbh,$values);
-		$newmountID = $dbh->lastInsertId();
-		$dbh = null;
-		if (wrk_sourcemount($db,'mount',$newmountID)) {
-		$return = 1;
-		} else {
-		$return = 0;
-		}
+		// unset($args->id);
+		$args->id = $redis->incr('mountidx');
+		$args = (array) $args;
+		$redis->hMset('mount_'.$args['id'],$args);
+		$return = wrk_sourcemount($redis,'mount',$args['id']);
 		break;
 	
 		case 'edit':
-		$dbh = cfgdb_connect($db);
-		$mp = cfgdb_read('cfg_source',$dbh,'',$args->id);
-		cfgdb_update('cfg_source',$dbh,'',$args);
+		$mp = $redis->hGetAll('mount_'.$args->id);
+		$args = (array) $args;
+		$redis->hMset('mount_'.$args['id'],$args);
 		sysCmd('mpc stop');
 		usleep(500000);
-		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
-			if ($mp[0]['name'] != $args->name) {
-			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
-			sysCmd("mkdir \"/mnt/MPD/NAS/".$args->name."\"");
+		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp['name']."\"");
+			if ($mp['name'] != $args['name']) {
+			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+			sysCmd("mkdir \"/mnt/MPD/NAS/".$args['name']."\"");
 			}
-		if (wrk_sourcemount($db,'mount',$args->id)) {
-		$return = 1;
-		} else {
-		$return = 0;
-		}
+		$return = wrk_sourcemount($redis,'mount',$args['id']);
 		runelog('wrk_sourcecfg(edit) exit status',$return);
-		$dbh = null;
 		break;
 	
 		case 'delete':
-		$dbh = cfgdb_connect($db);
-		$mp = cfgdb_read('cfg_source',$dbh,'',$args->id);
+		$mp = $redis->hGetAll('mount_'.$args->id);
 		sysCmd('mpc stop');
 		usleep(500000);
-		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
+		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp['name']."\"");
 		sleep(3);
-		sysCmd("rmdir \"/mnt/MPD/NAS/".$mp[0]['name']."\"");
-		if (cfgdb_delete('cfg_source',$dbh,$args->id)) {
-		$return = 1;
-		} else {
-		$return = 0;
-		}
-		$dbh = null;
+		sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+		$return = $redis->del('mount_'.$args->id);
 		break;
 	
 		case 'reset': 
-		$dbh = cfgdb_connect($db);
-		$source = cfgdb_read('cfg_source',$dbh);
-			foreach ($source as $mp) {
-			runelog('wrk_sourcecfg() internal loop $mp[name]',$mp['name']);
-			sysCmd('mpc stop');
-			usleep(500000);
-			sysCmd("umount -f \"/mnt/MPD/NAS/".$mp['name']."\"");
-			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+		$source = $redis->keys('mount_*');
+		sysCmd('mpc stop');
+		usleep(500000);
+			foreach ($source as $key) {
+				$mp = $redis->hGetAll($key);
+				runelog('wrk_sourcecfg() internal loop $mp[name]',$mp['name']);
+				sysCmd("umount -f \"/mnt/MPD/NAS/".$mp['name']."\"");
+				sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+				$return = $redis->del($key);
 			}
-		if (cfgdb_delete('cfg_source',$dbh)) {
-		$return = 1;
-		} else {
-		$return = 0;
-		}
-		$dbh = null;
+		// reset mount index
+		if ($return) $redis->del('mountidx');
 		break;
 		
 	}
@@ -1874,17 +1757,24 @@ runelog('NTP SERVER',$ntpserver);
 	}
 }
 
-function wrk_changeHostname($db,$newhostname,$redis) {
+function wrk_changeHostname($redis,$newhostname) {
+$hn = sysCmd('hostname');
+runelog('current hostname', $hn[0]);
 // change system hostname
 sysCmd('hostnamectl set-hostname '.$newhostname);
 // restart avahi-daemon
 sysCmd('systemctl restart avahi-daemon');
 // reconfigure MPD
 sysCmd('systemctl stop mpd');
-$dbh = cfgdb_connect($db);
-cfgdb_update('cfg_mpd',$dbh,'zeroconf_name',$newhostname);
-$dbh = null;
-wrk_mpdconf('/etc',$db,$redis);
+// update zeroconfname in MPD configuration
+$redis->hMset('mpdconf','zeroconf_name',$newhostname);
+// update airplayname
+if ($redis->hGet('airplay','name') === $hn[0]) {
+	$redis->hSet('airplay','name',$newhostname);
+	if ($redis->hGet('airplay','enable') === '1') sysCmd('systemctl restart shairport');
+}
+// rewrite mpd.conf file
+wrk_mpdconf('/etc',$redis);
 // restart MPD
 sysCmd('systemctl start mpd');
 // restart SAMBA << TODO: use systemd!!!
@@ -1897,6 +1787,37 @@ $cmd = "amixer -c ".$cardID." |grep \"mixer control\"";
 $str = sysCmd($cmd);
 $hwmixerdev = substr(substr($str[0], 0, -(strlen($str[0]) - strrpos($str[0], "'"))), strpos($str[0], "'")+1);
 return $hwmixerdev;
+}
+
+function addRadio($data) {
+	// create new file
+	$file = '/mnt/MPD/Webradio/'.$data['label'].'.pls';
+	$newpls = '['.$data['label'].']\n';
+	$newpls .= 'NumberOfEntries=1\n';
+	$newpls .= 'File1='.$data['url'];
+	// Commit changes to .pls file
+	$fp = fopen($file, 'w');
+	$return = fwrite($fp, $newpls);
+	fclose($fp);
+return $return;
+}
+
+function editRadio($data) {
+	// edit webradio URL in .pls file
+	$file = '/mnt/MPD/Webradio/'.$data['label'].'.pls';
+	$newArray = wrk_replaceTextLine($file,'','File1=',$data['url'],'NumberOfEntries=1',1);
+	// Commit changes to .pls file
+	$fp = fopen($file, 'w');
+	$return = fwrite($fp, implode("",$newArray));
+	fclose($fp);
+return $return;
+}
+
+function deleteRadio($data) {
+	// delete .pls file
+	$file = '/mnt/MPD/Webradio/'.$data['label'].'.pls';
+	$return = unlink($file);
+return $return;
 }
 
 function ui_notify($title = null, $text, $type = null ) {
@@ -1935,18 +1856,30 @@ $fork_pid = pcntl_fork();
 	}
 }
 
-class ui_renderQueue extends Thread {
-	// mpd status
-	public $status;
+// class ui_renderQueue extends Thread {
+	////mpd status
+	// public $status;
 	
-    public function __construct($status){
-		$this->status = $status;
+    // public function __construct($status){
+		// $this->status = $status;
+    // }
+	
+    // public function run() {
+		// $mpd = openMpdSocket('/run/mpd.sock');
+		// $queue = getPlayQueue($mpd);
+		// closeMpdSocket($mpd);
+		// ui_render('queue',json_encode($queue));
+    // }
+// }
+
+class ui_renderQueue extends Thread {
+	
+    public function __construct($socket){
+		$this->socket = $socket;
     }
 	
     public function run() {
-		$mpd = openMpdSocket('/run/mpd.sock');
-		$queue = getPlayQueue($mpd);
-		closeMpdSocket($mpd);
+		$queue = getPlayQueue($this->socket);
 		ui_render('queue',json_encode($queue));
     }
 }

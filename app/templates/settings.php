@@ -17,38 +17,40 @@
 					<span class="help-block">Set your reference time sync server <i>(NTP server)</i></span>
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="proxy" class="control-label col-sm-2">HTTP Proxy server</label>
-				<div class="col-sm-10">
-					<label class="switch-light well" onclick="">
-						<input id="proxy" name="features[proxy]" type="checkbox" value="1"<?php if($this->proxy['enable'] == 1): ?> checked="checked" <?php endif ?>>
-						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
-					</label>
+			<div <?php if($this->proxy['enable'] === 1): ?>class="boxed"<?php endif ?> id="proxyBox">
+				<div class="form-group">
+					<label for="proxy" class="control-label col-sm-2">HTTP Proxy server</label>
+					<div class="col-sm-10">
+						<label class="switch-light well" onclick="">
+							<input id="proxy" name="features[proxy]" type="checkbox" value="1"<?php if($this->proxy['enable'] == 1): ?> checked="checked" <?php endif ?>>
+							<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
+						</label>
+					</div>
+				</div>
+				<div class="<?php if($this->proxy['enable'] != 1): ?>hide<?php endif ?>" id="proxyAuth">
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="proxy-user">Host</label>
+						<div class="col-sm-10">
+							<input class="form-control input-lg" type="text" id="proxy_host" name="features[proxy][host]" value="<?=$this->proxy['host'] ?>" data-trigger="change" placeholder="<host IP or FQDN>:<port>">
+							<span class="help-block">Insert HTTP Proxy host<i> (format: proxy_address:port)</i></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="proxy-user">Username</label>
+						<div class="col-sm-10">
+							<input class="form-control input-lg" type="text" id="proxy_user" name="features[proxy][user]" value="<?=$this->proxy['user'] ?>" data-trigger="change" placeholder="user">
+							<span class="help-block">Insert your HTTP Proxy <i>username</i> (leave blank for anonymous authentication)</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="proxy-pass">Password</label>
+						<div class="col-sm-10">
+							<input class="form-control input-lg" type="password" id="proxy_pass" name="features[proxy][pass]" value="<?=$this->proxy['pass'] ?>" placeholder="pass" autocomplete="off">
+							<span class="help-block">Insert your HTTP Proxy <i>password</i> (case sensitive) (leave blank for anonymous authentication)</span>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="<?php if($this->proxy['enable'] != 1): ?>hide<?php endif ?>" id="proxyAuth">
-				<div class="form-group">
-					<label class="control-label col-sm-2" for="proxy-user">Host</label>
-					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" id="proxy_host" name="features[proxy][host]" value="<?=$this->proxy['host'] ?>" data-trigger="change" placeholder="<host IP or FQDN>:<port>">
-						<span class="help-block">Insert HTTP Proxy host<i> (format: proxy_address:port)</i></span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-sm-2" for="proxy-user">Username</label>
-					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" id="proxy_user" name="features[proxy][user]" value="<?=$this->proxy['user'] ?>" data-trigger="change" placeholder="user">
-						<span class="help-block">Insert your HTTP Proxy <i>username</i> (leave blank for anonymous authentication)</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-sm-2" for="proxy-pass">Password</label>
-					<div class="col-sm-10">
-						<input class="form-control input-lg" type="password" id="proxy_pass" name="features[proxy][pass]" value="<?=$this->proxy['pass'] ?>" placeholder="pass" autocomplete="off">
-						<span class="help-block">Insert your HTTP Proxy <i>password</i> (case sensitive) (leave blank for anonymous authentication)</span>
-					</div>
-				</div>
-            </div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button class="btn btn-primary btn-lg" value="save" name="save" type="submit">Apply settings</button>
@@ -107,22 +109,24 @@
         <fieldset id="features-management">
             <legend>Features management</legend>
 			<p>Enable/disable optional modules that best suit your needs. Disabling unusued features will free system resources and might improve the overall performance.</p>
-			<div class="form-group">
-				<label for="airplay" class="control-label col-sm-2">AirPlay</label>
-				<div class="col-sm-10">
-					<label class="switch-light well" onclick="">
-						<input id="airplay" name="features[airplay][enable]" type="checkbox" value="1"<?php if($this->airplay['enable'] == 1): ?> checked="checked" <?php endif ?>>
-						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
-					</label>
-					<span class="help-block">Toggle the capability of receiving wireless streaming of audio via AirPlay protocol</span>
-				</div>
-			</div>
-			<div class="<?php if($this->airplay['enable'] != 1): ?>hide<?php endif ?>" id="airplayName">
+			<div <?php if($this->airplay['enable'] === '1'): ?>class="boxed"<?php endif ?> id="airplayBox">
 				<div class="form-group">
-					<label class="control-label col-sm-2" for="airplay-name">AirPlay name</label>
+					<label for="airplay" class="control-label col-sm-2">AirPlay</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" id="airplay_name" name="features[airplay][name]" value="<?=$this->airplay['name'] ?>" data-trigger="change" placeholder="runeaudio">
-						<span class="help-block">AirPlay broadcast name</span>
+						<label class="switch-light well" onclick="">
+							<input id="airplay" name="features[airplay][enable]" type="checkbox" value="1"<?php if($this->airplay['enable'] == 1): ?> checked="checked" <?php endif ?>>
+							<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
+						</label>
+						<span class="help-block">Toggle the capability of receiving wireless streaming of audio via AirPlay protocol</span>
+					</div>
+				</div>
+				<div class="<?php if($this->airplay['enable'] != 1): ?>hide<?php endif ?>" id="airplayName">
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="airplay-name">AirPlay name</label>
+						<div class="col-sm-10">
+							<input class="form-control input-lg" type="text" id="airplay_name" name="features[airplay][name]" value="<?=$this->airplay['name'] ?>" data-trigger="change" placeholder="runeaudio">
+							<span class="help-block">AirPlay broadcast name</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -156,32 +160,34 @@
 					<span class="help-block">Toggle random playback on the whole music library [WARNING - BETA]</span>
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="scrobbling_lastfm" class="control-label col-sm-2">Last.fm scrobbling</label>
-				<div class="col-sm-10">
-					<label class="switch-light well" onclick="">
-						<input id="scrobbling-lastfm" name="features[scrobbling_lastfm]" type="checkbox" value="1"<?php if($this->scrobbling_lastfm == 1): ?> checked="checked" <?php endif ?>>
-						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
-					</label>
-					<span class="help-block">Send to Last.fm informations about the music you are listening to (requires a Last.fm account)</span>
+			<div <?php if($this->scrobbling_lastfm === '1'): ?>class="boxed"<?php endif ?> id="lastfmBox">
+				<div class="form-group">
+					<label for="scrobbling_lastfm" class="control-label col-sm-2">Last.fm scrobbling</label>
+					<div class="col-sm-10">
+						<label class="switch-light well" onclick="">
+							<input id="scrobbling-lastfm" name="features[scrobbling_lastfm]" type="checkbox" value="1"<?php if($this->scrobbling_lastfm == 1): ?> checked="checked" <?php endif ?>>
+							<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
+						</label>
+						<span class="help-block">Send to Last.fm informations about the music you are listening to (requires a Last.fm account)</span>
+					</div>
+				</div>
+				<div class="<?php if($this->scrobbling_lastfm != 1): ?>hide<?php endif ?>" id="lastfmAuth">
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="lastfm-usr">Username</label>
+						<div class="col-sm-10">
+							<input class="form-control input-lg" type="text" id="lastfm_user" name="features[lastfm][user]" value="<?=$this->lastfm['user'] ?>" data-trigger="change" placeholder="user">
+							<span class="help-block">Insert your Last.fm <i>username</i></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="lastfm-pasw">Password</label>
+						<div class="col-sm-10">
+							<input class="form-control input-lg" type="password" id="lastfm_pass" name="features[lastfm][pass]" value="<?=$this->lastfm['pass'] ?>" placeholder="pass" autocomplete="off">
+							<span class="help-block">Insert your Last.fm <i>password</i> (case sensitive)</span>
+						</div>
+					</div>
 				</div>
 			</div>
-            <div class="<?php if($this->scrobbling_lastfm != 1): ?>hide<?php endif ?>" id="lastfmAuth">
-				<div class="form-group">
-					<label class="control-label col-sm-2" for="lastfm-usr">Username</label>
-					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" id="lastfm_user" name="features[lastfm][user]" value="<?=$this->lastfm['user'] ?>" data-trigger="change" placeholder="user">
-						<span class="help-block">Insert your Last.fm <i>username</i></span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-sm-2" for="lastfm-pasw">Password</label>
-					<div class="col-sm-10">
-						<input class="form-control input-lg" type="password" id="lastfm_pass" name="features[lastfm][pass]" value="<?=$this->lastfm['pass'] ?>" placeholder="pass" autocomplete="off">
-						<span class="help-block">Insert your Last.fm <i>password</i> (case sensitive)</span>
-					</div>
-				</div>
-            </div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button class="btn btn-primary btn-lg" value="1" name="features[submit]" type="submit">apply settings</button>

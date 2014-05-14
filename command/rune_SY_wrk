@@ -49,8 +49,6 @@ $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
 // check configuration datastore
 redisDatastore($redis,'check');
-// datastore SQLite
-$db = 'sqlite:/srv/http/db/player.db';
 
 // read registered HW architecture
 $arch_db = $redis->get('hwplatformid');
@@ -66,47 +64,6 @@ $redis->del('w_queue');
 sysCmd('echo "--------------- start: rune_SY_wrk.php ---------------" > /var/log/runeaudio/rune_SY_wrk.log');
 runelog("WORKER rune_SY_wrk.php STARTING...",'');
 
-// DEMONIZE --- //
-runelog("DEMONIZE ---",'');
-	$lock = fopen('/run/rune_SY_wrk.pid', 'c+');
-	if (!flock($lock, LOCK_EX | LOCK_NB)) {
-		die('already running');
-	}
-	 
-	switch ($pid = pcntl_fork()) {
-		case -1:
-			die('unable to fork');
-		case 0: // this is the child process
-			break;
-		default: // otherwise this is the parent process
-			fseek($lock, 0);
-			ftruncate($lock, 0);
-			fwrite($lock, $pid);
-			fflush($lock);
-			exit;
-	}
-	 
-	if (posix_setsid() === -1) {
-		 die('could not setsid');
-	}
-	 
-	fclose(STDIN);
-	fclose(STDOUT);
-	fclose(STDERR);
-
-	$stdIn = fopen('/dev/null', 'r'); // set fd/0
-	$stdOut = fopen('/dev/null', 'w'); // set fd/1
-	$stdErr = fopen('php://stdout', 'w'); // a hack to duplicate fd/1 to 2
-
-	// pcntl_signal(SIGTSTP, SIG_IGN);
-	// pcntl_signal(SIGTTOU, SIG_IGN);
-	// pcntl_signal(SIGTTIN, SIG_IGN);
-	// pcntl_signal(SIGHUP, SIG_IGN);
-	// pcntl_signal(SIGCHLD, SIG_IGN);
-	
-runelog("--- DEMONIZE",'');
-// --- DEMONIZE //
-
 // INITIALIZE ENVIRONMENT --- //
 runelog("INITIALIZE ENVIRONMENT ---",'');
 // change /run and session files for correct session file locking
@@ -116,7 +73,7 @@ sysCmd('chmod 777 /run');
 sysCmd('chmod -R 777 /var/www/db');
 
 // mount all sources
-wrk_sourcemount($db,'mountall');
+wrk_sourcemount($redis,'mountall');
 
 // check Architecture
 $arch = wrk_getHwPlatform();
@@ -133,7 +90,6 @@ if ($playerid_db === '') {
 runelog(">>>>>>RUNEAUDIO FIRST RUN PROCESS ---",'');
 // reset Redis datatore to defaults
 redisDatastore($redis,'reset');
-$dbh = cfgdb_connect($db);
 
 	// register HW architectureID and playerID
 	runelog("register HW architectureID and playerID",'');
@@ -147,7 +103,7 @@ $dbh = cfgdb_connect($db);
 
 	// reset sourcecfg to defaults
 	runelog("reset sourcecfg to defaults",'');
-	wrk_sourcecfg($db,'reset','');
+	wrk_sourcecfg($redis,'reset');
 	sendMpdCommand($mpd,'update');
 
 	// reset mpdconf to defaults
@@ -155,14 +111,13 @@ $dbh = cfgdb_connect($db);
 	wrk_mpdconf($redis,'reset');
 	
 	// tell worker to write new MPD config
-	wrk_mpdconf('/etc',$db,$redis);
+	wrk_mpdconf('/etc',$redis);
 	
 	usleep(500000);
 	// system ENV files check and replace
 	// runelog("system ENV files check and replace",'');
 	//	wrk_sysEnvCheck($arch,1);
-	
-$dbh = null;
+
 runelog("--- RUNEAUDIO FIRST RUN PROCESS",'');
 // invoke rune_SY_wrk.php respawn
 sysCmd('systemctl restart rune_SY_wrk');
@@ -329,7 +284,7 @@ while (1) {
 				case 'hostname':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					wrk_changeHostname($db,$job->args,$redis);
+					wrk_changeHostname($redis,$job->args);
 					$hn = sysCmd('hostname');
 					$redis->set('hostname',$hn[0]);
 					// update hash
@@ -520,7 +475,7 @@ while (1) {
 				case 'sourcecfg':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					if (wrk_sourcecfg($db,$job->action,$job->args)) sysCmd('mpc update');
+					if (wrk_sourcecfg($redis,$job->action,$job->args)) sysCmd('mpc update');
 					$redis->sRem('w_lock',$jobID);
 				break;
 
@@ -569,4 +524,3 @@ while (1) {
 usleep(500000);
 } // endwhile loop
 // --- WORKER MAIN LOOP //
-?>
