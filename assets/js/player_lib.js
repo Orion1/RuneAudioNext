@@ -63,15 +63,15 @@ function playbackChannel(){
 	});
 	pushstream.onmessage = renderUI;
 	pushstream.onstatuschange = function(status) {
-		console.log('[nginx pushtream module] status = ', status);
+		// console.log('[nginx pushtream module] status = ', status);
 		if (status === 2) {
 			sendCmd('renderui'); // force UI rendering (backend-call)
 		} else {
-			console.log('[nginx pushtream module] status change (' + status + ')');
-			if (status === 0) {
-				console.log('[nginx pushtream module] status disconnected (0)');
-				$('#loader').removeClass('hide');
-			}
+			// console.log('[nginx pushtream module] status change (' + status + ')');
+			// if (status === 0) {
+				// console.log('[nginx pushtream module] status disconnected (0)');
+				// $('#loader').removeClass('hide');
+			// }
 		}
 	};
 	// pushstream.onerror = function() {
@@ -130,11 +130,11 @@ function renderUI(text) {
 	} else {
 		$('#time').val(0).trigger('change');
 	}
-	// if (GUI.json.playlist != GUI.playlist) {
-		// getPlaylistCmd();
-		// GUI.playlist = GUI.json.playlist;
+	if (GUI.json.playlist != GUI.playlist) {
+		getPlaylistCmd();
+		GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
-	// }
+	}
 }
 
 // [!] (discontinued) refresh the queue
