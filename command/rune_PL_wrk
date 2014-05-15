@@ -60,6 +60,7 @@ $status = _parseStatusResponse(MpdStatus($mpd));
 $redis->set('nextsongid',$status['nextsongid']);
 // store "lastsongid" in PHP SESSION
 $redis->set('lastsongid',$status['songid']);
+		$redis->set('pl_length',$status['playlistlength']);
 		// check for Ramplay
 		if ($redis->get('ramplay') === '1') {
 			// check ramplay delete

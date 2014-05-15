@@ -68,9 +68,6 @@ jQuery(document).ready(function($){ 'use strict';
 	updateGUI();
 	libraryHome();
 	
-	// hide "connecting" layer
-	console.log('GUI.state = ', GUI.state);
-	
 	// PNotify init options
 	$.pnotify.defaults.styling = 'bootstrap3';
 	$.pnotify.defaults.history = false;
