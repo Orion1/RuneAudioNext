@@ -589,7 +589,7 @@ jQuery(document).ready(function($){ 'use strict';
 		if(history.pushState) {
 			history.pushState(null, null, e.target.hash);
 		} else {
-			window.location.hash = e.target.hash; //Polyfill for old browsers
+			window.location.hash = e.target.hash; // Polyfill for old browsers
 		}
 	});
 	
@@ -600,5 +600,16 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// remove the 300ms click delay on mobile browsers
 	FastClick.attach(document.body);
-
+	
+	// system poweroff
+	$('#syscmd-poweroff').click(function(){
+		$.post('/settings/', { 'syscmd' : 'poweroff' });
+		$('#loader').removeClass('hide');
+	});
+	
+	// system reboot
+	$('#syscmd-reboot').click(function(){
+		$.post('/settings/', { 'syscmd' : 'reboot' });
+		$('#loader').removeClass('hide');
+	});
 });
