@@ -35,21 +35,29 @@
 # by Orion
 #####################################
 
-if [ "$1" != "" ]; then
-mpc stop
-systemctl stop mpd
-umount -aft nfs
-umount -aft cifs
-fi
+# if [ "$1" != "" ]; then
+# mpc stop
+# systemctl stop mpd
+# umount -aft nfs
+# umount -aft cifs
+# fi
 
 # shutdown
 if [ "$1" == "shutdown" ]; then
 echo "Shutdown in progress..."
+mpc stop
+systemctl stop mpd
+umount -aft nfs
+umount -aft cifs
 poweroff
 fi
 
 # reboot
 if [ "$1" == "reboot" ]; then
+mpc stop
+systemctl stop mpd
+umount -aft nfs
+umount -aft cifs
 echo "Reboot in progress..."
 reboot
 fi
