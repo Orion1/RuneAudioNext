@@ -46,7 +46,10 @@
 if [ "$1" == "shutdown" ]; then
 echo "Shutdown in progress..."
 mpc stop
+systemctl stop nginx
+sleep 1
 systemctl stop mpd
+sleep 1
 umount -aft nfs
 umount -aft cifs
 poweroff
@@ -55,7 +58,10 @@ fi
 # reboot
 if [ "$1" == "reboot" ]; then
 mpc stop
+systemctl stop nginx
+sleep 1
 systemctl stop mpd
+sleep 1
 umount -aft nfs
 umount -aft cifs
 echo "Reboot in progress..."

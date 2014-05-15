@@ -68,10 +68,10 @@ function playbackChannel(){
 			sendCmd('renderui'); // force UI rendering (backend-call)
 		} else {
 			// console.log('[nginx pushtream module] status change (' + status + ')');
-			// if (status === 0) {
-				// console.log('[nginx pushtream module] status disconnected (0)');
-				// $('#loader').removeClass('hide');
-			// }
+			if (status === 0) {
+				console.log('[nginx pushtream module] status disconnected (0)');
+				$('#loader').removeClass('hide');
+			}
 		}
 	};
 	// pushstream.onerror = function() {

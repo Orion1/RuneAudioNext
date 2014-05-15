@@ -55,5 +55,5 @@ foreach ($cardlist as $key => $row) {
 }
 
 print_r($soundcards);
-// ui_notify('USB-Audio', 'interface connected');
+ui_notify('USB-Audio', 'interface connected');
 ?>
