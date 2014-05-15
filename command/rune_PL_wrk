@@ -81,12 +81,12 @@ $status = monitorMpdState($mpd);
 		$redis->set('pl_length',$status['playlistlength']);
 		$status = ui_status($mpd,$status);
 		
-		// render Queue
-		if ($status['changed'] === 'playlist') {
-		$queue = new ui_renderQueue($mpd);
-		$queue->start();
-		runelog('---------------- PLAYLIST RENDER ----------------');
-		}
+			// render Queue (push async)
+			// if ($status['changed'] === 'playlist') {
+			// $queue = new ui_renderQueue($mpd);
+			// $queue->start();
+			// runelog('---------------- PLAYLIST RENDER ----------------');
+			// }
 		
 		// CMediaFix
 		if ($redis->get('cmediafix') === '1' && $status['state'] === 'play' ) {
