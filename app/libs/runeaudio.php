@@ -238,6 +238,13 @@ runelog('sysCmd() output:',$output);
 return $output;
 }
 
+function sysCmdAsync($syscmd) {
+exec($syscmd." > /dev/null 2>&1 &", $output);
+runelog('sysCmd($str)',$syscmd);
+runelog('sysCmd() output:',$output);
+return $output;
+}
+
 function getMpdDaemonDetalis() {
 $cmd = sysCmd('id -u mpd');
 $details['uid'] = $cmd[0];
@@ -1748,9 +1755,10 @@ function wrk_sysEnvCheck($arch,$install) {
 }
 
 function wrk_NTPsync($ntpserver) {
-// debug
+//debug
 runelog('NTP SERVER',$ntpserver);
-	if (sysCmd('ntpdate '.$ntpserver)) {
+	// if (sysCmd('ntpdate '.$ntpserver)) {
+	if (sysCmdAsync('ntpdate '.$ntpserver)) {
 		return $ntpserver;
 	} else {
 		return false;
@@ -1838,51 +1846,11 @@ function ui_notify($title = null, $text, $type = null ) {
 }
 
 function ui_notify_async($title, $text, $jobID = null, $icon = null, $opacity = null, $hide = null) {
-$fork_pid = pcntl_fork();
-	if (!$fork_pid) {
-	runelog('fork PID: ', posix_getpid());
-			if (isset($jobID)) {
-				$redisT = new Redis();
-				$redisT->connect('127.0.0.1', 6379);
-				if (!($redisT->sIsMember('w_lock', $jobID))) {
-						usleep(800000);
-				} else {
-					do {
-						runelog('(ui_notify_async) inside while lock wait cicle',$jobID);
-						usleep(600000);
-					} while ($redisT->sIsMember('w_lock', $jobID));
-				}
-				$redisT->close();
-			} else {
-			usleep(650000);
-			}
-		// $output = json_encode(array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide ));
-		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8') ));
-		runelog('notify JSON string: ', $output);
-		ui_render('notify',$output);
-		exit(0);
-	} else {
-	runelog('parent PID: ', posix_getpid());
-	pcntl_waitpid($fork_pid, $status, WNOHANG|WUNTRACED);
-	runelog('child status: ', $status);
-	}
+	// $output = json_encode(array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide ));
+	$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8') ));
+	runelog('notify JSON string: ', $output);
+	sysCmdAsync('/var/www/command/ui_notify.php \''.$output.'\' '.$jobID);
 }
-
-// class ui_renderQueue extends Thread {
-	////mpd status
-	// public $status;
-	
-    // public function __construct($status){
-		// $this->status = $status;
-    // }
-	
-    // public function run() {
-		// $mpd = openMpdSocket('/run/mpd.sock');
-		// $queue = getPlayQueue($mpd);
-		// closeMpdSocket($mpd);
-		// ui_render('queue',json_encode($queue));
-    // }
-// }
 
 class ui_renderQueue extends Thread {
 	

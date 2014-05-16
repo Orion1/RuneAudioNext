@@ -136,6 +136,7 @@ $start2 = microtime(true);
 $firstlap = $start2-$start;
 runelog("NTP sync",$redis->get('ntpserver'));
 wrk_NTPsync($redis->get('ntpserver'));
+
 $start3 = microtime(true);
 // check HOSTNAME << TODO: integrate in wrk_sysEnvCheck >>
 $hn = sysCmd('hostname');
@@ -203,6 +204,7 @@ runelog("--- NORMAL STARTUP",'');
 $start4 = microtime(true);
 $starttime = ($start4-$start3)+$firstlap;
 runelog("WORKER rune_SY_wrk.php STARTED in ".$starttime." seconds.",'');
+ui_notify_async("system worker","rune_SY_wrk started in ".$starttime." seconds.");
 
 runelog("WORKER MAIN LOOP ---",'');
 // WORKER MAIN LOOP --- //

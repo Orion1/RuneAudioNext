@@ -40,20 +40,11 @@ ini_set('error_log','/var/log/runeaudio/refresh_ao.log');
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
 include('/var/www/app/libs/runeaudio.php');
-
-
-$cardlist = sysCmd('aplay -l');
-$soundcards = array();
-
-foreach ($cardlist as $key => $row) {
-	if (preg_match('/card/', $row)) {
-	$t = explode(":", $row);
-		foreach ($t as $key => $value) {
-		$soundcards[] = array($key => trim($value));
-		}
-	}
-}
-
-print_r($soundcards);
+// refesh audio hardware status (soundcards and MPD config)
+if ($redis->get('lock_refresh_ao') === '0') {
+$redis->set('lock_refresh_ao', 1);
+wrk_mpdconf($redis,'refresh');
 ui_notify('USB-Audio', 'interface connected');
+$redis->set('lock_refresh_ao', 0);
+}
 ?>
