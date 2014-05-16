@@ -156,10 +156,10 @@
 			} else {
 				Y = {"top": menuOffset - 1};
 			}
-			console.log('altezza finestra = ', boundsY);
-			console.log('offset menu = ', menuOffset);
-			console.log('altezza menu = ', menuHeight);
-			console.log(e);
+			// console.log('window height = ', boundsY);
+			// console.log('menu offset = ', menuOffset);
+			// console.log('menu height = ', menuHeight);
+			// console.log(e);
 
 			return $.extend(tp, Y, X);
 		}

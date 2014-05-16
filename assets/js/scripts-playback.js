@@ -606,7 +606,6 @@ jQuery(document).ready(function($){ 'use strict';
 		$.post('/settings/', { 'syscmd' : 'poweroff' });
 		$('#loader').removeClass('hide');
 	});
-	
 	// system reboot
 	$('#syscmd-reboot').click(function(){
 		$.post('/settings/', { 'syscmd' : 'reboot' });
