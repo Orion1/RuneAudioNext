@@ -82,7 +82,17 @@ jQuery(document).ready(function($){ 'use strict';
 		var el = $(this);
 		commandButton(el);
 	});
-
+	
+	// system poweroff
+	$('#syscmd-poweroff').click(function(){
+		$.post('/settings/', { 'syscmd' : 'poweroff' });
+		$('#loader').removeClass('hide');
+	});
+	// system reboot
+	$('#syscmd-reboot').click(function(){
+		$.post('/settings/', { 'syscmd' : 'reboot' });
+		$('#loader').removeClass('hide');
+	});
 	
 	// COMMON
 	// ----------------------------------------------------------------------------------------------------
