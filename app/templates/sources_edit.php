@@ -21,6 +21,7 @@
 				<div class="col-sm-10">
 					<select id="mount-type" name="mount[type]" class="selectpicker" data-style="btn-default btn-lg">
 					<option value="cifs" <?php if($this->mount['type'] == 'cifs'): ?> selected <?php endif ?>>SMB/CIFS</option>
+					<option value="cifs" <?php if($this->mount['type'] == 'osx'): ?> selected <?php endif ?>>SMB/CIFS (Mac OSX)</option>
 					<option value="nfs" <?php if($this->mount['type'] == 'nfs'): ?> selected <?php endif ?>>NFS</option>
 					</select>
 					<span class="help-block">Select SMB/CIFS for connect Windows file shares or NFS for unix file shares</span>

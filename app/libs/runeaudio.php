@@ -1446,16 +1446,18 @@ function wrk_sourcemount($redis,$action,$id) {
 			$mp = $redis->hGetAll('mount_'.$id);
 			$mpdproc = getMpdDaemonDetalis();
 			sysCmd("mkdir \"/mnt/MPD/NAS/".$mp['name']."\"");
-			if ($mp['type'] == 'cifs') {
+			if ($mp['type'] === 'cifs') {
 			// smb/cifs mount
 			$auth = 'guest';
 			if (!empty($mp['username'])) {
 				$auth = "username=".$mp['username'].",password=".$mp['password'];
 			}
 				$mountstr = "mount -t cifs \"//".$mp['address']."/".$mp['remotedir']."\" -o ".$auth.",sec=ntlm,uid=".$mpdproc['uid'].",gid=".$mpdproc['gid'].",rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",iocharset=".$mp['charset'].",".$mp['options']." \"/mnt/MPD/NAS/".$mp['name']."\"";
-			} else {
+			} else if ($mp['type'] === 'nfs') {
 				// nfs mount
 				$mountstr = "mount -t nfs -o rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
+			} else if ($mp['type'] === 'osx') {
+				$mountstr = "mount -t cifs \"//".$mp['address']."/".$mp['remotedir']."\" -o ".$auth.",nounix,sec=ntlmssp,uid=".$mpdproc['uid'].",gid=".$mpdproc['gid'].",rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",iocharset=".$mp['charset'].",".$mp['options']." \"/mnt/MPD/NAS/".$mp['name']."\"";
 			}
 			// debug
 			runelog('mount string',$mountstr);
