@@ -266,6 +266,7 @@ jQuery(document).ready(function($){ 'use strict';
 		$(this).addClass('hide');
 		if ($(this).hasClass('back-to-queue')) {
 			$('.playlist').addClass('hide');
+			getPlaylistCmd();
 			$('#pl-currentpath').addClass('hide');
 			$('#pl-manage').removeClass('hide');
 		} else {
@@ -275,8 +276,8 @@ jQuery(document).ready(function($){ 'use strict';
 			});
 			$('#pl-currentpath').removeClass('hide');
 			$('#pl-filter').val('');
-			customScroll('pl', parseInt(GUI.json.song), 500);
 		}
+		customScroll('pl', parseInt(GUI.json.song), 500);
 	});
 	
 	// playlists management
