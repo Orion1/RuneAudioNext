@@ -62,15 +62,12 @@ $redis->del('w_queue');
 
 // reset worker logfile
 sysCmd('echo "--------------- start: rune_SY_wrk.php ---------------" > /var/log/runeaudio/rune_SY_wrk.log');
-runelog("WORKER rune_SY_wrk.php STARTING...",'');
+runelog('WORKER rune_SY_wrk.php STARTING...');
 
 // INITIALIZE ENVIRONMENT --- //
-runelog("INITIALIZE ENVIRONMENT ---",'');
-// change /run and session files for correct session file locking
-sysCmd('chmod 777 /run');
-
-// reset DB permission
-sysCmd('chmod -R 777 /var/www/db');
+runelog('INITIALIZE ENVIRONMENT ---');
+// reset critical file permissions to default
+wrk_sysAcl();
 
 // mount all sources
 wrk_sourcemount($redis,'mountall');
@@ -87,27 +84,31 @@ $playerid_db = '';
 
 if ($playerid_db === '') {
 // RUNEAUDIO FIRST RUN PROCESS --- //
-runelog(">>>>>>RUNEAUDIO FIRST RUN PROCESS ---",'');
+runelog('>>>>>>RUNEAUDIO FIRST RUN PROCESS ---');
 // reset Redis datatore to defaults
 redisDatastore($redis,'reset');
 
+	// reset critical file permissions to default
+	runelog('reset critical file permissions to default');
+	wrk_sysAcl();
+
 	// register HW architectureID and playerID
-	runelog("register HW architectureID and playerID",'');
+	runelog('register HW architectureID and playerID');
 	wrk_setHwPlatform($redis);
 
 	// reset netconf to defaults
-	runelog("reset netconf to defaults",'');
+	runelog('reset netconf to defaults');
 
 	// read system network interfaces details
 	wrk_netconfig($redis,'reset');
 
 	// reset sourcecfg to defaults
-	runelog("reset sourcecfg to defaults",'');
+	runelog('reset sourcecfg to defaults');
 	wrk_sourcecfg($redis,'reset');
 	sendMpdCommand($mpd,'update');
 
 	// reset mpdconf to defaults
-	runelog("reset mpdconf to defaults",'');
+	runelog('reset mpdconf to defaults');
 	wrk_mpdconf($redis,'reset');
 	
 	// tell worker to write new MPD config
@@ -118,7 +119,7 @@ redisDatastore($redis,'reset');
 	// runelog("system ENV files check and replace",'');
 	//	wrk_sysEnvCheck($arch,1);
 
-runelog("--- RUNEAUDIO FIRST RUN PROCESS",'');
+runelog('--- RUNEAUDIO FIRST RUN PROCESS');
 // invoke rune_SY_wrk.php respawn
 sysCmd('systemctl restart rune_SY_wrk');
 
@@ -126,15 +127,15 @@ sysCmd('systemctl restart rune_SY_wrk');
 
 } else {
 
-runelog("--- INITIALIZE ENVIRONMENT",'');
+runelog('--- INITIALIZE ENVIRONMENT');
 // --- INITIALIZE ENVIRONMENT //
 
 // NORMAL STARTUP --- //
-runelog('NORMAL STARTUP ---','');
+runelog('NORMAL STARTUP ---');
 // NTP sync
 $start2 = microtime(true);
 $firstlap = $start2-$start;
-runelog("NTP sync",$redis->get('ntpserver'));
+runelog('NTP sync',$redis->get('ntpserver'));
 wrk_NTPsync($redis->get('ntpserver'));
 
 $start3 = microtime(true);
@@ -194,19 +195,19 @@ if ($redis->get('cmediafix') === '1') {
 }
 
 // initialize OrionProfile
-runelog("env: SET KERNEL PROFILE",$redis->get('orionprofile'));
+runelog('env: SET KERNEL PROFILE',$redis->get('orionprofile'));
 $cmd = "/var/www/command/orion_optimize.sh ".$redis->get('orionprofile')." ".$redis->get('hwplatformid') ;
 sysCmd($cmd);
  
-runelog("--- NORMAL STARTUP",'');
+runelog('--- NORMAL STARTUP');
 // --- NORMAL STARTUP //
 
 $start4 = microtime(true);
 $starttime = ($start4-$start3)+$firstlap;
-runelog("WORKER rune_SY_wrk.php STARTED in ".$starttime." seconds.",'');
-ui_notify_async("system worker","rune_SY_wrk started in ".$starttime." seconds.");
+runelog('WORKER rune_SY_wrk.php STARTED in '.$starttime.' seconds.');
+ui_notify_async('system worker','rune_SY_wrk started in '.$starttime.' seconds.');
 
-runelog("WORKER MAIN LOOP ---",'');
+runelog('WORKER MAIN LOOP ---');
 // WORKER MAIN LOOP --- //
 while (1) {
 // runelog('[wrk] loop marker ',microtime(true));
@@ -217,7 +218,7 @@ while (1) {
 
 		// switch command queue for predefined jobs
 		foreach ($redis->hGetAll('w_queue') as $jobID => $job) {
-			runelog("(loop) start job",$jobID);
+			runelog('(loop) start job',$jobID);
 			// decode redis data
 			$job = json_decode($job);
 			switch($job->wrkcmd) {
@@ -228,7 +229,7 @@ while (1) {
 					runelog("testjob: action ",$job->action);
 					runelog("testjob: args[] ",$job->args);
 					// send notfy to UI
-					// ui_notify_async('Test', 'text message: jobID='.$jobID, $jobID);
+					ui_notify_async('Test', 'text message: jobID='.$jobID, $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -243,7 +244,7 @@ while (1) {
 					}
 					// start shairport
 					if ($job->action === 'start') {
-					runelog("service: SHAIRPORT start");
+					runelog('service: SHAIRPORT start');
 					// start or re-start shairport service
 						if (isset($restart)) {
 							sysCmd('systemctl restart shairport');
@@ -252,25 +253,19 @@ while (1) {
 						}
 					$redis->hSet('airplay','enable', 1);
 					// send notfy to UI
-					// ui_notify_async('AirPlay', 'AirPlay feature enabled', $jobID);
+					ui_notify_async('AirPlay', 'AirPlay feature enabled', $jobID);
 					}
 					// stop shairport
 					if ($job->action === 'stop') {
-					runelog("service: SHAIRPORT stop");
+					runelog('service: SHAIRPORT stop');
 					sysCmd('systemctl stop shairport');
 					$redis->hSet('airplay','enable', 0);
 					// send notfy to UI
-					// ui_notify_async('AirPlay', 'AirPlay feature disabled', $jobID);
+					ui_notify_async('AirPlay', 'AirPlay feature disabled', $jobID);
 					}
 					$redis->sRem('w_lock',$jobID);					
 				break;
-				
-				// case 'backup':
-				
-					// $_SESSION[$_SESSION['w_jobID']] = wrk_backup();
-				
-				// break;
-				
+							
 				case 'clearimg':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					// Clean IMG
@@ -279,7 +274,7 @@ while (1) {
 					wrk_opcache('enable');
 					wrk_cleanDistro();
 					// send notfy to UI
-					// ui_notify_async('Clean IMG', 'this image is now clean, ready to publish.', $jobID);
+					ui_notify_async('Clean IMG', 'this image is now clean, ready to publish.', $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -293,14 +288,14 @@ while (1) {
 					$hash = md5_file('/etc/mpd.conf');
 					$redis->set('mpdconfhash',$hash);
 					// send notfy to UI
-					// ui_notify_async('Hostname', 'Hostname changed to:'.$hn[0], $jobID);
+					ui_notify_async('Hostname', 'Hostname changed to:'.$hn[0], $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'i2smodule':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					runelog("env: SET I2S MODULE",$job->args);
+					runelog('env: SET I2S MODULE',$job->args);
 					wrk_i2smodule($redis,$job->args);
 					$redis->sRem('w_lock',$jobID);
 				break;
@@ -310,7 +305,7 @@ while (1) {
 					$redis->sAdd('w_lock',$jobID);
 					if ($job->action === 'update') {
 						// send notfy to UI
-						// ui_notify_async('MPD', 'configuration updated', $jobID);
+						ui_notify_async('MPD', 'configuration updated', $jobID);
 						runelog('args',$job->args);
 						wrk_mpdconf($redis,'update',$job->args);
 						wrk_mpdconf($redis,'restart');
@@ -330,7 +325,7 @@ while (1) {
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
 					// send notfy to UI
-					// ui_notify_async('MPD', 'configuration updated', $jobID);
+					ui_notify_async('MPD', 'configuration updated', $jobID);
 					// write mpd.conf file
 					sysCmd('systemctl stop mpd');
 					$fh = fopen('/etc/mpd.conf', 'w');
@@ -352,7 +347,7 @@ while (1) {
 					sysCmd('systemctl start mpd');
 					// restart mpdscribble
 					if ($redis->get('scrobbling_lastfm') == 1) {
-					sysCmd('systemctl restart mpdscribble');
+						sysCmd('systemctl restart mpdscribble');
 					}
 					$redis->sRem('w_lock',$jobID);
 				break;
@@ -394,16 +389,20 @@ while (1) {
 					$redis->sAdd('w_lock',$jobID);
 					// Restart PHP service
 					if ($job->action === 'enable') {
-					wrk_opcache('enable');
-					runelog('PHP 5.5 OPcache enabled','');
-					sysCmd('systemctl restart php-fpm');
-					wrk_opcache('forceprime');
-					$redis->set('opcache', 1);
+						wrk_opcache('enable');
+						runelog('PHP 5.5 OPcache enabled');
+						sysCmd('systemctl restart php-fpm');
+						wrk_opcache('forceprime');
+						$redis->set('opcache', 1);
+						// send notfy to UI
+						ui_notify_async('PHP OpCache', 'cache enabled', $jobID);
 					} else {
-					wrk_opcache('disable');
-					runelog('PHP 5.5 OPcache disabled','');
-					sysCmd('systemctl restart php-fpm');
-					$redis->set('opcache', 0);
+						wrk_opcache('disable');
+						runelog('PHP 5.5 OPcache disabled');
+						sysCmd('systemctl restart php-fpm');
+						$redis->set('opcache', 0);
+						// send notfy to UI
+						ui_notify_async('PHP OpCache', 'cache disabled', $jobID);
 					}
 					$redis->sRem('w_lock',$jobID);
 				break;
@@ -429,6 +428,8 @@ while (1) {
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
 					sysCmd('/var/www/command/rune_shutdown shutdown');
+					// send notfy to UI
+					ui_notify_async('Shutdown', 'system shutdown in progress...', $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -436,6 +437,8 @@ while (1) {
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
 					sysCmd('/var/www/command/rune_shutdown reboot');
+					// send notfy to UI
+					ui_notify_async('Reboot', 'system reboot in progress...', $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
@@ -447,27 +450,31 @@ while (1) {
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);	
 					if ($job->action == 'start') {
-						if ($job->args->user != $redis->hGet('lastfm','user') OR $job->args->pass != $redis->hGet('lastfm','pass')) {
-						// mpdscribble.conf
-						$file = '/etc/mpdscribble.conf';
-						$newArray = wrk_replaceTextLine($file,'','username =','username = '.$job->args->user,'last.fm',2);
-						$newArray = wrk_replaceTextLine('',$newArray,'password =','password = '.$job->args->pass,'last.fm',3);
-						// Commit changes to /etc/mpdscribble.conf
-						$fp = fopen($file, 'w');
-						fwrite($fp, implode("",$newArray));
-						fclose($fp);
-						// write LastFM auth data to Redis datastore
-						setLastFMauth($redis,$job->args);
-						}
-					sysCmd('systemctl stop mpdscribble');
-					runelog("service: MPDSCRIBBLE start",'');
-					sysCmd('systemctl start mpdscribble');
-					$redis->set('scrobbling_lastfm', 1);
+							if ($job->args->user != $redis->hGet('lastfm','user') OR $job->args->pass != $redis->hGet('lastfm','pass')) {
+							// mpdscribble.conf
+							$file = '/etc/mpdscribble.conf';
+							$newArray = wrk_replaceTextLine($file,'','username =','username = '.$job->args->user,'last.fm',2);
+							$newArray = wrk_replaceTextLine('',$newArray,'password =','password = '.$job->args->pass,'last.fm',3);
+							// Commit changes to /etc/mpdscribble.conf
+							$fp = fopen($file, 'w');
+							fwrite($fp, implode("",$newArray));
+							fclose($fp);
+							// write LastFM auth data to Redis datastore
+							setLastFMauth($redis,$job->args);
+							}
+						sysCmd('systemctl stop mpdscribble');
+						runelog('service: MPDSCRIBBLE start');
+						sysCmd('systemctl start mpdscribble');
+						// send notfy to UI
+						ui_notify_async('Last.FM scrobbling', 'mpdscribble daemon started', $jobID);
+						$redis->set('scrobbling_lastfm', 1);
 					}
 					if ($job->action == 'stop') {
-					runelog("service: MPDSCRIBBLE stop",'');
-					sysCmd('systemctl stop mpdscribble');
-					$redis->set('scrobbling_lastfm', 0);
+						runelog('service: MPDSCRIBBLE stop');
+						sysCmd('systemctl stop mpdscribble');
+						// send notfy to UI
+						ui_notify_async('Last.FM scrobbling', 'mpdscribble daemon stopped', $jobID);
+						$redis->set('scrobbling_lastfm', 0);
 					}
 					$redis->sRem('w_lock',$jobID);		
 				break;				
@@ -479,30 +486,26 @@ while (1) {
 					$redis->sRem('w_lock',$jobID);
 				break;
 
-				case 'syschmod':
+				case 'sysAcl':
 				
-					wrk_syschmod();
+					wrk_sysAcl();
 				
 				break;
-
-				// case 'totalbackup':
-				// $_SESSION[$_SESSION['w_jobID']] = wrk_backup('dev');
-				// break;
 					
 				case 'udevil':
 				runelog('wrk_SY: ',$job->wrkcmd);	
 					$redis->sAdd('w_lock',$jobID);
 					if ($job->action === 'start') {
-					runelog("service: UDEVIL start",'');
+					runelog('service: UDEVIL start');
 					sysCmd('systemctl start udevil');
 					$redis->set('udevil', 1);
-					// ui_notify_async('USB-Auto', 'USB-Automount feature enabled', $jobID);
+					ui_notify_async('USB-Auto', 'USB-Automount feature enabled', $jobID);
 					}
 					if ($job->action === 'stop') {
-					runelog("service: UDEVIL stop",'');
+					runelog('service: UDEVIL stop');
 					sysCmd('systemctl stop udevil');
 					$redis->set('udevil', 0);
-					// ui_notify_async('USB-Auto', 'USB-Automount feature disabled', $jobID);
+					ui_notify_async('USB-Auto', 'USB-Automount feature disabled', $jobID);
 					}
 					$redis->sRem('w_lock',$jobID);
 				break;
@@ -515,8 +518,7 @@ while (1) {
 			}
 		// delete processed job from the w_queue
 		$redis->hDel('w_queue',$jobID);
-		usleep(500000);
-		runelog("(loop) delete job_queue",$jobID);
+		runelog('(loop) delete job_queue',$jobID);
 		} // endforeach loop
 		
 	} // endif loop

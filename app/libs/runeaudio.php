@@ -155,8 +155,6 @@ function searchDB($sock,$querytype,$query) {
 	break;
 	}
 	
-//$response =  htmlentities(readMpdResponse($sock),ENT_XML1,'UTF-8');
-//$response = htmlspecialchars(readMpdResponse($sock));
 $response = readMpdResponse($sock);
 return _parseFileListResponse($response);
 }
@@ -767,23 +765,27 @@ function debug_data($redis) {
 		}
 		$output .= "\n";
 		$output .= "\n";
-		$output .= "###### Kernel module snd_usb_audio settings ######\n";
-		$output .= "\n";
-		$sndusbinfo = sysCmd('systool -v -m snd_usb_audio');
-		$output .= implode("\n",$sndusbinfo)."\n\n";
 		$output .= "###### Kernel optimization parameters ######\n";
 		$output .= "\n";
 		$output .= "hardware platform:\t".$redis->get('hwplatform')."\n";
 		$output .= "current orionprofile:\t".$redis->get('orionprofile')."\n";
 		$output .= "\n";
 		// 		$output .=  "kernel scheduler for mmcblk0:\t\t".((empty(file_get_contents('/sys/block/mmcblk0/queue/scheduler'))) ? "\n" : file_get_contents('/sys/block/mmcblk0/queue/scheduler'));
-		$output .=  "kernel scheduler for mmcblk0:\t\t".file_get_contents('/sys/block/mmcblk0/queue/scheduler');
-		$output .=  "/proc/sys/vm/swappiness:\t\t".file_get_contents('/proc/sys/vm/swappiness');
-		$output .=  "/proc/sys/kernel/sched_latency_ns:\t".file_get_contents('/proc/sys/kernel/sched_latency_ns');
-		#$output .=  "/proc/sys/kernel/sched_rt_period_us:\t".file_get_contents('/proc/sys/kernel/sched_rt_period_us');
-		#$output .=  "/proc/sys/kernel/sched_rt_runtime_us:\t".file_get_contents('/proc/sys/kernel/sched_rt_runtime_us');
+		$output .=  "kernel scheduler for mmcblk0:\t\t\t".file_get_contents('/sys/block/mmcblk0/queue/scheduler');
+		$output .=  "/proc/sys/vm/swappiness:\t\t\t".file_get_contents('/proc/sys/vm/swappiness');
+		$output .=  "/proc/sys/kernel/sched_latency_ns:\t\t".file_get_contents('/proc/sys/kernel/sched_latency_ns');
+		$output .=  "/proc/sys/kernel/sched_rt_period_us:\t\t".file_get_contents('/proc/sys/kernel/sched_rt_period_us');
+		$output .=  "/proc/sys/kernel/sched_rt_runtime_us:\t\t".file_get_contents('/proc/sys/kernel/sched_rt_runtime_us');
+		$output .=  "/proc/sys/kernel/sched_autogroup_enabled:\t".file_get_contents('/proc/sys/kernel/sched_autogroup_enabled');
+		$output .=  "/proc/sys/kernel/sched_rr_timeslice_ms:\t\t".file_get_contents('/proc/sys/kernel/sched_rr_timeslice_ms');
+		$output .=  "/proc/sys/kernel/sched_min_granularity_ns:\t".file_get_contents('/proc/sys/kernel/sched_min_granularity_ns');
+		$output .=  "/proc/sys/kernel/sched_wakeup_granularity_ns:\t".file_get_contents('/proc/sys/kernel/sched_wakeup_granularity_ns');
 		$output .= "\n";
 		$output .= "\n";
+		$output .= "###### Kernel module snd_usb_audio settings ######\n";
+		$output .= "\n";
+		$sndusbinfo = sysCmd('systool -v -m snd_usb_audio');
+		$output .= implode("\n",$sndusbinfo)."\n\n";
 		$output .= "###### Filesystem mounts ######\n";
 		$output .= "\n";
 		$output .=  file_get_contents('/proc/mounts');
@@ -1449,9 +1451,9 @@ function wrk_sourcemount($redis,$action,$id) {
 			if ($mp['type'] === 'cifs') {
 			// smb/cifs mount
 			$auth = 'guest';
-			if (!empty($mp['username'])) {
-				$auth = "username=".$mp['username'].",password=".$mp['password'];
-			}
+				if (!empty($mp['username'])) {
+					$auth = "username=".$mp['username'].",password=".$mp['password'];
+				}
 				$mountstr = "mount -t cifs \"//".$mp['address']."/".$mp['remotedir']."\" -o ".$auth.",sec=ntlm,uid=".$mpdproc['uid'].",gid=".$mpdproc['gid'].",rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",iocharset=".$mp['charset'].",".$mp['options']." \"/mnt/MPD/NAS/".$mp['name']."\"";
 			} else if ($mp['type'] === 'nfs') {
 				// nfs mount
@@ -1641,13 +1643,12 @@ $playerid = $arch.md5_file('/sys/class/net/eth0/address');
 return $playerid;
 }
 
-function wrk_sysChmod() {
-sysCmd('chmod -R 777 /var/www/db');
+function wrk_sysAcl() {
 sysCmd('chmod a+x /var/www/command/orion_optimize.sh');
 sysCmd('chmod 777 /run');
-sysCmd('chmod 777 /run/sess*');
 sysCmd('chmod a+rw /etc/mpd.conf');
 sysCmd('chmod a+rw /etc/mpdscribble.conf');
+sysCmd('chown -R mpd.audio /var/lib/mpd');
 }
 
 function wrk_sysEnvCheck($arch,$install) {
