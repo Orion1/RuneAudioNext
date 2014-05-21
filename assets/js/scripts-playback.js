@@ -275,7 +275,7 @@ jQuery(document).ready(function($){ 'use strict';
 			});
 			$('#pl-currentpath').removeClass('hide');
 			$('#pl-filter').val('');
-			customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 500);
+			customScroll('pl', parseInt(GUI.json.song), 500);
 		}
 	});
 	
