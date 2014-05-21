@@ -389,7 +389,6 @@ jQuery(document).ready(function($){ 'use strict';
 				++GUI.currentDBpos[10];
 				// console.log('getDB path = ', path);
 			} else if (el.hasClass('db-webradio-add')) {
-				console.log('CLICKED');
 				$('#modal-webradio-add').modal();
 			}
 		}
@@ -506,6 +505,10 @@ jQuery(document).ready(function($){ 'use strict';
 		if (dataCmd == 'wrdelete') {
 			$('#modal-webradio-delete').modal();
 			$('#webradio-delete-name').text(path.replace('Webradio/', ''));
+		}
+		if (dataCmd == 'wradd') {
+			var parameters = path.split(' | ');
+			$.post('/db/?cmd=addradio', { 'name' : parameters[0], 'url' : parameters[1] });
 		}
 	});
 

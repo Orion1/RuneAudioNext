@@ -551,8 +551,8 @@ function parseResponse(options) {
 			} else if (querytype === 'stations') {
 			// stations
 				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-radio" data-path="';
-				content += inputArr.streamurl;
-				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-microphone db-icon"></i>';
+				content += inputArr.name + ' | ' + inputArr.streamurl;
+				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-dirble"></i><i class="fa fa-microphone db-icon"></i>';
 				content += '<span class="sn">' + inputArr.name + ' <span>' + inputArr.bitrate + '</span></span>';
 				content += '<span class="bl">';
 				content += inputArr.website;
@@ -1013,7 +1013,7 @@ function libraryHome() {
 	$('#database-entries').addClass('hide');
 	$('#db-level-up').addClass('hide');
 	$('#home-blocks').removeClass('hide');
-	$.getJSON('/assets/js/json-temp.txt', function(data) {
+	$.getJSON('/assets/js/json-temp.txt', function(data) { // TODO: read it dynamically
 		renderLibraryHome(data);
 	});
 	$('span', '#db-currentpath').html('');
@@ -1046,7 +1046,7 @@ function renderLibraryHome(jsonLib) {
 		} else if (obj.webradio !== undefined && obj.webradio !== '') {
 		// webradios block
 			if (obj.webradio == 0) {	
-				content += '<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>click to add some</div>';
+				content += '<a id="home-webradio" class="home-block" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>click to add some</a>';
 			} else {
 				content += '<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + obj.webradio + ')</h3>webradio local playlists</div>';
 			}
