@@ -263,11 +263,19 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// close filter results
 	$('#pl-filter-results').click(function(){
+		$(this).addClass('hide');
 		if ($(this).hasClass('back-to-queue')) {
-			$(this).addClass('hide');
 			$('.playlist').addClass('hide');
 			$('#pl-currentpath').addClass('hide');
 			$('#pl-manage').removeClass('hide');
+		} else {
+			$('li', '#playlist-entries').each(function(){
+				var el = $(this);
+				el.show();
+			});
+			$('#pl-currentpath').removeClass('hide');
+			$('#pl-filter').val('');
+			customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 500);
 		}
 	});
 	
@@ -313,7 +321,7 @@ jQuery(document).ready(function($){ 'use strict';
 	// on ready Library tab
 	$('a', '#open-panel-sx').click(function(){
 		if ($('#open-panel-sx').hasClass('active')) {
-			customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 500);
+			customScroll('pl', parseInt(GUI.json.song), 500);
 		}
 	})	
 	.on('shown.bs.tab', function (e) {
@@ -594,11 +602,15 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#menu-bottom a[href="/#' + url.split('#')[1] + '"]').tab('show');
 	}
 	// do not scroll with HTML5 history API
-	$('#menu-bottom a').on('shown', function (e) {
+	$('#menu-bottom a').on('shown', function(e) {
 		if(history.pushState) {
 			history.pushState(null, null, e.target.hash);
 		} else {
 			window.location.hash = e.target.hash; // Polyfill for old browsers
+		}
+	}).on('click', function() {
+		if ($('#social-overlay').hasClass('open')) {
+			$('.overlay-close').trigger('click');
 		}
 	});
 	
