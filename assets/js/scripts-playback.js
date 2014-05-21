@@ -470,6 +470,12 @@ jQuery(document).ready(function($){ 'use strict';
 			});
 			// notify('update', path);
 		}
+		if (dataCmd == 'bookmark') {
+			getDB({
+				cmd: 'bookmark',
+				path: path
+			});
+		}
 		if (dataCmd == 'pl-add') {
 			sendCmd('load "' + path + '"');
 		}
