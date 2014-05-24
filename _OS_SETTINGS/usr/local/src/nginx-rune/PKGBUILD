@@ -2,11 +2,8 @@ _cfgdir=/etc/nginx
 _tmpdir=/var/lib/nginx
 
 pkgname=nginx-rune
-pkgver=1.4.4
-pkgrel=3
-_uploadprogver=0.9.0
-_cachepurgever=2.1
-_modver=2.7.7
+pkgver=1.4.7
+pkgrel=1
 pkgdesc="NGiNX HTTP server (RuneAudio)"
 arch=('armv6h')
 depends=('pcre' 'zlib' 'openssl' 'apr-util')
@@ -28,15 +25,10 @@ backup=(${_cfgdir:1}/fastcgi.conf
         etc/logrotate.d/nginx)
 
 source=(http://nginx.org/download/nginx-$pkgver.tar.gz
-        nginx-upload-progress-$_uploadprogver.tgz::https://github.com/masterzen/nginx-upload-progress-module/tarball/v$_uploadprogver
         service
         nginx.logrotate)
 
 build() {
-	local _modules=(
-		--add-module=../masterzen-nginx-upload-progress-module-a788dea/
-	)
-
 	cd "$srcdir"
 
 	msg "Fetching nginx-push-stream-module"
@@ -46,7 +38,7 @@ build() {
 		git pull
 		popd
 	else
-		git clone --depth=0 https://github.com/wandenberg/nginx-push-stream-module.git
+		git clone https://github.com/wandenberg/nginx-push-stream-module.git
 	fi
 
 	cd "$srcdir/nginx-$pkgver"
@@ -104,7 +96,6 @@ package() {
 }
 
 
-sha256sums=('7c989a58e5408c9593da0bebcd0e4ffc3d892d1316ba5042ddb0be5b0b4102b9'
-            '3fb903dab595cf6656fa0fc5743a48daffbba2f6b5c554836be630800eaad4e2'
+sha256sums=('23b8ff4a76817090678f91b0efbfcef59a93492f6612dc8370c44c1f1ce1b626'
             '05fdc0c0483410944b988d7f4beabb00bec4a44a41bd13ebc9b78585da7d3f9b'
             '9523a1fdd5eb61bf62f3049f6ee088b198e36d5edcce2d9b08bbeb2930aa5a16')

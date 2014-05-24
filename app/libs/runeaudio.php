@@ -55,6 +55,7 @@ socket_close($sock);
 runelog("[0][".$sock."]\t<<<<<< CLOSE MPD SOCKET >>>>>>\t\t\t",'');
 }
 
+
 function sendMpdCommand($sock,$cmd) {
 	if ($cmd == 'cmediafix') {
 		socket_write($sock, 'pause\n', strlen('pause\n'));
@@ -1930,6 +1931,14 @@ function ui_render($channel,$data) {
 curlPost('http://127.0.0.1/pub?id='.$channel,$data);
 }
 
+function ui_update($redis,$mpd) {
+	if ($redis->get('pl_length') !== '0') {
+	sendMpdCommand($mpd,'swap 0 0');
+	} else {
+	sendMpdCommand($mpd,'clear');
+	}
+}
+
 function ui_mpd_response($mpd,$notify = null) {
 runelog('ui_mpd_response invoked','');
 $response = json_encode(readMpdResponse($mpd));
@@ -1976,6 +1985,11 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $response = curl_exec($ch);
 curl_close($ch);
 return $response;
+}
+
+function countDirs($basepath) {
+$count = count(glob($basepath."/*",GLOB_ONLYDIR)); 
+return $count; 
 }
 
 function netmask($bitcount) {

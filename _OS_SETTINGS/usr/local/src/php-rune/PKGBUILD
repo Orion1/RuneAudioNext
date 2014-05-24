@@ -3,9 +3,9 @@
 
 pkgbase=php
 pkgname=php-rune
-pkgdesc="PHP-FPM 5.5.9 (RuneAudio)"
+pkgdesc="PHP-FPM 5.5.12 (RuneAudio)"
 packager="RuneAudio Team"
-pkgver=5.5.11
+pkgver=5.5.12
 pkgrel=1
 pkgdir=${startdir}/pkg/${pkgname}
 arch=('armv6h')
@@ -16,27 +16,18 @@ makedepends=('sqlite' 'file'
              'curl' 'bzip2' 'db' 'gmp' 'systemd')
 #source=("http://www.php.net/distributions/${pkgbase}-${pkgver}.tar.gz"
 #        "http://www.php.net/distributions/${pkgbase}-${pkgver}.tar.gz.asc"
-source=("php-5.5.11.tar.gz"
-        "php-5.5.11.tar.gz.asc"
-        'php.ini.patch' 'php-fpm.conf.in.patch'
+source=("php-5.5.12.tar.gz"
+        "php-5.5.12.tar.gz.asc"
         'logrotate.d.php-fpm' 'php-fpm.service' 'php-fpm.tmpfiles')
-md5sums=('9156fcd4b254cbfa9a7535f931da29d5'
-'88517ca48e0b65e5a1db40b642fdaebb'
-'799cd5f91f5253f4b47ec4fd7fccf4f1'
-'9f8263996836e27f5be1483e86ac2e33'
+md5sums=('b6a6e9c72589c265aafb7b3353a34030'
+'cbc97d6d775acce3164ec7a1819f172f'
 'e036c721e5ad927cd1613c7475a58b3a'
 'cc2940f5312ba42e7aa1ddfab74b84c4'
 'c60343df74f8e1afb13b084d5c0e47ed'
 )
 
-prepare() {
-	cd ${srcdir}/php-${pkgver}
-
-	patch -p0 -i ${srcdir}/php.ini.patch
-	patch -p0 -i ${srcdir}/php-fpm.conf.in.patch
-}
-
 build() {
+	cd ${srcdir}/php-${pkgver}
 	local _phpconfig="--srcdir=../php-${pkgver} \
 		--config-cache \
 		--prefix=/usr \
@@ -63,11 +54,10 @@ build() {
 		--enable-embed=static \
 		--enable-fileinfo \
 		--enable-mbstring \
-		--enable-opcache=static \
+		--enable-opcache \
 		--enable-phar \
 		--enable-posix \
 		--enable-shmop \
-		--enable-pdo=static \
 		--enable-sockets=static \
 		--enable-maintainer-zts \
 		--enable-zend-signals \
@@ -130,14 +120,13 @@ package() {
 	cd ${srcdir}/build-fpm
 	make -j1 INSTALL_ROOT=${pkgdir} install
 	install -d -m755 ${pkgdir}/usr/share/pear
-	# install php.ini
-	install -D -m644 ${srcdir}/php-${pkgver}/php.ini-production ${pkgdir}/etc/php/php.ini
-	install -d -m755 ${pkgdir}/etc/php/conf.d/
+	# install RuneAudio php configuration
+	rm -rf ${pkgdir}/etc/php
+	cp -r ${startdir}/php-rune-config/ ${pkgdir}/etc/php
+	chmod 755 ${pkgdir}/etc/php
 	install -D -m755 ${srcdir}/build-fpm/sapi/fpm/php-fpm ${pkgdir}/usr/bin/php-fpm
 	install -D -m644 ${srcdir}/build-fpm/sapi/fpm/php-fpm.8 ${pkgdir}/usr/share/man/man8/php-fpm.8
-	install -D -m644 ${srcdir}/build-fpm/sapi/fpm/php-fpm.conf ${pkgdir}/etc/php/php-fpm.conf
 	install -D -m644 ${srcdir}/logrotate.d.php-fpm ${pkgdir}/etc/logrotate.d/php-fpm
-	install -d -m755 ${pkgdir}/etc/php/fpm.d
 	install -D -m644 ${srcdir}/php-fpm.tmpfiles ${pkgdir}/usr/lib/tmpfiles.d/php-fpm.conf
 	install -D -m644 ${srcdir}/php-fpm.service ${pkgdir}/usr/lib/systemd/system/php-fpm.service
 	make install-pear INSTALL_ROOT=${pkgdir}

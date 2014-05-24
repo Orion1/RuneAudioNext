@@ -120,16 +120,9 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
                 // debug
                 runelog('MPD command (6):',$_GET['cmd']);
                 if ($_GET['cmd'] == 'renderui') {
-				
-					// if (($pl_length !== null) OR ($pl_length !== '0')) {
-					if ($redis->get('pl_length') !== '0') {
-					sendMpdCommand($mpd,'swap 0 0');
-					} else {
-					sendMpdCommand($mpd,'clear');
-					}
-				
+					ui_update($redis,$mpd);
                 } else {
-				sendMpdCommand($mpd,$_GET['cmd']);
+					sendMpdCommand($mpd,$_GET['cmd']);
 				}
             }
         // debug
@@ -143,4 +136,3 @@ echo 'MPD COMMAND INTERFACE<br>';
 echo 'INTERNAL USE ONLY<br>';
 echo 'hosted on runeaudio.local:82';
 }
-?>
