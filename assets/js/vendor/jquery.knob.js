@@ -174,7 +174,8 @@
                 this.$.bind(
                     'change blur'
                     , function () {
-                        s.val(s._validate(s.o.parse(s.$.val())), false);
+						// s.val(s._validate(s.o.parse(s.$.val())));
+                        s.val(s._validate(s.o.parse(s.$.val())), false);	// [MOD] compatibility hack
                     }
                 );
 

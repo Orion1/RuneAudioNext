@@ -121,7 +121,7 @@
 		}
 
 		,getPosition: function(e, $menu) {
-			// ACXMOD: offset change
+			// [MOD] offset change
 			/*
 			var mouseX = e.clientX
 				, mouseY = e.clientY

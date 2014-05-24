@@ -107,38 +107,18 @@ jQuery(document).ready(function($){ 'use strict';
 	// KNOBS
 	// ----------------------------------------------------------------------------------------------------
 	
-	// playback progressing
+	// playback knob
 	$('.playbackknob').knob({
 		inline: false,
-			change : function (value) {
-			if (GUI.state != 'stop') {
+		change : function (value) {
+			if (GUI.state != 'stop')
 				window.clearInterval(GUI.currentKnob);
-				//$('#time').val(value);
-				// console.log('click percent = ', value);
-				// add command
-			} else $('#time').val(0);
+			else
+				$('#time').val(0).trigger('change');
 		},
 		release : function (value) {
-			if (GUI.state !== 'stop' && GUI.state !== '') {
-				if (GUI.stream !== 'radio') {
-					// console.log('release percent = ', value);
-					console.log(GUI.state);
-					window.clearInterval(GUI.currentKnob);
-					var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
-					sendCmd('seek ' + GUI.json.song + ' ' + seekto);
-					// console.log('seekto = ', seekto);
-					$('#time').val(value);
-					$('#countdown-display').countdown('destroy');
-					$('#countdown-display').countdown({since: -seekto, compact: true, format: 'MS'});
-				} else {
-					$('#time').val(0).trigger('change');
-				}
-			}
-		},
-		cancel : function () {
-			// console.log('cancel : ', this);
-		},
-		draw : function () {}
+			onreleaseKnob(value);
+		}
 	});
 
 	// volume knob
@@ -149,42 +129,35 @@ jQuery(document).ready(function($){ 'use strict';
 		release : function (value) {
 			setvol(value);
 		},
-		cancel : function () {
-			// console.log('cancel : ', this);
-		},
-		draw : function () {
+		draw : function () {	
 			// "tron" case
-			if(this.$.data('skin') == 'tron') {
+			if (this.$.data('skin') == 'tron') {
 
-				var a = this.angle(this.cv),	// Angle
-					sa = this.startAngle,	// Previous start angle
-					sat = this.startAngle,	// Start angle
-					ea,	// Previous end angle
-					eat = sat + a,	// End angle
-					r = true;
+				this.cursorExt = 0.05;
+
+				var a = this.arc(this.cv) // Arc
+					, pa // Previous arc
+					, r = 1;
 
 				this.g.lineWidth = this.lineWidth;
 
-				this.o.cursor && (sat = eat - 0.05) && (eat = eat + 0.05);
-
 				if (this.o.displayPrevious) {
-					ea = this.startAngle + this.angle(this.value);
-					this.o.cursor && (sa = ea - 0.1) && (ea = ea + 0.1);
+					pa = this.arc(this.v);
 					this.g.beginPath();
-					this.g.strokeStyle = this.previousColor;
-					this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false);
+					this.g.strokeStyle = this.pColor;
+					this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
 					this.g.stroke();
 				}
 
 				this.g.beginPath();
 				this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
-				this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false);
+				this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, a.s, a.e, a.d);
 				this.g.stroke();
 
 				this.g.lineWidth = 2;
 				this.g.beginPath();
 				this.g.strokeStyle = this.o.fgColor;
-				this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + 10 + this.lineWidth * 2 / 3, 0, 20 * Math.PI, false);
+				this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 10 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
 				this.g.stroke();
 
 				return false;
@@ -307,13 +280,13 @@ jQuery(document).ready(function($){ 'use strict';
 	});
 	
 	// sort Queue entries
-	// var sortlist = document.getElementById('playlist-entries');
-	// new Sortable(sortlist, {
-		// ghostClass: 'sortable-ghost',
-		// onUpdate: function (evt){
-			// sortOrder(evt.item.getAttribute('id'));	
-		// }
-	// });
+	var sortlist = document.getElementById('playlist-entries');
+	new Sortable(sortlist, {
+		ghostClass: 'sortable-ghost',
+		onUpdate: function (evt){
+			sortOrder(evt.item.getAttribute('id'));	
+		}
+	});
 	
 	
 	// LIBRARY
