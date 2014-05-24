@@ -111,7 +111,7 @@ jQuery(document).ready(function($){ 'use strict';
 			$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 		}						
 		$('#mount-type').change(function(){		  
-			if ($(this).val() == 'cifs') {
+			if ($(this).val() == 'cifs' || $(this).val() == 'osx') {
 				$('#mount-cifs').removeClass('disabled').children('.disabler').addClass('hide');
 			}
 			else {
