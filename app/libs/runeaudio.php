@@ -135,6 +135,18 @@ function echoTemplate($template) {
 echo $template;
 }
 
+function saveBookmark($redis,$path) {
+	$idx = $redis->incr('bookmarksidx');
+	$name = parseFileStr($path,'/');
+	$return = $redis->hSet('bookmarks',$idx,json_encode(array('name' => $name, 'path' => $path)));
+return $return;
+}
+
+function deleteBookmark($redis,$id) {
+	$return = $redis->hDel('bookmarks',$id);
+return $return;
+}
+
 function searchDB($sock,$querytype,$query) {
 	switch ($querytype) {
 	case "filepath":
@@ -369,16 +381,19 @@ function _parseOutputsResponse($input,$active) {
 			}
 		}
 	if (isset($active)) {
-	return $active;
+		return $active;
 	} else {
-	return $outputs;
+		return $outputs;
 	}
 }
 	
 // get file extension
 function parseFileStr($strFile,$delimiter) {
+// runelog("parseFileStr($strFile,$delimiter)");
 $pos = strrpos($strFile, $delimiter);
+// runelog('parseFileStr (position of delimiter)',$pos); 
 $str = substr($strFile, $pos+1);
+// runelog('parseFileStr (string)',$str); 
 return $str;
 }
 
