@@ -75,7 +75,7 @@ while($resp = socket_read($sock, 32768)) {
    $output .= $resp;
    if ((strpos($output, "OK\n") !== false) OR (strpos($output, "ACK") !== false)) break;
 }
-runelog("socket_read: buffer length ".strlen($output),$output);
+// runelog("socket_read: buffer length ".strlen($output),$output);
 return str_replace(MPD_GREETING,'',$output);
 // return $output;
 }
@@ -288,7 +288,7 @@ function _parseFileListResponse($resp) {
 
 		}
 		return $plistArray;
-	}
+}
 
 // format Output for "status"
 function _parseStatusResponse($resp) {
@@ -1474,7 +1474,7 @@ function wrk_sourcemount($redis,$action,$id) {
 				}
 			$return = 1;
 			} else {
-			sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+			if(!empty($mp['name'])) sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
 			$mp['error'] = implode("\n",$sysoutput);
 			$redis->hMSet('mount_'.$id,$mp);
 			$return = 0;
@@ -1890,39 +1890,67 @@ $status['radioname'] = $curTrack[0]['Name'];
 return $status;
 }
 
-function ui_lastFM_coverart($artist,$album,$lastfm_apikey,$proxy) {
-if (!empty($album)) {
-$url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&album=".urlencode($album)."&format=json";
-unset($artist);
-} else {
-$url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&format=json";
-$artist = 1;
+function ui_libraryHome($redis,$mpd) {
+// Network mounts
+$networkmounts = countDirs('/mnt/MPD/NAS');
+// USB mounts
+$usbmounts = countDirs('/mnt/MPD/USB');
+// Webradios
+sendMpdCommand($mpd,'listall Webradio');
+$resp = readMpdResponse($mpd);
+$line = strtok($resp,"\n");
+$webradios = 0;
+while ( $line ) {
+	list ( $element, $value ) = explode(': ',$line );
+	if ( $element === 'playlist' ) {
+		$webradios++;
+	}
+	$line = strtok("\n");
+} 
+// Dirble
+$proxy = $redis->hGetall('proxy');
+$dirblecfg = $redis->hGetAll('dirble');
+$dirble = json_decode(curlGet($dirblecfg['baseurl'].'amountStation/apikey/'.$dirblecfg['apikey'],$proxy));
+// Bookmarks
+$bookmarks = $redis->hGetAll('bookmarks');
+// Encode UI response
+// ui_render('library',json_encode(array('bookmarks' => array('count' => array_count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradios' => $webradios, 'Dirble' => $dirble->amount)));
+echo json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradios' => $webradios, 'Dirble' => $dirble->amount));
 }
-// debug
-//echo $url;
-// $ch = curl_init($url);
-// curl_setopt($ch, CURLOPT_HEADER, 0);
-// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-// $response = curl_exec($ch);
-// curl_close($ch);
-// $output = json_decode($response,true);
-$output = json_decode(curlGet($url,$proxy),true);
 
-// debug
-runelog('coverart lastfm query URL',$url);
-// debug++
-// echo "<pre>";
-// print_r($output);
-// echo "</pre>";
-
-// key [3] == extralarge last.fm image
-// key [4] == mega last.fm image
-	if(isset($artist)) {
-	runelog('coverart lastfm query URL',$output['artist']['image'][3]['#text']);
-	return $output['artist']['image'][3]['#text'];
+function ui_lastFM_coverart($artist,$album,$lastfm_apikey,$proxy) {
+	if (!empty($album)) {
+		$url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&album=".urlencode($album)."&format=json";
+		unset($artist);
 	} else {
-	runelog('coverart lastfm query URL',$output['album']['image'][3]['#text']);
-	return $output['album']['image'][3]['#text'];
+		$url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=".$lastfm_apikey."&artist=".urlencode($artist)."&format=json";
+		$artist = 1;
+	}
+	// debug
+	//echo $url;
+	// $ch = curl_init($url);
+	// curl_setopt($ch, CURLOPT_HEADER, 0);
+	// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	// $response = curl_exec($ch);
+	// curl_close($ch);
+	// $output = json_decode($response,true);
+	$output = json_decode(curlGet($url,$proxy),true);
+
+	// debug
+	runelog('coverart lastfm query URL',$url);
+	// debug++
+	// echo "<pre>";
+	// print_r($output);
+	// echo "</pre>";
+
+	// key [3] == extralarge last.fm image
+	// key [4] == mega last.fm image
+	if(isset($artist)) {
+		runelog('coverart lastfm query URL',$output['artist']['image'][3]['#text']);
+		return $output['artist']['image'][3]['#text'];
+	} else {
+		runelog('coverart lastfm query URL',$output['album']['image'][3]['#text']);
+		return $output['album']['image'][3]['#text'];
 	}
 }
 

@@ -124,42 +124,41 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				
 				case 'dirble':
 				$proxy = $redis->hGetall('proxy');
-					$apikey = $redis->hGet('dirble','apikey');
-					$dirbleBase = 'http://api.dirble.com/v1/';
+				$dirblecfg = $redis->hGetAll('dirble');
 					if (isset($_POST['querytype'])) {
 						// if ($_POST['querytype'] === 'amountStation') {
 						if ($_POST['querytype'] === 'amountStation') {
-						$dirble = json_decode(curlGet($dirbleBase.'amountStation/apikey/'.$apikey,$proxy));
+						$dirble = json_decode(curlGet($dirblecfg['baseurl'].'amountStation/apikey/'.$dirblecfg['apikey'],$proxy));
 						echo $dirble->amount;
 						}
 						// Get primaryCategories
 						if ($_POST['querytype'] === 'categories' OR $_POST['querytype'] === 'primaryCategories' ) {
-						echo curlGet($dirbleBase. $_POST['querytype'].'/apikey/'.$apikey,$proxy);
+						echo curlGet($dirblecfg['baseurl'].$_POST['querytype'].'/apikey/'.$dirblecfg['apikey'],$proxy);
 						}
 						// Get childCategories by primaryid
 						if ($_POST['querytype'] === 'childCategories' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'childCategories/apikey/'.$apikey.'/primaryid/'.$_POST['args'],$proxy);
+						echo curlGet($dirblecfg['baseurl'].'childCategories/apikey/'.$dirblecfg['apikey'].'/primaryid/'.$_POST['args'],$proxy);
 						}
 						// Get station by ID
 						if ($_POST['querytype'] === 'stations' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'stations/apikey/'.$apikey.'/id/'.$_POST['args'],$proxy);
+						echo curlGet($dirblecfg['baseurl'].'stations/apikey/'.$dirblecfg['apikey'].'/id/'.$_POST['args'],$proxy);
 						}
 						// Search radio station
 						if ($_POST['querytype'] === 'search' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'search/apikey/'.$apikey.'/search/'.$_POST['args'],$proxy);
+						echo curlGet($dirblecfg['baseurl'].'search/apikey/'.$dirblecfg['apikey'].'/search/'.$_POST['args'],$proxy);
 						}
 						// Get stations by continent
 						if ($_POST['querytype'] === 'continent' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'continent/apikey'.$apikey.'/continent/'.$_POST['args'],$proxy);
+						echo curlGet($dirblecfg['baseurl'].'continent/apikey'.$dirblecfg['apikey'].'/continent/'.$_POST['args'],$proxy);
 						}
 						// Get stations by country
 						if ($_POST['querytype'] === 'country' && isset($_POST['args'])) {
-						echo curlGet($dirbleBase.'country/apikey'.$apikey.'/country/'.$_POST['args'],$proxy);
+						echo curlGet($dirblecfg['baseurl'].'country/apikey'.$dirblecfg['apikey'].'/country/'.$_POST['args'],$proxy);
 						}
 						// Add station
 						if ($_POST['querytype'] === 'addstation' && isset($_POST['args'])) {
 						// input array $_POST['args'] = array('name' => 'value', 'streamurl' => 'value', 'website' => 'value', 'country' => 'value', 'directory' => 'value') 
-						echo curlPost($dirbleBase.'station/apikey/'.$apikey, $_POST['args'],$proxy);
+						echo curlPost($dirblecfg['baseurl'].'station/apikey/'.$dirblecfg['apikey'], $_POST['args'],$proxy);
 						}
 						
 					}

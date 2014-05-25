@@ -62,16 +62,16 @@ $redis->set('nextsongid',$status['nextsongid']);
 $redis->set('lastsongid',$status['songid']);
 		$redis->set('pl_length',$status['playlistlength']);
 		// check for Ramplay
-		if ($redis->get('ramplay') === '1') {
+		// if ($redis->get('ramplay') === '1') {
 			// check ramplay delete
 				// if (!rp_checkPLid($_SESSION['lastsongid'],$mpd)) {
 				// rp_deleteFile($_SESSION['lastsongid'],$mpd);
 				// }
 			// check for CMediaFix
-			if ($redis->get('cmediafix') === '1') {
-			$redis->set('lastbitdepth',$status['audio']);
-			}
-		}
+			// if ($redis->get('cmediafix') === '1') {
+			// $redis->set('lastbitdepth',$status['audio']);
+			// }
+		// }
 		
 // idle LOOP
 runelog("rune_PL_wrk: enter idle loop",'');
@@ -97,7 +97,7 @@ $status = monitorMpdState($mpd);
 		}
 		
 		// Ramplay
-		if ($redis->get('ramplay') === '1') {
+		// if ($redis->get('ramplay') === '1') {
 				// set consume mode ON
 				// if ($status['consume'] == 0) {
 				// sendMpdCommand($mpd,'consume 1');
@@ -105,24 +105,22 @@ $status = monitorMpdState($mpd);
 				// }
 
 			// copy track in /dev/shm
-			$path = rp_copyFile($status['nextsongid'],$mpd);
+			// $path = rp_copyFile($status['nextsongid'],$mpd);
 			// exec update mdp locazione ramplay
-			rp_updateFolder($mpd);
+			// rp_updateFolder($mpd);
 			// exec addandplay track
-			rp_addPlay($path,$mpd,$status['playlistlength']);
-		}
+			// rp_addPlay($path,$mpd,$status['playlistlength']);
+		// }
 		
 		// Global Random
 		if (($redis->get('globalrandom') === '1') && ($redis->get('lastsongid') != $status['songid']) && ($redis->get('globalrandom_lock') === '0')) {
-		$addsong = new globalRandom($status);
-		$addsong->start();
-		$redis->set('globalrandom_lock', 1);
+			$addsong = new globalRandom($status);
+			$addsong->start();
+			$redis->set('globalrandom_lock', 1);
 		} else {
-		$redis->set('globalrandom_lock', 0);
+			$redis->set('globalrandom_lock', 0);
 		}
 		
-// unlock session
-session_write_close();
 // JSON response for GUI
 runelog("rune_PL_wrk: ui_render() response",json_encode($status));
 ui_render('playback',json_encode($status));

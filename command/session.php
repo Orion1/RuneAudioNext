@@ -8,10 +8,3 @@ echo "sessionID: ".session_id()."\n";
 print_r($_SESSION);
 echo "</pre>\n";
 
-
-
-
-
-
-
-?>
