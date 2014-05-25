@@ -1893,8 +1893,10 @@ return $status;
 function ui_libraryHome($redis,$mpd) {
 // Network mounts
 $networkmounts = countDirs('/mnt/MPD/NAS');
+runelog('networkmounts: ',$networkmounts);
 // USB mounts
 $usbmounts = countDirs('/mnt/MPD/USB');
+runelog('usbmounts: ',$usbmounts);
 // Webradios
 sendMpdCommand($mpd,'listall Webradio');
 $resp = readMpdResponse($mpd);
@@ -1907,14 +1909,19 @@ while ( $line ) {
 	}
 	$line = strtok("\n");
 } 
+runelog('webradios: ',$webradios);
 // Dirble
 $proxy = $redis->hGetall('proxy');
 $dirblecfg = $redis->hGetAll('dirble');
 $dirble = json_decode(curlGet($dirblecfg['baseurl'].'amountStation/apikey/'.$dirblecfg['apikey'],$proxy));
+runelog('dirble: ',$dirble);
 // Bookmarks
 $bookmarks = $redis->hGetAll('bookmarks');
+runelog('bookmarks: ',$bookmarks);
 // Encode UI response
-ui_render('library',json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradio' => $webradios, 'Dirble' => $dirble->amount)));
+$jsonHome = json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradio' => $webradios, 'Dirble' => $dirble->amount));
+runelog('libraryHome JSON: ', $jsonHome);
+ui_render('library',$jsonHome);
 // echo json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradio' => $webradios, 'Dirble' => $dirble->amount));
 }
 
