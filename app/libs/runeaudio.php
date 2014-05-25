@@ -1914,8 +1914,8 @@ $dirble = json_decode(curlGet($dirblecfg['baseurl'].'amountStation/apikey/'.$dir
 // Bookmarks
 $bookmarks = $redis->hGetAll('bookmarks');
 // Encode UI response
-ui_render('library',json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradios' => $webradios, 'Dirble' => $dirble->amount)));
-// echo json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradios' => $webradios, 'Dirble' => $dirble->amount));
+ui_render('library',json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradio' => $webradios, 'Dirble' => $dirble->amount)));
+// echo json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradio' => $webradios, 'Dirble' => $dirble->amount));
 }
 
 function ui_lastFM_coverart($artist,$album,$lastfm_apikey,$proxy) {
@@ -1960,12 +1960,12 @@ curlPost('http://127.0.0.1/pub?id='.$channel,$data);
 }
 
 function ui_update($redis,$mpd) {
+ui_libraryHome($redis,$mpd);
 	if ($redis->get('pl_length') !== '0') {
 	sendMpdCommand($mpd,'swap 0 0');
 	} else {
 	sendMpdCommand($mpd,'clear');
 	}
-ui_libraryHome($redis,$mpd);
 }
 
 function ui_mpd_response($mpd,$notify = null) {
