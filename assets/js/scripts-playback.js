@@ -62,11 +62,11 @@ jQuery(document).ready(function($){ 'use strict';
 	// first connection with MPD daemon
 	// open UI rendering channel;
 	playbackChannel();
+	libraryChannel();
 	// queueChannel();
 	
 	// first GUI update
 	updateGUI();
-	libraryHome();
 	
 	// PNotify init options
 	$.pnotify.defaults.styling = 'bootstrap3';

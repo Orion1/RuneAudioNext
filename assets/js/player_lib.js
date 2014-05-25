@@ -98,6 +98,18 @@ function queueChannel(){
 	pushstream.connect();
 }
 
+// open the library channel
+function libraryChannel(){
+	var pushstream = new PushStream({
+		host: window.location.hostname,
+		port: window.location.port,
+		modes: "websocket|longpolling"
+	});
+	pushstream.onmessage = libraryHome;
+	pushstream.addChannel('library');
+	pushstream.connect();
+}
+
 // open the notify messages channel
 function notifyChannel(){
 	var pushstream = new PushStream({
@@ -1027,23 +1039,24 @@ function loadingSpinner(section, hide) {
 }
 
 // Library home screen
-function libraryHome() {
+function libraryHome(text) {
 	loadingSpinner('db');
 	$('#database-entries').addClass('hide');
 	$('#db-level-up').addClass('hide');
 	$('#home-blocks').removeClass('hide');
-	$.getJSON('/assets/js/json-temp.txt', function(data) { // TODO: read it dynamically
-		renderLibraryHome(data);
-	});
+	// $.getJSON('/assets/js/json-temp.txt', function(data) { // TODO: read it dynamically
+		console.log(text);
+		renderLibraryHome(text);
+	// });
 	$('span', '#db-currentpath').html('');
 }
 
 // render the Library home screen
-function renderLibraryHome(jsonLib) {
+function renderLibraryHome(text) {
 	// console.log(jsonLib);
 	var i = 0, content = '';
 	content = '<div class="col-sm-12"><h1 class="txtmid">Browse your library</h1></div>';
-	for (i = 0; obj = jsonLib[i]; i += 1) {
+	for (i = 0; obj = text[i]; i += 1) {
 		content += '<div class="col-md-4 col-sm-6">';
 		if (obj.bookmark !== undefined && obj.bookmark !== '') {
 		// bookmark block
