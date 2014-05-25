@@ -46,7 +46,7 @@ if (isset($_POST)) {
 		if ($_POST['mount']['wsize'] == '') $_POST['mount']['wsize'] = 17408;
 		
 		if ($_POST['mount']['options'] == '') {
-			if ($_POST['mount']['type'] == 'cifs') {
+			if ($_POST['mount']['type'] === 'cifs' OR $_POST['mount']['type'] === 'osx') {
 				$_POST['mount']['options'] = "cache=strict,ro";
 			} else {
 				$_POST['mount']['options'] = "nfsvers=3,ro";
