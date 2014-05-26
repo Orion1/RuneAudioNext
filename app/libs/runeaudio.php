@@ -1841,6 +1841,10 @@ function editRadio($mpd,$data) {
 runelog('editRadio (data)',$data);
 	// edit webradio URL in .pls file
 	$file = '/mnt/MPD/Webradio/'.$data->label.'.pls';
+	if ($data->label !== $data->newlabel) {
+		unlink($file);
+		$file = '/mnt/MPD/Webradio/'.$data->newlabel.'.pls';
+	}
 	$newArray = wrk_replaceTextLine($file,'','File1=',$data->url,'NumberOfEntries=1',1);
 	// Commit changes to .pls file
 	$fp = fopen($file, 'w');
