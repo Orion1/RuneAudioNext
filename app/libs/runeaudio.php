@@ -1934,12 +1934,21 @@ while ( $line ) {
 $proxy = $redis->hGetall('proxy');
 $dirblecfg = $redis->hGetAll('dirble');
 $dirble = json_decode(curlGet($dirblecfg['baseurl'].'amountStation/apikey/'.$dirblecfg['apikey'],$proxy));
-// runelog('dirble: ',$dirble);
+//__ runelog('dirble: ',$dirble);
+//__ Bookmarks
+//__ $bookmarks = $redis->hGetAll('bookmarks');
+
 // Bookmarks
-$bookmarks = $redis->hGetAll('bookmarks');
+$redis_bookmarks = $redis->hGetAll('bookmarks');
+foreach ($redis_bookmarks as $key => $data) {
+	$bookmark = json_decode($data);
+	runelog('bookmark details', $data);
+	$bookmarks[] = array('bookmark' => $key,'name' => $bookmark->name, 'path' => $bookmark->path);
+}
+$jsonHome = json_encode(array_merge($bookmarks,array(0 => array('networkMounts' => $networkmounts)), array(0 => array('USBMounts' => $usbmounts)), array(0 => array('webradio' => $webradios)), array(0 => array('Dirble' => $dirble->amount))));
 // runelog('bookmarks: ',$bookmarks);
 // Encode UI response
-$jsonHome = json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradio' => $webradios, 'Dirble' => $dirble->amount));
+//__ $jsonHome = json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradio' => $webradios, 'Dirble' => $dirble->amount));
 runelog('libraryHome JSON: ', $jsonHome);
 ui_render('library',$jsonHome);
 // echo json_encode(array('bookmarks' => array('count' => count($bookmarks),'data' => $bookmarks),'networkMounts' => $networkmounts, 'USBMounts' => $usbmounts, 'webradio' => $webradios, 'Dirble' => $dirble->amount));
