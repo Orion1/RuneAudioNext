@@ -432,7 +432,7 @@ function populateDB(options){
 	// normal MPD browsing by file
 		if (path === '' && keyword === '') {
 		// Library home
-			libraryHome();
+			renderLibraryHome();
 			return;
 		} else {
 		// browsing
@@ -1040,58 +1040,62 @@ function loadingSpinner(section, hide) {
 
 // Library home screen
 function libraryHome(text) {
+	GUI.libraryhome = text[0];
+	renderLibraryHome(); // TODO: do it only while in home
+}
+
+// render the Library home screen
+function renderLibraryHome() {
 	loadingSpinner('db');
 	$('#database-entries').addClass('hide');
 	$('#db-level-up').addClass('hide');
 	$('#home-blocks').removeClass('hide');
-	// $.getJSON('/assets/js/json-temp.txt', function(data) { // TODO: read it dynamically
-		console.log(text);
-		renderLibraryHome(text);
-	// });
-	$('span', '#db-currentpath').html('');
-}
-
-// render the Library home screen
-function renderLibraryHome(text) {
-	// console.log(jsonLib);
 	var i = 0, content = '';
 	content = '<div class="col-sm-12"><h1 class="txtmid">Browse your library</h1></div>';
-	for (i = 0; obj = text[i]; i += 1) {
+	$.each(GUI.libraryhome, function(key, value) {
 		content += '<div class="col-md-4 col-sm-6">';
-		if (obj.bookmark !== undefined && obj.bookmark !== '') {
-		// bookmark block
-			content += '<div id="home-favorite-' + obj.bookmark + '" class="home-block" data-path="' + obj.path + '"><i class="fa fa-star"></i><h3>' + obj.name + '</h3>bookmark</div>';
-		} else if (obj.networkMounts !== undefined && obj.networkMounts !== '') {
-		// network mounts block
-			if (obj.networkMounts == 0) {
-				content += '<a class="home-block" href="/sources/add/"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3>click to add some</a>';
-			} else {
-				content += '<div id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3>' + obj.networkMounts + ' item available</div>';
+		if (value !== undefined && value !== '') {
+			if (key === 'bookmarks') {
+			// bookmark block
+				console.log(GUI.libraryhome.bookmarks);
+				$.each(GUI.libraryhome.bookmarks.data, function(key, value) {
+					i++;
+					console.log(key, value);
+					content += '<div id="home-favorite-' + i + '" class="home-block" data-path="' + value.path + '"><i class="fa fa-star"></i><h3>' + value.name + '</h3>bookmark</div>';
+				});
+			} else if (key === 'networkMounts') {
+			// network mounts block
+				if (value == 0) {
+					content += '<a class="home-block" href="/sources/add/"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3>click to add some</a>';
+				} else {
+					content += '<div id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-sitemap"></i><h3>Network mounts (' + value + ')</h3>' + value + ' item available</div>';
+				}
+			} else if (key === 'USBMounts') {
+			// USB mounts block
+				if (value == 0) {
+					content += '<a id="home-usb" class="home-block" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>refresh</a>';
+				} else {
+					content += '<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + value + ')</h3>browse USB drives</div>';
+				}
+			} else if (key === 'webradio') {
+			// webradios block
+				if (value == 0) {	
+					content += '<a id="home-webradio" class="home-block" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>click to add some</a>';
+				} else {
+					content += '<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + value + ')</h3>webradio local playlists</div>';
+				}
+			} else if (key === 'Dirble') {
+			// Dirble block
+				content += '<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble <span id="home-count-dirble">(' + value + ')</span></h3>Radio stations Open Directory</div>';
 			}
-		} else if (obj.USBMounts !== undefined && obj.USBMounts !== '') {
-		// USB mounts block
-			if (obj.USBMounts == 0) {
-				content += '<a id="home-usb" class="home-block" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>refresh</a>';
-			} else {
-				content += '<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + obj.USBMounts + ')</h3>browse USB drives</div>';
-			}
-		} else if (obj.webradio !== undefined && obj.webradio !== '') {
-		// webradios block
-			if (obj.webradio == 0) {	
-				content += '<a id="home-webradio" class="home-block" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>click to add some</a>';
-			} else {
-				content += '<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + obj.webradio + ')</h3>webradio local playlists</div>';
-			}
-		} else if (obj.Dirble !== undefined && obj.Dirble !== '') {
-		// Dirble block
-			content += '<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble <span id="home-count-dirble">(' + obj.Dirble + ')</span></h3>Radio stations Open Directory</div>';
 		}
 		content += '</div>';
-	}
+	});
 	// Jamendo (static)
 	content += '<div class="col-md-4 col-sm-6"><div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h3>Jamendo<span id="home-count-jamendo"></span></h3>the world\'s largest platform for free music</div></div>';
 	document.getElementById('home-blocks').innerHTML = content;
 	loadingSpinner('db', 'hide');
+	$('span', '#db-currentpath').html('');
 }
 
 // check visibility of the window

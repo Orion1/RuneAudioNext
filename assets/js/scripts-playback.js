@@ -51,7 +51,8 @@ var GUI = {
 	DBupdate: 0,
 	stepVolumeInt: 0,
 	stepVolumeDelta: 0,
-	stream: ''
+	stream: '',
+	libraryhome: ''
 };
 
 jQuery(document).ready(function($){ 'use strict';
