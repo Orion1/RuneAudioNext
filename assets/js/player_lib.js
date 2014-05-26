@@ -1057,11 +1057,18 @@ function renderLibraryHome() {
 		if (value !== undefined && value !== '') {
 			if (key === 'bookmarks') {
 			// bookmark block
-				console.log(GUI.libraryhome.bookmarks);
+				for (key in GUI.libraryhome.bookmarks.data) {
+					if(GUI.libraryhome.bookmarks.data.hasOwnProperty(key)) {
+						i++;
+					}
+				}
 				$.each(GUI.libraryhome.bookmarks.data, function(key, value) {
-					i++;
-					console.log(key, value);
-					content += '<div id="home-favorite-' + i + '" class="home-block" data-path="' + value.path + '"><i class="fa fa-star"></i><h3>' + value.name + '</h3>bookmark</div>';
+					i--;
+					var obj = $.parseJSON(value);
+					content += '<div id="home-favorite-' + i + '" class="home-block" data-path="' + obj.path + '"><i class="fa fa-star"></i><h3>' + obj.name + '</h3>bookmark</div>';
+					if (i != 0) {
+						content += '</div><div class="col-md-4 col-sm-6">';
+					}
 				});
 			} else if (key === 'networkMounts') {
 			// network mounts block
