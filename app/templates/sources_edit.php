@@ -117,7 +117,7 @@
 				</div>
 			</div>
 		</fieldset>
-		<div class="form-group">
+		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
 				<a href="/sources" class="btn btn-default btn-lg" data-ajax="false">Cancel</a>
 				<button type="submit" class="btn btn-primary btn-lg" name="save" value="save">Save mount</button>
