@@ -1964,6 +1964,7 @@ $dirble = json_decode(curlGet($dirblecfg['baseurl'].'amountStation/apikey/'.$dir
 
 // Bookmarks
 $redis_bookmarks = $redis->hGetAll('bookmarks');
+$bookmarks = array();
 foreach ($redis_bookmarks as $key => $data) {
 	$bookmark = json_decode($data);
 	runelog('bookmark details', $data);
