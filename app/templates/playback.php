@@ -112,6 +112,7 @@
         </div>
         <div class="btnlist btnlist-bottom">
             <div id="db-controls">
+                <button id="db-homeSetup" class="btn btn-default hide" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
                 <button id="db-firstPage" class="btn btn-default" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
                 <button id="db-prevPage" class="btn btn-default" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
                 <button id="db-nextPage" class="btn btn-default" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>

@@ -468,6 +468,7 @@ function populateDB(options){
 		}
 	}
 	$('span', '#db-currentpath').html(path);
+	$('#db-homeSetup').addClass('hide');
 	if (uplevel) {
 		$('#db-' + GUI.currentDBpos[GUI.currentDBpos[10]]).addClass('active');
 		customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
@@ -1117,6 +1118,7 @@ function renderLibraryHome() {
 	loadingSpinner('db');
 	$('#database-entries').addClass('hide');
 	$('#db-level-up').addClass('hide');
+	$('#db-homeSetup').removeClass('hide').removeClass('btn-primary').addClass('btn-default');
 	$('#home-blocks').removeClass('hide');
 	var i = 0, content = '';
 	content = '<div class="col-sm-12"><h1 class="txtmid">Browse your library</h1></div>';
@@ -1124,7 +1126,7 @@ function renderLibraryHome() {
 		content += '<div class="col-md-4 col-sm-6">';
 		if (obj.bookmark !== undefined && obj.bookmark !== '') {
 		// bookmark block
-			content += '<div id="home-favorite-' + obj.bookmark + '" class="home-block" data-path="' + obj.path + '"><i class="fa fa-star"></i><h3>' + obj.name + '</h3>bookmark</div>';
+			content += '<div id="home-bookmark-' + obj.bookmark + '" class="home-block home-bookmark" data-path="' + obj.path + '"><i class="fa fa-star"></i><h3>' + obj.name + '</h3>bookmark</div>';
 		} else if (obj.networkMounts !== undefined && obj.networkMounts !== '') {
 		// network mounts block
 			if (obj.networkMounts == 0) {

@@ -134,10 +134,10 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 					
 					if (isset($_POST['id'])) {
 						if (deleteBookmark($redis,$_POST['id'])) {
-							ui_notify('Bookmark deleted');
+							ui_notify('Bookmark deleted', '"' . $_POST['name'] . '" successfully removed');
 							ui_libraryHome($redis,$mpd);
 						} else {
-							ui_notify('Error deleting bookmark', 'please try again later');
+							ui_notify('Error deleting bookmark', 'Please try again later');
 						}
 					}
 				break;

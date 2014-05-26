@@ -298,7 +298,7 @@ jQuery(document).ready(function($){ 'use strict';
 		if ($('#open-panel-sx').hasClass('active')) {
 			customScroll('pl', parseInt(GUI.json.song), 500);
 		}
-	})	
+	})
 	.on('shown.bs.tab', function (e) {
 		customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
 	});
@@ -306,15 +306,34 @@ jQuery(document).ready(function($){ 'use strict';
 	var db = $('#database-entries');
 	
 	// click on Library home block
-	$('#home-blocks').on('click', '.home-block', function() {
-		++GUI.currentDBpos[10];
-		getDB({
-			path: $(this).data('path'),
-			browsemode: GUI.browsemode,
-			uplevel: 0,
-			plugin: $(this).data('plugin')
-		});
+	$('#home-blocks').on('click', '.home-block', function(e) {
+		if ($(e.target).is('span')) {
+			var bookmarkID = $(this).attr('id');
+			bookmarkID = bookmarkID.replace('home-bookmark-', '');
+			var bookmarkName = $(this).find('h3').text();
+			$.post('/db/?cmd=bookmark', { 'id' : bookmarkID, 'name' : bookmarkName });
+		} else {
+			++GUI.currentDBpos[10];
+			getDB({
+				path: $(this).data('path'),
+				browsemode: GUI.browsemode,
+				uplevel: 0,
+				plugin: $(this).data('plugin')
+			});
+		}
 	});
+	
+	// setup Library home
+	$('#db-homeSetup').click(function(){
+		var editbtn = $(this);
+		if (editbtn.hasClass('btn-primary')) {
+			editbtn.removeClass('btn-primary').addClass('btn-default');
+			$('.home-block-remove').remove();
+		} else {
+			editbtn.removeClass('btn-default').addClass('btn-primary');
+			$('.home-block.home-bookmark').append('<div class="home-block-remove" title="Remove this bookmark"><span>&times;</span></div>');
+		}
+	})	
 	
 	// click on Library list entry
 	db.on('click', 'li', function(e) {
