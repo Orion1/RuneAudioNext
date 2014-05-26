@@ -491,7 +491,7 @@ jQuery(document).ready(function($){ 'use strict';
 		}
 		if (dataCmd == 'wradd') {
 			var parameters = path.split(' | ');
-			$.post('/db/?cmd=addradio', { 'name' : parameters[0], 'url' : parameters[1] });
+			$.post('/db/?cmd=addradio', { 'radio[label]' : parameters[0], 'radio[url]' : parameters[1] });
 		}
 	});
 
@@ -499,7 +499,7 @@ jQuery(document).ready(function($){ 'use strict';
 	$('#webradio-add-button').click(function(){
 		var radioname = $('#webradio-add-name').val();
 		var radiourl = $('#webradio-add-url').val();
-		$.post('/db/?cmd=addradio', { 'name' : radioname, 'url' : radiourl }, function(data){
+		$.post('/db/?cmd=addradio', { 'radio[label]' : radioname, 'radio[url]' : radiourl }, function(data){
 			// console.log('SENT');
 		}, 'json');
 	});
@@ -507,14 +507,14 @@ jQuery(document).ready(function($){ 'use strict';
 	$('#webradio-edit-button').click(function(){
 		var radioname = $('#webradio-edit-name').val();
 		var radiourl = $('#webradio-edit-url').val();
-		$.post('/db/?cmd=editradio', { 'name' : radioname, 'url' : radiourl }, function(data){
+		$.post('/db/?cmd=editradio', { 'radio[label]' : radioname, 'radio[url]' : radiourl }, function(data){
 			// console.log('SENT');
 		}, 'json');
 	});
 	// delete webradio
 	$('#webradio-delete-button').click(function(){
 		var radioname = $('#webradio-delete-name').text();
-		$.post('/db/?cmd=deleteradio', { 'name' : path }, function(data){
+		$.post('/db/?cmd=deleteradio', { 'radio[label]' : radioname }, function(data){
 			// console.log('SENT');
 		}, 'json');
 	});

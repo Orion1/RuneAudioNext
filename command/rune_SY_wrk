@@ -189,7 +189,7 @@ hashCFG('check_net',$redis);
 hashCFG('check_mpd',$redis);
 // Cmediafix startup check
 if ($redis->get('cmediafix') === '1') {
-	$mpd = openMpdSocket('localhost', 6600) ;
+	$mpd = openMpdSocket('/run/mpd.sock');
 	sendMpdCommand($mpd,'cmediafix');
 	closeMpdSocket($mpd);
 }
@@ -510,11 +510,38 @@ while (1) {
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
+				case 'webradio':
+				runelog('wrk_SY: ',$job->wrkcmd);	
+					$redis->sAdd('w_lock',$jobID);
+					$mpd = openMpdSocket('/run/mpd.sock');
+					if ($job->action === 'add') {
+						runelog('service: WEBRADIO add');
+						if (addRadio($mpd,$job->args)) {
+							ui_notify_async('Webradio', $job->args->label.' added to the library', $jobID);
+						}
+					}
+					if ($job->action === 'edit') {
+						runelog('service: WEBRADIO edit');
+						if (editRadio($mpd,$job->args)) {
+							ui_notify_async('Webradio', $job->args->label.' modified succesfully', $jobID);
+						}
+					}
+					if ($job->action === 'delete') {
+						runelog('service: WEBRADIO delete');
+						if (deleteRadio($mpd,$job->args)) {
+							ui_notify_async('Webradio', $job->args->label.' deleted', $jobID);
+						}
+					}
+					ui_libraryHome($redis,$mpd);
+					closeMpdSocket($mpd);					
+					$redis->sRem('w_lock',$jobID);
+				break;
+				
 				case 'workerrestart':
 				
 					sysCmd('systemctl restart rune_SY_wrk');
 				
-				break;	
+				break;
 			}
 		// delete processed job from the w_queue
 		$redis->hDel('w_queue',$jobID);

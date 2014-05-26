@@ -55,5 +55,5 @@ $db = 'sqlite:'.$_SERVER['HOME'].'/db/player.db';
 // debug
 runelog('--- [connection.php] >>> OPEN MPD SOCKET --- [connection.php] ---','');
 // connect to MPD daemon
-$mpd = openMpdSocket('/run/mpd.sock') ;
+$mpd = openMpdSocket('/run/mpd.sock');
 ?>

@@ -205,23 +205,17 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 				
 				case 'addradio':
 				// input array= $_POST['radio']['label'] $_POST['radio']['url']
-
-					if (addRadio($_POST['radio'])) {
-						sendMpdCommand($mpd,'update Webradio/');
-						ui_notify('Webradio added', '<radioname> added to the Library');
-					}
-					ui_notify('Webradio added', $_POST['radio'].' added to the Library');
-
+					wrk_control($redis,'newjob', $data = array('wrkcmd' => 'webradio', 'action' => 'add', 'args' => $_POST['radio']));
 				break;
 				
 				case 'editradio':
 				// input array= $_POST['radio']['label'] $_POST['radio']['newlabel'] $_POST['radio']['url']
-					if (editRadio($_POST['radio'])) sendMpdCommand($mpd,'update Webradio/');
+					wrk_control($redis,'newjob', $data = array('wrkcmd' => 'webradio', 'action' => 'edit', 'args' => $_POST['radio']));
 				break;
 				
 				case 'deleteradio':
 				// input array= $_POST['radio']['label']
-					if (deleteRadio($_POST['radio'])) sendMpdCommand($mpd,'update Webradio/');
+					wrk_control($redis,'newjob', $data = array('wrkcmd' => 'webradio', 'action' => 'delete', 'args' => $_POST['radio']));
 				break;
 				
 				case 'test':
