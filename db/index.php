@@ -213,6 +213,11 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 					wrk_control($redis,'newjob', $data = array('wrkcmd' => 'webradio', 'action' => 'edit', 'args' => $_POST['radio']));
 				break;
 				
+				case 'readradio':
+					$name = parseFileStr(parseFileStr($_POST['filename'],'.',1),'/');
+					echo json_encode(array('name' => $name, 'url' => $redis->hGet('webradios',$name)));
+				break;
+				
 				case 'deleteradio':
 				// input array= $_POST['radio']['label']
 					wrk_control($redis,'newjob', $data = array('wrkcmd' => 'webradio', 'action' => 'delete', 'args' => $_POST['radio']));

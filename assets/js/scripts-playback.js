@@ -479,10 +479,14 @@ jQuery(document).ready(function($){ 'use strict';
 		}
 		if (dataCmd == 'wredit') {
 			$('#modal-webradio-edit').modal();
-			$.post('/db/?cmd=readradio', { 'filename' : path }, function(data){
+			$.post('/db/?cmd=readradio', { 
+			   filename: path
+			 }, function(data){
 				// get parsed content of .pls file and populate the form fields
-				$('#webradio-edit-name').val('RADIO NAME');
-				$('#webradio-edit-url').val('RADIO URL');
+				var name = $('#webradio-edit-name');
+				name.val(data.name);
+				name.data('file-name', data.name);
+				$('#webradio-edit-url').val(data.url);
 			}, 'json');
 		}
 		if (dataCmd == 'wrdelete') {
@@ -503,16 +507,22 @@ jQuery(document).ready(function($){ 'use strict';
 			// console.log('SENT');
 		}, 'json');
 	});
+	
 	// edit webradio
 	$('#webradio-edit-button').click(function(){
-		var radioname = $('#webradio-edit-name').val();
-		var radiourl = $('#webradio-edit-url').val();
-		$.post('/db/?cmd=editradio', { 'radio[label]' : radioname, 'radio[url]' : radiourl }, function(data){
-			// console.log('SENT');
+		var name = $('#webradio-edit-name');
+		$.post('/db/?cmd=editradio', {
+		    'radio[newlabel]': name.val(),
+		    'radio[label]': name.data('file-name'),
+		    'radio[url]': $('#webradio-edit-url').val()
+		  }, function(data){
+			  console.log('editedradio', data);
 		}, 'json');
 	});
+	
 	// delete webradio
 	$('#webradio-delete-button').click(function(){
+	console.log( $('#webradio-delete-name').text() );
 		var radioname = $('#webradio-delete-name').text();
 		$.post('/db/?cmd=deleteradio', { 'radio[label]' : radioname }, function(data){
 			// console.log('SENT');

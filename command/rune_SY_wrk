@@ -516,19 +516,19 @@ while (1) {
 					$mpd = openMpdSocket('/run/mpd.sock');
 					if ($job->action === 'add') {
 						runelog('service: WEBRADIO add');
-						if (addRadio($mpd,$job->args)) {
+						if (addRadio($mpd,$redis,$job->args)) {
 							ui_notify_async('Webradio', $job->args->label.' added to the library', $jobID);
 						}
 					}
 					if ($job->action === 'edit') {
 						runelog('service: WEBRADIO edit');
-						if (editRadio($mpd,$job->args)) {
+						if (editRadio($mpd,$redis,$job->args)) {
 							ui_notify_async('Webradio', $job->args->label.' modified succesfully', $jobID);
 						}
 					}
 					if ($job->action === 'delete') {
 						runelog('service: WEBRADIO delete');
-						if (deleteRadio($mpd,$job->args)) {
+						if (deleteRadio($mpd,$redis,$job->args)) {
 							ui_notify_async('Webradio', $job->args->label.' deleted', $jobID);
 						}
 					}
