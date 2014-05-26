@@ -17,7 +17,7 @@
 					<span class="help-block">Set your reference time sync server <i>(NTP server)</i></span>
 				</div>
 			</div>
-			<div <?php if($this->proxy['enable'] === 1): ?>class="boxed"<?php endif ?> id="proxyBox">
+			<div <?php if($this->proxy['enable'] === 1): ?>class="boxed-group"<?php endif ?> id="proxyBox">
 				<div class="form-group">
 					<label for="proxy" class="control-label col-sm-2">HTTP Proxy server</label>
 					<div class="col-sm-10">
@@ -51,7 +51,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group form-actions">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button class="btn btn-primary btn-lg" value="save" name="save" type="submit">Apply settings</button>
 				</div>
@@ -98,7 +98,7 @@
 					(If you can't hear any tangible differences... nevermind, just stick to the default settings.)</span>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group form-actions">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button class="btn btn-primary btn-lg" value="save" name="save" type="submit">Apply settings</button>
 				</div>
@@ -109,7 +109,7 @@
         <fieldset id="features-management">
             <legend>Features management</legend>
 			<p>Enable/disable optional modules that best suit your needs. Disabling unusued features will free system resources and might improve the overall performance.</p>
-			<div <?php if($this->airplay['enable'] === '1'): ?>class="boxed"<?php endif ?> id="airplayBox">
+			<div <?php if($this->airplay['enable'] === '1'): ?>class="boxed-group"<?php endif ?> id="airplayBox">
 				<div class="form-group">
 					<label for="airplay" class="control-label col-sm-2">AirPlay</label>
 					<div class="col-sm-10">
@@ -160,7 +160,7 @@
 					<span class="help-block">Toggle random playback on the whole music library [WARNING - BETA]</span>
 				</div>
 			</div>
-			<div <?php if($this->scrobbling_lastfm === '1'): ?>class="boxed"<?php endif ?> id="lastfmBox">
+			<div <?php if($this->scrobbling_lastfm === '1'): ?>class="boxed-group"<?php endif ?> id="lastfmBox">
 				<div class="form-group">
 					<label for="scrobbling_lastfm" class="control-label col-sm-2">Last.fm scrobbling</label>
 					<div class="col-sm-10">
@@ -188,7 +188,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group form-actions">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button class="btn btn-primary btn-lg" value="1" name="features[submit]" type="submit">apply settings</button>
 				</div>
@@ -210,7 +210,7 @@
 					A "dirty" fix that should avoid the problem, do NOT use if everything works normally.</span>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group form-actions">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button class="btn btn-primary btn-lg" value="1" name="cmediafix[0]" type="submit">Apply fixes</button>
 				</div>

@@ -45,7 +45,7 @@
 				</div>
 			</div>
 		</fieldset>
-		<div class="form-group">
+		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
 				<a href="net-config.php" class="btn btn-default btn-lg">Cancel</a>
 				<button type="submit" class="btn btn-primary btn-lg" name="save" value="save">Save changes</button>
@@ -102,7 +102,7 @@
 			</div>
 			$_wlan0
 		</fieldset>
-		<div class="form-group">
+		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
 				<a href="net-config.php" class="btn btn-default btn-lg">Cancel</a>
 				<button type="submit" class="btn btn-primary btn-lg" name="save" value="save">Save and apply</button>
@@ -111,20 +111,23 @@
 	</form>
 </div>
 <div id="net-config-defaults" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="mpd-config-defaults-label" aria-hidden="true">
-		  <form name="netconf_reset" method="post" id="netconf_reset">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 id="mpd-config-defaults-label">Reset the configuration</h3>
-			</div>
-			<div class="modal-body">
-				<p>You are going to reset the configuration to the default original values.<br>
-				You will lose any modification.</p>
-			</div>
-			
-			<div class="modal-footer">
-			<input type="hidden" name="reset" value="1">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-				<button type="submit" class="btn btn-primary" >Continue</button>
-			</div>
-		  </form>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form name="netconf_reset" method="post" id="netconf_reset">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 id="mpd-config-defaults-label">Reset the configuration</h3>
+				</div>
+				<div class="modal-body">
+					<p>You are going to reset the configuration to the default original values.<br>
+					You will lose any modification.</p>
+				</div>
+				<div class="modal-footer">
+				<input type="hidden" name="reset" value="1">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+					<button type="submit" class="btn btn-primary" >Continue</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>

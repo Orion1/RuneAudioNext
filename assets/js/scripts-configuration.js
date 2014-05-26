@@ -186,10 +186,10 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#airplay').change(function(){
 			if ($(this).prop('checked')) {
 				$('#airplayName').removeClass('hide');
-				$('#airplayBox').addClass('boxed');
+				$('#airplayBox').addClass('boxed-group');
 			} else {
 				$('#airplayName').addClass('hide');
-				$('#airplayBox').removeClass('boxed');
+				$('#airplayBox').removeClass('boxed-group');
 			}													  
 		});
 		
@@ -197,10 +197,10 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#scrobbling-lastfm').change(function(){
 			if ($(this).prop('checked')) {
 				$('#lastfmAuth').removeClass('hide');
-				$('#lastfmBox').addClass('boxed');
+				$('#lastfmBox').addClass('boxed-group');
 			} else {
 				$('#lastfmAuth').addClass('hide');
-				$('#lastfmBox').removeClass('boxed');
+				$('#lastfmBox').removeClass('boxed-group');
 			}													  
 		});		
 		
@@ -208,10 +208,10 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#proxy').change(function(){
 			if ($(this).prop('checked')) {
 				$('#proxyAuth').removeClass('hide');
-				$('#proxyBox').addClass('boxed');
+				$('#proxyBox').addClass('boxed-group');
 			} else {
 				$('#proxyAuth').addClass('hide');
-				$('#proxyBox').removeClass('boxed');
+				$('#proxyBox').removeClass('boxed-group');
 			}													  
 		});		
 		

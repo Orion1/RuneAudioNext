@@ -140,7 +140,7 @@
                 </div>
             </div>
         </fieldset>
-		<div class="form-group">
+		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
 				<a href="net-config.php" class="btn btn-default btn-lg">Cancel</a>
 				<button type="submit" class="btn btn-primary btn-lg" name="save" value="save">Save and apply</button>

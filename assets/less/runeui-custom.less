@@ -806,6 +806,9 @@ html, body {
 	h3 {
 		margin-top: 10px;
 		color: @text-color;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	.home-action {
 		display: block;
@@ -825,6 +828,29 @@ html, body {
 		outline: none;
 		color: lighten(@brand-alt, 20%);
 	}
+	.home-block-remove {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0,0,0,.5);
+		span {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 40px;
+			height: 40px;
+			line-height: 40px;
+			background: @brand-alt;
+			border-radius: @border-radius-base;
+			color: @text-color;
+			font-size: 30px;
+			font-weight: bold;
+		}
+	}
 }
 
 
@@ -836,6 +862,17 @@ html, body {
 	padding: 15px 20px;
 	background: darken(@brand-alt, 15%);
 	border-radius: @border-radius-base;
+}
+.boxed-group {
+	margin: 0 -15px 5px;
+	padding: 0 15px 0;
+	background: darken(@brand-alt, 15%);
+	.form-group:last-child {
+		margin-bottom: 0;
+	}
+}
+.form-actions {
+	padding: 10px 0 20px;
 }
 .manual-edit-confirm {
 	margin-bottom: 20px;
@@ -1554,6 +1591,14 @@ ul.parsley-error-list {
 		// .btn {
 			// margin-top: 0;
 		// }
+	}
+	.boxed-group {
+		margin: 0 0 15px;
+		padding: 10px 0 0;
+		border-radius: @border-radius-base;
+	}
+	.form-actions {
+		padding: 0;
 	}
 }
 @media (min-width: @screen-md-min) { // everything above 992px
