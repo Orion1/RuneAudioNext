@@ -45,7 +45,7 @@ html, body {
 	height: 100%;
 }
 #section-index {
-	.container {
+	.container-fluid {
 		padding-top: 40px;
 		padding-bottom: 40px;
 	}
@@ -321,7 +321,7 @@ html, body {
 	margin-top: 30px;
 }
 #countdown {
-	height: 100%;
+	// height: 100%;
 	margin-top: 10px;
 	color: @text-color;
 	div {
@@ -337,11 +337,11 @@ html, body {
 	color: @body-bg;
 }
 #timeknob {
-	height: 230px;
+	// height: 230px;
 	margin: 10px 0 20px;
 }
 #volumeknob {
-	height: 260px;
+	// height: 260px;
 }
 #timeknob canvas:hover, #volumeknob canvas:hover {
 	cursor: pointer;
@@ -406,8 +406,8 @@ html, body {
 	display: block;
 	position: relative;
 	width: 100%;
-	// max-width: 294px;
-	max-width: 250px;
+	max-width: 400px;
+	// max-width: 250px;
 	height: auto;
 	margin: 10px auto 11px;
 	background: #111 url(../img/cover-default.png) no-repeat center center;
@@ -417,6 +417,11 @@ html, body {
 }
 .btn-cmd:focus {
 	outline: none;
+}
+.img-placeholder {
+	width: 100%;
+	max-width: 400px;
+	margin: 10px auto 11px;
 }
 
 
@@ -1602,7 +1607,7 @@ ul.parsley-error-list {
 	}
 }
 @media (min-width: @screen-md-min) { // everything above 992px
-	#playback .container {
+	#playback .container-fluid {
 		padding-top: 60px;
 		padding-bottom: 40px;
 	}

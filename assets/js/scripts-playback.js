@@ -402,6 +402,7 @@ jQuery(document).ready(function($){ 'use strict';
 			$(this).addClass('active');
 			var path = $(this).data('path');
 			// console.log('doubleclicked path = ', path);
+			path = ($(this).hasClass('db-dirble')) ? path.split(' | ')[1] : path;
 			getDB({
 				cmd: 'addplay',
 				path: path
@@ -496,6 +497,28 @@ jQuery(document).ready(function($){ 'use strict';
 				}
 			});
 		}
+		if (dataCmd == 'wradd') {
+			path = path.split(' | ')[1];
+			getDB({
+				cmd: 'add',
+				path: path
+			});
+		}
+		if (dataCmd == 'wraddplay') {
+			path = path.split(' | ')[1];
+			console.log(path);
+			getDB({
+				cmd: 'addplay',
+				path: path
+			});
+		}
+		if (dataCmd == 'wraddreplaceplay') {
+			path = path.split(' | ')[1];
+			getDB({
+				cmd: 'addreplaceplay',
+				path: path
+			});
+		}
 		if (dataCmd == 'wredit') {
 			$('#modal-webradio-edit').modal();
 			$.post('/db/?cmd=readradio', { 
@@ -512,7 +535,7 @@ jQuery(document).ready(function($){ 'use strict';
 			$('#modal-webradio-delete').modal();
 			$('#webradio-delete-name').text(path.replace('Webradio/', ''));
 		}
-		if (dataCmd == 'wradd') {
+		if (dataCmd == 'wrsave') {
 			var parameters = path.split(' | ');
 			$.post('/db/?cmd=addradio', { 'radio[label]' : parameters[0], 'radio[url]' : parameters[1] });
 		}

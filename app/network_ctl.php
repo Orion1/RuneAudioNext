@@ -64,7 +64,7 @@ if (isset($template->action)) {
 		}
 		
 	// debug
-	print_r($template->{$template->arg});
+	// print_r($template->{$template->arg});
 	}
 } 
  

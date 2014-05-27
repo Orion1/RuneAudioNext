@@ -64,50 +64,6 @@
                 <div class="col-sm-12">
                     <h1 class="txtmid">Browse your library</h1>
                 </div>
-                <!--
-				<div class="col-md-4 col-sm-6">
-                    <div id="home-favorite-1" class="home-block" data-path="NAS/Musica">
-                        <i class="fa fa-star"></i>
-                        <h3>Musica</h3>
-                        bookmark
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div id="home-nas" class="home-block" data-path="NAS">
-                        <i class="fa fa-sitemap"></i>
-                        <h3>Network mounts (0)</h3>
-                        1 item available
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div id="home-usb" class="home-block" data-path="USB">
-                        <i class="fa fa-hdd-o"></i>
-                        <h3>USB storage (1)</h3>
-                        no items available
-                    </div>
-                </div>
-				<div class="col-md-4 col-sm-6">
-                    <div id="home-webradio" class="home-block" data-path="Webradio">
-                        <i class="fa fa-microphone"></i>
-                        <h3>My Webradios (0)</h3>
-                        click to add some
-                    </div>
-                </div>
-				<div class="col-md-4 col-sm-6">
-                    <div id="home-dirble" class="home-block" data-path="Dirble" data-plugin="Dirble">
-                        <i class="fa fa-globe"></i>
-                        <h3>Dirble <span id="home-count-dirble"></span></h3>
-                        Radio stations Open Directory
-                    </div>
-                </div>
-				<div class="col-md-4 col-sm-6">
-                    <div id="home-jamendo" class="home-block" data-path="Jamendo" data-plugin="Jamendo">
-                        <i class="fa fa-play-circle-o"></i>
-                        <h3>Jamendo <span id="home-count-jamendo"></span></h3>
-                        the world's largest platform for free music
-                    </div>
-                </div>
-				-->
             </div>
         </div>
         <div class="btnlist btnlist-bottom">
@@ -201,10 +157,10 @@
     </div>
 	<div id="context-menu-dirble" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="#notarget" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a href="#notarget" data-cmd="wradd"><i class="fa fa-microphone sx"></i> Save in My Webradios</a></li>
+            <li><a href="#notarget" data-cmd="wradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="#notarget" data-cmd="wraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="#notarget" data-cmd="wraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="#notarget" data-cmd="wrsave"><i class="fa fa-microphone sx"></i> Save in My Webradios</a></li>
         </ul>
     </div>
 	<div id="context-menu-webradio" class="context-menu">
@@ -304,7 +260,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 class="modal-title" id="modal-pl-webradio-edit">Add new webradio</h3>
+				<h3 class="modal-title" id="modal-pl-webradio-edit">Edit webradio</h3>
 			</div>
 			<div class="modal-body">
 				<input id="webradio-edit-oldname" name="radio[oldlabel]" class="form-control" type="hidden" value="">
@@ -316,7 +272,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
-				<button id="webradio-edit-button" type="button" class="btn btn-primary btn-lg" data-dismiss="modal">Add to Library</button>
+				<button id="webradio-edit-button" type="button" class="btn btn-primary btn-lg" data-dismiss="modal">Save</button>
 			</div>
 		</div>
 	</div>
