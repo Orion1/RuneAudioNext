@@ -1,16 +1,16 @@
 <div class="container credits">
 	<h1>NAS mounts</h1>	
-	<form class="form-horizontal" action="/sources/" method="post" role="form" data-validate="parsley">
+	<form class="form-horizontal" action="/sources/" method="post" role="form" data-parsley-validate>
 		<fieldset>
-			<legend><?=$this->title?> <span class="<?php if($this->action == 'add' ): ?> hide <?php endif ?>">(<a href="#source-delete-modal" data-toggle="modal">remove this mount</a>)</span></legend>
+			<legend><?=$this->title?> <span class="<?php if($this->action == 'add' ): ?>hide<?php endif ?>">(<a href="#source-delete-modal" data-toggle="modal">remove this mount</a>)</span></legend>
 			<div class="form-group">
-				<div class="alert alert-info <?php if(empty($this->mount['error'])): ?> hide <?php endif ?> ">
+				<div class="alert alert-info <?php if(empty($this->mount['error'])): ?>hide<?php endif ?>">
 					<i class="fa fa-times red sx"></i>
 					<?php if(!empty($this->mount['error'])): ?> <?=$this->mount['error'] ?> <?php endif ?>
 				</div>
 				<label class="col-sm-2 control-label" for="nas-name">Source name</label>
 				<div class="col-sm-10">
-					<input class="form-control input-lg" type="text" id="nas-name" name="mount[name]" value="<?=$this->mount['name']?>" data-trigger="change" placeholder="es: Classical">
+					<input class="form-control input-lg" type="text" id="nas-name" name="mount[name]" value="<?=$this->mount['name']?>" data-trigger="change" placeholder="es: Classical" required />
 					<input type="hidden" name="mount[id]" value="<?=$this->mount['id']?>">
 					<input type="hidden" name="action" value="<?=$this->action ?>">
 					<span class="help-block">The name you want to give to this source. It will appear in your database tree structure</span>

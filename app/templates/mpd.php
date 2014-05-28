@@ -3,8 +3,8 @@
     <p>If you mess up with this configuration you can <a data-toggle="modal" href="#mpd-config-defaults">reset to default</a>.</p>
 	<form class="form-horizontal" action="" method="post">
 		<fieldset>
-            <legend>Audio Output</legend>
-            <div class="form-group">
+      <legend>Audio Output</legend>
+      <div class="form-group">
 				<label class="col-sm-2 control-label" for="audio-output-interface">Audio output interface</label>
 				<div class="col-sm-10">
 					<select id="audio-output-interface" name="conf[audio_output_interface]" class="selectpicker" data-style="btn-default btn-lg">
@@ -17,8 +17,8 @@
 			</div>
         </fieldset>
 	</form>
-	<form class="form-horizontal" data-validate="parsley" action="" method="post">
-        <fieldset>
+	<form class="form-horizontal" action="" method="post" data-parsley-validate>
+    <fieldset>
 			<legend>Volume control</legend>
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="mixer-type">Volume control</label>
@@ -113,7 +113,7 @@
             <div class="form-group" >
                 <label class="col-sm-2 control-label" for="port">Audio buffer size</label>
                 <div class="col-sm-10">
-                    <input class="form-control input-lg" type="text" id="audio-buffer-size" name="conf[audio_buffer_size]" value="<?=$this->conf['audio_buffer_size'] ?>" data-trigger="change" data-min="512">
+                    <input class="form-control input-lg" type="number" id="audio-buffer-size" name="conf[audio_buffer_size]" value="<?=$this->conf['audio_buffer_size'] ?>" data-trigger="change" min="512" />
                     <span class="help-block">This specifies the size of the audio buffer in kibibytes. The default is 2048, large enough for nearly 12 seconds of CD-quality audio.</span>
                 </div>
             </div>
