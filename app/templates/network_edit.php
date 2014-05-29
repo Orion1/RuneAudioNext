@@ -1,5 +1,14 @@
 <div class="container">
 	<h1>Network interface</h1>
+	<?php if ($this->nic->wireless === 1): ?>
+		<legend>WIFI networks in range</legend>
+			<div class="boxed">
+			<?php foreach ($this->wlans->{$this->arg} as $key => $value): ?>
+				<p><a href="/network/wlan/<?=$value->ESSID ?>" class="btn btn-lg btn-default btn-block">  <strong><?=$value->ESSID ?> </strong>&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
+			<?php endforeach; ?>
+			</div>
+		</fieldset>
+	<?php endif ?>
 	<form class="form-horizontal" action="/network" method="post" data-parsley-validate>
 		<input type="hidden" name="nic[name]" value="<?=$this->arg ?>" />
 		<fieldset>

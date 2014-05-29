@@ -55,6 +55,9 @@ if (isset($template->action)) {
 		if ($redis->get($template->arg)) {
 			$template->{$template->arg} = json_decode($redis->get($template->arg));
 			$template->nic = json_decode($nic_connection);
+			if ($template->nic->wireless === '1') {
+				$template->wlans = json_decode($redis->get('wlans'));
+			}
 		} else if ($nic_connection) {
 		// fetch current nic connection details
 			$template->nic = json_decode($nic_connection);
@@ -66,6 +69,8 @@ if (isset($template->action)) {
 	// debug
 	// print_r($template->{$template->arg});
 	}
+	$template->wlans = json_decode($redis->get('wlans'));
+	// print_r($template->wlans);
 } 
  
 
