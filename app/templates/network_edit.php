@@ -42,34 +42,34 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[ip]">IP address</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="address" name="nic[ip]" value="<?=$this->nic->ip ?>" placeholder="<?=$this->nic->ip ?>" data-parsley-trigger="change" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="address" name="nic[ip]" value="<?=$this->nic->ip ?>" placeholder="<?=$this->nic->ip ?>" data-parsley-trigger="change" required />
 						<span class="help-block">Manually set the IP address.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[netmask]">Netmask</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^[1-2]{1}[2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-2]{1}[0,2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-2]{1}[0,2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-9]{1,3}$" id="netmask" name="nic[netmask]" value="<?=$this->nic->netmask ?>" data-parsley-trigger="change" placeholder="<?=$this->nic->netmask ?>" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="netmask" name="nic[netmask]" value="<?=$this->nic->netmask ?>" data-parsley-trigger="change" placeholder="<?=$this->nic->netmask ?>" required />
 						<span class="help-block">Manually set the network mask.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[gw]">Gateway</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="gateway" name="nic[gw]" value="<?=$this->nic->gw ?>" placeholder="<?=$this->nic->gw ?>" data-parsley-trigger="change" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="gateway" name="nic[gw]" value="<?=$this->nic->gw ?>" placeholder="<?=$this->nic->gw ?>" data-parsley-trigger="change" required />
 						<span class="help-block">Manually set the gateway.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[dns1]">Primary DNS</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="dns1" name="nic[dns1]" value="<?=$this->nic->dns1 ?>" placeholder="<?=$this->nic->dns1 ?>" data-parsley-trigger="change" >
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="dns1" name="nic[dns1]" value="<?=$this->nic->dns1 ?>" placeholder="<?=$this->nic->dns1 ?>" data-parsley-trigger="change" >
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[dns2]">Secondary DNS</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="dns2" name="nic[dns2]" value="<?=$this->nic->dns2 ?>" placeholder="<?=$this->nic->dns2 ?>" data-parsley-trigger="change" >
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="dns2" name="nic[dns2]" value="<?=$this->nic->dns2 ?>" placeholder="<?=$this->nic->dns2 ?>" data-parsley-trigger="change" >
 						<span class="help-block">Manually set the primary and secondary DNS.</span>
 					</div>
 				</div>

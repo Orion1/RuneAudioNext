@@ -67,34 +67,34 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="eth0[ip]">IP address</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="address" name="eth0[ip]" value="$_int0[ip]" data-trigger="change" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="address" name="eth0[ip]" value="$_int0[ip]" data-trigger="change" required />
 						<span class="help-block">Manually set the IP address.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="eth0[netmask]">Netmask</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^[1-2]{1}[2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-2]{1}[0,2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-2]{1}[0,2,4,5,9]{1}[0,2,4,5,8]{1}\.[0-9]{1,3}$" id="netmask" name="eth0[netmask]" value="$_int0[netmask]" data-trigger="change" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="netmask" name="eth0[netmask]" value="$_int0[netmask]" data-trigger="change" required />
 						<span class="help-block">Manually set the network mask.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="eth0[gw]">Gateway</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="gateway" name="eth0[gw]" value="$_int0[gw]" data-trigger="change" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="gateway" name="eth0[gw]" value="$_int0[gw]" data-trigger="change" required />
 						<span class="help-block">Manually set the gateway.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="eth0[dns1]">Primary DNS</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="dns1" name="eth0[dns1]" value="$_int0[dns1]" data-trigger="change" >
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="dns1" name="eth0[dns1]" value="$_int0[dns1]" data-trigger="change" >
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="eth0[dns2]">Secondary DNS</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" id="dns2" name="eth0[dns2]" value="$_int0[dns2]" data-trigger="change" >
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="dns2" name="eth0[dns2]" value="$_int0[dns2]" data-trigger="change" >
 						<span class="help-block">Manually set the primary and secondary DNS.</span>
 					</div>
 				</div>
