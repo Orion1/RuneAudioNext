@@ -50,27 +50,31 @@ $template->nics = wrk_netconfig($redis,'getnics');
 if (isset($template->action)) {
 
 	if (isset($template->arg)) {
-	$nic_connection = $redis->hGet('nics', $template->arg);
-		// fetch current nic configuration data
-		if ($redis->get($template->arg)) {
-			$template->{$template->arg} = json_decode($redis->get($template->arg));
-			$template->nic = json_decode($nic_connection);
-			if ($template->nic->wireless === '1') {
-				$template->wlans = json_decode($redis->get('wlans'));
-			}
-		} else if ($nic_connection) {
-		// fetch current nic connection details
-			$template->nic = json_decode($nic_connection);
+		if ($template->arg != 'wlan') {
+			$nic_connection = $redis->hGet('nics', $template->arg);
+				// fetch current nic configuration data
+				if ($redis->get($template->arg)) {
+					$template->{$template->arg} = json_decode($redis->get($template->arg));
+					$template->nic = json_decode($nic_connection);
+					if ($template->nic->wireless === '1') {
+						$template->wlans = json_decode($redis->get('wlans'));
+					}
+				} else if ($nic_connection) {
+				// fetch current nic connection details
+					$template->nic = json_decode($nic_connection);
+				} else {
+				// nonexistant nic
+					$template->content = 'error';
+				}
+				
+			// debug
+			print_r($template->{$template->arg});
 		} else {
-		// nonexistant nic
-			$template->content = 'error';
+			print_r($template->arg);
 		}
-		
-	// debug
-	// print_r($template->{$template->arg});
 	}
 	$template->wlans = json_decode($redis->get('wlans'));
-	// print_r($template->wlans);
+	print_r($template->wlans);
 } 
  
 

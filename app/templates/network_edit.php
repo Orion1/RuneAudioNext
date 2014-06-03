@@ -1,13 +1,26 @@
 <div class="container">
 	<h1>Network interface</h1>
 	<?php if ($this->nic->wireless === 1): ?>
-		<legend>WIFI networks in range</legend>
+		<legend>Wi-Fi networks in range</legend>
 			<div class="boxed">
 			<?php foreach ($this->wlans->{$this->arg} as $key => $value): ?>
-				<p><a href="/network/wlan/<?=$value->ESSID ?>" class="btn btn-lg btn-default btn-block">  <strong><?=$value->ESSID ?> </strong>&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
+				<p><a href="/network/wlan/<?=$this->arg ?>/<?=$value->ESSID ?>" class="btn btn-lg btn-default btn-block">  <strong><?=$value->ESSID ?> </strong>&nbsp;&nbsp;&nbsp;&nbsp;<?php if ($this->nic->currentssid === '"'.$value->ESSID.'"'): ?><i class="fa fa-check green dx"></i><?php endif; ?> </a></p>
 			<?php endforeach; ?>
 			</div>
 		</fieldset>
+	<div>
+			<label for="wifiProfiles" >Show Wi-Fi stored profiles</label>
+			<div class="">
+				<label class="switch-light well" onclick="">
+					<input id="wifiProfiles" name="features[airplay][enable]" type="checkbox" value="1"<?php if($this->wifiprofiles['enable'] == 1): ?> checked="checked" <?php endif ?>>
+					<span><span></span><span></span></span><a class="btn btn-primary"></a>
+				</label>
+				<span class="help-block">Show / create / edit / delete, Wi-Fi profiles.</span>
+			</div>
+	</div>
+	<div class="boxed hide" id="wifiProfilesBox">
+	profili....
+	</div>
 	<?php endif ?>
 	<form class="form-horizontal" action="/network" method="post" data-parsley-validate>
 		<input type="hidden" name="nic[name]" value="<?=$this->arg ?>" />
@@ -17,9 +30,10 @@
 				<table class="info-table">
 					<tbody>
 						<tr><th>Interface name:</th><td><strong><?=$this->arg ?></strong></td></tr>
-						<tr><th>Interface type:</th><td><?php if ($this->nic->wireless === 1): ?>wireless<?php else: ?>wired ethernet<?php endif ?></td></tr>
-						<tr><th>Assigned IP address:</th><td><strong><?=$this->nic->ip ?></strong> <i class="fa <?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?>fa-check green<?php else: ?>fa-times red<?php endif; ?> dx"></i></td></tr>
-						<tr><th>Interface speed:</th><td><?=$this->nic->speed ?></td></tr>
+						<tr><th>Interface type:</th><td><?php if ($this->nic->wireless == 1): ?>wireless<?php else: ?>wired ethernet<?php endif ?></td></tr>
+						<?php if($this->nic->currentssid !== 'off/any'): ?><tr><th>WiFi Associated SSID:</th><td><strong><?=$this->nic->currentssid ?></strong></td></tr><?php endif; ?>
+						<tr><th>Assigned IP address:</th><td><strong><?=$this->nic->ip ?></strong></td></tr>
+						<tr><th>Interface speed:</th><td><?=$this->nic->speed ?><i class="fa <?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?>fa-check green<?php else: ?>fa-times red<?php endif; ?> dx"></i></td></tr>
 						<tr><th><a href="/network"><i class="fa fa-arrow-left sx"></i> back to the list</a></th><td></td></tr>
 					</tbody>
 				</table>

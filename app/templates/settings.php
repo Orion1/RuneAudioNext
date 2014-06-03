@@ -157,9 +157,19 @@
 						<input name="features[globalrandom]" type="checkbox" value="1"<?php if($this->globalrandom == 1): ?> checked="checked" <?php endif ?>>
 						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
 					</label>
-					<span class="help-block">Toggle random playback on the whole music library [WARNING - BETA]</span>
+					<span class="help-block">Toggle random playback on the whole music library [WARNING - EXPERIMENTAL]</span>
 				</div>
 			</div>
+			<!-- <div class="form-group">
+				<label for="wifiap" class="control-label col-sm-2">WiFi AccessPoint</label>
+				<div class="col-sm-10">
+					<label class="switch-light well" onclick="">
+						<input name="features[wifiap]" type="checkbox" value="1"<?php if($this->wifiap == 1): ?> checked="checked" <?php endif ?>>
+						<span><span>OFF</span><span>ON</span></span><a class="btn btn-primary"></a>
+					</label>
+					<span class="help-block">Toggle the AP-Mode WiFi feature (default SSID: RuneAudio)</span>
+				</div>
+			</div> -->
 			<div <?php if($this->scrobbling_lastfm === '1'): ?>class="boxed-group"<?php endif ?> id="lastfmBox">
 				<div class="form-group">
 					<label for="scrobbling_lastfm" class="control-label col-sm-2">Last.fm scrobbling</label>
@@ -213,30 +223,6 @@
 			<div class="form-group form-actions">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button class="btn btn-primary btn-lg" value="1" name="cmediafix[0]" type="submit">Apply fixes</button>
-				</div>
-			</div>
-		</fieldset>
-	</form>
-	<form class="form-horizontal" method="post" role="form">
-		<fieldset>
-			<legend>System commands</legend>
-			<p>Just some handy system commands, without the hassle of logging into SSH.</p>
-			<div class="form-group">
-				<label class="control-label col-sm-2">System reboot</label>
-				<div class="col-sm-10">
-					<input class="btn btn-default" type="submit" name="syscmd" value="reboot" id="syscmd-reboot">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-2">System poweroff</label>
-				<div class="col-sm-10">
-					<input class="btn btn-default" type="submit" name="syscmd" value="poweroff" id="syscmd-poweroff">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-2">Restart MPD service</label>
-				<div class="col-sm-10">
-					<input class="btn btn-default" type="submit" name="syscmd" value="mpdrestart" id="syscmd-mpdrestart">
 				</div>
 			</div>
 		</fieldset>

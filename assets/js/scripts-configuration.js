@@ -213,11 +213,28 @@ jQuery(document).ready(function($){ 'use strict';
 				$('#proxyAuth').addClass('hide');
 				$('#proxyBox').removeClass('boxed-group');
 			}													  
-		});		
+		});			
 		
 	}
 	
 	
+	// NETWORK
+	// ----------------------------------------------------------------------------------------------------
+	
+	if( $('#section-network').length ){
+		
+		// show/hide WiFi stored profile box
+		$('#wifiProfiles').change(function(){
+			if ($(this).prop('checked')) {
+				$('#wifiProfilesBox').removeClass('hide');
+			} else {
+				$('#wifiProfilesBox').addClass('hide');
+			}													  
+		});
+
+	}
+	
+
 	// MPD
 	// ----------------------------------------------------------------------------------------------------
 	

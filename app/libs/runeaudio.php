@@ -239,7 +239,8 @@ return $minutes.$seconds;
 
 function phpVer() {
 $version = phpversion();
-return substr($version, 0, 3); 
+// return substr($version, 0, 3); 
+return $version;
 }
 
 function sysCmd($syscmd) {
@@ -997,11 +998,16 @@ $updateh = 0;
 				}
 				$gw = sysCmd("route -n |grep \"0.0.0.0\" |grep \"UG\" |cut -d' ' -f10");
 				$dns = sysCmd("cat /etc/resolv.conf |grep \"nameserver\" |cut -d' ' -f2");
-				$speed = sysCmd("ethtool ".$interface." | grep -i speed | cut -d':' -f2");
-				if (empty(sysCmd("iwlist ".$interface." scan 2>&1 | grep \"Interface doesn't support scanning : Network is down\""))) {
-					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 0)));
+				$type = sysCmd("iwconfig ".$interface." 2>&1 | grep \"no wireless\"");
+				runelog('interface type', $type[0]);
+				// if (empty(sysCmd("iwlist ".$interface." scan 2>&1 | grep \"Interface doesn't support scanning\""))) {
+				if (empty($type[0])) {
+					$speed = sysCmd("iwconfig ".$interface." 2>&1 | grep 'Bit Rate' | cut -d '=' -f 2 | cut -d ' ' -f 1-2");
+					$currentSSID = sysCmd("iwconfig ".$interface." | grep 'ESSID' | cut -d ':' -f 2");
+					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 1, 'currentssid' => $currentSSID[0])));
 				} else {
-					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 1)));
+					$speed = sysCmd("ethtool ".$interface." 2>&1 | grep -i speed | cut -d':' -f2");
+					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 0)));
 				}
 			}
 		break;

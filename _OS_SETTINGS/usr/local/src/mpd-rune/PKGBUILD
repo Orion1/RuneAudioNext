@@ -3,7 +3,7 @@
 
 pkgname=mpd-rune
 pkgver=0.18.10
-pkgrel=1
+pkgrel=2
 pkgdesc='RuneAudio MPD optimized version'
 url='http://www.musicpd.org/'
 license=('GPL')
@@ -18,7 +18,7 @@ source=("http://www.musicpd.org/download/mpd/${pkgver%.*}/mpd-${pkgver}.tar.xz"
         'mpd.conf')
 sha1sums=('0923318cfda033bb4f89c219e6effa9d5b330c1d'
           'f4d5922abb69abb739542d8e93f4dfd748acdad7'
-          '5eb0cace71a2801302f97419f5f7bd457f26e849')
+          'a69ada755254881e3f49a2a99347d2e22870daa1')
 backup=('etc/mpd.conf')
 #install=install
 
@@ -45,7 +45,7 @@ build() {
 		--disable-fluidsynth \
 		--disable-bzip2 \
 		--disable-gme \
-		--disable-mad \
+		--enable-mad \
 		--enable-libmpdclient \
 		--enable-jack \
 		--enable-pipe-output \
@@ -58,7 +58,7 @@ build() {
 package() {
 	cd "${srcdir}/mpd-${pkgver}"
 	make DESTDIR="${pkgdir}" install
-	install -Dm644 ../conf "${pkgdir}"/etc/mpd.conf
+	install -Dm644 ../mpd.conf "${pkgdir}"/etc/mpd.conf
 	install -Dm644 ../tmpfiles.d "${pkgdir}"/usr/lib/tmpfiles.d/mpd.conf
 	install -d -g 45 -o 45 "${pkgdir}"/var/lib/mpd/playlists
 
