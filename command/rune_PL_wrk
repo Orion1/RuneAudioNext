@@ -79,7 +79,9 @@ $status = monitorMpdState($mpd);
 // idle LOOP
 		
 		$redis->set('pl_length',$status['playlistlength']);
+		// runelog('---------status data------------',$status);
 		$status = ui_status($mpd,$status);
+		// runelog('---------status data(2)------------',$status);
 		
 			// render Queue (push async)
 			// if ($status['changed'] === 'playlist') {

@@ -101,6 +101,7 @@ function getTrackInfo($sock,$songID) {
 			// set currentsong, currentartis, currentalbum
 			sendMpdCommand($sock,"playlistinfo ".$songID);
 			$track = readMpdResponse($sock);
+			// runelog('+++++++++++++ getTrackInfo data +++++++++++++++', $track);
 			return _parseFileListResponse($track);
 }
 
@@ -179,12 +180,20 @@ $response = readMpdResponse($sock);
 return $datapath;
 }
 
-function addQueue($sock,$path) {
+function addQueue($sock,$path,$addplay = null,$pos = null) {
 $fileext = parseFileStr($path,'.');
 	if ($fileext == 'm3u' OR $fileext == 'pls') {
 		sendMpdCommand($sock,"load \"".html_entity_decode($path)."\"");
 	} else {
-		sendMpdCommand($sock,"add \"".html_entity_decode($path)."\"");
+		if (isset($addplay)) {
+			$cmdlist = "command_list_begin\n";
+			$cmdlist .= "add \"".html_entity_decode($path)."\"\n";
+			$cmdlist .= "play ".$pos."\n";
+			$cmdlist .= "command_list_end\n";
+			sendMpdCommand($sock,$cmdlist);
+		} else {
+			sendMpdCommand($sock,"add \"".html_entity_decode($path)."\"");
+		}
 	}
 }
 
@@ -220,7 +229,7 @@ return $songs[$randkey]['file'];
 }
 
 function MpdStatus($sock) {
-usleep(1000);
+usleep(2000);
 sendMpdCommand($sock,"status");
 $status= readMpdResponse($sock);
 return $status;
