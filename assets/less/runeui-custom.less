@@ -45,7 +45,7 @@ html, body {
 	height: 100%;
 }
 #section-index {
-	.container-fluid {
+	.container {
 		padding-top: 40px;
 		padding-bottom: 40px;
 	}
@@ -321,7 +321,7 @@ html, body {
 	margin-top: 30px;
 }
 #countdown {
-	// height: 100%;
+	height: 100%;
 	margin-top: 10px;
 	color: @text-color;
 	div {
@@ -337,11 +337,11 @@ html, body {
 	color: @body-bg;
 }
 #timeknob {
-	// height: 230px;
+	height: 230px;
 	margin: 10px 0 20px;
 }
 #volumeknob {
-	// height: 260px;
+	height: 260px;
 }
 #timeknob canvas:hover, #volumeknob canvas:hover {
 	cursor: pointer;
@@ -406,8 +406,8 @@ html, body {
 	display: block;
 	position: relative;
 	width: 100%;
-	max-width: 400px;
-	// max-width: 250px;
+	// max-width: 294px;
+	max-width: 250px;
 	height: auto;
 	margin: 10px auto 11px;
 	background: #111 url(../img/cover-default.png) no-repeat center center;
@@ -417,11 +417,6 @@ html, body {
 }
 .btn-cmd:focus {
 	outline: none;
-}
-.img-placeholder {
-	width: 100%;
-	max-width: 400px;
-	margin: 10px auto 11px;
 }
 
 
@@ -868,17 +863,6 @@ html, body {
 	background: darken(@brand-alt, 15%);
 	border-radius: @border-radius-base;
 }
-.boxed-group {
-	margin: 0 -15px 5px;
-	padding: 0 15px 0;
-	background: darken(@brand-alt, 15%);
-	.form-group:last-child {
-		margin-bottom: 0;
-	}
-}
-.form-actions {
-	padding: 10px 0 20px;
-}
 .manual-edit-confirm {
 	margin-bottom: 20px;
 }
@@ -944,16 +928,26 @@ html, body {
 .container.help, .container.credits {
 	font-size: 16px;
 	line-height: 24px;
+	#release-version {
+		font-size: 20px;
+	}
+	#form-paypal {
+		padding: 20px 0;
+		text-align: center;
+	}
+	.help-block {
+		display: inline;
+	}
 }
 .social-buttons {
 	text-align: center;
 	a {
 		margin: 0 2px 6px;
-		padding: 10px 15px;
+		padding: 6px 10px;
 		i {
 			display: inline-block;
-			width: 34px;
-			font-size: 34px;
+			width: 26px;
+			font-size: 26px;
 		}
 	}
 }
@@ -1597,17 +1591,9 @@ ul.parsley-error-list {
 			// margin-top: 0;
 		// }
 	}
-	.boxed-group {
-		margin: 0 0 15px;
-		padding: 10px 0 0;
-		border-radius: @border-radius-base;
-	}
-	.form-actions {
-		padding: 0;
-	}
 }
 @media (min-width: @screen-md-min) { // everything above 992px
-	#playback .container-fluid {
+	#playback .container {
 		padding-top: 60px;
 		padding-bottom: 40px;
 	}

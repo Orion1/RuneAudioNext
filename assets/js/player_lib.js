@@ -201,7 +201,7 @@ function getPlaylist(text) {
 function getPlaylistPlain(data){
 	var current = parseInt(GUI.json.song) + 1;
 	var state = GUI.json.state;
-	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '';
+	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '', pos = 0;
 	var i, line, lines = data.split('\n'), infos=[];
 	for (i = 0; line = lines[i]; i += 1) {		
 		infos = line.split(': ');
@@ -244,7 +244,8 @@ function getPlaylistPlain(data){
 			} else {
 				totaltime = '<span>' + timeConvert2(time) + '</span>';
 			}
-			content += '<li id="pl-' + songid + (state != "stop" && songid == current ? ' class="active"' : '') + '"><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
+			pos++;
+			content += '<li id="pl-' + songid + '"' + (state !== 'stop' && pos == current ? ' class="active"' : '') + '><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
 			time = ''; artist = ''; album = ''; title = ''; name = '';
 		}
 	}

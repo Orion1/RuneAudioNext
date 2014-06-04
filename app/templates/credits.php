@@ -2,51 +2,51 @@
 	<h1>RuneAudio project</h1>
 	<div class="row">
 		<div class="col-md-8">
-			<div class="alert alert-info">release version: <strong>0.3-alpha</strong></div>
+			<div class="alert alert-info">
+				release version: <strong id="release-version">0.3-alpha</strong> (<a href="http://www.runeaudio.com/changelog/" target="_blank">see changelog</a>)
+			</div>
 			<h2>RuneAudio team</h2>
-			<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>
-			Andrea Coiutti</strong></a> (aka ACX)<br>
-			<span class="help-block">RuneUI frontend design - frontend HTML/JS/CSS coding</span>
-			<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>
-			Simone De Gregori</strong></a> (aka Orion)<br>
-			<span class="help-block">RuneUI PHP backend coding - frontend JS coding - RuneOS distro build &amp; optimization</span>
-			<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>
-			Carmelo San Giovanni</strong></a> (aka Um3ggh1U)<br>
-			<span class="help-block">RuneOS distro build &amp; Kernel optimization</span>
+			<div class="alert alert-info">
+				<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>Andrea Coiutti</strong></a> (aka ACX) <span class="help-block">- RuneUI frontend design - frontend HTML/JS/CSS coding</span><br>
+				<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>Simone De Gregori</strong></a> (aka Orion) <span class="help-block">- RuneUI PHP backend coding - frontend JS coding - RuneOS distro build &amp; optimization</span><br>
+				<a href="http://www.runeaudio.com/team/" target="_blank" rel="nofollow"><strong>Carmelo San Giovanni</strong></a> (aka Um3ggh1U) <span class="help-block">- RuneOS distro build &amp; Kernel optimization</span><br>
+			</div>
+			<h2>Main contributors</h2>
+			<strong>Cristian Pascottini</strong> <span class="help-block">- RuneUI Javascript optimizations</span><br>
+			<strong>Valerio Battaglia</strong> <span class="help-block">- RuneUI Javascript optimizations</span><br>
+			<strong>Francesco Casarsa</strong> <span class="help-block">- Shairport patch</span>
+			
 		</div>
 		<div class="col-md-4">
 			<h3 class="txtmid">Support us!</h3>
-			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="txtmid">
+			<form id="form-paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="MV4SLBWUGKCHU">
-				<input type="image" src="assets/img/donate-paypal.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online">
-				<img alt="" border="0" src="/tun/https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1">
+				<input type="hidden" name="hosted_button_id" value="ZM6Y43J896PY8">
+				<input type="image" src="https://www.paypalobjects.com/en_US/IT/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+				<img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1">
 			</form>
 			<p class="social-buttons">
-				<a class="btn btn-default btn-lg" target="_blank" rel="nofollow" href="https://github.com/RuneAudio" title="RuneAudio on GitHub"><i class="fa fa-github"></i></a>
-				<a class="btn btn-default btn-lg" target="_blank" rel="nofollow" href="https://www.facebook.com/runeaudio" title="RuneAudio on Facebook"><i class="fa fa-facebook"></i></a>
-				<a class="btn btn-default btn-lg" target="_blank" rel="nofollow" href="https://twitter.com/runeaudio" title="RuneAudio on Twitter"><i class="fa fa-twitter"></i></a>
-				<a class="btn btn-default btn-lg" target="_blank" rel="nofollow" href="https://plus.google.com/+Runeaudio/" title="RuneAudio on Google+"><i class="fa fa-google-plus"></i></a>
+				<a class="btn btn-default" target="_blank" rel="nofollow" href="https://github.com/RuneAudio" title="RuneAudio on GitHub"><i class="fa fa-github"></i></a>
+				<a class="btn btn-default" target="_blank" rel="nofollow" href="https://www.facebook.com/runeaudio" title="RuneAudio on Facebook"><i class="fa fa-facebook"></i></a>
+				<a class="btn btn-default" target="_blank" rel="nofollow" href="https://twitter.com/runeaudio" title="RuneAudio on Twitter"><i class="fa fa-twitter"></i></a>
+				<a class="btn btn-default" target="_blank" rel="nofollow" href="https://plus.google.com/+Runeaudio/" title="RuneAudio on Google+"><i class="fa fa-google-plus"></i></a>
 				<br>
-				<a class="btn btn-default btn-lg" target="_blank" rel="nofollow" href="http://www.runeaudio.com/forum/" title="RuneAudio forum"><i class="fa fa-comments"></i></a>
-				<a class="btn btn-default btn-lg" target="_blank" rel="nofollow" href="http://feeds.feedburner.com/RuneAudio" title="RSS feed"><i class="fa fa-rss"></i></a>
-				<a class="btn btn-default btn-lg" target="_blank" rel="nofollow" href="http://www.runeaudio.com/newsletter/" title="RuneAudio newsletter"><i class="fa fa-envelope"></i></a>
+				<a class="btn btn-default" target="_blank" rel="nofollow" href="http://www.runeaudio.com/forum/" title="RuneAudio forum"><i class="fa fa-comments"></i></a>
+				<a class="btn btn-default" target="_blank" rel="nofollow" href="http://feeds.feedburner.com/RuneAudio" title="RSS feed"><i class="fa fa-rss"></i></a>
+				<a class="btn btn-default" target="_blank" rel="nofollow" href="http://www.runeaudio.com/newsletter/" title="RuneAudio newsletter"><i class="fa fa-envelope"></i></a>
 			</p>
 		</div>
 	</div>
-	<h3>License &amp; Copyright</h3>
+	<h2>License &amp; Copyright</h2>
 	<div class="alert alert-info">
 		<p>This Program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation either version 3, 
 		or (at your option) any later version. This Program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 		See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with RuneAudio; see the file COPYING. 
 		If not, see <a href="http://www.gnu.org/licenses/gpl-3.0.txt" target="_blank" rel="nofollow">http://www.gnu.org/licenses/gpl-3.0.txt</a></p>
 	</div>
-	<p><strong>Copyright (C) 2013 RuneAudio Team</strong>
-	<span class="help-block">Andrea Coiutti &amp; Simone De Gregori &amp; Carmelo San Giovanni</span></p>
-	<p><strong>RuneUI</strong>
-	<span class="help-block">copyright (C) 2013 – Andrea Coiutti (aka ACX) &amp; Simone De Gregori (aka Orion)</span>
-	<strong>RuneOS</strong>
-	<span class="help-block">copyright (C) 2013 – Simone De Gregori (aka Orion) &amp; Carmelo San Giovanni (aka Um3ggh1U)</span><br></p>
+	<p><strong>Copyright (C) 2013-2014 RuneAudio Team</strong> <span class="help-block">- Andrea Coiutti &amp; Simone De Gregori &amp; Carmelo San Giovanni</span><br>
+	<strong>RuneUI</strong> <span class="help-block">- copyright (C) 2013-2014 – Andrea Coiutti (aka ACX) &amp; Simone De Gregori (aka Orion)</span><br>
+	<strong>RuneOS</strong>	<span class="help-block">- copyright (C) 2013-2014 – Simone De Gregori (aka Orion) &amp; Carmelo San Giovanni (aka Um3ggh1U)</span></p>
 	<h2>RuneUI credits</h2>
 	<p><strong>PHP language v5.5</strong> by <a href="http://php.net/credits.php" target="_blank" rel="nofollow">PHP Team</a><br /><a href="http://php.net/" target="_blank" rel="nofollow">http://php.net</a></p>
 	<p><strong>PHP pthreads</strong> by <a href="https://github.com/krakjoe" target="_blank" rel="nofollow">Joe Watkins</a><br /><a title="PHP pthreads" href="http://pthreads.org" target="_blank" rel="nofollow">http://pthreads.org</a></p>
