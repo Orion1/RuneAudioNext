@@ -48,33 +48,48 @@ waitSyWrk($redis,$jobID);
 $template->nics = wrk_netconfig($redis,'getnics');
 
 if (isset($template->action)) {
-
+	// check if we are into interface details (ex. http://runeaudio/network/edit/eth0)
 	if (isset($template->arg)) {
-		if ($template->arg != 'wlan') {
-			$nic_connection = $redis->hGet('nics', $template->arg);
-				// fetch current nic configuration data
+		// retrieve current nic status data (detected from the system)
+		$nic_connection = $redis->hGet('nics', $template->arg);
+		$template->nic = json_decode($nic_connection);
+		// check if we action is = 'edit' or 'wlan' (ex. http://runeaudio/network/edit/....)
+		if ($template->action === 'edit') {
+				// fetch current (stored) nic configuration data
 				if ($redis->get($template->arg)) {
 					$template->{$template->arg} = json_decode($redis->get($template->arg));
-					$template->nic = json_decode($nic_connection);
-					if ($template->nic->wireless === '1') {
-						$template->wlans = json_decode($redis->get('wlans'));
-					}
-				} else if ($nic_connection) {
-				// fetch current nic connection details
-					$template->nic = json_decode($nic_connection);
-				} else {
-				// nonexistant nic
-					$template->content = 'error';
-				}
+				// ok nic configuration not stored, but check if it is configured
+				} else if ($nic_connection == null) {
+				// last case, nonexistant nic. route to error template
+				$template->content = 'error';
+				} 
 				
+				if ($template->nic->wireless === 1) {
+					$template->wlans = json_decode($redis->get('wlans'));
+				}
 			// debug
-			print_r($template->{$template->arg});
+			var_dump($template->{$template->arg});
+			var_dump($template->nic);
+			var_dump($nic_connection);
+			print_r($template->wlans);
 		} else {
-			print_r($template->arg);
+			$template->wlans = json_decode($redis->get('wlans'));
+			foreach ($template->wlans->{$template->arg} as $key => $value) {
+				if ($template->uri(4) === $value->ESSID) {
+					$template->{$template->uri(4)} =  $value;
+				}
+				// debug
+				// echo $key."\n";
+				// print_r($value);
+			}
+			// debug
+			// print_r($template->{$template->uri(4)});
+			var_dump($template->nic);
 		}
 	}
-	$template->wlans = json_decode($redis->get('wlans'));
-	print_r($template->wlans);
+
+	// print_r($template->wlans);
+	
 } 
  
 

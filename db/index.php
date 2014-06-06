@@ -79,18 +79,7 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
 					if (isset($_POST['path'])) {
 						sendMpdCommand($mpd,'clear');
 						addQueue($mpd,$_POST['path']);
-						// -- REWORK NEEDED -- tempfix for analog/hdmi out of raspberrypi (should be integrated with sendMpdCommand() function)
-							if ($redis->get('hwplatformid') == '01' && ($redis->get('ao') == 2 OR $redis->get('ao') == 3)) {
-								$cmdstr = "pause";
-								sendMpdCommand($mpd,$cmdstr);
-								closeMpdSocket($mpd);
-								usleep(500000);
-								$mpd = openMpdSocket(DAEMONIP, 6600) ;
-								$cmdstr = $_GET['cmd'];
-								sendMpdCommand($mpd,$cmdstr);
-							} else {
-								sendMpdCommand($mpd,'play');
-							}
+						sendMpdCommand($mpd,'play');
 						// send MPD response to UI
 						ui_mpd_response($mpd,array('title' => 'Playlist cleared<br> Added to playlist', 'text' => $_POST['path']));
 					}

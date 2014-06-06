@@ -34,18 +34,19 @@
 include('getid3/audioinfo.class.php');
 $lastfm_apikey = $redis->get('lastfm_apikey');
 $proxy = $redis->hGetall('proxy');
+$mpd2 = openMpdSocket('/run/mpd.sock');
 // direct output bypass template system
 $tplfile = 0;
 // fetch MPD status
-$status = _parseStatusResponse(MpdStatus($mpd));
-$curTrack = getTrackInfo($mpd,$status['song']);
+$status = _parseStatusResponse(MpdStatus($mpd2));
+$curTrack = getTrackInfo($mpd2,$status['song']);
 if (isset($curTrack[0]['Title'])) {
 $status['currentartist'] = $curTrack[0]['Artist'];
 $status['currentsong'] = $curTrack[0]['Title'];
 $status['currentalbum'] = $curTrack[0]['Album'];
 $status['fileext'] = parseFileStr($curTrack[0]['file'],'.');
 }
-$currentpath = "/mnt/MPD/".findPLposPath($status['song'],$mpd);
+$currentpath = "/mnt/MPD/".findPLposPath($status['song'],$mpd2);
 
 // debug
 runelog("MPD current path",$currentpath);
@@ -124,5 +125,4 @@ if (!empty($auinfo['comments']['picture'][0]['data'])) {
 	}
 
 } 
-
-?>
+closeMpdSocket($mpd2);

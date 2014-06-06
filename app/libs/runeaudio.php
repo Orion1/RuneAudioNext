@@ -189,7 +189,7 @@ $fileext = parseFileStr($path,'.');
 			$cmdlist = "command_list_begin\n";
 			$cmdlist .= "add \"".html_entity_decode($path)."\"\n";
 			$cmdlist .= "play ".$pos."\n";
-			$cmdlist .= "command_list_end\n";
+			$cmdlist .= "command_list_end";
 			sendMpdCommand($sock,$cmdlist);
 		} else {
 			sendMpdCommand($sock,"add \"".html_entity_decode($path)."\"");
@@ -229,7 +229,7 @@ return $songs[$randkey]['file'];
 }
 
 function MpdStatus($sock) {
-usleep(2000);
+// usleep(2000);
 sendMpdCommand($sock,"status");
 $status= readMpdResponse($sock);
 return $status;
@@ -262,8 +262,8 @@ return $output;
 
 function sysCmdAsync($syscmd) {
 exec($syscmd." > /dev/null 2>&1 &", $output);
-runelog('sysCmd($str)',$syscmd);
-runelog('sysCmd() output:',$output);
+// runelog('sysCmdAsync($str)',$syscmd);
+// runelog('sysCmdAsync() output:',$output);
 return $output;
 }
 
@@ -1015,11 +1015,13 @@ $updateh = 0;
 					$speed = sysCmd("iwconfig ".$interface." 2>&1 | grep 'Bit Rate' | cut -d '=' -f 2 | cut -d ' ' -f 1-2");
 					$currentSSID = sysCmd("iwconfig ".$interface." | grep 'ESSID' | cut -d ':' -f 2 | cut -d '\"' -f 2");
 					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 1, 'currentssid' => $currentSSID[0])));
+					$scanwifi = 1;
 				} else {
 					$speed = sysCmd("ethtool ".$interface." 2>&1 | grep -i speed | cut -d':' -f2");
 					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 0)));
 				}
 			}
+			if ($scanwifi) sysCmdAsync('/var/www/command/refresh_wlans');
 		break;
 		
 		case 'getnics':
