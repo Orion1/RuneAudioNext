@@ -1567,7 +1567,7 @@ runelog('function wrk_sourcecfg('.$action.')',$args);
 		usleep(500000);
 		sysCmd("umount -f \"/mnt/MPD/NAS/".$mp['name']."\"");
 		sleep(3);
-		sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
+		if (!empty($mp['name'])) sysCmd("rmdir \"/mnt/MPD/NAS/".$mp['name']."\"");
 		$return = $redis->del('mount_'.$args->id);
 		break;
 	
