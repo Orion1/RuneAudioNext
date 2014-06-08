@@ -1,0 +1,29 @@
+# Maintainer: Alexandre Petitjean <alpetitjean at gmail dot com>
+
+pkgname=mopidy-spotify
+_pypiname=Mopidy-Spotify
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="Mopidy extension for playing music from Spotify"
+arch=('any')
+url="http://www.mopidy.com"
+license=('APACHE')
+depends=(
+	'mopidy>=0.18'
+	'python2-pykka>=1.1'
+	'pyspotify>=1.9'
+	'pyspotify<2'
+	'libspotify>=12'
+	'libspotify<13'
+	'python2-setuptools')
+makedepends=('python2')
+provides=('mopidy-spotify')
+source=("https://pypi.python.org/packages/source/M/${_pypiname}/${_pypiname}-${pkgver}.tar.gz")
+md5sums=('b7217ba8c921a57879593b53c9941bd6')
+
+package() {
+  cd "$srcdir/$_pypiname-$pkgver"
+  python2 setup.py install --root="$pkgdir/" --optimize=1
+}
+
+# vim:set ts=2 sw=2 et:
