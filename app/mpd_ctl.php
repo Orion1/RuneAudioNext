@@ -75,6 +75,7 @@ $acard_data = json_decode($data);
 	}
 $audio_cards[] = $acard_data;
 }
+print_r($audio_cards);
 $template->acards = $audio_cards;
 // $template->acards_details = $audio_cards_details;
 $template->ao = $redis->get('ao');

@@ -537,6 +537,20 @@ while (1) {
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
+				case 'wificfg':
+				runelog('wrk_SY: ',$job->wrkcmd);
+					$redis->sAdd('w_lock',$jobID);
+					if ($job->action === 'save') {
+						runelog('wificfg: save profile for SSID: '.$job->args->ssid);
+						wrk_wifiprofile($redis,'save',$job->args);
+					}					
+					if ($job->action === 'delete') {
+						runelog('wificfg: delete profile for SSID: '.$job->args);
+						wrk_wifiprofile($redis,'delete',$job->args);
+					}
+					$redis->sRem('w_lock',$jobID);
+				break;
+				
 				case 'workerrestart':
 				
 					sysCmd('systemctl restart rune_SY_wrk');

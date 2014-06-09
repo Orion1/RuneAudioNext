@@ -63,6 +63,14 @@
 			<legend>RuneOS kernel settings</legend>
 			<?php if($this->hwplatformid === '01'): ?>
 			<div class="form-group">
+				<label class="control-label col-sm-2" for="i2smodule">Linux Kernel</label>
+				<div class="col-sm-10">
+					<select class="selectpicker" name="kernel" data-style="btn-default btn-lg">
+						<option value="none" <?php if($this->kernel == 'linux-rune-3.12.19-2-ARCH'): ?> selected <?php endif ?>>Linux kernel 3.12.19-rune</option>
+						<option value="berrynos" <?php if($this->kernel == 'linux-rune-3.12.13-rt21_wosa'): ?> selected <?php endif ?>>RTLinux kernel 3.12.13-rt&nbsp;&nbsp;(Wolfosn Audio Card)</option>
+					</select>
+					<span class="help-block">Select the Linux Kernel version (reboot required). <i>Linux kernel 3.12.19-rune</i> is the default RuneAudio optimized kernel, <i>RTLinux kernel 3.12.13-rt</i> is an EXPERIMENTAL kernel (not suitable for all configurations); it is optimized for Wolfson Audio Card support and it is the default option for that type of soundcard.</span>
+				</div>
 				<label class="control-label col-sm-2" for="i2smodule">I&#178;S kernel modules</label>
 				<div class="col-sm-10">
 					<select class="selectpicker" name="i2smodule" data-style="btn-default btn-lg">
@@ -73,6 +81,7 @@
 						<option value="hifiberrydigi" <?php if($this->i2smodule == 'hifiberrydigi'): ?> selected <?php endif ?>>HiFiBerry Digi</option>
 						<option value="iqaudiopidac" <?php if($this->i2smodule == 'iqaudiopidac'): ?> selected <?php endif ?>>IQaudIO Pi-DAC</option>
 						<option value="raspi2splay3" <?php if($this->i2smodule == 'raspi2splay3'): ?> selected <?php endif ?>>RaspI2SPlay3</option>
+						<option value="raspi2splay3" <?php if($this->i2smodule == 'wolfsonaudiocard'): ?> selected <?php endif ?>>Wolfson Audio Card</option>
 					</select>
 					<span class="help-block">Enable I&#178;S output selecting one of the available sets of modules, specific for each hardware. Once set, the output interface will appear in the <a href="/mpd/">MPD configuration select menu</a>, and modules will also auto-load from the next reboot.</span>
 				</div>
@@ -87,7 +96,7 @@
 						<option value="ACX" <?php if($this->orionprofile == 'ACX'): ?> selected <?php endif ?>>ACX</option>
 						<option value="Orion" <?php if($this->orionprofile == 'Orion'): ?> selected <?php endif ?>>Orion</option>
 						<option value="OrionV2" <?php if($this->orionprofile == 'OrionV2'): ?> selected <?php endif ?>>OrionV2</option>
-						<option value="RaspberryPi+i2s" <?php if($this->orionprofile == 'RaspberryPi+i2s'): ?> selected <?php endif ?>>RaspberryPi+I&#178;S</option>
+						<option value="OrionV2" <?php if($this->orionprofile == 'OrionV3'): ?> selected <?php endif ?>>OrionV3 - IQaudioPi-DAC optimized profile</option>
 						<option value="Um3ggh1U" <?php if($this->orionprofile == 'Um3ggh1U'): ?> selected <?php endif ?>>Um3ggh1U</option>
 					</select>
 					<span class="help-block">These profiles include a set of performance tweaks that act on some system kernel parameters.

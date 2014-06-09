@@ -38,8 +38,16 @@ if (isset($_POST)) {
 		$redis->get($_POST['nic']['name']) === json_encode($nic) || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'netcfg', 'action' => 'config', 'args' => $_POST['nic'] ));		
 	}
 	
+	if (isset($_POST['wifiprofile'])) {
+		$redis->get('wlan_'.$_POST['wifiprofile']['ssid']) === json_encode($_POST['wifiprofile']) || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'save', 'args' => $_POST['wifiprofile'] ));		
+	}
+	
 	if (isset($_POST['refresh'])) {
 		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'netcfg', 'action' => 'refresh' ));
+	}
+	
+	if ($_POST['action'] === 'wifidelete') {
+		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'delete', 'args' =>  $_POST['ssid']));
 	}
 
 }
@@ -63,16 +71,21 @@ if (isset($template->action)) {
 				// last case, nonexistant nic. route to error template
 				$template->content = 'error';
 				} 
-				
+				// check if the current nic is wireless
 				if ($template->nic->wireless === 1) {
 					$template->wlans = json_decode($redis->get('wlans'));
+					if ($wlan_profiles = $redis->hGetAll('wlan_profiles')) foreach ($wlan_profiles as $key => $value) {
+						$template->wlan_profiles->{$key} = json_decode($value);
+					} 
 				}
 			// debug
 			var_dump($template->{$template->arg});
 			var_dump($template->nic);
 			var_dump($nic_connection);
 			print_r($template->wlans);
+			print_r($template->wlan_profiles);
 		} else {
+		// we are in the wlan subtemplate
 			$template->wlans = json_decode($redis->get('wlans'));
 			foreach ($template->wlans->{$template->arg} as $key => $value) {
 				if ($template->uri(4) === $value->ESSID) {
@@ -82,13 +95,16 @@ if (isset($template->action)) {
 				// echo $key."\n";
 				// print_r($value);
 			}
+			if ($redis->hExists('wlan_profiles',$template->uri(4))) $tempate->stored = 1;
 			// debug
 			// print_r($template->{$template->uri(4)});
 			var_dump($template->nic);
+			var_dump($tempate->stored);
+			
 		}
 	}
 
-	// print_r($template->wlans);
+	print_r($template->wlans);
 	
 } 
  

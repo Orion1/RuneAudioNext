@@ -1115,6 +1115,19 @@ $updateh = 0;
 $updateh === 0 || $redis->set($args->name.'_hash',md5_file('/etc/netctl/'.$args->name));
 }
 
+function wrk_wifiprofile($redis,$action,$args) {
+	switch ($action) {
+		case 'save':
+			$return = $redis->hSet('wlan_profiles',$args->ssid,json_encode($args));
+		break;
+		
+		case 'delete':
+			$return = $redis->hDel('wlan_profiles',$args);
+		break;
+	}
+return $return;
+}
+
 function wrk_restore($backupfile) {
 $path = "/run/".$backupfile;
 $cmdstring = "tar xzf ".$path." --overwrite --directory /";
