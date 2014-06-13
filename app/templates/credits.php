@@ -25,6 +25,7 @@
 				<input type="image" src="https://www.paypalobjects.com/en_US/IT/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 				<img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1">
 			</form>
+			<h3 class="txtmid">Sharing is caring</h3>
 			<p class="social-buttons">
 				<a class="btn btn-default" target="_blank" rel="nofollow" href="https://github.com/RuneAudio" title="RuneAudio on GitHub"><i class="fa fa-github"></i></a>
 				<a class="btn btn-default" target="_blank" rel="nofollow" href="https://www.facebook.com/runeaudio" title="RuneAudio on Facebook"><i class="fa fa-facebook"></i></a>
@@ -38,7 +39,7 @@
 		</div>
 	</div>
 	<h2>License &amp; Copyright</h2>
-	<div class="alert alert-info">
+	<div id="license" class="alert alert-info">
 		<p>This Program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation either version 3, 
 		or (at your option) any later version. This Program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 		See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with RuneAudio; see the file COPYING. 
