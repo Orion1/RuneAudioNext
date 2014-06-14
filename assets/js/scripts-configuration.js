@@ -278,14 +278,16 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	if( $('#section-debug').length ){
 		ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
-		var client = new ZeroClipboard(document.getElementById('copy-button'));
+		var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 		client.on('ready', function(readyEvent){
 			// alert('ZeroClipboard SWF is ready!');
 			client.on('aftercopy', function(event){
-				// `this` === `client`
-				// `event.target` === the element that was clicked
-				event.target.style.display = 'none';
-				alert('Copied text to clipboard: ' + event.data['text/plain']);
+				// alert('Copied text to clipboard: ' + event.data['text/plain']);
+				$.pnotify({
+					title: 'Copied to clipboard',
+					text: 'The debug output was copied successfully in your clipboard.',
+					icon: 'fa fa-check'
+				});
 			});
 		});
 
