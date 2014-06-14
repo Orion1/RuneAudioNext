@@ -108,11 +108,11 @@ jQuery(document).ready(function($){ 'use strict';
 	if( $('#section-sources').length ){
 	
 		// enable/disable CIFS auth section
-		if ($('#mount-type').val() == 'nfs') {
+		if ($('#mount-type').val() === 'nfs') {
 			$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 		}						
 		$('#mount-type').change(function(){		  
-			if ($(this).val() == 'cifs' || $(this).val() == 'osx') {
+			if ($(this).val() === 'cifs' || $(this).val() === 'osx') {
 				$('#mount-cifs').removeClass('disabled').children('.disabler').addClass('hide');
 			}
 			else {
@@ -161,17 +161,32 @@ jQuery(document).ready(function($){ 'use strict';
 	// ----------------------------------------------------------------------------------------------------
 	
 	if($('#section-network').length){
-		var netManualConf = $('#network-manual-config');
+	
 		// show/hide static network configuration based on select value
-		if ($('#dhcp').val() == '0') {
+		var netManualConf = $('#network-manual-config');
+		if ($('#dhcp').val() === '0') {
 			netManualConf.removeClass('hide');
-		}						
+		}
 		$('#dhcp').change(function(){
-			if ($(this).val() == '0') {
+			if ($(this).val() === '0') {
 				netManualConf.removeClass('hide');
 			}
 			else {
 				netManualConf.addClass('hide');
+			}															
+		});
+		
+		// show/hide WiFi security configuration based on select value
+		var WiFiKey = $('#wifi-security-key');
+		if ($('#wifi-security').val() !== 'open') {
+			WiFiKey.removeClass('hide');
+		}
+		$('#wifi-security').change(function(){
+			if ($(this).val() !== 'open') {
+				WiFiKey.removeClass('hide');
+			}
+			else {
+				WiFiKey.addClass('hide');
 			}															
 		});
 	}
@@ -182,7 +197,7 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	if( $('#section-settings').length ){
 		
-		// show/hide AirPlay name form  
+		// show/hide AirPlay name form
 		$('#airplay').change(function(){
 			if ($(this).prop('checked')) {
 				$('#airplayName').removeClass('hide');
@@ -255,6 +270,25 @@ jQuery(document).ready(function($){ 'use strict';
 			$('#mpdconf_editor').removeClass('hide');
 			$('#manual-edit-warning').addClass('hide');
 		});
+	}
+	
+	
+	// DEBUG
+	// ----------------------------------------------------------------------------------------------------
+	
+	if( $('#section-debug').length ){
+		ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
+		var client = new ZeroClipboard(document.getElementById('copy-button'));
+		client.on('ready', function(readyEvent){
+			// alert('ZeroClipboard SWF is ready!');
+			client.on('aftercopy', function(event){
+				// `this` === `client`
+				// `event.target` === the element that was clicked
+				event.target.style.display = 'none';
+				alert('Copied text to clipboard: ' + event.data['text/plain']);
+			});
+		});
+
 	}
 	
 });
