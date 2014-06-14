@@ -2,5 +2,5 @@
 	<h1>DEBUG DATA</h1>
 	<pre>
 		<?=$this->debug ?>
-	<pre>
+	</pre>
 </div>

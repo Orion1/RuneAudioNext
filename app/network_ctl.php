@@ -47,7 +47,7 @@ if (isset($_POST)) {
 	}
 	
 	if ($_POST['action'] === 'wifidelete') {
-		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'delete', 'args' =>  $_POST['ssid']));
+		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'delete', 'args' =>  $_POST['ssid'] ));
 	}
 
 }
@@ -84,8 +84,12 @@ if (isset($template->action)) {
 			var_dump($nic_connection);
 			print_r($template->wlans);
 			print_r($template->wlan_profiles);
+		// we are in the wlan subtemplate (ex. http://runeaudio/network/wlan/....)
 		} else {
-		// we are in the wlan subtemplate
+			// check if we want to store a wifi profile, that is not in range.
+			if ($template->arg === 'add') {
+				$template->addprofile = 1;
+			}
 			$template->wlans = json_decode($redis->get('wlans'));
 			foreach ($template->wlans->{$template->arg} as $key => $value) {
 				if ($template->uri(4) === $value->ESSID) {
@@ -95,11 +99,11 @@ if (isset($template->action)) {
 				// echo $key."\n";
 				// print_r($value);
 			}
-			if ($redis->hExists('wlan_profiles',$template->uri(4))) $tempate->stored = 1;
+			if ($redis->hExists('wlan_profiles',$template->uri(4))) $template->stored = 1;
 			// debug
 			// print_r($template->{$template->uri(4)});
 			var_dump($template->nic);
-			var_dump($tempate->stored);
+			var_dump($template->stored);
 			
 		}
 	}
@@ -107,7 +111,3 @@ if (isset($template->action)) {
 	print_r($template->wlans);
 	
 } 
- 
-
-
-?>

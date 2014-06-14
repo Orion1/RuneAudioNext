@@ -2,11 +2,11 @@
 	<h1>WiFi SSID Configuration</h1>
 	<!--<p>If you mess up with this configuration you can <a data-toggle="modal" href="#net-config-defaults">reset to default</a>.</p>-->
 	<form class="form-horizontal" action="/network/edit/<?=$this->uri(3) ?>" method="post" data-parsley-validate>
-		<!--$_eth0-->
+		<?php if($this->addprofile !== 1): ?>
 		<fieldset>
-			<?php if($this->stored == 1): ?> <legend>PIPPO </legend> <?php endif; ?>
+			<?php if($this->stored === 1): ?>
 			<legend><?=$this->title ?> <span class="<?php if($this->action == 'add' ): ?>hide<?php endif; ?>">(<a href="#wifiprofile-delete-modal" data-toggle="modal">delete this profile</a>)</span></legend>
-			
+			<?php endif; ?>
 			<div class="boxed">
 				<table class="info-table">
 					<tbody>
@@ -18,8 +18,7 @@
 				</table>
 			</div>
 		</fieldset>
-		<br>
-		
+		<?php endif; ?>
 		<fieldset>
 			<legend>Security parameters</legend>
 			<div class="form-group <?php if($this->uri(4) !== null): ?>hide<?php endif; ?>">
