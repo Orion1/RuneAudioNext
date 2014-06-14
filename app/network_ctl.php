@@ -89,15 +89,16 @@ if (isset($template->action)) {
 			// check if we want to store a wifi profile, that is not in range.
 			if ($template->arg === 'add') {
 				$template->addprofile = 1;
-			}
-			$template->wlans = json_decode($redis->get('wlans'));
-			foreach ($template->wlans->{$template->arg} as $key => $value) {
-				if ($template->uri(4) === $value->ESSID) {
-					$template->{$template->uri(4)} =  $value;
+			} else {
+				$template->wlans = json_decode($redis->get('wlans'));
+				foreach ($template->wlans->{$template->arg} as $key => $value) {
+					if ($template->uri(4) === $value->ESSID) {
+						$template->{$template->uri(4)} =  $value;
+					}
+					// debug
+					// echo $key."\n";
+					// print_r($value);
 				}
-				// debug
-				// echo $key."\n";
-				// print_r($value);
 			}
 			if ($redis->hExists('wlan_profiles',$template->uri(4))) $template->stored = 1;
 			// debug

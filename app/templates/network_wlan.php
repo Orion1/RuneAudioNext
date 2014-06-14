@@ -39,7 +39,7 @@
 					<span class="help-block">Choose the security type of the Wi-Fi you want to connect.</span>
 				</div>
 			</div>
-			<div id="wifi-security-key" class="form-group">
+			<div id="wifi-security-key" class="form-group <?php if($this->addprofile === 1): ?>hide<?php endif; ?>">
 				<label class="col-sm-2 control-label" for="wifiprofile[key]">Key</label>
 				<div class="col-sm-10">
 					<input class="form-control input-lg" type="password" id="wifi-password" name="wifiprofile[key]" value="" data-trigger="change" autocomplete="off">
@@ -49,8 +49,8 @@
 		</fieldset>
 		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
-				<a href="net-config.php" class="btn btn-default btn-lg">Cancel</a>
-				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>">Connect and Save profile</button>
+				<a href="javascript:window.history.back();" class="btn btn-default btn-lg">Cancel</a> <!-- TODO: record routing path in session and use recorded data as href -->
+				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php if($this->addprofile !== 1): ?>Connect and <?php endif; ?>Save profile</button>
 			</div>
 		</div>
 	</form>
