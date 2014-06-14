@@ -24,6 +24,9 @@
 <script src="<?=$this->asset('/js/vendor/jquery.plugin.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
 <script src="<?=$this->asset('/js/player_lib.js')?>"></script>
+<?php if ($this->section == 'debug'): ?>
+<script src="<?=$this->asset('/js/vendor/ZeroClipboard.min.js')?>"></script>
+<?php endif ?>
 <?php if ($this->section == 'index'): ?>
 <script src="<?=$this->asset('/js/vendor/jquery.knob.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap-contextmenu.js')?>"></script>
