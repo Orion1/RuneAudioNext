@@ -902,14 +902,17 @@ html, body {
 	}
 }
 .info-table {
-	td {
-		font-size: 16px;
+	th, td {
+		line-height: 30px;
+		vertical-align: top;
 	}
 	th {
-		line-height: 30px;
 		padding-right: 30px;
 		font-weight: normal;
 		text-align: right;
+	}
+	td {
+		font-size: 16px;
 	}
 }
 #mpdconf {
@@ -918,6 +921,18 @@ html, body {
 	font-family: @font-family-monospace;
 	font-size: 15px;
 	color: @pre-color;
+}
+.fa.fa-wifi {
+    display: inline-block;
+	width: 30px;
+	height: 1px;
+    -o-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand', M11=-0.7071067811865476, M12=0.7071067811865475, M21=0.7071067811865475, M22=0.7071067811865476)"; /* IE8 */
+	&.sx {
+		margin-right: 15px;
+	}
 }
 
 
@@ -1168,6 +1183,9 @@ select.selectpicker {
 			background: @body-bg;
 		}
 	}
+}
+.switch-block {
+	max-width: 100%;
 }
 
 
