@@ -5,7 +5,7 @@
 	<fieldset>
 		<div class="boxed">
 		<?php foreach ($this->wlans->{$this->arg} as $key => $value): ?>
-			<p><a href="/network/wlan/<?=$this->arg ?>/<?=$value->ESSID ?>" class="btn btn-lg btn-default btn-block"><?php if ($this->nic->currentssid === $value->ESSID): ?><i class="fa fa-check green sx"></i><?php endif; ?><i class="fa fa-signal"></i><i class="fa fa-<?php echo ($value->{'Encryption key'} === 'on') ? 'lock' : 'unlock-alt'; ?> sx"></i><strong><?=$value->ESSID ?></strong></a></p>
+			<p><a href="/network/wlan/<?=$this->arg ?>/<?=$value->ESSID ?>" class="btn btn-lg btn-default btn-block"><?php if ($this->nic->currentssid === $value->ESSID): ?><i class="fa fa-check green sx"></i><?php endif; ?><?php if ($value->{'Encryption key'} === 'on'): ?><i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i><?php else: ?><i class="fa fa-rss fa-wifi sx"></i><?php endif; ?> <strong><?=$value->ESSID ?></strong></a></p>
 		<?php endforeach; ?>
 		</div>
 	</fieldset>
