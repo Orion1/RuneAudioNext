@@ -545,7 +545,7 @@ while (1) {
 						wrk_wifiprofile($redis,'save',$job->args);
 					}					
 					if ($job->action === 'delete') {
-						runelog('wificfg: delete profile for SSID: '.$job->args);
+						runelog('wificfg: delete profile for SSID: '.$job->args->ssid);
 						wrk_wifiprofile($redis,'delete',$job->args);
 					}
 					$redis->sRem('w_lock',$jobID);

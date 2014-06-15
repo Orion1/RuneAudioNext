@@ -1123,7 +1123,7 @@ function wrk_wifiprofile($redis,$action,$args) {
 		break;
 		
 		case 'delete':
-			if (wrk_wpa_cli('delete', $args)) $return = $redis->hDel('wlan_profiles',$args);
+			if (wrk_wpa_cli('delete', $args)) $return = $redis->hDel('wlan_profiles',$args->ssid);
 		break;
 	}
 return $return;

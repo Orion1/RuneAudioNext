@@ -82,8 +82,9 @@
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default btn-lg" data-dismiss="modal" aria-hidden="true">Cancel</button>
-					<button type="submit" class="btn btn-primary btn-lg" name="action" value="wifidelete">Remove</button>
-					<input type="hidden" name="ssid" value="<?=$this->uri(4) ?>">
+					<button type="submit" class="btn btn-primary btn-lg" name="action" value="remove">Remove</button>
+					<input type="hidden" name="wifidelete[ssid]" value="<?=$this->profile_{$this->uri(4)}->ssid ?>">
+					<input type="hidden" name="wifidelete[id]" value="<?=$this->profile_{$this->uri(4)}->id ?>">
 				</div>
 			</div>
 		</div>

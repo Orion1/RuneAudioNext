@@ -46,8 +46,8 @@ if (isset($_POST)) {
 		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'netcfg', 'action' => 'refresh' ));
 	}
 	
-	if ($_POST['action'] === 'wifidelete') {
-		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'delete', 'args' =>  $_POST['ssid'] ));
+	if (isset($_POST['wifidelete'])) {
+		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'delete', 'args' =>  $_POST['wifidelete'] ));
 	}
 
 }
