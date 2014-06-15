@@ -79,33 +79,34 @@ if (isset($template->action)) {
 					} 
 				}
 			// debug
-			var_dump($template->{$template->arg});
-			var_dump($template->nic);
-			var_dump($nic_connection);
+			// var_dump($template->{$template->arg});
+			// var_dump($template->nic);
+			// var_dump($nic_connection);
 			print_r($template->wlans);
 			print_r($template->wlan_profiles);
 		// we are in the wlan subtemplate (ex. http://runeaudio/network/wlan/....)
 		} else {
-			// check if we want to store a wifi profile, that is not in range.
-			if ($template->arg === 'add') {
+			// check if we want to store a wifi profile, that is not in range. (ex. http://runeaudio/network/wlan/add )
+			if ($template->uri(4) === 'add') {
 				$template->addprofile = 1;
 			} else {
+			// we are connecting to a visible network
 				$template->wlans = json_decode($redis->get('wlans'));
 				foreach ($template->wlans->{$template->arg} as $key => $value) {
 					if ($template->uri(4) === $value->ESSID) {
 						$template->{$template->uri(4)} =  $value;
+						$template->profile_{$template->uri(4)} = json_decode($redis->hGet('wlan_profiles',$template->uri(4)));
 					}
 					// debug
 					// echo $key."\n";
 					// print_r($value);
 				}
+				var_dump($template->profile_{$template->uri(4)});
 			}
 			if ($redis->hExists('wlan_profiles',$template->uri(4))) $template->stored = 1;
 			// debug
-			// print_r($template->{$template->uri(4)});
-			var_dump($template->nic);
+			// var_dump($template->nic);
 			var_dump($template->stored);
-			
 		}
 	}
 

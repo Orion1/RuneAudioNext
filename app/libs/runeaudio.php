@@ -1118,11 +1118,39 @@ $updateh === 0 || $redis->set($args->name.'_hash',md5_file('/etc/netctl/'.$args-
 function wrk_wifiprofile($redis,$action,$args) {
 	switch ($action) {
 		case 'save':
+			$args->id = wrk_wpa_cli('add', $args);
 			$return = $redis->hSet('wlan_profiles',$args->ssid,json_encode($args));
 		break;
 		
 		case 'delete':
-			$return = $redis->hDel('wlan_profiles',$args);
+			if (wrk_wpa_cli('delete', $args)) $return = $redis->hDel('wlan_profiles',$args);
+		break;
+	}
+return $return;
+}
+
+function wrk_wpa_cli($action, $args) {
+$return = 0;
+	switch ($action) {
+		case 'add':
+			// add wpa entry in the stack
+			$wlanid = sysCmd('wpa_cli add_network');
+			// set the SSID
+			$wpa_cli_response = sysCmd("wpa_cli set_network ".$wlanid[1]." ssid '\"".$args->ssid."\"'");
+			// set the encryption type
+			// if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd('wpa_cli set_network '.$wlanid[1].' key_mgmt WPA-PSK');
+			// store the encryption key
+			if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd("wpa_cli set_network ".$wlanid[1]." psk '\"".$args->key."\"'");
+			// enable the new network profile
+			if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd('wpa_cli enable_network '.$wlanid[1]);
+			// save configuration file
+			if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd('wpa_cli save_config');
+			if ($wpa_cli_response[1] === 'OK') $return = $wlanid[1];
+		break;
+		
+		case 'delete':
+			$wpa_cli_response = sysCmd('wpa_cli remove_network '.$args->id);
+			if ($wpa_cli_response[1] === 'OK') $return = 1;
 		break;
 	}
 return $return;

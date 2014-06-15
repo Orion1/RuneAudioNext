@@ -22,7 +22,7 @@
 	<?php foreach ($this->wlan_profiles as $profile): ?>
 		<p><a href="/network/wlan/<?=$this->arg ?>/<?=$profile->ssid ?>" class="btn btn-lg btn-default btn-block"><?php if ($this->nic->currentssid === $profile->ssid): ?><i class="fa fa-check green dx"></i>&nbsp;&nbsp;&nbsp;<?php endif; ?><strong><?=$profile->ssid ?></strong><?php if ($profile->encryption !== 'none'): ?><i class="fa fa-lock dx"></i>&nbsp;&nbsp;&nbsp;<?php endif; ?></a></p>
 	<?php endforeach; ?>
-	<a href="/network/wlan/add" class="btn btn-primary" >Add WiFi Profile</a>
+	<a href="/network/wlan/<?=$this->arg ?>/add" class="btn btn-primary" >Add WiFi Profile</a>
 	</div>
 	<?php endif ?>
 	<form class="form-horizontal" action="/network" method="post" data-parsley-validate>

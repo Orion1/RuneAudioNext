@@ -21,10 +21,10 @@
 		<?php endif; ?>
 		<fieldset>
 			<legend>Security parameters</legend>
-			<div class="form-group <?php if($this->uri(4) !== null): ?>hide<?php endif; ?>">
+			<div class="form-group <?php if($this->uri(4) !== 'add'): ?>hide<?php endif; ?>">
 				<label class="col-sm-2 control-label" for="wifiprofile[ssid]">SSID</label>
 				<div class="col-sm-10">
-					<input class="form-control input-lg" type="text" id="wifi-name" name="wifiprofile[ssid]" value="<?=$this->uri(4) ?>" data-trigger="change">
+					<input class="form-control input-lg" type="text" id="wifi-name" name="wifiprofile[ssid]" value="<?php if($this->uri(4) !== 'add'): ?><?=$this->uri(4) ?><?php endif; ?>" data-trigger="change">
 					<span class="help-block">Set the SSID name of the Wi-Fi you want to connect.</span>
 				</div>
 			</div>
@@ -42,7 +42,7 @@
 			<div id="wifi-security-key" class="form-group <?php if($this->addprofile === 1): ?>hide<?php endif; ?>">
 				<label class="col-sm-2 control-label" for="wifiprofile[key]">Key</label>
 				<div class="col-sm-10">
-					<input class="form-control input-lg" type="password" id="wifi-password" name="wifiprofile[key]" value="" data-trigger="change" autocomplete="off">
+					<input class="form-control input-lg" type="password" id="wifi-password" name="wifiprofile[key]" value="<?=$this->profile_{$this->uri(4)}->key ?>" data-trigger="change" autocomplete="off">
 					<span class="help-block">Set the key of the Wi-Fi you want to connect.</span>
 				</div>
 			</div>
