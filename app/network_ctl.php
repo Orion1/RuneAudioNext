@@ -87,7 +87,7 @@ if (isset($template->action)) {
 		// we are in the wlan subtemplate (ex. http://runeaudio/network/wlan/....)
 		} else {
 			// check if we want to store a wifi profile, that is not in range.
-			if ($template->arg === 'add') {
+			if ($template->uri(4) === 'add') {
 				$template->addprofile = 1;
 			} else {
 				$template->wlans = json_decode($redis->get('wlans'));

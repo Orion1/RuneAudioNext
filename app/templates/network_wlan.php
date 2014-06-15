@@ -10,21 +10,29 @@
 			<div class="boxed">
 				<table class="info-table">
 					<tbody>
-						<tr><th>Network SSID:</th><td><strong><?=$this->uri(4) ?></strong><?php if ($this->nic->currentssid === $this->{$this->uri(4)}->{'ESSID'}): ?><i class="fa fa-check green dx"></i>&nbsp;&nbsp;&nbsp;<?php endif; ?></td></tr>
-						<tr><th>Signal level:</th><td><strong><?=$this->{$this->uri(4)}->{'Quality'} ?></strong>&nbsp;&#37;</td></tr>
-						<tr><th>Encryption:</th><td><?php if ($this->{$this->uri(4)}->{'Encryption key'} === 'on' && $this->{$this->uri(4)}->{'Group Cipher'} != null && strpos($this->{$this->uri(4)}->IE,'WPA')): ?>WPA / WPA2 - PSK (<?php if ($this->{$this->uri(4)}->{'Group Cipher'} === 'CCMP'): ?>AES<?php else: ?><?=$this->{$this->uri(4)}->{'Group Cipher'} ?><?php  endif; ?>)&nbsp;&nbsp;&nbsp;<i class="fa fa-lock dx"></i><?php elseif ($this->{$this->uri(4)}->{'Encryption key'} === 'on'): ?>WEP&nbsp;&nbsp;&nbsp;<i class="fa fa-lock dx"><?php else: ?>none (Open Network)&nbsp;&nbsp;&nbsp;<i class="fa fa-unlock dx"><?php endif; ?></td></tr>
+						<tr><th>Network SSID:</th><td><strong><?=$this->uri(4) ?></strong></td></tr>
+						<?php if ($this->nic->currentssid === $this->{$this->uri(4)}->{'ESSID'}): ?>
+						<tr>
+							<th>
+								<p>Status:</th><td><i class="fa fa-check green sx"></i>connected<br><button class="btn btn-primary btn-lg">Disconnect</button></p>
+							</td>
+						</tr>
+						<?php endif; ?>
+						<tr><th>Signal strength:</th><td><i class="fa fa-signal sx"></i><?=$this->{$this->uri(4)}->{'Quality'} ?>&nbsp;&#37;</td></tr>
+						<tr><th>Encryption:</th><td><?php if ($this->{$this->uri(4)}->{'Encryption key'} === 'on' && $this->{$this->uri(4)}->{'Group Cipher'} != null && strpos($this->{$this->uri(4)}->IE,'WPA')): ?><i class="fa fa-lock sx"></i>WPA / WPA2 - PSK (<?php if ($this->{$this->uri(4)}->{'Group Cipher'} === 'CCMP'): ?>AES<?php else: ?><?=$this->{$this->uri(4)}->{'Group Cipher'} ?><?php  endif; ?>)<?php elseif ($this->{$this->uri(4)}->{'Encryption key'} === 'on'): ?><i class="fa fa-lock sx"></i>WEP<?php else: ?><i class="fa fa-unlock-alt sx"></i>none (Open Network)<?php endif; ?></td></tr>
 						<tr><th><a href="/network/edit/<?=$this->uri(3) ?>"><i class="fa fa-arrow-left sx"></i> back to NIC details</a></th><td></td></tr>
 					</tbody>
 				</table>
 			</div>
 		</fieldset>
 		<?php endif; ?>
+		<?php if ($this->nic->currentssid !== $this->{$this->uri(4)}->{'ESSID'}): ?>
 		<fieldset>
 			<legend>Security parameters</legend>
-			<div class="form-group <?php if($this->uri(4) !== null): ?>hide<?php endif; ?>">
+			<div class="form-group <?php if($this->uri(4) !== 'add'): ?>hide<?php endif; ?>">
 				<label class="col-sm-2 control-label" for="wifiprofile[ssid]">SSID</label>
 				<div class="col-sm-10">
-					<input class="form-control input-lg" type="text" id="wifi-name" name="wifiprofile[ssid]" value="<?=$this->uri(4) ?>" data-trigger="change">
+					<input class="form-control input-lg" type="text" id="wifi-ssid" name="wifiprofile[ssid]" value="<?php if($this->uri(4) !== 'add'): ?><?=$this->uri(4) ?><?php endif; ?>" data-trigger="change">
 					<span class="help-block">Set the SSID name of the Wi-Fi you want to connect.</span>
 				</div>
 			</div>
@@ -40,19 +48,25 @@
 				</div>
 			</div>
 			<div id="wifi-security-key" class="form-group <?php if($this->addprofile === 1): ?>hide<?php endif; ?>">
-				<label class="col-sm-2 control-label" for="wifiprofile[key]">Key</label>
+				<label class="col-sm-2 control-label" for="wifiprofile[key]">Password</label>
 				<div class="col-sm-10">
 					<input class="form-control input-lg" type="password" id="wifi-password" name="wifiprofile[key]" value="" data-trigger="change" autocomplete="off">
 					<span class="help-block">Set the key of the Wi-Fi you want to connect.</span>
+					<div class="checkbox">
+						<label>
+							<input class="sx" type="checkbox" onchange="document.getElementById('wifi-password').type = this.checked ? 'text' : 'password'"> Show password
+						</label>
+					</div>
 				</div>
 			</div>
 		</fieldset>
 		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
 				<a href="javascript:window.history.back();" class="btn btn-default btn-lg">Cancel</a> <!-- TODO: record routing path in session and use recorded data as href -->
-				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php if($this->addprofile !== 1): ?>Connect and <?php endif; ?>Save profile</button>
+				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php echo ($this->addprofile === 1) ? 'Connect' : 'Save profile'; ?></button>
 			</div>
 		</div>
+		<?php endif; ?>
 	</form>
 </div>
 <div id="wifiprofile-delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="wifiprofile-delete-modal-label" aria-hidden="true">

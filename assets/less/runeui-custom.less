@@ -902,14 +902,17 @@ html, body {
 	}
 }
 .info-table {
-	td {
-		font-size: 16px;
+	th, td {
+		line-height: 30px;
+		vertical-align: top;
 	}
 	th {
-		line-height: 30px;
 		padding-right: 30px;
 		font-weight: normal;
 		text-align: right;
+	}
+	td {
+		font-size: 16px;
 	}
 }
 #mpdconf {
@@ -1168,6 +1171,9 @@ select.selectpicker {
 			background: @body-bg;
 		}
 	}
+}
+.switch-block {
+	max-width: 100%;
 }
 
 
