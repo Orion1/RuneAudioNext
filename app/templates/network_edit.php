@@ -35,9 +35,10 @@
 					<tbody>
 						<tr><th>Name:</th><td><strong><?=$this->arg ?></strong></td></tr>
 						<tr><th>Type:</th><td><?php if ($this->nic->wireless == 1): ?>wireless<?php else: ?>wired ethernet<?php endif ?></td></tr>
+						<tr><th>Status:</th><td><?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?><i class="fa fa-check green sx"></i>connected<?php else: ?><i class="fa fa-times red sx"></i>no network connected<?php endif; ?></td></tr>
 						<?php if(isset($this->nic->currentssid) && $this->nic->currentssid !== 'off/any'): ?><tr><th>Associated SSID:</th><td><strong><?=$this->nic->currentssid ?></strong></td></tr><?php endif; ?>
-						<tr><th>Assigned IP:</th><td><strong><?=$this->nic->ip ?></strong></td></tr>
-						<tr><th>Speed:</th><td><?=$this->nic->speed ?><i class="fa <?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?>fa-check green<?php else: ?>fa-times red<?php endif; ?> dx"></i></td></tr>
+						<tr><th>Assigned IP:</th><td><?php if ($this->nic->ip !== null): ?><strong><?php echo $this->nic->ip; ?></strong><?php else: ?>none<?php endif; ?></td></tr>
+						<tr><th>Speed:</th><td><?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?><?=$this->nic->speed ?><?php else: ?>unknown<?php endif; ?></td></tr>
 						<tr><th><a href="/network"><i class="fa fa-arrow-left sx"></i> back to the list</a></th><td></td></tr>
 					</tbody>
 				</table>
