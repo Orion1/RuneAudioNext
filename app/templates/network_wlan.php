@@ -18,7 +18,7 @@
 							<th>Signal strength:</th>
 							<td>
 								<?php $signal_strength = $this->{$this->uri(4)}->{'Quality'}; ?>
-								<div class="progress">
+								<div id="wifi-signal-strength" class="progress">
 									<div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $signal_strength; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $signal_strength; ?>%;">
 										<?php echo $signal_strength; ?>%
 									</div>
