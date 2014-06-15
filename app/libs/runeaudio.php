@@ -1033,24 +1033,28 @@ $updateh = 0;
 		
 		case 'writecfg':
 			// ArchLinux netctl config for wired ethernet
+				$nic = "Description='".$args->name." connection'\n";
+				$nic .= "Interface=".$args->name."\n";
+				$nic .= "ForceConnect=yes\n";
+				$nic .= "SkipNoCarrier=yes\n";
+			if ($args->wireless === '1') {
+				// Wireless configuration
+				$nic .= "Connection=wireless\n";
+				$nic .= "Security=wpa-config\n";
+				$nic .= "WPAConfigFile='/etc/wpa_supplicant/wpa_supplicant.conf'\n";
+			} else {
+				// Wired configuration
+				$nic .= "Connection=ethernet\n";
+			}		
 			if ($args->dhcp === '1') {
 				// DHCP configuration
-				$nic = "Description='".$args->name." dhcp connection'\n";
-				$nic .= "Interface=".$args->name."\n";
-				$nic .= "Connection=ethernet\n";
-				$nic .= "ForceConnect=yes\n";
-				$nic .= "SkipNoCarrier=yes\n";
 				$nic .= "IP=dhcp\n";
-				// write current network config
-				$redis->set($args->name,json_encode(array( 'name' => $args->name, 'dhcp' => $args->dhcp )));
+				// Prepare data object for Redis record
+				$args = array( 'name' => $args->name, 'dhcp' => $args->dhcp );
+				$args = (object) $args;
 			} else {
 				// STATIC configuration
-				$nic = "Description='".$args->name." static configuration'\n";
-				$nic .= "Interface=".$args->name."\n";
-				$nic .= "Connection=ethernet\n";
 				$nic .= "AutoWired=yes\n";
-				$nic .= "ForceConnect=yes\n";
-				$nic .= "SkipNoCarrier=yes\n";
 				$nic .= "IP=static\n";
 				$nic .= "Address=('".$args->ip."/".$args->netmask."')\n";
 				$nic .= "Gateway='".$args->gw."'\n";
@@ -1059,9 +1063,9 @@ $updateh = 0;
 				} else {
 					$nic .= "DNS=('".$args->dns1."')\n";
 				}
-				// write current network config
-				$redis->set($args->name,json_encode($args));
 			}
+			// write current network config
+			$redis->set($args->name,json_encode($args));
 			$fp = fopen('/etc/netctl/'.$args->name, 'w');
 			fwrite($fp, $nic);
 			fclose($fp);
@@ -1105,7 +1109,10 @@ $updateh = 0;
 			$cmd = "rm '/etc/systemd/system/multi-user.target.wants/ifplugd@".$args->name.".service'";
 			sysCmd($cmd);
 			sysCmd('systemctl daemon-reload');
-			sysCmd('killall dhcpcd');
+			// find pid of nic associated dhcpcd
+			$dhcpPID = sysCmd("ps aux | grep dhcpcd | grep ".$args->name." | cut -d ' ' -f 7");
+			// kill dhcpcd
+			sysCmd('kill '.$dhcpPID[0]);
 			sysCmd('killall ifplugd');
 		}
 		sysCmd('netctl start '.$args->name);

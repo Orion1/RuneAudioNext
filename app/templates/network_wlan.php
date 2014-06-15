@@ -4,8 +4,8 @@
 	<form class="form-horizontal" action="/network/edit/<?=$this->uri(3) ?>" method="post" data-parsley-validate>
 		<?php if($this->addprofile !== 1): ?>
 		<fieldset>
-			<?php if($this->stored === 1): ?>
-			<legend><?=$this->title ?> <span class="<?php if($this->action == 'add' ): ?>hide<?php endif; ?>">(<a href="#wifiprofile-delete-modal" data-toggle="modal">delete this profile</a>)</span></legend>
+			<?php if($this->stored === 1 && $this->nic->currentssid !== $this->{$this->uri(4)}->{'ESSID'}): ?>
+			<legend><?=$this->title ?> <span class="<?php if($this->action === 'add'): ?>hide<?php endif; ?>">(<a href="#wifiprofile-delete-modal" data-toggle="modal">delete this profile</a>)</span></legend>
 			<?php endif; ?>
 			<div class="boxed">
 				<table class="info-table">
@@ -14,7 +14,7 @@
 						<?php if ($this->nic->currentssid === $this->{$this->uri(4)}->{'ESSID'}): ?>
 						<tr>
 							<th>
-								<p>Status:</th><td><i class="fa fa-check green sx"></i>connected<br><button class="btn btn-primary btn-lg">Disconnect</button></p>
+								<p>Status:</th><td><i class="fa fa-check green sx"></i>connected<br><button name="wpa_cli" value="disconnect" class="btn btn-primary btn-lg">Disconnect</button></p>
 							</td>
 						</tr>
 						<?php endif; ?>

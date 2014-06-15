@@ -28,13 +28,14 @@
 	<?php endif ?>
 	<form class="form-horizontal" action="/network" method="post" data-parsley-validate>
 		<input type="hidden" name="nic[name]" value="<?=$this->arg ?>" />
+		<input type="hidden" name="nic[wireless]" value="<?=$this->nic->wireless ?>" />
 		<fieldset>
 			<legend>Interface properties</legend>
 			<div class="boxed">
 				<table class="info-table">
 					<tbody>
 						<tr><th>Name:</th><td><strong><?=$this->arg ?></strong></td></tr>
-						<tr><th>Type:</th><td><?php if ($this->nic->wireless == 1): ?>wireless<?php else: ?>wired ethernet<?php endif ?></td></tr>
+						<tr><th>Type:</th><td><?php if ($this->nic->wireless === 1): ?>wireless<?php else: ?>wired ethernet<?php endif ?></td></tr>
 						<tr><th>Status:</th><td><?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?><i class="fa fa-check green sx"></i>connected<?php else: ?><i class="fa fa-times red sx"></i>no network connected<?php endif; ?></td></tr>
 						<?php if(isset($this->nic->currentssid) && $this->nic->currentssid !== 'off/any'): ?><tr><th>Associated SSID:</th><td><strong><?=$this->nic->currentssid ?></strong></td></tr><?php endif; ?>
 						<tr><th>Assigned IP:</th><td><?php if ($this->nic->ip !== null): ?><strong><?php echo $this->nic->ip; ?></strong><?php else: ?>none<?php endif; ?></td></tr>
