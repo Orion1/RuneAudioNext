@@ -368,7 +368,7 @@ while (1) {
 					}
 					// refresh network configuration
 					if ($job->action === 'refresh') {		
-						wrk_netconfig($redis,'setnics');
+						sysCmd('/var/www/command/refresh_nics');
 					}
 					// manual network configuration
 					if ($job->action === 'manual') {		
@@ -545,8 +545,15 @@ while (1) {
 						wrk_wifiprofile($redis,'save',$job->args);
 					}					
 					if ($job->action === 'delete') {
-						runelog('wificfg: delete profile for SSID: '.$job->args);
+						runelog('wificfg: delete profile for SSID: '.$job->args->ssid);
 						wrk_wifiprofile($redis,'delete',$job->args);
+					}
+					if ($job->action === 'wpa_cli') {
+						runelog('wificfg: wpa_cli '.$job->action);
+						// execute wpa_cli command
+						sysCmd('wpa_cli '.$job->args);
+						// refresh nics status
+						sysCmd('/var/www/command/refresh_nics');
 					}
 					$redis->sRem('w_lock',$jobID);
 				break;
