@@ -30,8 +30,8 @@
  *
  */
 
- 
- 
+
+
 // Global GUI Array
 // ----------------------------------------------------------------------------------------------------
 var GUI = {
@@ -189,6 +189,17 @@ jQuery(document).ready(function($){ 'use strict';
 				WiFiKey.addClass('hide');
 			}															
 		});
+		
+		// refresh in range Wi-Fi networks list
+		if($('#wifiNetworks').length){
+			var i = 0;
+			console.log('Time = ', i);
+			var refreshWiFi = setInterval(function() {
+				i = i + 10;
+				console.log('Time = ', i);
+			}, 10000);
+		}
+		
 	}
 	
 	
