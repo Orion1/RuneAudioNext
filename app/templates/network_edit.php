@@ -3,7 +3,7 @@
 	<?php if ($this->nic->wireless === 1): ?>
 	<legend>Wi-Fi networks in range</legend>
 	<fieldset>
-		<div class="boxed">
+		<div id="wifiNetworks" class="boxed">
 		<?php foreach ($this->wlans->{$this->arg} as $key => $value): ?>
 			<p><a href="/network/wlan/<?=$this->arg ?>/<?=$value->ESSID ?>" class="btn btn-lg btn-default btn-block"><?php if ($this->nic->currentssid === $value->ESSID): ?><i class="fa fa-check green sx"></i><?php endif; ?><?php if ($value->{'Encryption key'} === 'on'): ?><i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i><?php else: ?><i class="fa fa-rss fa-wifi sx"></i><?php endif; ?> <strong><?=$value->ESSID ?></strong></a></p>
 		<?php endforeach; ?>

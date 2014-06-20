@@ -69,7 +69,7 @@
 						<option value="none" <?php if($this->kernel == 'linux-rune-3.12.19-2-ARCH'): ?> selected <?php endif ?>>Linux kernel 3.12.19-rune</option>
 						<option value="berrynos" <?php if($this->kernel == 'linux-rune-3.12.13-rt21_wosa'): ?> selected <?php endif ?>>RTLinux kernel 3.12.13-rt&nbsp;&nbsp;(Wolfson Audio Card)</option>
 					</select>
-					<span class="help-block">Switch Linux Kernel version (REBOOT REQUIRED). <strong>Linux kernel 3.12.19-rune</strong> is the default RuneAudio optimized kernel, <strong>RTLinux kernel 3.12.13-rt</strong> is an EXPERIMENTAL kernel (not suitable for all configurations); it is optimized for Wolfson Audio Card support and it is the default option for that type of soundcard.</span>
+					<span class="help-block">Switch Linux Kernel version (REBOOT REQUIRED). <strong>Linux kernel 3.12.19-rune</strong> is the default RuneAudio optimized kernel, <strong>RTLinux kernel 3.12.13-rt</strong> is an EXPERIMENTAL kernel (not suitable for all configurations); it is optimized for <strong>Wolfson Audio Card</strong> support and it is the default option for that type of soundcard.</span>
 				</div>
 				<label class="control-label col-sm-2" for="i2smodule">I&#178;S kernel modules</label>
 				<div class="col-sm-10">

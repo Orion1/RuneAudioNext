@@ -35,24 +35,24 @@
 // Global GUI Array
 // ----------------------------------------------------------------------------------------------------
 var GUI = {
-	json: 0,
-	playlist: null,
-	currentsong: null,
-	currentalbum: null,
-	currentknob: null,
-	state: '',
-	currentpath: '',
-	volume: null,
-	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
-	browsemode: 'file',
-	plugin: '',
-	DBentry: ['', '', ''],
-	visibility: 'visible',
-	DBupdate: 0,
-	stepVolumeInt: 0,
-	stepVolumeDelta: 0,
-	stream: '',
-	libraryhome: ''
+	'json': 0,
+	'playlist': null,
+	'currentsong': null,
+	'currentalbum': null,
+	'currentknob': null,
+	'state': '',
+	'currentpath': '',
+	'volume': null,
+	'currentDBpos': [0,0,0,0,0,0,0,0,0,0,0],
+	'browsemode': 'file',
+	'plugin': '',
+	'DBentry': ['', '', ''],
+	'visibility': 'visible',
+	'DBupdate': 0,
+	'stepVolumeInt': 0,
+	'stepVolumeDelta': 0,
+	'stream': '',
+	'libraryhome': ''
 };
 
 jQuery(document).ready(function($){ 'use strict';
