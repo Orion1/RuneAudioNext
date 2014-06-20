@@ -543,6 +543,7 @@ while (1) {
 					if ($job->action === 'save') {
 						runelog('wificfg: save profile for SSID: '.$job->args->ssid);
 						wrk_wifiprofile($redis,'save',$job->args);
+						sysCmd('wpa_cli reconnect');
 					}					
 					if ($job->action === 'delete') {
 						runelog('wificfg: delete profile for SSID: '.$job->args->ssid);
@@ -552,6 +553,11 @@ while (1) {
 						runelog('wificfg: wpa_cli '.$job->action);
 						// execute wpa_cli command
 						sysCmd('wpa_cli '.$job->args);
+						// refresh nics status
+						sysCmd('/var/www/command/refresh_nics');
+					}
+					if ($job->action === 'scan') {
+						runelog('wificfg: scan ');
 						// refresh nics status
 						sysCmd('/var/www/command/refresh_nics');
 					}

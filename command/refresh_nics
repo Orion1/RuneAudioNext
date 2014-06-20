@@ -35,7 +35,7 @@
 // common include
 ini_set('display_errors', '1');
 ini_set('error_reporting', -1);
-ini_set('error_log','/var/log/runeaudio/refresh_wifi.log');
+ini_set('error_log','/var/log/runeaudio/refresh_nics.log');
 // Connect to Redis backend
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
@@ -49,7 +49,8 @@ $nics = wrk_netconfig($redis,'getnics');
 
 foreach ($nics as $key => $value) {
 	if ($value->wireless === 1) {
-		$redis->set('wlans',json_encode($iw->parseScanDev( $key )));
+		// $redis->set('wlans',json_encode($iw->parseScanDev( $key )));
+		ui_render('wlans',json_encode($iw->parseScanDev( $key ));
 	}
 }
 

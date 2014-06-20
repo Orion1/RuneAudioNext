@@ -119,9 +119,11 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
             } else {
                 // debug
                 runelog('MPD command (6):',$_GET['cmd']);
-                if ($_GET['cmd'] == 'renderui') {
+                if ($_GET['cmd'] === 'renderui') {
 					ui_update($redis,$mpd);
-                } else {
+                } else if ($_GET['cmd'] === 'wifiscan') {
+					wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'scan' ));
+				} else {
 					sendMpdCommand($mpd,$_GET['cmd']);
 				}
             }
