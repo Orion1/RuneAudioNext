@@ -123,6 +123,8 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 					ui_update($redis,$mpd);
                 } else if ($_GET['cmd'] === 'wifiscan') {
 					wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'scan' ));
+					echo 'wlan scan queued';
+					die;
 				} else {
 					sendMpdCommand($mpd,$_GET['cmd']);
 				}
