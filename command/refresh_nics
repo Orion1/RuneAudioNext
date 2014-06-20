@@ -49,8 +49,22 @@ $nics = wrk_netconfig($redis,'getnics');
 
 foreach ($nics as $key => $value) {
 	if ($value->wireless === 1) {
-		// $redis->set('wlans',json_encode($iw->parseScanDev( $key )));
-		ui_render('wlans',json_encode($iw->parseScanDev( $key )));
+		// temp
+		$scan = $iw->parseScanDev( $key );
+		$redis->set('wlans',json_encode($scan));
+		
+		// print_r($scan);
+		foreach ($scan as $nic) {
+			foreach ($nic as $nicname => $wlan) {
+				foreach ($wlan as $key => $value) {
+					if ($key === 'ESSID') $wlans[$nicname][$key] = $value; 
+					if ($key === 'Encryption key') $wlans[$nicname]['encryption'] = $value;
+				}
+			}
+		} 
+		// print_r($wlans);
+		// render wlans channel
+		ui_render('wlans',json_encode($wlans);
 	}
 }
 
