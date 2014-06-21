@@ -54,17 +54,18 @@ foreach ($nics as $key => $value) {
 		$redis->set('wlans',json_encode($scan));
 		
 		// print_r($scan);
-		foreach ($scan as $nic) {
-			foreach ($nic as $nicname => $wlan) {
+		foreach ($scan as $nicname => $nicscan) {
+			foreach ($nicscan as $count => $wlan) {
 				foreach ($wlan as $key => $value) {
-					if ($key === 'ESSID') $wlans[$nicname][$key] = $value; 
-					if ($key === 'Encryption key') $wlans[$nicname]['encryption'] = $value;
+					$wlans[$nicname][$count]['nic'] = $nicname;
+					if ($key === 'ESSID') $wlans[$nicname][$count][$key] = $value; 
+					if ($key === 'Encryption key') $wlans[$nicname][$count]['encryption'] = $value;
 				}
 			}
 		} 
 		// print_r($wlans);
 		// render wlans channel
-		ui_render('wlans',json_encode($wlans);
+		ui_render('wlans',json_encode($wlans));
 	}
 }
 
