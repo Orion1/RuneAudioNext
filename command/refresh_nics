@@ -64,7 +64,7 @@ foreach ($nics as $key => $value) {
 			}
 		} 
 		// debug
-		print_r($wlans);
+		// print_r($wlans);
 		// render wlans channel
 		ui_render('wlans',json_encode($wlans));
 	}
