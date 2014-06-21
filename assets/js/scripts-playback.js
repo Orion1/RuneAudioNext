@@ -63,7 +63,9 @@ jQuery(document).ready(function($){ 'use strict';
 	// first connection with MPD daemon
 	// open UI rendering channel;
 	playbackChannel();
-	libraryChannel();
+	if( $('#section-index').length ){
+		libraryChannel();
+	}
 	// queueChannel();
 	
 	// first GUI update
