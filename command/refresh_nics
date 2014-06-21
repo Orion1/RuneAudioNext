@@ -34,7 +34,7 @@
 
 // common include
 ini_set('display_errors', '1');
-ini_set('error_reporting', -1);
+// ini_set('error_reporting', -1);
 ini_set('error_log','/var/log/runeaudio/refresh_nics.log');
 // Connect to Redis backend
 $redis = new Redis();
@@ -70,7 +70,7 @@ foreach ($nics as $key => $nicdetail) {
 			}
 		} 
 		// debug
-		print_r($wlans);
+		// print_r($wlans);
 		// render wlans channel
 		ui_render('wlans',json_encode($wlans));
 	}
