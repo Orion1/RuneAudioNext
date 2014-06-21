@@ -2,11 +2,15 @@
 	<h1>Network interface</h1>
 	<?php if ($this->nic->wireless === 1): ?>
 	<legend>Wi-Fi networks in range</legend>
+	<span class="help-block">The list of available Wi-Fi networks is automatically refreshed every 15 seconds.</span>
 	<fieldset>
 		<div id="wifiNetworks" class="boxed">
+		<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>
+		<!--
 		<?php foreach ($this->wlans->{$this->arg} as $key => $value): ?>
 			<p><a href="/network/wlan/<?=$this->arg ?>/<?=$value->ESSID ?>" class="btn btn-lg btn-default btn-block"><?php if ($this->nic->currentssid === $value->ESSID): ?><i class="fa fa-check green sx"></i><?php endif; ?><?php if ($value->{'Encryption key'} === 'on'): ?><i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i><?php else: ?><i class="fa fa-rss fa-wifi sx"></i><?php endif; ?> <strong><?=$value->ESSID ?></strong></a></p>
 		<?php endforeach; ?>
+		-->
 		</div>
 	</fieldset>
 	<legend>Wi-Fi stored profiles</legend>

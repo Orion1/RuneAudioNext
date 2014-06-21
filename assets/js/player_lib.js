@@ -155,7 +155,7 @@ function renderUI(text){
 	} else {
 		$('#time').val(0).trigger('change');
 	}
-	if (GUI.json.playlist !== GUI.playlist) {
+	if ($('#section-index').length && GUI.json.playlist !== GUI.playlist) {
 		getPlaylistCmd();
 		GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
@@ -1069,12 +1069,6 @@ function libraryHome(text) {
 	renderLibraryHome(); // TODO: do it only while in home
 }
 
-function listWLANs(text) {
-	var notify = text[0];
-	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
-	console.log(text);
-}
-
 // render the Library home screen
 function renderLibraryHome() {
 	loadingSpinner('db');
@@ -1121,6 +1115,28 @@ function renderLibraryHome() {
 	document.getElementById('home-blocks').innerHTML = content;
 	loadingSpinner('db', 'hide');
 	$('span', '#db-currentpath').html('');
+}
+
+// list of in range wlans
+function listWLANs(text) {
+	// console.log(text);
+	var i = 0, content = '', wlans = text[0];
+	$.each(wlans, function(i) {
+		content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block">';
+		if (wlans[i].encryption === 'trololol') {
+			content += '<i class="fa fa-check green sx"></i>';
+		}
+		if (wlans[i].encryption === 'on') {
+			content += '<i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i>';
+		} else {
+			content += '<i class="fa fa-rss fa-wifi sx"></i>';
+		}
+		content += '<strong>' + wlans[i].ESSID + '</strong></a></p>';
+	});
+	if (wlans === '') {
+		content = '<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>';
+	}
+	document.getElementById('wifiNetworks').innerHTML = content;
 }
 
 // check visibility of the window

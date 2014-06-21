@@ -95,6 +95,7 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#loader').removeClass('hide');
 	});
 	
+	
 	// COMMON
 	// ----------------------------------------------------------------------------------------------------
 	
@@ -156,52 +157,7 @@ jQuery(document).ready(function($){ 'use strict';
 		});
 	}
 	
-	
-	// NETWORK
-	// ----------------------------------------------------------------------------------------------------
-	
-	if($('#section-network').length){
-	
-		// show/hide static network configuration based on select value
-		var netManualConf = $('#network-manual-config');
-		if ($('#dhcp').val() === '0') {
-			netManualConf.removeClass('hide');
-		}
-		$('#dhcp').change(function(){
-			if ($(this).val() === '0') {
-				netManualConf.removeClass('hide');
-			}
-			else {
-				netManualConf.addClass('hide');
-			}
-		});
 		
-		// show/hide WiFi security configuration based on select value
-		var WiFiKey = $('#wifi-security-key');
-		if ($('#wifi-security').val() !== 'open') {
-			WiFiKey.removeClass('hide');
-		}
-		$('#wifi-security').change(function(){
-			if ($(this).val() !== 'open') {
-				WiFiKey.removeClass('hide');
-			}
-			else {
-				WiFiKey.addClass('hide');
-			}
-		});
-		
-		// refresh in range Wi-Fi networks list
-		if($('#wifiNetworks').length){
-			wlansChannel();
-			var refreshWiFi = setInterval(function() {
-				$.ajax({url: '/command/?cmd=wifiscan'});
-			}, 15000);
-		}
-		
-	}
-
-	
-	
 	// SETTINGS
 	// ----------------------------------------------------------------------------------------------------
 	
@@ -248,6 +204,42 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	if( $('#section-network').length ){
 		
+		// show/hide static network configuration based on select value
+		var netManualConf = $('#network-manual-config');
+		if ($('#dhcp').val() === '0') {
+			netManualConf.removeClass('hide');
+		}
+		$('#dhcp').change(function(){
+			if ($(this).val() === '0') {
+				netManualConf.removeClass('hide');
+			}
+			else {
+				netManualConf.addClass('hide');
+			}
+		});
+		
+		// show/hide WiFi security configuration based on select value
+		var WiFiKey = $('#wifi-security-key');
+		if ($('#wifi-security').val() !== 'open') {
+			WiFiKey.removeClass('hide');
+		}
+		$('#wifi-security').change(function(){
+			if ($(this).val() !== 'open') {
+				WiFiKey.removeClass('hide');
+			}
+			else {
+				WiFiKey.addClass('hide');
+			}
+		});
+		
+		// refresh in range Wi-Fi networks list
+		if($('#wifiNetworks').length){
+			wlansChannel();
+			var refreshWiFi = setInterval(function() {
+				$.ajax({url: '/command/?cmd=wifiscan'});
+			}, 15000);
+		}
+		
 		// show/hide WiFi stored profile box
 		$('#wifiProfiles').change(function(){
 			if ($(this).prop('checked')) {
@@ -287,6 +279,7 @@ jQuery(document).ready(function($){ 'use strict';
 	// ----------------------------------------------------------------------------------------------------
 	
 	if( $('#section-debug').length ){
+
 		ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
 		var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 		client.on('ready', function(readyEvent){
