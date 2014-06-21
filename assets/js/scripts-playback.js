@@ -35,24 +35,24 @@
 // Global GUI Array
 // ----------------------------------------------------------------------------------------------------
 var GUI = {
-	'json': 0,
-	'playlist': null,
-	'currentsong': null,
-	'currentalbum': null,
-	'currentknob': null,
-	'state': '',
-	'currentpath': '',
-	'volume': null,
-	'currentDBpos': [0,0,0,0,0,0,0,0,0,0,0],
-	'browsemode': 'file',
-	'plugin': '',
-	'DBentry': ['', '', ''],
-	'visibility': 'visible',
-	'DBupdate': 0,
-	'stepVolumeInt': 0,
-	'stepVolumeDelta': 0,
-	'stream': '',
-	'libraryhome': ''
+	json: 0,
+	playlist: null,
+	currentsong: null,
+	currentalbum: null,
+	currentknob: null,
+	state: '',
+	currentpath: '',
+	volume: null,
+	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
+	browsemode: 'file',
+	plugin: '',
+	DBentry: ['', '', ''],
+	visibility: 'visible',
+	DBupdate: 0,
+	stepVolumeInt: 0,
+	stepVolumeDelta: 0,
+	stream: '',
+	libraryhome: ''
 };
 
 jQuery(document).ready(function($){ 'use strict';
@@ -111,34 +111,33 @@ jQuery(document).ready(function($){ 'use strict';
 	// playback knob
 	$('.playbackknob').knob({
 		inline: false,
-		change : function (value) {
-			if (GUI.state != 'stop')
+		change: function (value) {
+			if (GUI.state !== 'stop') {
 				window.clearInterval(GUI.currentKnob);
-			else
+			} else {
 				$('#time').val(0).trigger('change');
+			}
 		},
-		release : function (value) {
+		release: function (value) {
 			onreleaseKnob(value);
 		}
 	});
 
 	// volume knob
 	$('.volumeknob').knob({
-		change : function (value) {
+		change: function (value) {
 			//setvol(value);	// disabled until perfomance issues are solved (mouse wheel is not working now)
 		},
-		release : function (value) {
+		release: function (value) {
 			setvol(value);
 		},
-		draw : function () {	
+		draw: function() {
 			// "tron" case
-			if (this.$.data('skin') == 'tron') {
+			if (this.$.data('skin') === 'tron') {
 
 				this.cursorExt = 0.05;
 
-				var a = this.arc(this.cv) // Arc
-					, pa // Previous arc
-					, r = 1;
+				var a = this.arc(this.cv), pa, r = 1;
 
 				this.g.lineWidth = this.lineWidth;
 
@@ -227,7 +226,7 @@ jQuery(document).ready(function($){ 'use strict';
 			}
 		});
 		var numberItems = count;
-		var s = (count == 1) ? '' : 's';
+		var s = (count === 1) ? '' : 's';
 		if (filter !== '') {
 			$('#pl-filter-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + (+count) + ' result' + s + ' for "<span class="keyword">' + filter + '</span>"</span>');
 		} else {
@@ -285,7 +284,7 @@ jQuery(document).ready(function($){ 'use strict';
 	new Sortable(sortlist, {
 		ghostClass: 'sortable-ghost',
 		onUpdate: function (evt){
-			sortOrder(evt.item.getAttribute('id'));	
+			sortOrder(evt.item.getAttribute('id'));
 		}
 	});
 	
@@ -333,7 +332,7 @@ jQuery(document).ready(function($){ 'use strict';
 			editbtn.removeClass('btn-default').addClass('btn-primary');
 			$('.home-block.home-bookmark').append('<div class="home-block-remove" title="Remove this bookmark"><span>&times;</span></div>');
 		}
-	})	
+	});
 	
 	// click on Library list entry
 	db.on('click', 'li', function(e) {
@@ -419,7 +418,7 @@ jQuery(document).ready(function($){ 'use strict';
 			path = '';
 		} else {
 			var cutpos = path.lastIndexOf('/');
-			path = cutpos !=-1 ? path.slice(0,cutpos):'';
+			path = (cutpos !== -1) ? path.slice(0,cutpos):'';
 		}
 		getDB({
 			path: path,
@@ -444,52 +443,52 @@ jQuery(document).ready(function($){ 'use strict';
 		var dataCmd = $(this).data('cmd');
 		var path = GUI.DBentry[0];
 		GUI.DBentry[0] = '';
-		if (dataCmd == 'add') {
+		if (dataCmd === 'add') {
 			getDB({
 				cmd: 'add',
 				path: path
 			});
 			// notify('add', path);
 		}
-		if (dataCmd == 'addplay') {
+		if (dataCmd === 'addplay') {
 			getDB({
 				cmd: 'addplay',
 				path: path
 			});
 			// notify('add', path);
 		}
-		if (dataCmd == 'addreplaceplay') {
+		if (dataCmd === 'addreplaceplay') {
 			getDB({
 				cmd: 'addreplaceplay',
 				path: path
 			});
 			// notify('addreplaceplay', path);
 		}
-		if (dataCmd == 'update') {
+		if (dataCmd === 'update') {
 			getDB({
 				cmd: 'update',
 				path: path
 			});
 			// notify('update', path);
 		}
-		if (dataCmd == 'bookmark') {
+		if (dataCmd === 'bookmark') {
 			getDB({
 				cmd: 'bookmark',
 				path: path
 			});
 		}
-		if (dataCmd == 'pl-add') {
+		if (dataCmd === 'pl-add') {
 			sendCmd('load "' + path + '"');
 		}
-		if (dataCmd == 'pl-replace') {
+		if (dataCmd === 'pl-replace') {
 			sendCmd('clear');
 			sendCmd('load "' + path + '"');
 		}
-		if (dataCmd == 'pl-rename') {
+		if (dataCmd === 'pl-rename') {
 			$('#modal-pl-rename').modal();
 			$('#pl-rename-oldname').text(path);
 		}
-		if (dataCmd == 'pl-rm') {
+		if (dataCmd === 'pl-rm') {
 			$.ajax({
 				url: '/command/?cmd=rm%20%22' + path + '%22',
 				success: function(data){
@@ -497,14 +496,14 @@ jQuery(document).ready(function($){ 'use strict';
 				}
 			});
 		}
-		if (dataCmd == 'wradd') {
+		if (dataCmd === 'wradd') {
 			path = path.split(' | ')[1];
 			getDB({
 				cmd: 'add',
 				path: path
 			});
 		}
-		if (dataCmd == 'wraddplay') {
+		if (dataCmd === 'wraddplay') {
 			path = path.split(' | ')[1];
 			console.log(path);
 			getDB({
@@ -512,18 +511,18 @@ jQuery(document).ready(function($){ 'use strict';
 				path: path
 			});
 		}
-		if (dataCmd == 'wraddreplaceplay') {
+		if (dataCmd === 'wraddreplaceplay') {
 			path = path.split(' | ')[1];
 			getDB({
 				cmd: 'addreplaceplay',
 				path: path
 			});
 		}
-		if (dataCmd == 'wredit') {
+		if (dataCmd === 'wredit') {
 			$('#modal-webradio-edit').modal();
-			$.post('/db/?cmd=readradio', { 
-			   filename: path
-			 }, function(data){
+			$.post('/db/?cmd=readradio', {
+				filename: path
+			}, function(data){
 				// get parsed content of .pls file and populate the form fields
 				var name = $('#webradio-edit-name');
 				name.val(data.name);
@@ -531,11 +530,11 @@ jQuery(document).ready(function($){ 'use strict';
 				$('#webradio-edit-url').val(data.url);
 			}, 'json');
 		}
-		if (dataCmd == 'wrdelete') {
+		if (dataCmd === 'wrdelete') {
 			$('#modal-webradio-delete').modal();
 			$('#webradio-delete-name').text(path.replace('Webradio/', ''));
 		}
-		if (dataCmd == 'wrsave') {
+		if (dataCmd === 'wrsave') {
 			var parameters = path.split(' | ');
 			$.post('/db/?cmd=addradio', { 'radio[label]' : parameters[0], 'radio[url]' : parameters[1] });
 		}
@@ -554,11 +553,11 @@ jQuery(document).ready(function($){ 'use strict';
 	$('#webradio-edit-button').click(function(){
 		var name = $('#webradio-edit-name');
 		$.post('/db/?cmd=editradio', {
-		    'radio[newlabel]': name.val(),
-		    'radio[label]': name.data('file-name'),
-		    'radio[url]': $('#webradio-edit-url').val()
-		  }, function(data){
-			  console.log('editedradio', data);
+			'radio[newlabel]': name.val(),
+			'radio[label]': name.data('file-name'),
+			'radio[url]': $('#webradio-edit-url').val()
+		}, function(data){
+			console.log('editedradio', data);
 		}, 'json');
 	});
 	

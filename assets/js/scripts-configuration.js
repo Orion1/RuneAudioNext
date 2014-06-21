@@ -192,12 +192,12 @@ jQuery(document).ready(function($){ 'use strict';
 		
 		// refresh in range Wi-Fi networks list
 		if($('#wifiNetworks').length){
-			var i = 0;
-			console.log('Time = ', i);
+			wlansChannel();
 			var refreshWiFi = setInterval(function() {
-				i = i + 10;
-				console.log('Time = ', i);
-			}, 10000);
+				$.ajax({
+					url: '/command/?cmd=wifiscan'
+				});
+			}, 15000);
 		}
 		
 	}
