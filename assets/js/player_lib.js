@@ -122,8 +122,20 @@ function notifyChannel(){
 	pushstream.connect();
 }
 
+// open the in range Wi-Fi networks list channel
+function wlansChannel(){
+	var pushstream = new PushStream({
+		host: window.location.hostname,
+		port: window.location.port,
+		modes: "websocket|longpolling"
+	});
+	pushstream.onmessage = listWLANs;
+	pushstream.addChannel('wlans');
+	pushstream.connect();
+}
+
 // launch the Playback UI refresh from the data response
-function renderUI(text) {
+function renderUI(text){
 	$('#loader').addClass('hide');
 	// update global GUI array
 	GUI.json = text[0];
@@ -142,7 +154,7 @@ function renderUI(text) {
 	} else {
 		$('#time').val(0).trigger('change');
 	}
-	if (GUI.json.playlist != GUI.playlist) {
+	if (GUI.json.playlist !== GUI.playlist) {
 		getPlaylistCmd();
 		GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
@@ -203,7 +215,7 @@ function getPlaylistPlain(data){
 	var state = GUI.json.state;
 	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '', pos = 0;
 	var i, line, lines = data.split('\n'), infos=[];
-	for (i = 0; line = lines[i]; i += 1) {		
+	for (i = 0; line = lines[i]; i += 1) {
 		infos = line.split(': ');
 		if ( 'Time' === infos[0] ) {
 			time = parseInt(infos[1]);
@@ -245,7 +257,7 @@ function getPlaylistPlain(data){
 				totaltime = '<span>' + timeConvert2(time) + '</span>';
 			}
 			pos++;
-			content += '<li id="pl-' + songid + '"' + (state !== 'stop' && pos == current ? ' class="active"' : '') + '><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
+			content += '<li id="pl-' + songid + '"' + (state !== 'stop' && pos === current ? ' class="active"' : '') + '><i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span><span class="bl">' + bottomline + '</span></li>';
 			time = ''; artist = ''; album = ''; title = ''; name = '';
 		}
 	}
@@ -271,7 +283,7 @@ function getPlaylists(){
 }
 
 // render saved playlists
-function renderPlaylists(data){	
+function renderPlaylists(data){
 	var content = '', playlistname = '';
 	var i, line, lines=data.split('\n'), infos=[];
 	for (i = 0; line = lines[i]; i += 1 ) {
@@ -298,7 +310,7 @@ function parsePath(str) {
 	// console.log('parsePath.cutpos', cutpos)
 	//-- verify this switch! (Orion)
 	var songpath = '';
-	if (cutpos && cutpos !=-1){
+	if (cutpos && cutpos !== -1){
 		songpath = str.slice(0,cutpos);
 	}
 	return songpath;
@@ -359,7 +371,7 @@ function getDB(options){
 					keyword: keyword
 				});
 			}, 'json');
-		} else if (cmd === 'filepath') {	
+		} else if (cmd === 'filepath') {
 			$.post('/db/?cmd=filepath', { 'path': path }, function(data) {
 				populateDB({
 					data: data,
@@ -400,7 +412,9 @@ function populateDB(options){
 			$('#database-entries').removeClass('hide');
 			$('#db-level-up').removeClass('hide');
 			$('#home-blocks').addClass('hide');
-			if (path) GUI.currentpath = path;
+			if (path) {
+				GUI.currentpath = path;
+			}
 			document.getElementById('database-entries').innerHTML = '';
 			for (i = 0; row = data[i]; i += 1) {
 				content += parseResponse({
@@ -417,7 +431,9 @@ function populateDB(options){
 			$('#database-entries').removeClass('hide');
 			$('#db-level-up').removeClass('hide');
 			$('#home-blocks').addClass('hide');
-			if (path) GUI.currentpath = path;
+			if (path) {
+				GUI.currentpath = path;
+			}
 			document.getElementById('database-entries').innerHTML = '';
 			for (i = 0; row = data[i]; i += 1) {
 				content += parseResponse({
@@ -440,13 +456,15 @@ function populateDB(options){
 			$('#database-entries').removeClass('hide');
 			$('#db-level-up').removeClass('hide');
 			$('#home-blocks').addClass('hide');
-			if (path) GUI.currentpath = path;
+			if (path) {
+				GUI.currentpath = path;
+			}
 			// console.log(' new GUI.currentpath = ', GUI.currentpath);
 			document.getElementById('database-entries').innerHTML = '';
 			if (keyword !== '') {
 			// search results
 				var results = (data.length) ? data.length : '0';
-				var s = (data.length == 1) ? '' : 's';
+				var s = (data.length === 1) ? '' : 's';
 				$('#db-level-up').addClass('hide');
 				$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
 			}
@@ -493,7 +511,7 @@ function parseResponse(options) {
 	// console.log('OPTIONS: inputArr = ' + inputArr + ', respType = ' + respType + ', i = ' + i + ', inpath = ' + inpath +', querytype = ' + querytype);
 	
 	switch (respType) {
-		case 'playlist':		
+		case 'playlist':
 			// code placeholder
 		break;
 		
@@ -572,7 +590,7 @@ function parseResponse(options) {
 				content += inputArr.website;
 				content += '</span></li>';
 			}
-		break;		
+		break;
 		
 		case 'Jamendo':
 		// Jamendo plugin
@@ -601,7 +619,7 @@ function updateGUI() {
 	refreshState();
 	// check song update
 	// console.log('A = ', GUI.json.currentsong); console.log('B = ', GUI.currentsong);
-	if (GUI.currentsong != GUI.json.currentsong) {
+	if (GUI.currentsong !== GUI.json.currentsong) {
 		countdownRestart(0);
 		if ($('#panel-dx').hasClass('active')) {
 			var current = parseInt(GUI.json.song);
@@ -609,7 +627,7 @@ function updateGUI() {
 		}
 	}
 	// common actions
-	$('#volume').val((volume == '-1') ? 100 : volume).trigger('change');
+	$('#volume').val((volume === '-1') ? 100 : volume).trigger('change');
 	// console.log('currentartist = ', GUI.json.currentartist);
 	if (GUI.stream !== 'radio') {
 		$('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? '<span class="notag">[no artist]</span>' : currentartist);
@@ -620,22 +638,22 @@ function updateGUI() {
 		$('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? radioname : currentsong);
 		$('#currentalbum').html('<span class="notag">streaming</span>');
 	}
-	if (GUI.json.repeat == 1) {
+	if (GUI.json.repeat === 1) {
 		$('#repeat').addClass('btn-primary');
 	} else {
 		$('#repeat').removeClass('btn-primary');
 	}
-	if (GUI.json.random == 1) {
+	if (GUI.json.random === 1) {
 		$('#random').addClass('btn-primary');
 	} else {
 		$('#random').removeClass('btn-primary');
 	}
-	if (GUI.json.consume == 1) {
+	if (GUI.json.consume === 1) {
 		$('#consume').addClass('btn-primary');
 	} else {
 		$('#consume').removeClass('btn-primary');
 	}
-	if (GUI.json.single == 1) {
+	if (GUI.json.single === 1) {
 		$('#single').addClass('btn-primary');
 	} else {
 		$('#single').removeClass('btn-primary');
@@ -643,7 +661,7 @@ function updateGUI() {
 	
 	GUI.currentsong = currentsong;
 	var currentalbumstring = currentartist + ' - ' + currentalbum;
-	if (GUI.currentalbum != currentalbumstring) {
+	if (GUI.currentalbum !== currentalbumstring) {
 		if (radioname === null || radioname === undefined || radioname === '') {
 			var covercachenum = Math.floor(Math.random()*1001);
 			$('#cover-art').css('background-image','url(/coverart2/?v=' + covercachenum + ')');
@@ -699,7 +717,7 @@ function refreshState() {
 		var current = parseInt(GUI.json.song);
 		$('#playlist-entries').find('li').eq(current).addClass('active');
 	}
-	if( GUI.json.song && GUI.json.playlistlength ){ 
+	if( GUI.json.song && GUI.json.playlistlength ){
 		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) +'/'+GUI.json.playlistlength);
 	} else {
 		$('#playlist-position').html('Empty queue, add some music!');
@@ -721,7 +739,7 @@ function refreshTimer(startFrom, stopTo, state) {
 	var display = $('#countdown-display');
 	display.countdown('destroy');
 	display.countdown({ since: ((state !== 'stop' || state !== undefined)? -(startFrom) : 0), compact: true, format: 'MS' });
-	if (state != 'play'){
+	if (state !== 'play'){
 		// console.log('startFrom = ', startFrom);
 		display.countdown('pause');
 	}
@@ -736,10 +754,10 @@ function refreshKnob() {
 	// console.log('initTime = ' + initTime + ', delta = ' + delta + ', step = ' + step);
 	var time = $('#time');
 	time.val(initTime).trigger('change');
-	if (GUI.state == 'play') {
+	if (GUI.state === 'play') {
 		GUI.currentKnob = setInterval(function() {
 			// console.log('initTime = ', initTime);
-			initTime = initTime + (GUI.visibility != 'visible'? parseInt(1000/delta):1);
+			initTime = initTime + (GUI.visibility !== 'visible'? parseInt(1000/delta):1);
 			time.val(initTime).trigger('change');
 			//document.title = Math.round(initTime)/10 + '% - ' + GUI.visibility;
 		}, delta);
@@ -777,12 +795,14 @@ function timeConvert2(ss) {
 	var hr = Math.floor(ss/3600);
 	var mm = Math.floor((ss -(hr * 3600))/60);
 	ss = Math.floor(ss -(hr*3600) -(mm * 60));
-	if ( hr > 0 ) {
-		if ( hr < 10 ){
+	if (hr > 0) {
+		if (hr < 10){
 			hr = '0' + hr;
 		}
 		hr += ':';
-	} else hr = '';
+	} else {
+		hr = '';
+	}
 	if (mm < 10) { mm = '0' + mm; }
 	if (ss < 10) { ss = '0' + ss; }
 	return hr + mm + ':' + ss;
@@ -799,7 +819,7 @@ function commandButton(el) {
 	var dataCmd = el.data('cmd');
 	var cmd;
 	// stop
-	if (dataCmd == 'stop') {
+	if (dataCmd === 'stop') {
 		el.addClass('btn-primary');
 		$('#play').removeClass('btn-primary');
 		refreshTimer(0, 0, 'stop');
@@ -808,16 +828,16 @@ function commandButton(el) {
 		$('#total').html('00:00');
 	}
 	// play/pause
-	else if (dataCmd == 'play') {
+	else if (dataCmd === 'play') {
 		var state = GUI.state;
 		//if (json.currentsong != null) {
-		if (state == 'play') {
+		if (state === 'play') {
 			cmd = 'pause';
 			$('#countdown-display').countdown('pause');
-		} else if (state == 'pause') {
+		} else if (state === 'pause') {
 			cmd = 'play';
 			$('#countdown-display').countdown('resume');
-		} else if (state == 'stop') {
+		} else if (state === 'stop') {
 			cmd = 'play';
 			$('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
 		}
@@ -834,26 +854,26 @@ function commandButton(el) {
 		// }
 	}
 	// previous/next
-	else if (dataCmd == 'previous' || dataCmd == 'next') {
+	else if (dataCmd === 'previous' || dataCmd === 'next') {
 		$('#countdown-display').countdown('pause');
 		window.clearInterval(GUI.currentKnob);
 	}
 	// step volume control
-	else if ( el.hasClass('btn-volume') ) {
+	else if (el.hasClass('btn-volume') ) {
 			var vol;
 		var knobvol = parseInt($('#volume').val());
 		if (GUI.volume === null ) {
 			GUI.volume = knobvol;
 		}
-		if (dataCmd == 'volumedn' && parseInt(GUI.volume) > 0) {
+		if (dataCmd === 'volumedn' && parseInt(GUI.volume) > 0) {
 			vol = parseInt(GUI.volume) - 1;
 			GUI.volume = vol;
 			$('#volumemute').removeClass('btn-primary');
-		} else if (dataCmd == 'volumeup' && parseInt(GUI.volume) < 100) {
+		} else if (dataCmd === 'volumeup' && parseInt(GUI.volume) < 100) {
 			vol = parseInt(GUI.volume) + 1;
 			GUI.volume = vol;
 			$('#volumemute').removeClass('btn-primary');
-		} else if (dataCmd == 'volumemute') {
+		} else if (dataCmd === 'volumemute') {
 			if (knobvol !== 0 ) {
 				GUI.volume = knobvol;
 				el.addClass('btn-primary');
@@ -897,9 +917,9 @@ function volumeStepCalc(direction) {
 	GUI.volume = parseInt($('#volume').val());
 	var volumeStep = function volumeStepCycle(way){
 		i++;
-		if (direction == 'up') {
+		if (direction === 'up') {
 			GUI.stepVolumeDelta = parseInt(GUI.volume) + i;
-		} else if (direction == 'dn') {
+		} else if (direction === 'dn') {
 			GUI.stepVolumeDelta = parseInt(GUI.volume) - i;
 		}
 		// console.log('GUI.stepVolumeDelta = ', GUI.stepVolumeDelta);
@@ -921,7 +941,9 @@ function volumeStepSet() {
 // custom scrolling
 function customScroll(list, destination, speed) {
 	// console.log('list = ' + list + ', destination = ' + destination + ', speed = ' + speed);
-	if (typeof(speed) === 'undefined') speed = 500;
+	if (typeof(speed) === 'undefined') {
+		speed = 500;
+	}
 	var entryheight = 49;
 	var centerheight = parseInt($(window).height()/2);
 	var scrolltop = $(window).scrollTop();
@@ -960,7 +982,7 @@ function randomScrollDB() {
 
 // notify messages rendering
 function renderMSG(text) {
-	notify = text[0];
+	var notify = text[0];
 	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
 	// console.log(text);
 	$.pnotify({
@@ -980,7 +1002,7 @@ function notify(command, msg) {
 				title: 'Added to playlist',
 				text: msg,
 				icon: 'icon-ok',
-				opacity: .9
+				opacity: 0.9
 			});
 		break;
 
@@ -989,7 +1011,7 @@ function notify(command, msg) {
 				title: 'Playlist cleared<br> Added to playlist',
 				text: msg,
 				icon: 'icon-remove',
-				opacity: .9
+				opacity: 0.9
 			});
 		break;
 		
@@ -998,7 +1020,7 @@ function notify(command, msg) {
 				title: 'Update path: ',
 				text: msg,
 				icon: 'icon-remove',
-				opacity: .9
+				opacity: 0.9
 			});
 		break;
 		
@@ -1007,7 +1029,7 @@ function notify(command, msg) {
 				title: 'Removed from playlist',
 				text: msg,
 				icon: 'icon-remove',
-				opacity: .9
+				opacity: 0.9
 			});
 		break;
 	}
@@ -1114,6 +1136,12 @@ function libraryHome(text) {
 	renderLibraryHome(); // TODO: do it only while in home
 }
 
+function listWLANs(text) {
+	var notify = text[0];
+	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
+	console.log(text);
+}
+
 // render the Library home screen
 function renderLibraryHome() {
 	loadingSpinner('db');
@@ -1130,21 +1158,21 @@ function renderLibraryHome() {
 			content += '<div id="home-bookmark-' + obj.bookmark + '" class="home-block home-bookmark" data-path="' + obj.path + '"><i class="fa fa-star"></i><h3>' + obj.name + '</h3>bookmark</div>';
 		} else if (obj.networkMounts !== undefined && obj.networkMounts !== '') {
 		// network mounts block
-			if (obj.networkMounts == 0) {
+			if (obj.networkMounts === 0) {
 				content += '<a class="home-block" href="/sources/add/"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3>click to add some</a>';
 			} else {
 				content += '<div id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3>' + obj.networkMounts + ' item available</div>';
 			}
 		} else if (obj.USBMounts !== undefined && obj.USBMounts !== '') {
 		// USB mounts block
-			if (obj.USBMounts == 0) {
+			if (obj.USBMounts === 0) {
 				content += '<a id="home-usb" class="home-block" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>refresh</a>';
 			} else {
 				content += '<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + obj.USBMounts + ')</h3>browse USB drives</div>';
 			}
 		} else if (obj.webradio !== undefined && obj.webradio !== '') {
 		// webradios block
-			if (obj.webradio == 0) {	
+			if (obj.webradio === 0) {
 				content += '<a id="home-webradio" class="home-block" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>click to add some</a>';
 			} else {
 				content += '<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + obj.webradio + ')</h3>webradio local playlists</div>';
@@ -1166,22 +1194,28 @@ function renderLibraryHome() {
 (function() {
 	hidden = 'hidden';
 	// Standards:
-	if (hidden in document)
+	if (hidden in document) {
 		document.addEventListener('visibilitychange', onchange);
-	else if ((hidden = 'mozHidden') in document)
+	}
+	else if ((hidden = 'mozHidden') in document) {
 		document.addEventListener('mozvisibilitychange', onchange);
-	else if ((hidden = "webkitHidden") in document)
+	}
+	else if ((hidden = "webkitHidden") in document) {
 		document.addEventListener('webkitvisibilitychange', onchange);
-	else if ((hidden = "msHidden") in document)
+	}
+	else if ((hidden = "msHidden") in document) {
 		document.addEventListener('msvisibilitychange', onchange);
+	}
 	// IE 9 and lower:
-	else if ('onfocusin' in document)
+	else if ('onfocusin' in document) {
 		document.onfocusin = document.onfocusout = onchange;
+	}
 	// All others:
-	else
+	else {
 		window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
-
-	function onchange (evt) {
+	}
+	
+	function onchange(evt){
 		var v = 'visible', h = 'hidden',
 			evtMap = {
 				focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h
@@ -1224,7 +1258,9 @@ function renderLibraryHome() {
 			overlay.addClass('closed');
 			var onEndTransitionFn = function(ev) {
 				if (support.transitions) {
-					if (ev.propertyName !== 'visibility') return;
+					if (ev.propertyName !== 'visibility') {
+						return;
+					}
 					this.removeEventListener( transEndEventName, onEndTransitionFn );
 				}
 				overlay.removeClass('closed');

@@ -49,7 +49,7 @@ $nics = wrk_netconfig($redis,'getnics');
 
 foreach ($nics as $key => $value) {
 	if ($value->wireless === 1) {
-		// $redis->set('wlans',json_encode($iw->parseScanDev( $key )));
+		$redis->set('wlans',json_encode($iw->parseScanDev( $key )));
 		ui_render('wlans',json_encode($iw->parseScanDev( $key )));
 	}
 }
