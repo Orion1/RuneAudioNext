@@ -1021,7 +1021,7 @@ $updateh = 0;
 					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 0)));
 				}
 			}
-			if ($scanwifi) sysCmdAsync('/var/www/command/refresh_wlans');
+			if ($scanwifi) sysCmdAsync('/var/www/command/refresh_nics');
 		break;
 		
 		case 'getnics':

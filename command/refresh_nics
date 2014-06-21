@@ -43,28 +43,34 @@ include('/var/www/app/libs/runeaudio.php');
 include '/var/www/app/libs/vendor/ziegler/iwlist-parser.class.php';
 // refesh visible wifi networks.
 $iw = new iwlist_parser;
+// debug
 // print_r($iw->parseScanDev( 'wlan0' ));
 wrk_netconfig($redis,'setnics');
 $nics = wrk_netconfig($redis,'getnics');
-
-foreach ($nics as $key => $value) {
-	if ($value->wireless === 1) {
+// debug
+// print_r($nics);
+foreach ($nics as $key => $nicdetail) {
+	if ($nicdetail->wireless === 1) {
 		// temp
 		$scan = $iw->parseScanDev( $key );
 		$redis->set('wlans',json_encode($scan));
 		
+		// debug
 		// print_r($scan);
 		foreach ($scan as $nicname => $nicscan) {
 			foreach ($nicscan as $count => $wlan) {
 				foreach ($wlan as $key => $value) {
 					$wlans[$count]['nic'] = $nicname;
-					if ($key === 'ESSID') $wlans[$count][$key] = $value; 
+					if ($key === 'ESSID') {
+						$wlans[$count][$key] = $value;
+						if ($nicdetail->currentssid === $key) { $wlans[$count]['connected'] = 1; } else { $wlans[$count]['connected'] = 0; }
+					}
 					if ($key === 'Encryption key') $wlans[$count]['encryption'] = $value;
 				}
 			}
 		} 
 		// debug
-		// print_r($wlans);
+		print_r($wlans);
 		// render wlans channel
 		ui_render('wlans',json_encode($wlans));
 	}
