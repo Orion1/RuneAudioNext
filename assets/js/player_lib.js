@@ -132,6 +132,7 @@ function wlansChannel(){
 	pushstream.onmessage = listWLANs;
 	pushstream.addChannel('wlans');
 	pushstream.connect();
+	$.ajax({url: '/command/?cmd=wifiscan'});
 }
 
 // launch the Playback UI refresh from the data response

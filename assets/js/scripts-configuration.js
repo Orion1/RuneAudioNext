@@ -194,13 +194,12 @@ jQuery(document).ready(function($){ 'use strict';
 		if($('#wifiNetworks').length){
 			wlansChannel();
 			var refreshWiFi = setInterval(function() {
-				$.ajax({
-					url: '/command/?cmd=wifiscan'
-				});
+				$.ajax({url: '/command/?cmd=wifiscan'});
 			}, 15000);
 		}
 		
 	}
+
 	
 	
 	// SETTINGS
