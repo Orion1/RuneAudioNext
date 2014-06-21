@@ -216,7 +216,7 @@ function getPlaylistPlain(data){
 	var state = GUI.json.state;
 	var content = '', time = '', artist = '', album = '', title = '', name='', str = '', filename = '', path = '', id = 0, songid = '', bottomline = '', totaltime = '', pos = 0;
 	var i, line, lines = data.split('\n'), infos=[];
-	for (i = 0; line = lines[i]; i += 1) {
+	for (i = 0; (line = lines[i]); i += 1) {
 		infos = line.split(': ');
 		if ( 'Time' === infos[0] ) {
 			time = parseInt(infos[1]);
@@ -287,7 +287,7 @@ function getPlaylists(){
 function renderPlaylists(data){
 	var content = '', playlistname = '';
 	var i, line, lines=data.split('\n'), infos=[];
-	for (i = 0; line = lines[i]; i += 1 ) {
+	for (i = 0; (line = lines[i]); i += 1 ) {
 		infos = line.split(': ');
 		if( 'playlist' === infos[0] ) {
 			playlistname = infos[1];
@@ -417,7 +417,7 @@ function populateDB(options){
 				GUI.currentpath = path;
 			}
 			document.getElementById('database-entries').innerHTML = '';
-			for (i = 0; row = data[i]; i += 1) {
+			for (i = 0; (row = data[i]); i += 1) {
 				content += parseResponse({
 					inputArr: row,
 					respType: 'Dirble',
@@ -426,7 +426,7 @@ function populateDB(options){
 				});
 			}
 			document.getElementById('database-entries').innerHTML = content;
-		}		
+		}
 		if (plugin === 'Jamendo') {
 		// Jamendo plugin
 			$('#database-entries').removeClass('hide');
@@ -436,7 +436,7 @@ function populateDB(options){
 				GUI.currentpath = path;
 			}
 			document.getElementById('database-entries').innerHTML = '';
-			for (i = 0; row = data[i]; i += 1) {
+			for (i = 0; (row = data[i]); i += 1) {
 				content += parseResponse({
 					inputArr: row,
 					respType: 'Jamendo',
@@ -469,7 +469,7 @@ function populateDB(options){
 				$('#db-level-up').addClass('hide');
 				$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
 			}
-			for (i = 0; row = data[i]; i += 1) {
+			for (i = 0; (row = data[i]); i += 1) {
 				content += parseResponse({
 					inputArr: row,
 					respType: 'db',
@@ -544,7 +544,7 @@ function parseResponse(options) {
 						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 						content += inputArr.file.replace(inpath + '/', '') + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
 						content += '<span class="bl">';
-						content += ' path \: ';
+						content += ' path: ';
 						content += inpath;
 					} else {
 					// webradio playlists
@@ -1152,7 +1152,7 @@ function renderLibraryHome() {
 	$('#home-blocks').removeClass('hide');
 	var i = 0, content = '';
 	content = '<div class="col-sm-12"><h1 class="txtmid">Browse your library</h1></div>';
-	for (i = 0; obj = GUI.libraryhome[i]; i += 1) {
+	for (i = 0; (obj = GUI.libraryhome[i]); i += 1) {
 		content += '<div class="col-md-4 col-sm-6">';
 		if (obj.bookmark !== undefined && obj.bookmark !== '') {
 		// bookmark block

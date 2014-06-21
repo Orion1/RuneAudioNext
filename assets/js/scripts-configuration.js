@@ -110,14 +110,14 @@ jQuery(document).ready(function($){ 'use strict';
 		// enable/disable CIFS auth section
 		if ($('#mount-type').val() === 'nfs') {
 			$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
-		}						
-		$('#mount-type').change(function(){		  
+		}
+		$('#mount-type').change(function(){
 			if ($(this).val() === 'cifs' || $(this).val() === 'osx') {
 				$('#mount-cifs').removeClass('disabled').children('.disabler').addClass('hide');
 			}
 			else {
 				$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
-			}															
+			}
 		});
 		
 		// enable/disable CIFS user and password fields
@@ -128,7 +128,7 @@ jQuery(document).ready(function($){ 'use strict';
 			} else {
 				//console.log('unchecked');
 				$('#mount-auth').removeClass('disabled').children('.disabler').addClass('hide');
-			}													  
+			}
 		});
 		
 		// show advanced options
@@ -137,7 +137,7 @@ jQuery(document).ready(function($){ 'use strict';
 				$('#mount-advanced-config').removeClass('hide');
 			} else {
 				$('#mount-advanced-config').addClass('hide');
-			}													  
+			}
 		});
 		
 		$('#show-mount-advanced-config').click(function(e){
@@ -173,7 +173,7 @@ jQuery(document).ready(function($){ 'use strict';
 			}
 			else {
 				netManualConf.addClass('hide');
-			}															
+			}
 		});
 		
 		// show/hide WiFi security configuration based on select value
@@ -187,7 +187,7 @@ jQuery(document).ready(function($){ 'use strict';
 			}
 			else {
 				WiFiKey.addClass('hide');
-			}															
+			}
 		});
 		
 		// refresh in range Wi-Fi networks list
@@ -215,7 +215,7 @@ jQuery(document).ready(function($){ 'use strict';
 			} else {
 				$('#airplayName').addClass('hide');
 				$('#airplayBox').removeClass('boxed-group');
-			}													  
+			}
 		});
 		
 		// show/hide Last.fm auth form  
@@ -226,8 +226,8 @@ jQuery(document).ready(function($){ 'use strict';
 			} else {
 				$('#lastfmAuth').addClass('hide');
 				$('#lastfmBox').removeClass('boxed-group');
-			}													  
-		});		
+			}
+		});
 		
 		// show/hide proxy settings form  
 		$('#proxy').change(function(){
@@ -237,8 +237,8 @@ jQuery(document).ready(function($){ 'use strict';
 			} else {
 				$('#proxyAuth').addClass('hide');
 				$('#proxyBox').removeClass('boxed-group');
-			}													  
-		});			
+			}
+		});
 		
 	}
 	
@@ -254,7 +254,7 @@ jQuery(document).ready(function($){ 'use strict';
 				$('#wifiProfilesBox').removeClass('hide');
 			} else {
 				$('#wifiProfilesBox').addClass('hide');
-			}													  
+			}
 		});
 
 	}

@@ -8,8 +8,7 @@ module.exports = function(grunt) {
       },
       all: [
         'Gruntfile.js',
-        // 'assets/js/*.js',
-        'assets/js/player_lib.js',
+        'assets/js/*.js',
         '!assets/js/vendor/*.js',
         '!assets/js/runeui.min.js'
       ]
