@@ -182,6 +182,8 @@ function getPlaylistCmd(){
 			} else {
 				$('.playlist').addClass('hide');
 				$('#playlist-warning').removeClass('hide');
+				$('#pl-filter-results').addClass('hide').html('');
+				$('#pl-count').removeClass('hide').html('0 entries');
 			}
 			loadingSpinner('pl', 'hide');
 		}
@@ -206,6 +208,8 @@ function getPlaylist(text) {
 	} else {
 		$('.playlist').addClass('hide');
 		$('#playlist-warning').removeClass('hide');
+		$('#pl-filter-results').addClass('hide').html('');
+		$('#pl-count').removeClass('hide').html('0 entries');
 	}
 	loadingSpinner('pl', 'hide');
 }
@@ -270,6 +274,7 @@ function getPlaylistPlain(data){
 	$('#pl-filter-results').addClass('hide').html('');
 	$('#pl-filter').val('');
 	$('#pl-manage').removeClass('hide');
+	$('#pl-count').removeClass('hide').html(pos + ((pos !== 1) ? ' entries' : ' entry'));
 }
 
 // get saved playlists
@@ -298,6 +303,7 @@ function renderPlaylists(data){
 	document.getElementById('playlist-entries').innerHTML = '';
 	$('.playlist').addClass('hide');
 	$('#pl-manage').addClass('hide');
+	$('#pl-count').addClass('hide');
 	$('#pl-filter-results').removeClass('hide').addClass('back-to-queue').html('<i class="fa fa-arrow-left sx"></i> to queue');
 	$('#pl-currentpath').removeClass('hide');
 	$('#pl-editor').removeClass('hide');

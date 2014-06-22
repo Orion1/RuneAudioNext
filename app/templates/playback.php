@@ -92,6 +92,7 @@
 				</div>
             </form>
 			<button id="pl-filter-results" class="btn hide" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i> back</button>
+			<span id="pl-count" class="hide">2143 entries</span>
         </div>
         <div id="playlist">
             <ul id="playlist-entries" class="playlist">

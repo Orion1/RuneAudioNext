@@ -131,9 +131,12 @@ html, body {
 		height: 40px;
 		line-height: 40px;
 		margin: 0 20px 0 0;
-		i {
+		.dropdown-menu i {
 			display: inline-block;
-			width: 16px;
+			width: 1.28571em;
+			line-height: 16px;
+			margin: 0 10px 0 5px;
+			font-size: 14px;
 			text-align: center;
 		}
 	}
@@ -159,17 +162,23 @@ html, body {
 		}
 	}
 }
-#menu-top .dropdown-menu &>li:first-child &>a,#context-menus .dropdown-menu &>li:first-child &>a {
+#menu-top .dropdown-menu &>li:first-child &>a,
+#context-menus .dropdown-menu &>li:first-child &>a {
 	border-top: 1px solid darken(@brand-alt, 10%);
 }
-#menu-top .dropdown-menu &>li &>a,#context-menus .dropdown-menu &>li &>a {
+#menu-top .dropdown-menu &>li &>a,
+#context-menus .dropdown-menu &>li &>a {
 	line-height: 40px;
 	margin: 0;
 	padding: 0 10px;
 	background: @brand-alt;
 	border-bottom: 1px solid darken(@brand-alt, 10%);
 }
-#menu-top .dropdown-menu &>li &>a:hover,#menu-top .dropdown-menu &>li &>a:focus,#menu-top .dropdown-menu &>li.active &>a,#context-menus .dropdown-menu &>li &>a:hover,#context-menus .dropdown-menu &>li.active &>a {
+#menu-top .dropdown-menu &>li &>a:hover,
+#menu-top .dropdown-menu &>li &>a:focus,
+#menu-top .dropdown-menu &>li.active &>a,
+#context-menus .dropdown-menu &>li &>a:hover,
+#context-menus .dropdown-menu &>li.active &>a {
 	background: @brand-primary;
 }
 
@@ -266,8 +275,10 @@ html, body {
 		padding: 0;
 	}
 	i {
-		width: 16px;
+		width: 14px;
+		line-height: 16px;
 		margin-right: 5px;
+		font-size: 14px;
 	}
 }
 #menu-bottom a:hover, #menu-bottom a:focus {
@@ -314,7 +325,8 @@ html, body {
 #currentalbum {
 	margin-bottom: 20px;
 }
-#playlist-position, #format-bitrate {
+#playlist-position,
+#format-bitrate {
 	color: lighten(@brand-alt, 20%);
 }
 .knobs {
@@ -343,7 +355,8 @@ html, body {
 #volumeknob {
 	height: 260px;
 }
-#timeknob canvas:hover, #volumeknob canvas:hover {
+#timeknob canvas:hover,
+#volumeknob canvas:hover {
 	cursor: pointer;
 }
 #countdown-display, #total {
@@ -424,9 +437,12 @@ html, body {
 // Playlist and Database panels
 // --------------------------------------------------------------
 
-#db-level-up, #db-search-results, #pl-filter-results {
-	height: 39px;
+#db-level-up,
+#db-search-results,
+#pl-filter-results {
+	height: 40px;
 	margin: 0 0 0 -10px;
+	padding: 7px 12px 5px;
 	font-size: 16px;
 	font-weight: normal;
 	cursor: pointer;
@@ -451,6 +467,16 @@ html, body {
 	i {
 		margin: 0 11px 0 2px;
 	}
+}
+#pl-count {
+	height: 40px;
+	line-height: 40px;
+	margin: 0 0 0 3px;
+	font-size: 14px;
+	font-weight: normal;
+	cursor: pointer;
+	border-radius: 0;
+	color: lighten(@brand-alt, 20%);
 }
 .btnlist {
 	position: fixed;
@@ -505,7 +531,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	counter-reset: item;
+	// counter-reset: item;
 	// -webkit-transform: translateZ(0);
 	// -webkit-transform: translate3d(0,0,0);
 }
@@ -759,7 +785,8 @@ html, body {
 // #pl-filter-results i {
 	// color: @brand-alt;
 // }
-#db-search, #pl-search {
+#db-search,
+#pl-search {
 	display: block;
 	white-space: nowrap;
 	float: right;
@@ -1538,16 +1565,33 @@ ul.parsley-error-list {
 			cursor: pointer;
 			background: darken(@brand-alt, 20%);
 		}
+		// li:before {
+			// display: block;
+			// float: left;
+			// width: 35px;
+			// height: 46px;
+			// margin: 5px 0 0 5px;
+			// text-align: right;
+			// counter-increment: item;
+			// content: counter(item) '. ';
+			// color: @brand-alt;
+			// font-size: 15px;
+		// }
 		li:before {
 			display: block;
 			float: left;
-			width: 35px;
-			height: 46px;
-			margin: 5px 0 0 5px;
-			text-align: right;
-			counter-increment: item;
-			content: counter(item) '. ';
+			width: 24px;
+			height: 42px;
+			margin: 9px 0 0 8px;
+			text-align: center;
+			content: "\f001";
+			font-family: "FontAwesome";
 			color: @brand-alt;
+			font-size: 18px;
+		}
+		li.active:before {
+			// content: "\f144";
+			color: @text-color;
 		}
 		li.sortable-ghost:before {
 			line-height: 46px;
