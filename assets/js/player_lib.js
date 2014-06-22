@@ -1119,11 +1119,11 @@ function renderLibraryHome() {
 
 // list of in range wlans
 function listWLANs(text) {
-	// console.log(text);
 	var i = 0, content = '', wlans = text[0];
+	console.log(wlans);
 	$.each(wlans, function(i) {
 		content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block">';
-		if (wlans[i].encryption === 'trololol') {
+		if (wlans[i].connected !== 0) {
 			content += '<i class="fa fa-check green sx"></i>';
 		}
 		if (wlans[i].encryption === 'on') {

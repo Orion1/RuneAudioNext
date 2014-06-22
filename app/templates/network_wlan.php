@@ -53,7 +53,7 @@
 					<span class="help-block">Choose the security type of the Wi-Fi you want to connect.</span>
 				</div>
 			</div>
-			<div id="wifi-security-key" class="form-group <?php if($this->addprofile === 1): ?>hide<?php endif; ?>">
+			<div id="wifi-security-key" class="form-group hide">
 				<label class="col-sm-2 control-label" for="wifiprofile[key]">Password</label>
 				<div class="col-sm-10">
 					<input class="form-control input-lg" type="password" id="wifi-password" name="wifiprofile[key]" value="<?=$this->profile_{$this->uri(4)}->key ?>" data-trigger="change" autocomplete="off">
