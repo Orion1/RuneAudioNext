@@ -724,8 +724,12 @@ function refreshState() {
 		var current = parseInt(GUI.json.song);
 		$('#playlist-entries').find('li').eq(current).addClass('active');
 	}
-	if( GUI.json.song && GUI.json.playlistlength ){
-		$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) +'/'+GUI.json.playlistlength);
+	if (GUI.json.playlistlength) {
+		if (GUI.json.song) {
+			$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
+		} else {
+			$('#playlist-position').html('Playlist position 1/' + GUI.json.playlistlength);
+		}
 	} else {
 		$('#playlist-position').html('Empty queue, add some music!');
 	}
