@@ -326,30 +326,19 @@ while (1) {
 					$redis->sAdd('w_lock',$jobID);
 					// send notfy to UI
 					ui_notify_async('MPD', 'configuration updated', $jobID);
-					// write mpd.conf file
-					// sysCmd('systemctl stop mpd');
+					// stop MPD daemon
 					wrk_mpdconf($redis,'stop');
+					// write mpd.conf file
 					$fh = fopen('/etc/mpd.conf', 'w');
 					fwrite($fh, $job['args']);
 					fclose($fh);
 					wrk_mpdconf($redis,'start');
-					// restart mpdscribble
-					// if ($redis->get('scrobbling_lastfm') === '1') {
-					// sysCmd('systemctl restart mpdscribble');
-					// }
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
 				case 'mpdrestart':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
-					// sysCmd('systemctl stop mpd');
-					// sleep(1);
-					// sysCmd('systemctl start mpd');
-					// restart mpdscribble
-					// if ($redis->get('scrobbling_lastfm') == 1) {
-						// sysCmd('systemctl restart mpdscribble');
-					// }
 					wrk_mpdconf($redis,'restart');
 					$redis->sRem('w_lock',$jobID);
 				break;
