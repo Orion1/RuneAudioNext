@@ -1496,12 +1496,26 @@ $header .= "\n";
 			wrk_mpdconf($redis,'restart');
 		break;
 		
-		case 'restart':
-			sysCmd('systemctl restart mpd');
+		case 'start':
+			sysCmd('systemctl start mpd');
 			// restart mpdscribble
 			if ($redis->get('scrobbling_lastfm') === '1') {
 			sysCmd('systemctl restart mpdscribble');
 			}
+			sleep(1);
+			$msock = openMpdSocket('/run/mpd.sock');
+			ui_update($redis,$msock);
+			closeMpdSocket($msock);
+		break;
+		
+		case 'stop':
+			sysCmd('systemctl stop mpd');
+		break;
+		
+		case 'restart':
+			wrk_mpdconf($redis,'stop');
+			sleep(1);
+			wrk_mpdconf($redis,'start');
 		break;
 	}
 }
