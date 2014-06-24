@@ -1502,10 +1502,10 @@ $header .= "\n";
 			if ($redis->get('scrobbling_lastfm') === '1') {
 			sysCmd('systemctl restart mpdscribble');
 			}
-			runelog('>>>>>>> FORCE RENDERUI (MPD restarted) >>>>>>>>>');
-			$msock = openMpdSocket('/run/mpd.sock');
-			ui_update($redis,$msock);
-			closeMpdSocket($msock);
+			// runelog('>>>>>>> FORCE RENDERUI (MPD restarted) >>>>>>>>>');
+			// $msock = openMpdSocket('/run/mpd.sock');
+			// ui_update($redis,$msock);
+			// closeMpdSocket($msock);
 		break;
 		
 		case 'stop':
