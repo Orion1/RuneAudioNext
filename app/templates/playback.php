@@ -17,9 +17,9 @@
                         <span id="total"></span>
                     </div>
                     <div class="btn-group">
-                        <button type="button" id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Repeat" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
-                        <button type="button" id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Random" data-cmd="random"><i class="fa fa-random"></i></button>
-                        <button type="button" id="single" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Single" data-cmd="single"><i class="fa fa-refresh"></i></button>
+                        <button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Repeat" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
+                        <button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Random" data-cmd="random"><i class="fa fa-random"></i></button>
+                        <button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Single" data-cmd="single"><i class="fa fa-refresh"></i></button>
 						<!--<button type="button" id="consume" class="btn btn-default btn-lg btn-cmd btn-toggle" title="Consume Mode" data-cmd="consume"><i class="fa fa-compress"></i></button>-->
                     </div>
                 </div>
@@ -34,9 +34,9 @@
                         <input id="volume" class="volumeknob" value="100" data-width="100%" data-bgColor="#000" data-thickness=".25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?>>
                     </div>
                     <div class="btn-group">
-                        <button type="button" id="volumedn" class="btn btn-default btn-lg btn-cmd btn-volume" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume down" data-cmd="volumedn"><i class="fa fa-volume-down"></i></button>
-                        <button type="button" id="volumemute" class="btn btn-default btn-lg btn-cmd btn-volume" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume mute/unmute" data-cmd="volumemute"><i class="fa fa-volume-off"></i> <i class="fa fa-exclamation"></i></button>
-                        <button type="button" id="volumeup" class="btn btn-default btn-lg btn-cmd btn-volume" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume up" data-cmd="volumeup"><i class="fa fa-volume-up"></i></button>
+                        <button id="volumedn" class="btn btn-default btn-lg btn-cmd btn-volume" type="button" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume down" data-cmd="volumedn"><i class="fa fa-volume-down"></i></button>
+                        <button id="volumemute" class="btn btn-default btn-lg btn-cmd btn-volume" type="button" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume mute/unmute" data-cmd="volumemute"><i class="fa fa-volume-off"></i> <i class="fa fa-exclamation"></i></button>
+                        <button id="volumeup" class="btn btn-default btn-lg btn-cmd btn-volume" type="button" <?php if (isset($this->volume['disabled'])): ?> disabled="disabled" <?php endif ?> title="Volume up" data-cmd="volumeup"><i class="fa fa-volume-up"></i></button>
                     </div>
                 </div>
             </div>
@@ -53,8 +53,8 @@
 					</span>
 				</div>
             </form>
-            <button id="db-level-up" class="btn hide" title="Go back one level"><i class="fa fa-arrow-left sx"></i> back</button>
-            <button id="db-search-results" class="btn hide" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i> back</button>
+            <button id="db-level-up" class="btn hide" type="button" title="Go back one level"><i class="fa fa-arrow-left sx"></i> back</button>
+            <button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i> back</button>
         </div>
         <div id="database">
             <ul id="database-entries" class="database">
@@ -68,11 +68,11 @@
         </div>
         <div class="btnlist btnlist-bottom">
             <div id="db-controls">
-                <button id="db-homeSetup" class="btn btn-default hide" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
-                <button id="db-firstPage" class="btn btn-default" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
-                <button id="db-prevPage" class="btn btn-default" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
-                <button id="db-nextPage" class="btn btn-default" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
-                <button id="db-lastPage" class="btn btn-default" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
+                <button id="db-homeSetup" class="btn btn-default hide" type="button" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
+                <button id="db-firstPage" class="btn btn-default" type="button" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
+                <button id="db-prevPage" class="btn btn-default" type="button" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
+                <button id="db-nextPage" class="btn btn-default" type="button" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
+                <button id="db-lastPage" class="btn btn-default" type="button" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
             </div>
             <div id="db-currentpath">
                 <i class="fa fa-folder-open"></i> <span>Home</span>
@@ -87,11 +87,11 @@
                 <div class="input-group">
 					<input id="pl-filter" class="form-control ttip" type="text" value="" placeholder="search in queue..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
 					<span class="input-group-btn">
-						<button class="btn btn-default" title="Search"><i class="fa fa-search"></i></button>
+						<button class="btn btn-default" type="button" title="Search"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
             </form>
-			<button id="pl-filter-results" class="btn hide" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i> back</button>
+			<button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i> back</button>
 			<span id="pl-count" class="hide">2143 entries</span>
         </div>
         <div id="playlist">
@@ -120,16 +120,15 @@
         </div>
         <div class="btnlist btnlist-bottom">
             <div id="pl-controls">
-                <button id="pl-firstPage" class="btn btn-default" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
-                <button id="pl-prevPage" class="btn btn-default" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
-                <button id="pl-nextPage" class="btn btn-default" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
-                <button id="pl-lastPage" class="btn btn-default" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
+                <button id="pl-firstPage" class="btn btn-default" type="button" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
+                <button id="pl-prevPage" class="btn btn-default" type="button" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
+                <button id="pl-nextPage" class="btn btn-default" type="button" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
+                <button id="pl-lastPage" class="btn btn-default" type="button" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
             </div>
             <div id="pl-manage">
-                <!--<button class="btn btn-default btn-cmd" data-cmd='load "1000 voci"' title="Manage playlists"><i class="fa fa-file-text-o"></i></button>-->
-                <button id="pl-list" class="btn btn-default" title="Manage playlists"><i class="fa fa-file-text-o"></i></button>
-                <button class="btn btn-default" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save"></i></button>
-                <button class="btn btn-default" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o"></i></button>
+                <button id="pl-list" class="btn btn-default" type="button" title="Manage playlists"><i class="fa fa-file-text-o"></i></button>
+                <button class="btn btn-default" type="button" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save"></i></button>
+                <button class="btn btn-default" type="button" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o"></i></button>
             </div>
 			<div id="pl-currentpath" class="hide">
 				<i class="fa fa-folder-open"></i>
@@ -142,43 +141,43 @@
 <div id="context-menus">
     <div id="context-menu" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="#notarget" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a href="#notarget" data-cmd="update"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
-            <li><a href="#notarget" data-cmd="bookmark"><i class="fa fa-star sx"></i> Save as bookmark</a></li>
+            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="javascript:;" data-cmd="update"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
+            <li><a href="javascript:;" data-cmd="bookmark"><i class="fa fa-star sx"></i> Save as bookmark</a></li>
         </ul>
     </div>
     <div id="context-menu-file" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="#notarget" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
         </ul>
     </div>
 	<div id="context-menu-dirble" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="wradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="#notarget" data-cmd="wraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="#notarget" data-cmd="wraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a href="#notarget" data-cmd="wrsave"><i class="fa fa-microphone sx"></i> Save in My Webradios</a></li>
+            <li><a href="javascript:;" data-cmd="wradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="wraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="wraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="javascript:;" data-cmd="wrsave"><i class="fa fa-microphone sx"></i> Save in My Webradios</a></li>
         </ul>
     </div>
 	<div id="context-menu-webradio" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="#notarget" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="#notarget" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a href="#notarget" data-cmd="wredit"><i class="fa fa-edit sx"></i> Edit</a></li>
-            <li><a href="#notarget" data-cmd="wrdelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
+            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="javascript:;" data-cmd="wredit"><i class="fa fa-edit sx"></i> Edit</a></li>
+            <li><a href="javascript:;" data-cmd="wrdelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
         </ul>
     </div>
 	<div id="context-menu-playlist" class="context-menu">
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#notarget" data-cmd="pl-add"><i class="fa fa-plus-circle sx"></i> Add to queue</a></li>
-            <li><a href="#notarget" data-cmd="pl-replace"><i class="fa fa-undo sx"></i> Replace the queue</a></li>
-            <li><a href="#notarget" data-cmd="pl-rename"><i class="fa fa-edit sx"></i> Rename</a></li>
-            <li><a href="#notarget" data-cmd="pl-rm"><i class="fa fa-trash-o sx"></i> Delete</a></li>
+            <li><a href="javascript:;" data-cmd="pl-add"><i class="fa fa-plus-circle sx"></i> Add to queue</a></li>
+            <li><a href="javascript:;" data-cmd="pl-replace"><i class="fa fa-undo sx"></i> Replace the queue</a></li>
+            <li><a href="javascript:;" data-cmd="pl-rename"><i class="fa fa-edit sx"></i> Rename</a></li>
+            <li><a href="javascript:;" data-cmd="pl-rm"><i class="fa fa-trash-o sx"></i> Delete</a></li>
         </ul>
     </div>
 </div>
