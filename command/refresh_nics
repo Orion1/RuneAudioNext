@@ -63,7 +63,7 @@ foreach ($nics as $key => $nicdetail) {
 					$wlans[$count]['nic'] = $nicname;
 					if ($key === 'ESSID') {
 						$wlans[$count][$key] = $value;
-						if ($nicdetail->currentssid === $key) { $wlans[$count]['connected'] = 1; } else { $wlans[$count]['connected'] = 0; }
+						if ($nicdetail->currentssid === $value) { $wlans[$count]['connected'] = 1; } else { $wlans[$count]['connected'] = 0; }
 					}
 					if ($key === 'Encryption key') $wlans[$count]['encryption'] = $value;
 				}

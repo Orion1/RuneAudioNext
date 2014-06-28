@@ -1014,14 +1014,23 @@ $updateh = 0;
 				if (empty($type[0])) {
 					$speed = sysCmd("iwconfig ".$interface." 2>&1 | grep 'Bit Rate' | cut -d '=' -f 2 | cut -d ' ' -f 1-2");
 					$currentSSID = sysCmd("iwconfig ".$interface." | grep 'ESSID' | cut -d ':' -f 2 | cut -d '\"' -f 2");
+					$currentSSID = sysCmd("iwconfig ".$interface." | grep 'ESSID' | cut -d ':' -f 2 | cut -d '\"' -f 2");
 					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 1, 'currentssid' => $currentSSID[0])));
-					$scanwifi = 1;
+					//// $scanwifi = 1;
 				} else {
 					$speed = sysCmd("ethtool ".$interface." 2>&1 | grep -i speed | cut -d':' -f2");
 					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 0)));
 				}
 			}
-			// if ($scanwifi) sysCmdAsync('/var/www/command/refresh_nics');
+			//// if ($scanwifi) sysCmdAsync('/var/www/command/refresh_nics');
+			// check wpa_supplicant auto-start and purge interface list
+			$wpa_supplicant_start = sysCmd("ls -lah /etc/systemd/system/multi-user.target.wants/wpa_supplicant@*.service | cut -d '@' -f 2 | cut -d '.' -f 1");
+			$disable_wpa_supplicant = array_diff($wpa_supplicant_start, $interfaces);
+			if (!empty($disable_wpa_supplicant)) {
+				foreach ($disable_wpa_supplicant as $interface_name) {
+					unlink('/etc/systemd/system/multi-user.target.wants/wpa_supplicant@'.$interface_name.'.service');
+				}
+			}
 		break;
 		
 		case 'getnics':
@@ -1097,6 +1106,13 @@ $updateh = 0;
 		sysCmd('netctl stop '.$args->name);
 		sysCmd('ip addr flush dev '.$args->name);
 		sysCmd('netctl reenable '.$args->name);
+		if ($args->wireless === '1') {
+			// check if wpa_supplicant is enabled for current wifi interface.
+			if (!file_exists('/etc/systemd/system/multi-user.target.wants/wpa_supplicant@'.$args->name.'.service')) {
+				runelog('enable wpa_supplicant on '.$args->name);
+				sysCmd('systemctl enable wpa_supplicant@'.$args->name);
+			}
+		}
 		if ($args->dhcp === '1') {
 		// dhcp configuration
 			// $cmd = 'systemctl enable ifplugd@'.$args->name;
@@ -2071,12 +2087,6 @@ function ui_lastFM_coverart($artist,$album,$lastfm_apikey,$proxy) {
 	}
 	// debug
 	//echo $url;
-	// $ch = curl_init($url);
-	// curl_setopt($ch, CURLOPT_HEADER, 0);
-	// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// $response = curl_exec($ch);
-	// curl_close($ch);
-	// $output = json_decode($response,true);
 	$output = json_decode(curlGet($url,$proxy),true);
 
 	// debug
@@ -2131,7 +2141,7 @@ curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
 //runelog('cURL proxy USER: ',$proxy['user']);
 //runelog('cURL proxy PASS: ',$proxy['pass']);
 }
- curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+ curl_setopt($ch, CURLOPT_TIMEOUT, 3);
  curl_setopt($ch, CURLOPT_POST, 1);
  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
@@ -2151,7 +2161,7 @@ curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
 // runelog('cURL proxy USER: ',$proxy['user']);
 // runelog('cURL proxy PASS: ',$proxy['pass']);
 }
-curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+curl_setopt($ch, CURLOPT_TIMEOUT, 3);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $response = curl_exec($ch);
