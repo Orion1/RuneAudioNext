@@ -204,10 +204,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h3 class="modal-title" id="modal-pl-clear-label">Clear current playing queue</h3>
+                <h3 class="modal-title" id="modal-pl-clear-label">Clear current queue</h3>
             </div>
             <div class="modal-body">
-                This will clear the current playing queue. Are you sure?
+                This will clear the current playing queue.<br>
+				Are you sure?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>

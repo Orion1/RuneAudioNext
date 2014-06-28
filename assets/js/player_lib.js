@@ -58,7 +58,7 @@ function playbackChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket|longpolling",
+		modes: "websocket",
 		reconnectOnChannelUnavailableInterval: 5000
 	});
 	pushstream.onmessage = renderUI;
@@ -87,7 +87,7 @@ function queueChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket|longpolling"
+		modes: "websocket"
 	});
 	pushstream.onmessage = getPlaylist;
 	// pushstream.onstatuschange = function(status) {
@@ -103,7 +103,7 @@ function libraryChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket|longpolling"
+		modes: "websocket"
 	});
 	pushstream.onmessage = libraryHome;
 	pushstream.addChannel('library');
@@ -115,7 +115,7 @@ function notifyChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket|longpolling"
+		modes: "websocket"
 	});
 	pushstream.onmessage = renderMSG;
 	pushstream.addChannel('notify');
@@ -127,7 +127,7 @@ function wlansChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket|longpolling"
+		modes: "websocket"
 	});
 	pushstream.onmessage = listWLANs;
 	pushstream.addChannel('wlans');

@@ -307,11 +307,9 @@ jQuery(document).ready(function($){ 'use strict';
 		customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
 	});
 	
-	var db = $('#database-entries');
-	
 	// click on Library home block
 	$('#home-blocks').on('click', '.home-block', function(e) {
-		if ($(e.target).is('span')) {
+		if ($(e.target).is('span.block-remove')) {
 			var bookmarkID = $(this).attr('id');
 			bookmarkID = bookmarkID.replace('home-bookmark-', '');
 			var bookmarkName = $(this).find('h3').text();
@@ -335,9 +333,11 @@ jQuery(document).ready(function($){ 'use strict';
 			$('.home-block-remove').remove();
 		} else {
 			editbtn.removeClass('btn-default').addClass('btn-primary');
-			$('.home-block.home-bookmark').append('<div class="home-block-remove" title="Remove this bookmark"><span>&times;</span></div>');
+			$('.home-block.home-bookmark').append('<div class="home-block-remove" title="Remove this bookmark"><span class="block-remove">&times;</span></div>');
 		}
 	});
+	
+	var db = $('#database-entries');
 	
 	// click on Library list entry
 	db.on('click', 'li', function(e) {
