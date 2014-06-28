@@ -32,7 +32,7 @@ return $response;
 }
 // ---- functions -----
 
-if (isset($argv[2])) {
+if (isset($argv[2]) && !isset($argv[3])) {
 // Connect to Redis backend
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
@@ -48,4 +48,9 @@ $redis->connect('127.0.0.1', 6379);
 usleep(650000);
 }
 
-ui_render('notify', $argv[1]);
+if (isset($argv[3]) && $argv[3] === 'simplemessage') {
+	$output = array( 'title' => $argv[1], 'text' => $argv[2]);
+	ui_render('notify', json_encode($output));
+} else {
+	ui_render('notify', $argv[1]);
+}

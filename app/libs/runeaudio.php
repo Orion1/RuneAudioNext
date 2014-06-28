@@ -2141,7 +2141,7 @@ curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
 //runelog('cURL proxy USER: ',$proxy['user']);
 //runelog('cURL proxy PASS: ',$proxy['pass']);
 }
- curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+ curl_setopt($ch, CURLOPT_TIMEOUT, 2);
  curl_setopt($ch, CURLOPT_POST, 1);
  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
@@ -2154,14 +2154,16 @@ return $response;
 
 function curlGet($url,$proxy = null) {
 $ch = curl_init($url);
-if ($proxy['enable'] === '1') {
-$proxy['user'] === '' || curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
-curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
-// runelog('cURL proxy HOST: ',$proxy['host']);
-// runelog('cURL proxy USER: ',$proxy['user']);
-// runelog('cURL proxy PASS: ',$proxy['pass']);
+if (!empty($proxy)) {
+	if ($proxy['enable'] === '1') {
+	$proxy['user'] === '' || curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
+	curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
+	// runelog('cURL proxy HOST: ',$proxy['host']);
+	// runelog('cURL proxy USER: ',$proxy['user']);
+	// runelog('cURL proxy PASS: ',$proxy['pass']);
+	}
 }
-curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+curl_setopt($ch, CURLOPT_TIMEOUT, 2);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $response = curl_exec($ch);
