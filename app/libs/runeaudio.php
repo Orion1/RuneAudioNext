@@ -529,14 +529,19 @@ function redisDatastore($redis,$action) {
 			$redis->set('lastsongid', 0);
 			
 			// acards_details database
-			$redis->hSet('acards_details','snd_rpi_iqaudio_dac','{"extlabel":"IQaudIO Pi-DAC &#8722; I&#178;S","mixer_numid":"1","mixer_control":"Playback Digital","hwplatformid":"01","type":"i2s"}');
-			$redis->hSet('acards_details','snd_rpi_hifiberry_dac','{"extlabel":"HiFiBerry DAC &#8722; I&#178;S","hwplatformid":"01","type":"i2s"}');
-			$redis->hSet('acards_details','snd_rpi_hifiberry_digi','{"extlabel":"HiFiBerry Digi &#8722; I&#178;S","hwplatformid":"01","type":"i2s"}');
-			$redis->hSet('acards_details','raspi2splay3','{"extlabel":"RaspI2SPlay3 &#8722; I&#178;S","hwplatformid":"01","type":"i2s"}');
-			$redis->hSet('acards_details','XMOS USB Audio 2.0','{"extlabel":"XMOS AK4399 USB-Audio DAC","mixer_numid":"3","mixer_control":"XMOS Clock Selector","type":"usb"}');
-			$redis->hSet('acards_details','wm8731-audio','{"extlabel":"Utilite Analog Out","mixer_numid":"1","mixer_control":"Master","hwplatformid":"05","type":"integrated"}');
-			$redis->hSet('acards_details','imx-spdif','{"extlabel":"Utilite Coax SPDIF Out","hwplatformid":"05","type":"integrated"}');
-			$redis->hSet('acards_details','imx-hdmi-soc','{"extlabel":"Utilite HDMI Out","hwplatformid":"05","type":"integrated"}');
+			$redis->hSet('acards_details','snd_rpi_iqaudio_dac','{"sysname":"snd_rpi_iqaudio_dac","extlabel":"IQaudIO Pi-DAC &#8722; I&#178;S","mixer_numid":"1","mixer_control":"Playback Digital","hwplatformid":"01","type":"i2s"}');
+			$redis->hSet('acards_details','berrynosmini','{"sysname":"snd_rpi_hifiberry_dac","extlabel":"BerryNOS mini &#8722; I&#178;S","hwplatformid":"01","type":"i2s"}');
+			$redis->hSet('acards_details','berrynos','{"sysname":"snd_rpi_hifiberry_dac","extlabel":"BerryNOS 1543 &#8722; I&#178;S","hwplatformid":"01","type":"i2s"}');
+			$redis->hSet('acards_details','snd_rpi_hifiberry_dac','{"sysname":"snd_rpi_hifiberry_dac","extlabel":"HiFiBerry DAC &#8722; I&#178;S","hwplatformid":"01","type":"i2s"}');
+			$redis->hSet('acards_details','snd_rpi_hifiberry_digi','{"sysname":"snd_rpi_hifiberry_digi","extlabel":"HiFiBerry Digi &#8722; I&#178;S","hwplatformid":"01","type":"i2s"}');
+			$redis->hSet('acards_details','raspi2splay3','{"sysname":"snd_rpi_hifiberry_dac","extlabel":"RaspI2SPlay3 &#8722; I&#178;S","hwplatformid":"01","type":"i2s"}');
+			$redis->hSet('acards_details','XMOS USB Audio 2.0','{"sysname":"XMOS USB Audio 2.0","extlabel":"XMOS AK4399 USB-Audio DAC","mixer_numid":"3","mixer_control":"XMOS Clock Selector","type":"usb"}');
+			$redis->hSet('acards_details','wm8731-audio','{"sysname":"wm8731-audio","extlabel":"Utilite Analog Out","mixer_numid":"1","mixer_control":"Master","hwplatformid":"05","type":"integrated"}');
+			$redis->hSet('acards_details','imx-spdif','{"sysname":"imx-spdif","extlabel":"Utilite Coax SPDIF Out","hwplatformid":"05","type":"integrated"}');
+			$redis->hSet('acards_details','imx-hdmi-soc','{"sysname":"imx-hdmi-soc","extlabel":"Utilite HDMI Out","hwplatformid":"05","type":"integrated"}');
+			$redis->hSet('acards_details','bcm2835 ALSA','{"sysname":"bcm2835 ALSA","extlabel":"none","hwplatformid":"01","type":"integrated_sub"}');
+			$redis->sAdd('bcm2835 ALSA','{"sysname":"bcm2835 ALSA","extlabel":"RaspberryPi Analog Out","route_cmd":"amixer -c *CARDID* cset numid=3 1 > /dev/null"}');
+			$redis->sAdd('bcm2835 ALSA','{"sysname":"bcm2835 ALSA","extlabel":"RaspberryPi HDMI Out","route_cmd":"amixer -c *CARDID* cset numid=3 2 > /dev/null"}');
 			break;
 			
 			case 'check':
@@ -1250,14 +1255,22 @@ function wrk_audioOutput($redis,$action,$args = null) {
 			// $acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ']' -f 1");
 			// $acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ':' -f 2");
 			$acards = sysCmd("cat /proc/asound/cards | grep : | cut -b 1-3,21-");
+			$i2smodule = $redis->get('i2smodule');
+			// check if i2smodule is enabled and read card details
+			if ($i2smodule !== 'none') {
+				$i2smodule_details = $redis->hGet('acards_details',$i2smodule);
+			} 
 			runelog('/proc/asound/cards',$acards);
 			foreach ($acards as $card) {
+				unset($sub_interfaces);
 				$card_index = explode(' : ', $card);
 				$card_index = trim($card_index[0]);
+				// debug
 				runelog('wrk_audioOutput card index: ', $card_index);
 				$card = explode(' - ', $card);
 				$card = trim($card[1]);
 				// $description = sysCmd("cat /proc/asound/cards | grep : | cut -d ':' -f 2 | cut -d ' ' -f 4-20");
+				// debug
 				runelog('wrk_audioOutput card string: ', $card);
 				$description = sysCmd("aplay -l -v | grep \"\[".$card."\]\"");
 				$desc = array();
@@ -1265,8 +1278,17 @@ function wrk_audioOutput($redis,$action,$args = null) {
 				$subdeviceid = explode(',',trim($subdeviceid[1]));
 				$subdeviceid = explode(' ',trim($subdeviceid[1]));
 				$data['device'] = 'hw:'.$card_index.','.$subdeviceid[1];
-				if ($redis->hGet('acards_details',$card)) {
-					$details = json_decode($redis->hGet('acards_details',$card));
+					if ($i2smodule !== 'none' && $i2smodule_details->sysname === $card) {
+						$acards_details = $i2smodule_details;
+					} else {
+						$acards_details = $redis->hGet('acards_details',$card);
+					}
+				if (!empty($acards_details)) {
+					// debug
+					runelog('wrk_audioOutput: in loop: acards_details for: '.$card,$acards_details);
+					$details = json_decode($acards_details);
+					// debug
+					runelog('wrk_audioOutput: in loop: (decoded) acards_details for: '.$card,$details);
 					if (isset($details->mixer_control)) {
 						$volsteps = sysCmd("amixer -c ".$card_index." get \"".$details->mixer_control."\" | grep Limits | cut -d ':' -f 2 | cut -d ' ' -f 4,6");
 						$volsteps = explode(' ',$volsteps[0]);
@@ -1275,12 +1297,46 @@ function wrk_audioOutput($redis,$action,$args = null) {
 						$data['mixer_device'] = "hw:".$details->mixer_numid;
 						$data['mixer_control'] = $details->mixer_control;
 					}
-					$data['extlabel'] = $details->extlabel;
+					if ($details->sysname === $card) {
+						if ($details->type === 'integrated_sub') {
+							$sub_interfaces = $redis->sMembers($card);
+							$i = 1;
+							foreach ($sub_interfaces as $int) {
+								$sub_int_details = json_decode($int);
+								// debug
+								runelog('interface type integrated_sub: (count '.$i.' ) '.$card ,$sub_int_details);
+								$sub_int_details->device = $data['device'];
+								$sub_int_details->id = $i;
+								$sub_int_details->name = $card.'_'.$i;
+								$sub_int_details->type = 'alsa';
+								$sub_int_details->integrated_sub = 1;
+								// prepare data for real_interface record
+								$data['name'] = $card;
+								$data['type'] = 'alsa';
+								$data['system'] = trim($description[0]);
+								// write real_interface json (use this to create the real MPD output)
+								$sub_int_details->real_interface = json_encode($data);
+								// replace index string in route command
+								if (isset($sub_int_details->route_cmd)) $sub_int_details->route_cmd = str_replace("*CARDID*", $card_index, $sub_int_details->route_cmd);
+								// debug
+								runelog('::::::acard record array::::::',$sub_int_details);
+								$redis->hSet('acards',$card.'_'.$i,json_encode($sub_int_details));
+								$i++;
+							}
+						} 
+						if ($details->extlabel !== 'none') $data['extlabel'] = $details->extlabel;
+					}
+					// debug
+					runelog('wrk_audioOutput: in loop: extlabel for: '.$card,$data['extlabel']);
 				} 
+				if (!isset($sub_interfaces)) {
 				$data['name'] = $card;
 				$data['type'] = 'alsa';
 				$data['system'] = trim($description[0]);
+				// debug
+				runelog('::::::acard record array::::::',$data);
 				$redis->hSet('acards',$card,json_encode($data));
+				}
 			}
 		break;
 		
@@ -1367,7 +1423,7 @@ $header .= "\n";
 			// default MPD config
 				$redis->hSet('mpdconf','zeroconf_enabled','yes');
 				$redis->hSet('mpdconf','zeroconf_name','runeaudio');
-				$redis->hSet('mpdconf','log_level','verbose');
+				$redis->hSet('mpdconf','log_level','none');
 				$redis->hSet('mpdconf','bind_to_address','any');
 				$redis->hSet('mpdconf','port','6600');
 				$redis->hSet('mpdconf','max_connections','20');
@@ -1390,7 +1446,7 @@ $header .= "\n";
 				$redis->hSet('mpdconf','gapless_mp3_playback','yes');
 				$redis->hSet('mpdconf','mixer_type','software');
 				$redis->hSet('mpdconf','curl','yes');
-				$redis->hSet('mpdconf','ffmpeg','no');
+				$redis->hSet('mpdconf','ffmpeg','yes');
 				wrk_mpdconf($redis,'writecfg');
 		break;
 		
@@ -1420,6 +1476,15 @@ $header .= "\n";
 				if ($param === 'log_level' && $value !== 'none') {
 					$redis->hSet('mpdconf','log_file','/var/log/runeaudio/mpd.log');
 				}					
+				
+				if ($param === 'state_file' && $value === 'no') {
+					$redis->hDel('mpdconf','state_file');
+					continue;
+				}
+				
+				if ($param === 'state_file' && $value !== 'no') {
+					$value = '/var/lib/mpd/mpdstate';
+				}	
 				
 				if ($param === 'user' && $value === 'mpd') {
 					$output .= $param." \t\"".$value."\"\n";
@@ -1469,17 +1534,23 @@ $header .= "\n";
 			$acards = $redis->hGetAll('acards');
 			foreach ($acards as $card) {
 				$card= json_decode($card);
-				$output .="\n";
-				$output .="audio_output {\n";
-				$output .="name \t\t\"".$card->name."\"\n";
-				$output .="type \t\t\"".$card->type."\"\n";
-				$output .="device \t\t\"".$card->device."\"\n";
-				if (isset($card->mixer_device)) $output .="mixer_device \t\"".$card->mixer_device."\"\n";
-				if (isset($card->mixer_control)) $output .="mixer_control \t\"".$card->mixer_control."\"\n";
-				$output .="auto_resample \t\"no\"\n";
-				$output .="auto_format \t\"no\"\n";
-				if ($redis->get('ao') === $card->name) $output .="enabled \t\"yes\"\n";
-				$output .="}\n";
+				if ($card->integrated_sub === 1) {
+					if ($card->id > 1) continue;
+					$card = json_decode($card->real_interface);
+				}
+					$output .="\n";
+					$output .="audio_output {\n";
+					$output .="name \t\t\"".$card->name."\"\n";
+					$output .="type \t\t\"".$card->type."\"\n";
+					$output .="device \t\t\"".$card->device."\"\n";
+					if (isset($card->mixer_device)) $output .="mixer_device \t\"".$card->mixer_device."\"\n";
+					if (isset($card->mixer_control)) $output .="mixer_control \t\"".$card->mixer_control."\"\n";
+					if ($mpdcfg['dsd_usb'] === 'yes') $output .="dsd_usb \t\"yes\"\n";
+					$output .="auto_resample \t\"no\"\n";
+					$output .="auto_format \t\"no\"\n";
+					if ($redis->get('ao') === $card->name) $output .="enabled \t\"yes\"\n";
+					$output .="}\n";
+				
 			}
 			$output .="\n";
 			// debug
@@ -1500,10 +1571,23 @@ $header .= "\n";
 		break;
 		
 		case 'switchao':
+			// record current interface selection
 			$redis->set('ao',$args);
+			$mpdout = $args;
+			// get interface details
+			$interface_details = $redis->hGet('acards',$args);
+			$interface_details = json_decode($interface_details);
+			// check for "special" sub_interfaces
+			if (isset($interface_details->integrated_sub)) {
+				// execute special internal route command
+				sysCmd($interface_details->route_cmd);
+				// TODO: improove this function
+				sysCmd('amixer -c 0 set PCM unmute');
+				$mpdout = $interface_details->sysname;
+			}
 			wrk_mpdconf($redis,'writecfg');
 			wrk_shairport($redis,$args);
-			syscmd('mpc enable only "'.$args.'"');
+			syscmd('mpc enable only "'.$mpdout.'"');
 		break;
 		
 		case 'refresh':

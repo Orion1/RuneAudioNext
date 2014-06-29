@@ -60,21 +60,31 @@
                 <label class="col-sm-2 control-label" for="log-level">Log level</label>
                 <div class="col-sm-10">
 					<select id="log-level" name="conf[log_level]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="none" <?php if($this->conf['log_level'] == 'none'): ?> selected <?php endif ?>>none</option>
+						<option value="none" <?php if($this->conf['log_level'] == 'none'): ?> selected <?php endif ?>>disabled</option>
 						<option value="default" <?php if($this->conf['log_level'] == 'default'): ?> selected <?php endif ?>>default</option>
 						<option value="secure" <?php if($this->conf['log_level'] == 'secure'): ?> selected <?php endif ?>>secure</option>	
 						<option value="verbose" <?php if($this->conf['log_level'] == 'verbose'): ?> selected <?php endif ?>>verbose</option>
                     </select> 		
-                    <span class="help-block">This setting controls the type of information which is logged. Available setting arguments are "default", "secure" or "verbose".
+                    <span class="help-block">This setting controls the type of information which is logged. Available setting arguments are "disabled", "default", "secure" or "verbose".
                     The "verbose" setting argument is recommended for troubleshooting, though can quickly stretch available resources on limited hardware storage.</span>
                 </div>
-            </div>            
+            </div>
+            <div class="form-group" >
+                <label class="col-sm-2 control-label" for="state-file">State file</label>
+                <div class="col-sm-10">
+					<select id="log-level" name="conf[state_file]" class="selectpicker" data-style="btn-default btn-lg">
+						<option value="yes" <?php if(isset($this->conf['state_file'])): ?> selected <?php endif ?>>enabled</option>
+						<option value="no" <?php if(!isset($this->conf['state_file'])): ?> selected <?php endif ?>>disabled</option>
+                    </select> 		
+                    <span class="help-block">This setting specifies if a state file is used. If the  state  file is active, the state of  mpd  will  be  saved when mpd is terminated by a TERM signal or by the "kill" command.  When  mpd is  restarted, it will read the state file and restore the state of mpd (including the playlist).</span>
+                </div>
+            </div>       			
 			<div class="form-group" >
                 <label class="col-sm-2 control-label" for="ffmpeg">FFmpeg decoder plugin</label>
                 <div class="col-sm-10">
 					<select id="ffmpeg" name="conf[ffmpeg]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="yes" <?php if($this->conf['ffmpeg'] === 'yes'): ?> selected <?php endif ?>>yes</option>
-						<option value="no" <?php if($this->conf['ffmpeg'] === 'no'): ?> selected <?php endif ?>>no</option>
+						<option value="yes" <?php if($this->conf['ffmpeg'] === 'yes'): ?> selected <?php endif ?>>enabled</option>
+						<option value="no" <?php if($this->conf['ffmpeg'] === 'no'): ?> selected <?php endif ?>>disabled</option>
                     </select> 		
                     <span class="help-block">FFmpeg decoder plugin. Enable this setting if you need AAC / ALAC support. May slow down MPD database refresh.</span>
                 </div>
@@ -83,8 +93,8 @@
                 <label class="col-sm-2 control-label" for="gapless-mp3-playback">Gapless mp3 playback</label>
                 <div class="col-sm-10">
 					<select id="gapless-mp3-playback" name="conf[gapless_mp3_playback]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="yes" <?php if($this->conf['gapless_mp3_playback'] == 'yes'): ?> selected <?php endif ?>>yes</option>	
-						<option value="no" <?php if($this->conf['gapless_mp3_playback'] == 'no'): ?> selected <?php endif ?>>no</option>
+						<option value="yes" <?php if($this->conf['gapless_mp3_playback'] == 'yes'): ?> selected <?php endif ?>>enabled</option>	
+						<option value="no" <?php if($this->conf['gapless_mp3_playback'] == 'no'): ?> selected <?php endif ?>>disabled</option>
 					</select>
                     <span class="help-block">If you have a problem with your MP3s ending abruptly it is recommended that you set this argument to "no" to attempt to fix the problem. If this solves the problem,
                     it is highly recommended to fix the MP3 files with vbrfix (available as vbrfix in the debian archive), at which point gapless MP3 playback can be enabled.</span>
@@ -94,8 +104,8 @@
                 <label class="col-sm-2 control-label" for="dsd-usb">DSD support</label>
                 <div class="col-sm-10">
 					<select id="dsd-usb" name="conf[dsd_usb]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="yes" <?php if($this->conf['dsd_usb'] == 'yes'): ?> selected <?php endif ?>>yes</option>
-						<option value="no" <?php if($this->conf['dsd_usb'] == 'no'): ?> selected <?php endif ?>>no</option>
+						<option value="yes" <?php if($this->conf['dsd_usb'] == 'yes'): ?> selected <?php endif ?>>enabled</option>
+						<option value="no" <?php if($this->conf['dsd_usb'] == 'no'): ?> selected <?php endif ?>>disabled</option>
 					</select>
                     <span class="help-block">Enable DSD audio support.</span>
                 </div>
@@ -104,8 +114,8 @@
                 <label class="col-sm-2 control-label" for="dsd-usb">Volume normalization</label>
                 <div class="col-sm-10">
 					<select id="volume-normalization" name="conf[volume_normalization]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="yes" <?php if($this->conf['volume_normalization'] == 'yes'): ?> selected <?php endif ?>>yes</option>	
-						<option value="no" <?php if($this->conf['volume_normalization'] == 'no'): ?> selected <?php endif ?>>no</option>
+						<option value="yes" <?php if($this->conf['volume_normalization'] == 'yes'): ?> selected <?php endif ?>>enabled</option>	
+						<option value="no" <?php if($this->conf['volume_normalization'] == 'no'): ?> selected <?php endif ?>>disabled</option>
 					</select>
                     <span class="help-block">If yes, mpd will normalize the volume of songs as they play. The default is no</span>
                 </div>
@@ -133,8 +143,8 @@
                 <label class="col-sm-2 control-label" for="auto-update">Auto update</label>
                 <div class="col-sm-10">
                     <select id="auto-update" name="conf[auto_update]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="yes" <?php if($this->conf['auto_update'] == 'yes'): ?> selected <?php endif ?>>yes</option>	
-						<option value="no" <?php if($this->conf['auto_update'] == 'no'): ?> selected <?php endif ?>>no</option>				
+						<option value="yes" <?php if($this->conf['auto_update'] == 'yes'): ?> selected <?php endif ?>>enabled</option>	
+						<option value="no" <?php if($this->conf['auto_update'] == 'no'): ?> selected <?php endif ?>>disabled</option>				
                     </select>
                     <span class="help-block">This setting enables automatic update of MPD's database when files in music_directory are changed.</span>
                 </div>

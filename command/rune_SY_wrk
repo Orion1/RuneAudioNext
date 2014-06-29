@@ -195,9 +195,9 @@ if ($redis->get('cmediafix') === '1') {
 }
 
 // initialize OrionProfile
-runelog('env: SET KERNEL PROFILE',$redis->get('orionprofile'));
-$cmd = "/var/www/command/orion_optimize.sh ".$redis->get('orionprofile')." ".$redis->get('hwplatformid') ;
-sysCmd($cmd);
+		// runelog('env: SET KERNEL PROFILE',$redis->get('orionprofile'));
+		// $cmd = "/var/www/command/orion_optimize.sh ".$redis->get('orionprofile')." ".$redis->get('hwplatformid') ;
+		// sysCmd($cmd);
  
 runelog('--- NORMAL STARTUP');
 // --- NORMAL STARTUP //

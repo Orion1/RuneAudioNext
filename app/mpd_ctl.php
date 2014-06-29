@@ -62,23 +62,43 @@ $template->content = "mpd_manual";
 
 $template->conf = $redis->hGetAll('mpdconf');
 $i2smodule = $redis->get('i2smodule');
+// debug
+// echo $i2smodule."\n";
 $acards = $redis->hGetAll('acards');
+// debug
+// print_r($acards);
 foreach ($acards as $card => $data) {
 $acard_data = json_decode($data);
-	if ($redis->hGet('acards_details',$card)) {
-		if ($i2smodule !== 'none' && $redis->hGet('acards_details',$i2smodule)) {
-			$details = json_decode($redis->hGet('acards_details',$i2smodule));
-		} else {
-			$details = json_decode($redis->hGet('acards_details',$card));
-		}
-		$acard_data->extlabel = $details->extlabel;
+// debug
+// echo $card."\n";
+// print_r($acard_data);
+	if ($i2smodule !== 'none') {
+		$acards_details = $redis->hGet('acards_details',$i2smodule);
+	} else {
+		$acards_details = $redis->hGet('acards_details',$card);
 	}
+	if (!empty($acards_details)) {
+		$details = json_decode($acards_details);
+		// debug
+		// echo "acards_details\n";
+		// print_r($details);
+		if ($details->sysname === $card) {
+			if ($details->type === 'integrated_sub') {
+				$sub_interfaces = $redis->sMembers($card); 
+				foreach ($sub_interfaces as $int) {
+					$sub_int_details = json_decode($int);
+					// TODO !!! check
+					$audio_cards[] = $sub_int_details;
+				}
+			} 
+			if ($details->extlabel !== 'none') $acard_data->extlabel = $details->extlabel;
+		}
+	} 
 $audio_cards[] = $acard_data;
 }
+// debug
 // print_r($audio_cards);
 $template->acards = $audio_cards;
-// $template->acards_details = $audio_cards_details;
 $template->ao = $redis->get('ao');
 
 }
-?>
