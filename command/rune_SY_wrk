@@ -305,7 +305,7 @@ while (1) {
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
 					runelog('env: SWITCH KERNEL',$job->args);
-					if (wrk_kernelswitch($redis,$job->args)) ui_notify_async('Kernel switch', $job->args.' selected successfully. REBOOT REQUIRED', $jobID);
+					if (wrk_kernelswitch($redis,$job->args)) ui_notify_async('Kernel switch', $job->args.' selected successfully.', $jobID);
 					$redis->sRem('w_lock',$jobID);
 				break;
 				

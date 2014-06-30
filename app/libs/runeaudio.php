@@ -1442,7 +1442,10 @@ function wrk_kernelswitch($redis,$args) {
 			fclose($fp);
 		break;
 	}
-if ($return) $redis->set('kernel', $args);
+	if ($return) {
+		$redis->set('kernel', $args);
+		$redis->save();
+	}
 return $return;
 }
 
@@ -2107,7 +2110,11 @@ function ui_notify($title = null, $text, $type = null ) {
 
 function ui_notify_async($title, $text, $jobID = null, $icon = null, $opacity = null, $hide = null) {
 	// $output = json_encode(array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide ));
-	$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8') ));
+	if ($title === 'Kernel switch') {
+		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8'), 'type' => 'kernelswitch' ));
+	} else {
+		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8') ));
+	}
 	runelog('notify JSON string: ', $output);
 	sysCmdAsync('/var/www/command/ui_notify.php \''.$output.'\' '.$jobID);
 }
