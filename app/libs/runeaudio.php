@@ -1300,14 +1300,12 @@ function wrk_audioOutput($redis,$action,$args = null) {
 					if ($details->sysname === $card) {
 						if ($details->type === 'integrated_sub') {
 							$sub_interfaces = $redis->sMembers($card);
-							$i = 1;
 							foreach ($sub_interfaces as $int) {
 								$sub_int_details = json_decode($int);
 								// debug
 								runelog('interface type integrated_sub: (count '.$i.' ) '.$card ,$sub_int_details);
 								$sub_int_details->device = $data['device'];
-								$sub_int_details->id = $i;
-								$sub_int_details->name = $card.'_'.$i;
+								$sub_int_details->name = $card.'_'.$sub_int_details->id;
 								$sub_int_details->type = 'alsa';
 								$sub_int_details->integrated_sub = 1;
 								// prepare data for real_interface record
@@ -1320,8 +1318,7 @@ function wrk_audioOutput($redis,$action,$args = null) {
 								if (isset($sub_int_details->route_cmd)) $sub_int_details->route_cmd = str_replace("*CARDID*", $card_index, $sub_int_details->route_cmd);
 								// debug
 								runelog('::::::acard record array::::::',$sub_int_details);
-								$redis->hSet('acards',$card.'_'.$i,json_encode($sub_int_details));
-								$i++;
+								$redis->hSet('acards',$card.'_'.$sub_int_details->id,json_encode($sub_int_details));
 							}
 						} 
 						if ($details->extlabel !== 'none') $data['extlabel'] = $details->extlabel;
@@ -1449,7 +1446,7 @@ function wrk_kernelswitch($redis,$args) {
 return $return;
 }
 
-function wrk_mpdconf($redis,$action,$args = null) {
+function wrk_mpdconf($redis, $action, $args = null, $jobID = null) {
 // set mpd.conf file header
 $header = "###################################\n";
 $header .= "# Auto generated mpd.conf file\n";
@@ -1627,6 +1624,10 @@ $header .= "\n";
 			wrk_mpdconf($redis,'writecfg');
 			wrk_shairport($redis,$args);
 			syscmd('mpc enable only "'.$mpdout.'"');
+			// set notify label
+			if (isset($interface_details->extlabel)) { $interface_label = $interface_details->extlabel; } else { $interface_label = $args; }
+			// notify UI
+			ui_notify_async('Audio Output switch', "current active output\n".$interface_label, $jobID);
 		break;
 		
 		case 'refresh':
