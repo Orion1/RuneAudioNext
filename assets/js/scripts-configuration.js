@@ -68,9 +68,8 @@ jQuery(document).ready(function($){ 'use strict';
 	updateGUI();
 	
 	// PNotify init options
-	$.pnotify.defaults.styling = 'bootstrap3';
-	$.pnotify.defaults.history = false;
-	$.pnotify.defaults.styling = 'fontawesome';
+	PNotify.prototype.options.styling = 'fontawesome';
+	
 	// open notify channel
 	notifyChannel();
 	
@@ -195,7 +194,7 @@ jQuery(document).ready(function($){ 'use strict';
 				$('#proxyBox').removeClass('boxed-group');
 			}
 		});
-		
+
 	}
 	
 	
@@ -286,7 +285,7 @@ jQuery(document).ready(function($){ 'use strict';
 			// alert('ZeroClipboard SWF is ready!');
 			client.on('aftercopy', function(event){
 				// alert('Copied text to clipboard: ' + event.data['text/plain']);
-				$.pnotify({
+				new PNotify({
 					title: 'Copied to clipboard',
 					text: 'The debug output was copied successfully in your clipboard.',
 					icon: 'fa fa-check'

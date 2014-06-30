@@ -72,9 +72,8 @@ jQuery(document).ready(function($){ 'use strict';
 	updateGUI();
 	
 	// PNotify init options
-	$.pnotify.defaults.styling = 'bootstrap3';
-	$.pnotify.defaults.history = false;
-	$.pnotify.defaults.styling = 'fontawesome';
+	PNotify.prototype.options.styling = 'fontawesome';
+
 	// open notify channel
 	notifyChannel();
 	

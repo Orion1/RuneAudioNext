@@ -39,5 +39,5 @@
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
 <script src="<?=$this->asset('/js/scripts-configuration.js')?>"></script>
 <?php endif ?>
-<script src="<?=$this->asset('/js/vendor/jquery.pnotify.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/pnotify.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')?>"></script>
