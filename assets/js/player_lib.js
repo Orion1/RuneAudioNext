@@ -995,8 +995,8 @@ function randomScrollDB() {
 function renderMSG(text) {
 	var notify = text[0];
 	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
-	// console.log(text);
-	if (notify.type !== undefined) {
+	console.log(text);
+	if (notify.type !== null) {
 		if (notify.type === 'kernelswitch') {
 			new PNotify({
 				title: notify.title,
