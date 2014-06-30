@@ -1410,6 +1410,42 @@ $redis->set('i2smodule',$args);
 wrk_mpdconf($redis,'refresh');
 }
 
+function wrk_kernelswitch($redis,$args) {
+	switch($args) {
+		case 'linux-rune-3.12.19-2-ARCH':
+			$file = '/boot/config.txt';
+			$newArray = wrk_replaceTextLine($file,'','kernel=','kernel='.$args.'.img');
+			// Commit changes to /boot/config.txt
+			$fp = fopen($file, 'w');
+			$return = fwrite($fp, implode("",$newArray));
+			fclose($fp);
+			$file = '/boot/config.txt';
+			$newArray = wrk_replaceTextLine($file,'','cmdline=','cmdline=cmdline_rune.txt');
+			// Commit changes to /boot/config.txt
+			$fp = fopen($file, 'w');
+			$return = fwrite($fp, implode("",$newArray));
+			fclose($fp);
+		break;
+		
+		case 'linux-rune-3.12.13-rt21_wosa':
+			$file = '/boot/config.txt';
+			$newArray = wrk_replaceTextLine($file,'','kernel=','kernel='.$args.'.img');
+			// Commit changes to /boot/config.txt
+			$fp = fopen($file, 'w');
+			$return = fwrite($fp, implode("",$newArray));
+			fclose($fp);
+			$file = '/boot/config.txt';
+			$newArray = wrk_replaceTextLine($file,'','cmdline=','cmdline=cmdline_wosa.txt');
+			// Commit changes to /boot/config.txt
+			$fp = fopen($file, 'w');
+			$return = fwrite($fp, implode("",$newArray));
+			fclose($fp);
+		break;
+	}
+if ($return) $redis->set('kernel', $args);
+return $return;
+}
+
 function wrk_mpdconf($redis,$action,$args = null) {
 // set mpd.conf file header
 $header = "###################################\n";

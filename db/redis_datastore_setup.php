@@ -7,7 +7,7 @@
  * copyright (C) 2013-2014 - Andrea Coiutti (aka ACX) & Simone De Gregori (aka Orion)
  *
  * RuneOS
- * copyright (C) 2013-2014 - Carmelo San Giovanni (aka Um3ggh1U) & Simone De Gregori (aka Orion)
+ * copyright (C) 2013-2014 - Simone De Gregori (aka Orion) & Carmelo San Giovanni (aka Um3ggh1U)
  *
  * RuneAudio website and logo
  * copyright (C) 2013-2014 - ACX webdesign (Andrea Coiutti)
@@ -28,6 +28,7 @@
  *
  *  file: db/redis_datastore_setup.php
  *  version: 1.3
+ *  coder: Simone De Gregori
  *
  */
  
