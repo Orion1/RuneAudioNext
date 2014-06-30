@@ -725,7 +725,6 @@ function refreshState() {
 		$('#playlist-entries').find('li').eq(current).addClass('active');
 	}
 	if (GUI.json.playlistlength && GUI.json.playlistlength !== '0') {
-		console.log(GUI.json.playlistlength);
 		if (GUI.json.song) {
 			$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
 		} else {
@@ -997,7 +996,37 @@ function renderMSG(text) {
 	var notify = text[0];
 	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
 	// console.log(text);
-	$.pnotify({
+	if (notify.type !== undefined) {
+		if (notify.type === 'kernelswitch') {
+			new PNotify({
+				title: 'Reboot required',
+				text: 'A reboot is needed to switch the kernel.',
+				icon: 'fa fa-refresh',
+				hide: false,
+				confirm: {
+					confirm: true,
+					buttons: [{
+						text: 'Reboot now',
+						addClass: 'btn-default btn-block  uppercase',
+						click: function() {
+							$.post('/settings/', { 'syscmd' : 'reboot' });
+							$('#loader').removeClass('hide');
+						}
+					},
+					{
+						text: 'Cancel',
+						addClass: 'hide'
+					}]
+				},
+				buttons: {
+					closer: false,
+					sticker: false
+				}
+			});
+		}
+		return;
+	}
+	new PNotify({
 		title: notify.title,
 		text: notify.text,
 		icon: (notify.icon === undefined) ? 'fa fa-check' : notify.icon,
@@ -1010,34 +1039,31 @@ function renderMSG(text) {
 function notify(command, msg) {
 	switch (command) {
 		case 'add':
-			$.pnotify({
+			new PNotify({
 				title: 'Added to playlist',
 				text: msg,
 				icon: 'icon-ok',
 				opacity: 0.9
 			});
 		break;
-
 		case 'addreplaceplay':
-			$.pnotify({
+			new PNotify({
 				title: 'Playlist cleared<br> Added to playlist',
 				text: msg,
 				icon: 'icon-remove',
 				opacity: 0.9
 			});
 		break;
-		
 		case 'update':
-			$.pnotify({
+			new PNotify({
 				title: 'Update path: ',
 				text: msg,
 				icon: 'icon-remove',
 				opacity: 0.9
 			});
 		break;
-		
 		case 'remove':
-			$.pnotify({
+			new PNotify({
 				title: 'Removed from playlist',
 				text: msg,
 				icon: 'icon-remove',
