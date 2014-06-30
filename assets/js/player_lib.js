@@ -724,7 +724,8 @@ function refreshState() {
 		var current = parseInt(GUI.json.song);
 		$('#playlist-entries').find('li').eq(current).addClass('active');
 	}
-	if (GUI.json.playlistlength) {
+	if (GUI.json.playlistlength && GUI.json.playlistlength !== '0') {
+		console.log(GUI.json.playlistlength);
 		if (GUI.json.song) {
 			$('#playlist-position').html('Playlist position ' + (parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
 		} else {
