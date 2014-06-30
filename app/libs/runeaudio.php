@@ -2111,7 +2111,7 @@ function ui_notify($title = null, $text, $type = null ) {
 function ui_notify_async($title, $text, $jobID = null, $icon = null, $opacity = null, $hide = null) {
 	// $output = json_encode(array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide ));
 	if ($title === 'Kernel switch') {
-		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8'), 'type' => 'kernelswitch' ));
+		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8'), 'type' => 'kernelswitch', 'btntext' => 'Reboot now' ));
 	} else {
 		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8') ));
 	}
