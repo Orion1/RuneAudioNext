@@ -999,14 +999,14 @@ function renderMSG(text) {
 	if (notify.type !== undefined) {
 		if (notify.type === 'kernelswitch') {
 			new PNotify({
-				title: 'Reboot required',
-				text: 'A reboot is needed to switch the kernel.',
+				title: notify.title,
+				text: notify.text,
 				icon: 'fa fa-refresh',
 				hide: false,
 				confirm: {
 					confirm: true,
 					buttons: [{
-						text: 'Reboot now',
+						text: notify.btntext,
 						addClass: 'btn-default btn-block  uppercase',
 						click: function() {
 							$.post('/settings/', { 'syscmd' : 'reboot' });
