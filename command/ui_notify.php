@@ -72,12 +72,12 @@ $redis->connect('127.0.0.1', 6379);
 			usleep(800000);
 	} else {
 		do {
-			usleep(600000);
+			usleep(500000);
 		} while ($redis->sIsMember('w_lock', $argv[2]));
 	}
 	$redis->close();
 } else {
-usleep(650000);
+usleep(500000);
 }
 
 if (isset($argv[3]) && $argv[3] === 'simplemessage') {

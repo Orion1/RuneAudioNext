@@ -540,8 +540,8 @@ function redisDatastore($redis,$action) {
 			$redis->hSet('acards_details','imx-spdif','{"sysname":"imx-spdif","extlabel":"Utilite Coax SPDIF Out","hwplatformid":"05","type":"integrated"}');
 			$redis->hSet('acards_details','imx-hdmi-soc','{"sysname":"imx-hdmi-soc","extlabel":"Utilite HDMI Out","hwplatformid":"05","type":"integrated"}');
 			$redis->hSet('acards_details','bcm2835 ALSA','{"sysname":"bcm2835 ALSA","extlabel":"none","hwplatformid":"01","type":"integrated_sub"}');
-			$redis->sAdd('bcm2835 ALSA','{"sysname":"bcm2835 ALSA","extlabel":"RaspberryPi Analog Out","route_cmd":"amixer -c *CARDID* cset numid=3 1 > /dev/null"}');
-			$redis->sAdd('bcm2835 ALSA','{"sysname":"bcm2835 ALSA","extlabel":"RaspberryPi HDMI Out","route_cmd":"amixer -c *CARDID* cset numid=3 2 > /dev/null"}');
+			$redis->sAdd('bcm2835 ALSA','{"id:"1","sysname":"bcm2835 ALSA","extlabel":"RaspberryPi Analog Out","route_cmd":"amixer -c *CARDID* cset numid=3 1 > /dev/null"}');
+			$redis->sAdd('bcm2835 ALSA','{"id:"2","sysname":"bcm2835 ALSA","extlabel":"RaspberryPi HDMI Out","route_cmd":"amixer -c *CARDID* cset numid=3 2 > /dev/null"}');
 			break;
 			
 			case 'check':
@@ -1251,11 +1251,12 @@ sysCmd('poweroff');
 function wrk_audioOutput($redis,$action,$args = null) {
 	switch ($action) {
 		case 'refresh':
-			$redis->del('acards');
+			$redis->Del('acards');
+			$redis->Save();
 			// $acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ']' -f 1");
 			// $acards = sysCmd("cat /proc/asound/cards | grep : | cut -d '[' -f 2 | cut -d ':' -f 2");
 			$acards = sysCmd("cat /proc/asound/cards | grep : | cut -b 1-3,21-");
-			$i2smodule = $redis->get('i2smodule');
+			$i2smodule = $redis->Get('i2smodule');
 			// check if i2smodule is enabled and read card details
 			if ($i2smodule !== 'none') {
 				$i2smodule_details = $redis->hGet('acards_details',$i2smodule);
@@ -1302,8 +1303,6 @@ function wrk_audioOutput($redis,$action,$args = null) {
 							$sub_interfaces = $redis->sMembers($card);
 							foreach ($sub_interfaces as $int) {
 								$sub_int_details = json_decode($int);
-								// debug
-								runelog('interface type integrated_sub: (count '.$i.' ) '.$card ,$sub_int_details);
 								$sub_int_details->device = $data['device'];
 								$sub_int_details->name = $card.'_'.$sub_int_details->id;
 								$sub_int_details->type = 'alsa';
@@ -1335,6 +1334,7 @@ function wrk_audioOutput($redis,$action,$args = null) {
 				$redis->hSet('acards',$card,json_encode($data));
 				}
 			}
+			$redis->Save();
 		break;
 		
 		case 'setdetails':
@@ -1488,6 +1488,15 @@ $header .= "\n";
 		
 		case 'writecfg':
 			$mpdcfg = $redis->hGetAll('mpdconf');
+			$current_out = $redis->Get('ao'); 
+			if (!$redis->hExists('acards',$current_out)) {
+				$stored_acards = $redis->hKeys('acards');
+				// debug
+				runelog('force audio output', $stored_acards[0]);
+				// force first output available if the current interface does not exists
+				$redis->Set('ao',$stored_acards[0]);
+				$redis->Save();
+			}
 			$output = null;
 			// --- general settings ---
 			foreach ($mpdcfg as $param => $value) {	
@@ -1568,11 +1577,28 @@ $header .= "\n";
 			$output = $header.$output;	
 			// --- audio output ---
 			$acards = $redis->hGetAll('acards');
+			$ao = $redis->Get('ao');
+			$sub_count = 0;
+			runelog('sub_count ----->(0)'.$sub_count);
 			foreach ($acards as $card) {
 				$card= json_decode($card);
 				if ($card->integrated_sub === 1) {
-					if ($card->id > 1) continue;
+					// record UI audio output name
+					$current_card = $card->name;
+					if ($sub_count >= 1) continue;
 					$card = json_decode($card->real_interface);
+					runelog('current AO ---->  ',$ao);
+					var_dump($ao);
+					runelog('current card_name ---->  ',$card->name);
+					var_dump($card->name);
+					var_dump(strpos($ao,$card->name));
+					if (strpos($ao,$card->name) === true OR strpos($ao,$card->name) === 0) $sub_interface_selected = 1;
+					// debug
+					runelog('sub_card_selected ? >>>> '.$sub_interface_selected);
+					// debug
+					runelog('this is a sub_interface');
+					$sub_interface = 1;
+					$sub_count++;
 				}
 					$output .="\n";
 					$output .="audio_output {\n";
@@ -1584,9 +1610,17 @@ $header .= "\n";
 					if ($mpdcfg['dsd_usb'] === 'yes') $output .="dsd_usb \t\"yes\"\n";
 					$output .="auto_resample \t\"no\"\n";
 					$output .="auto_format \t\"no\"\n";
-					if ($redis->get('ao') === $card->name) $output .="enabled \t\"yes\"\n";
+					if (isset($sub_interface_selected)) {
+						// use UI selector name to enable a sub_interface (ex. switch between AnalogOut / HDMI on RaspberryPI)
+						$output .="enabled \t\"yes\"\n";
+					} else {
+						// normal condition
+						if ($ao === $card->name) $output .="enabled \t\"yes\"\n";
+					}
 					$output .="}\n";
-				
+				unset($current_card);
+				unset($sub_interface);
+				unset($card);
 			}
 			$output .="\n";
 			// debug
@@ -1642,10 +1676,6 @@ $header .= "\n";
 			if ($redis->get('scrobbling_lastfm') === '1') {
 			sysCmd('systemctl restart mpdscribble');
 			}
-			// runelog('>>>>>>> FORCE RENDERUI (MPD restarted) >>>>>>>>>');
-			// $msock = openMpdSocket('/run/mpd.sock');
-			// ui_update($redis,$msock);
-			// closeMpdSocket($msock);
 		break;
 		
 		case 'stop':
@@ -2109,12 +2139,14 @@ function ui_notify($title = null, $text, $type = null ) {
 	ui_render('notify',json_encode($output));
 }
 
-function ui_notify_async($title, $text, $jobID = null, $icon = null, $opacity = null, $hide = null) {
+function ui_notify_async($title, $text, $jobID = null, $icon = null, $opacity = null, $hide = null, $type = null) {
 	// $output = json_encode(array( 'title' => $title, 'text' => $text, 'icon' => $icon, 'opacity' => $opacity, 'hide' => $hide ));
 	if ($title === 'Kernel switch') {
-		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8'), 'type' => 'kernelswitch', 'btntext' => 'Reboot now' ));
+		// $output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8'), 'type' => 'kernelswitch', 'btntext' => 'Reboot now' ));
+		$output = json_encode(array( 'title' => $title, 'text' => $text, 'type' => 'kernelswitch', 'btntext' => 'Reboot now' ));
 	} else {
-		$output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8') ));
+		// $output = json_encode(array( 'title' => htmlentities($title,ENT_XML1,'UTF-8'), 'text' => htmlentities($text,ENT_XML1,'UTF-8'), 'type' => $type ));
+		$output = json_encode(array( 'title' => $title, 'text' => $text, 'type' => $type ));
 	}
 	runelog('notify JSON string: ', $output);
 	sysCmdAsync('/var/www/command/ui_notify.php \''.$output.'\' '.$jobID);

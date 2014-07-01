@@ -215,4 +215,5 @@ if (isset($_GET['cmd']) && !empty($_GET['cmd'])) {
   echo 'MPD DB INTERFACE<br>';
   echo 'INTERNAL USE ONLY<br>';
   echo 'hosted on runeaudio.local:81';
+  
 }

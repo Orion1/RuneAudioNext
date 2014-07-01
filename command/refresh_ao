@@ -43,10 +43,12 @@ $redis->connect('127.0.0.1', 6379);
 include('/var/www/app/libs/runeaudio.php');
 // refesh audio hardware status (soundcards and MPD config)
 if ($redis->get('lock_refresh_ao') === '0') {
-$redis->set('lock_refresh_ao', 1);
+$redis->set('lock_refresh_ao', '1');
 $redis->save();
 wrk_mpdconf($redis,'refresh');
 ui_notify('USB-Audio', 'interface connected');
-$redis->set('lock_refresh_ao', 0);
+$redis->set('lock_refresh_ao', '0');
 $redis->save();
+} else {
+echo "LOCKED!";
 }

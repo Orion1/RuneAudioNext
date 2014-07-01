@@ -44,7 +44,7 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
     } else {
            
 		// debug
-		runelog('MPD command: ',$_GET['cmd']);
+		// runelog('MPD command: ',$_GET['cmd']);
 		if ($_GET['cmd'] === 'renderui') {
 			ui_update($redis,$mpd);
 		} else if ($_GET['cmd'] === 'wifiscan') {
@@ -56,10 +56,10 @@ if (isset($_GET['cmd']) && $_GET['cmd'] != '') {
 		}
             
         // debug
-        runelog('--- [command/index.php] --- CLOSE MPD SOCKET <<< (1) ---','');
+        // runelog('--- [command/index.php] --- CLOSE MPD SOCKET <<< (1) ---','');
 		$response = readMpdResponse($mpd);
         closeMpdSocket($mpd);
-				echo $response;
+		echo $response;
 	}
 	
 } else {
