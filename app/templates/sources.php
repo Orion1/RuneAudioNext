@@ -24,7 +24,7 @@
 	If a drive is connected but not shown in the list, please check if <a href="/settings/#features-management">USB automount</a> is enabled.</p>
 	<div id="usb-mount-list" class="button-list">	
 	<?php if( $this->usbmounts !== null ): foreach($this->usbmounts as $usbmount): ?>
-		<p><a class="btn btn-lg btn-default btn-block" href="#umount-modal" data-toggle="modal" data-mount="<?=$usbmount->device ?>"><i class="fa fa-check green sx"></i>/dev/<?=$usbmount->device ?>&nbsp;&nbsp;<?=$usbmount->name ?>&nbsp;&nbsp;<span>(size:&nbsp;<?=$usbmount->size ?>&nbsp;<?=$usbmount->use ?>&nbsp;in use)</span></a></p>
+		<p><a class="btn btn-lg btn-default btn-block" href="#umount-modal" data-toggle="modal" data-mount="<?=$usbmount->device ?>"><i class="fa fa-check green sx"></i><?=$usbmount->device ?>&nbsp;&nbsp;&nbsp;&nbsp;<?=$usbmount->name ?>&nbsp;&nbsp;&nbsp;&nbsp;<?php if (!empty($usbmount->size)): ?><span>(size:&nbsp;<?=$usbmount->size ?>B,&nbsp&nbsp;<?=$usbmount->use ?>&nbsp;in use)</span><?php endif; ?></a></p>
 	<?php endforeach; ?>
 		<form action="" method="post">
 			<div id="umount-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="umount-modal-label" aria-hidden="true">
@@ -36,7 +36,7 @@
 						</div>
 						<div class="modal-body">
 							<p>Mount point:</p>
-							<pre>/dev/<span id="usb-umount-name"></span></pre>
+							<pre><span id="usb-umount-name"></span></pre>
 							<p>Do you really want to safe unmount it?</p>
 							<input id="usb-umount" class="form-control" type="hidden" value="" name="usb-umount">
 						</div>

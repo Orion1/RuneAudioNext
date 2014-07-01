@@ -158,7 +158,7 @@ jQuery(document).ready(function($){ 'use strict';
 		$('#usb-mount-list a').click(function(){
 			var mountName = $(this).data('mount');
 			$('#usb-umount-name').html(mountName);
-			$('#usb-umount').val('/dev/' + mountName);
+			$('#usb-umount').val(mountName);
 		});
 	}
 	

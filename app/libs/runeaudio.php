@@ -1563,10 +1563,10 @@ $header .= "\n";
 			runelog('switchao (current state):',$status[0]);
 			// toggle playback state
 			if ($status[0] === 'playing') {
-			syscmd('mpc toggle');
-			$recover_state = 1;
-			// debug
-			runelog('switchao (set recover state):',$recover_state);
+				syscmd('mpc toggle');
+				$recover_state = 1;
+				// debug
+				runelog('switchao (set recover state):',$recover_state);
 			}
 			// switch interface
 			// debug
@@ -1740,6 +1740,10 @@ runelog('function wrk_sourcecfg('.$action.')',$args);
 		
 		case 'mountall':
 			$return = wrk_sourcemount($redis,'mountall');
+		break;
+		
+		case 'umountusb':
+			$return = sysCmd('udevil umount '.$args);
 		break;
 		
 	}

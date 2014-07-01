@@ -39,6 +39,8 @@ if (isset($_POST)) {
 	
 	if ($_POST['mountall'] == 1) $jobID = wrk_control($redis,'newjob', $data = array('wrkcmd' => 'sourcecfg', 'action' => 'mountall' ));
 	
+	if (isset($_POST['usb-umount'])) $jobID = wrk_control($redis,'newjob', $data = array('wrkcmd' => 'sourcecfg', 'action' => 'umountusb', 'args' => $_POST['usb-umount'] ));
+		
 	if (!empty($_POST['mount'])) {
 		
 		$_POST['mount']['remotedir'] = str_replace('\\', '/', $_POST['mount']['remotedir']);
