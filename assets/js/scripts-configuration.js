@@ -102,7 +102,7 @@ jQuery(document).ready(function($){ 'use strict';
 	$('.selectpicker').selectpicker();
 	
 
-	// DATABASE
+	// SOURCES
 	// ----------------------------------------------------------------------------------------------------
 	
 	if( $('#section-sources').length ){
@@ -153,6 +153,12 @@ jQuery(document).ready(function($){ 'use strict';
 				$(this).find('i').removeClass('fa fa-plus-circle').addClass('fa fa-minus-circle');
 				$(this).find('span').html('hide advanced options');
 			}
+		});
+		
+		$('#usb-mount-list a').click(function(){
+			var mountName = $(this).data('mount');
+			$('#usb-umount-name').html(mountName);
+			$('#usb-umount').val('/dev/' + mountName);
 		});
 	}
 	

@@ -509,7 +509,7 @@ jQuery(document).ready(function($){ 'use strict';
 		}
 		if (dataCmd === 'wraddplay') {
 			path = path.split(' | ')[1];
-			console.log(path);
+			// console.log(path);
 			getDB({
 				cmd: 'addplay',
 				path: path
@@ -561,13 +561,13 @@ jQuery(document).ready(function($){ 'use strict';
 			'radio[label]': name.data('file-name'),
 			'radio[url]': $('#webradio-edit-url').val()
 		}, function(data){
-			console.log('editedradio', data);
+			// console.log('editedradio', data);
 		}, 'json');
 	});
 	
 	// delete webradio
 	$('#webradio-delete-button').click(function(){
-	console.log( $('#webradio-delete-name').text() );
+	// console.log( $('#webradio-delete-name').text() );
 		var radioname = $('#webradio-delete-name').text();
 		$.post('/db/?cmd=deleteradio', { 'radio[label]' : radioname }, function(data){
 			// console.log('SENT');

@@ -69,7 +69,7 @@ function playbackChannel(){
 		} else {
 			// console.log('[nginx pushtream module] status change (' + status + ')');
 			if (status === 0) {
-				console.log('[nginx pushtream module] status disconnected (0)');
+				// console.log('[nginx pushtream module] status disconnected (0)');
 				$('#loader').removeClass('hide');
 			}
 		}
@@ -995,7 +995,7 @@ function randomScrollDB() {
 function renderMSG(text) {
 	var notify = text[0];
 	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
-	console.log(text);
+	// console.log(notify);
 	if (notify.type !== null) {
 		if (notify.type === 'kernelswitch') {
 			new PNotify({
@@ -1130,7 +1130,7 @@ function renderLibraryHome() {
 		} else if (obj.USBMounts !== undefined && obj.USBMounts !== '') {
 		// USB mounts block
 			if (obj.USBMounts === 0) {
-				content += '<a id="home-usb" class="home-block" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>refresh</a>';
+				content += '<a id="home-usb" class="home-block" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>no USB storage plugged</a>';
 			} else {
 				content += '<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + obj.USBMounts + ')</h3>browse USB drives</div>';
 			}
@@ -1143,12 +1143,12 @@ function renderLibraryHome() {
 			}
 		} else if (obj.Dirble !== undefined && obj.Dirble !== '') {
 		// Dirble block
-			content += '<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble <span id="home-count-dirble">(' + obj.Dirble + ')</span></h3>Radio stations Open Directory</div>';
+			content += '<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble <span id="home-count-dirble">(' + obj.Dirble + ')</span></h3>radio stations open directory</div>';
 		}
 		content += '</div>';
 	}
 	// Jamendo (static)
-	content += '<div class="col-md-4 col-sm-6"><div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h3>Jamendo<span id="home-count-jamendo"></span></h3>the world\'s largest platform for free music</div></div>';
+	content += '<div class="col-md-4 col-sm-6"><div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h3>Jamendo<span id="home-count-jamendo"></span></h3>world\'s largest platform for free music</div></div>';
 	document.getElementById('home-blocks').innerHTML = content;
 	loadingSpinner('db', 'hide');
 	$('span', '#db-currentpath').html('');
@@ -1157,7 +1157,7 @@ function renderLibraryHome() {
 // list of in range wlans
 function listWLANs(text) {
 	var i = 0, content = '', wlans = text[0];
-	console.log(wlans);
+	// console.log(wlans);
 	$.each(wlans, function(i) {
 		content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block">';
 		if (wlans[i].connected !== 0) {
