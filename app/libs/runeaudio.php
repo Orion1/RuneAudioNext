@@ -1557,16 +1557,12 @@ $header .= "\n";
 			}
 			wrk_mpdconf($redis,'writecfg');
 			wrk_shairport($redis,$args);
-			// connect to MPD daemon
-			$mpd = openMpdSocket('/run/mpd.sock');
 			// query playback status
-			$status = MpdStatus($mpd);
-			// close MPD connection
-			closeMpdSocket($mpd);
+			$status = sysCmd("mpc status | grep '\[' | cut -d '[' -f 2 | cut -d ']' -f 1");
 			// debug
-			runelog('switchao (current state):',$status['state']);
+			runelog('switchao (current state):',$status[0]);
 			// toggle playback state
-			if ($status['state'] === 'play') {
+			if ($status[0] === 'playing') {
 			syscmd('mpc toggle');
 			$recover_state = 1;
 			// debug
