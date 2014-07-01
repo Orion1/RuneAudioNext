@@ -37,6 +37,8 @@ if (isset($_POST)) {
 	
 	if ($_POST['updatempd'] == 1) sendMpdCommand($mpd,'update');
 	
+	if ($_POST['mountall'] == 1) $jobID = wrk_control($redis,'newjob', $data = array('wrkcmd' => 'sourcecfg', 'action' => 'mountall' ));
+	
 	if (!empty($_POST['mount'])) {
 		
 		$_POST['mount']['remotedir'] = str_replace('\\', '/', $_POST['mount']['remotedir']);

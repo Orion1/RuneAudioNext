@@ -1818,6 +1818,10 @@ runelog('function wrk_sourcecfg('.$action.')',$args);
 		if ($return) $redis->del('mountidx');
 		break;
 		
+		case 'mountall':
+			$return = wrk_sourcemount($redis,'mountall');
+		break;
+		
 	}
 
 return $return;
