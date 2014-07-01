@@ -1126,14 +1126,14 @@ function renderLibraryHome() {
 			if (obj.networkMounts === 0) {
 				content += '<a class="home-block" href="/sources/add/"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3>click to add some</a>';
 			} else {
-				content += '<div id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3>' + obj.networkMounts + ' item available</div>';
+				content += '<div id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3>network attached storages</div>';
 			}
 		} else if (obj.USBMounts !== undefined && obj.USBMounts !== '') {
 		// USB mounts block
 			if (obj.USBMounts === 0) {
 				content += '<a id="home-usb" class="home-block" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>no USB storage plugged</a>';
 			} else {
-				content += '<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + obj.USBMounts + ')</h3>browse USB drives</div>';
+				content += '<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + obj.USBMounts + ')</h3>USB attached drives</div>';
 			}
 		} else if (obj.webradio !== undefined && obj.webradio !== '') {
 		// webradios block
