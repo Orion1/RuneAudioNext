@@ -3,16 +3,18 @@
     <p>If you mess up with this configuration you can <a data-toggle="modal" href="#mpd-config-defaults">reset to default</a>.</p>
 	<form class="form-horizontal" action="" method="post">
 		<fieldset>
-      <legend>Audio Output</legend>
-      <div class="form-group">
-				<label class="col-sm-2 control-label" for="audio-output-interface">Audio output interface</label>
-				<div class="col-sm-10">
-					<select id="audio-output-interface" name="conf[audio_output_interface]" class="selectpicker" data-style="btn-default btn-lg">
-						<?php foreach($this->acards as $card): ?>
-							<option value="<?=$card->name ?>" <?php if($this->ao === $card->name): ?> selected <?php endif ?>><?php if(isset($card->extlabel)):?><?=$card->extlabel ?><?php else:?><?=$card->name ?><?php endif; ?></option>
-						<?php endforeach; ?>
-					</select>
-					<span class="help-block">This switches output between audio interfaces. Works on the fly.</span>
+			<legend>Audio Output</legend>
+			<div class="boxed">
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="audio-output-interface">Audio output interface</label>
+					<div class="col-sm-10">
+						<select id="audio-output-interface" name="conf[audio_output_interface]" class="selectpicker" data-style="btn-default btn-lg">
+							<?php foreach($this->acards as $card): ?>
+								<option value="<?=$card->name ?>" <?php if($this->ao === $card->name): ?> selected <?php endif ?>><?php if(isset($card->extlabel)):?><?=$card->extlabel ?><?php else:?><?=$card->name ?><?php endif; ?></option>
+							<?php endforeach; ?>
+						</select>
+						<span class="help-block">This switches output between audio interfaces (<strong>works on the fly</strong>).</span>
+					</div>
 				</div>
 			</div>
         </fieldset>
