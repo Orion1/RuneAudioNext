@@ -264,6 +264,7 @@ jQuery(document).ready(function($){ 'use strict';
 		
 		// output interface select
 		$('#audio-output-interface').change(function(){
+			renderMSG([{ 'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'type': null }]);
 			var output = $(this).val();
 			$.ajax({
 				type: 'POST',

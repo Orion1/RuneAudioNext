@@ -1561,7 +1561,7 @@ $header .= "\n";
 			// set notify label
 			if (isset($interface_details->extlabel)) { $interface_label = $interface_details->extlabel; } else { $interface_label = $args; }
 			// notify UI
-			ui_notify_async('Audio Output switch', "current active output\n".$interface_label, $jobID);
+			ui_notify_async('Audio output switched', "Current active output:\n".$interface_label, $jobID);
 		break;
 		
 		case 'refresh':
