@@ -31,7 +31,12 @@
  *
  */
  
-ob_start();
-echo debug_data($redis);
-$debugdata = ob_get_clean();
-$template->debug = $debugdata;
+// ob_start();
+// echo debug_data($redis);
+// $debugdata = ob_get_clean();
+
+$jobID = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'debug' ));
+
+waitSyWrk($redis,$jobID);
+
+$template->debug = $redis->get('debugdata');

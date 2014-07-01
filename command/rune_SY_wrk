@@ -279,6 +279,12 @@ while (1) {
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
+				case 'debug':
+				runelog('wrk_SY: ',$job->wrkcmd);
+					sysCmd('/var/www/command/debug_collector');
+					$redis->sRem('w_lock',$jobID);
+				break;
+				
 				case 'hostname':
 				runelog('wrk_SY: ',$job->wrkcmd);
 					$redis->sAdd('w_lock',$jobID);
