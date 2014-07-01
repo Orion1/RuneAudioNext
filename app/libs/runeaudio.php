@@ -1557,7 +1557,31 @@ $header .= "\n";
 			}
 			wrk_mpdconf($redis,'writecfg');
 			wrk_shairport($redis,$args);
+			// connect to MPD daemon
+			$mpd = openMpdSocket('/run/mpd.sock');
+			// query playback status
+			$status = MpdStatus($mpd);
+			// close MPD connection
+			closeMpdSocket($mpd);
+			// debug
+			runelog('switchao (current state):',$status['state']);
+			// toggle playback state
+			if ($status['state'] === 'play') {
+			syscmd('mpc toggle');
+			$recover_state = 1;
+			// debug
+			runelog('switchao (set recover state):',$recover_state);
+			}
+			// switch interface
+			// debug
+			runelog('switchao (switch AO):',$mpdout);
 			syscmd('mpc enable only "'.$mpdout.'"');
+			// restore playback state
+			if (isset($recover_state)) {
+			// debug
+			runelog('switchao (RECOVER STATE!)');
+			syscmd('mpc toggle');
+			}
 			// set notify label
 			if (isset($interface_details->extlabel)) { $interface_label = $interface_details->extlabel; } else { $interface_label = $args; }
 			// notify UI

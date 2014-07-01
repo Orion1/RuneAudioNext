@@ -36,7 +36,7 @@
 // common include
 ini_set('display_errors', '1');
 ini_set('error_reporting', -1);
-ini_set('error_log','/var/log/runeaudio/usbmount.log');
+ini_set('error_log','/var/log/runeaudio/debug_collector.log');
 include('/var/www/app/libs/runeaudio.php');
 // Connect to Redis backend
 $redis = new Redis();
