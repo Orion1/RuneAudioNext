@@ -58,6 +58,10 @@ function debug_data($redis) {
 		$output .= "playerID:\t".$redis->get('playerid')."\n";
 		$output .= "\n";
 		$output .= "\n";
+		$output .= "###### Active processes (pstree) ######\n";
+		$command = sysCmd('pstree');
+		$output .= implode("\n",$command)."\n\n\n";
+		unset($command);		
 		$output .= "###### Audio backend ######\n";
 		$output .=  file_get_contents('/proc/asound/version');
 		$output .= "\n";
@@ -82,8 +86,9 @@ function debug_data($redis) {
 		$output .= "--------------------------------------------------\n";
 		foreach ($acards as $card) {
 			$output .= "card ".$card.":\n";
-			$scontrols = implode("\n",sysCmd('amixer -c '.$card.' scontrols'));
-			if (!empty($scontrols)) { $output .= $scontrols; } else { $output .= 'no mixer scontrols'; }
+			$command = implode("\n",sysCmd('amixer -c '.$card.' scontrols'));
+			if (!empty($command)) { $output .= $command; } else { $output .= 'no mixer scontrols'; }
+			unset($command);
 			$output .= "\n\n";
 		}
 		$output .= "\n";
@@ -91,8 +96,9 @@ function debug_data($redis) {
 		$output .= "--------------------------------------------------\n";
 		foreach ($acards as $card) {
 			$output .= "card ".$card.":\n";
-			$controls = implode("\n",sysCmd('amixer -c '.$card.' controls')); 
-			if (!empty($controls)) { $output .= $controls; } else { $output .= 'no mixer controls'; }
+			$command = implode("\n",sysCmd('amixer -c '.$card.' controls')); 
+			if (!empty($command)) { $output .= $command; } else { $output .= 'no mixer controls'; }
+			unset($command);
 			$output .= "\n\n";
 		}
 		// TODO: better collect stream info
@@ -122,10 +128,13 @@ function debug_data($redis) {
 		// $output .= $streaminfo;
 		// }
 		$output .= "\n";
+		$output .= "###### mpd.conf ######\n";
+		$output .= file_get_contents('/etc/mpd.conf');
+		$output .= "\n";
 		$output .= "###### Kernel optimization parameters ######\n";
 		$output .= "hardware platform:\t".$redis->get('hwplatform')."\n";
 		$output .= "current orionprofile:\t".$redis->get('orionprofile')."\n";
-		$output .= "\n";
+		$output .= "\n\n";
 		// 		$output .=  "kernel scheduler for mmcblk0:\t\t".((empty(file_get_contents('/sys/block/mmcblk0/queue/scheduler'))) ? "\n" : file_get_contents('/sys/block/mmcblk0/queue/scheduler'));
 		$output .=  "kernel scheduler for mmcblk0:\t\t\t".file_get_contents('/sys/block/mmcblk0/queue/scheduler');
 		$output .=  "/proc/sys/vm/swappiness:\t\t\t".file_get_contents('/proc/sys/vm/swappiness');
@@ -139,15 +148,58 @@ function debug_data($redis) {
 		$output .= "\n";
 		$output .= "\n";
 		$output .= "###### Kernel module snd_usb_audio settings ######\n";
-		$sndusbinfo = sysCmd('systool -v -m snd_usb_audio');
-		$output .= implode("\n",$sndusbinfo)."\n\n\n";
+		$command = sysCmd('systool -v -m snd_usb_audio');
+		$output .= implode("\n",$command)."\n\n";
+		unset($command);
+		$output .= "###### Systemd active startup scripts (ls -lah /etc/systemd/system/multi-user.target.wants/) ######\n";
+		$command = sysCmd('ls -lah /etc/systemd/system/multi-user.target.wants/');
+		$output .= implode("\n",$command)."\n\n\n";
 		$output .= "###### Filesystem mounts ######\n";
-		$output .=  file_get_contents('/proc/mounts');
+		$output .=  file_get_contents('/proc/mounts')."\n\n";
+		$output .= "###### Filesystem mounts - free space (df -h) ######\n";
+		$command = sysCmd('df -h');
+		$output .= implode("\n",$command)."\n\n\n";
+		unset($command);
+		$output .= "###### Loaded kernel modules ######\n";
+		$command = sysCmd('lsmod');
+		$output .= implode("\n",$command)."\n\n\n";
+		unset($command);
+		$output .= "###### Network sockets (netstat -lnp) ######\n";
+		$command = sysCmd('netstat -lnp');
+		$output .= implode("\n",$command)."\n\n\n";
+		unset($command);
+		$output .= "###### Network interfaces (ip addr) ######\n";
+		$command = sysCmd('ip addr');
+		$output .= implode("\n",$command)."\n\n\n";
+		unset($command);
+		$output .= "###### Network interfaces (ifconfig) ######\n";
+		$command = sysCmd('ifconfig');
+		$output .= implode("\n",$command)."\n\n";
+		unset($command);
+		$output .= "###### Network netctl profiles (netctl list) ######\n";
+		$command = sysCmd('netctl list');
+		$output .= implode("\n",$command)."\n\n";
+		unset($command);
+		$command = sysCmd("netctl list | cut -d ' ' -f 2,3");
+		foreach ($command as $interface) {
+			$command = sysCmd('netctl status '.trim($interface));
+			$output .= $interface." netctl status\n";
+			$output .= "--------------------------------------------------------\n";
+			$output .= implode("\n",$command)."\n\n";
+			$output .= $interface." netctl profile\n";
+			$output .= "--------------------------------------------------------\n";
+			$command = sysCmd('cat /etc/netctl/'.trim($interface));
+			$output .= implode("\n",$command)."\n\n";
+		}
 		$output .= "\n";
-		$output .= "\n";
-		$output .= "###### mpd.conf ######\n";
-		$output .= file_get_contents('/etc/mpd.conf');
-		$output .= "\n";
+		$output .= "###### Network wifi status (iwconfig) ######\n";
+		$command = sysCmd('iwconfig');
+		$output .= implode("\n",$command)."\n\n";
+		unset($command);
+		$output .= "###### Network wifi site-scan (iwlist scan) ######\n";
+		$command = sysCmd('iwlist scan');
+		$output .= implode("\n",$command)."\n\n";
+		unset($command);
 		$output .= "###### PHP backend ######\n";
 		$output .= "php version:\t".phpVer()."\n";
 		$output .= "debug level:\t".$redis->get('debug')."\n";
