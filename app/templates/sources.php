@@ -21,7 +21,10 @@
 	<h2>USB mounts</h2>
 	<p>List of mounted USB drives. If a drive is connected but not shown in the list, please check if <a href="/settings/#features-management">USB automount</a> is enabled.</p>
 	<div class="button-list">	
+	<?php if( $this->usbmounts !== null ): foreach($this->usbmounts as $usbmount): ?>
+		<p><a href="#" class="btn btn-lg btn-default btn-block"><i class="fa fa-check green sx"></i>/dev/<?=$usbmount->device ?>&nbsp;&nbsp;<?=$usbmount->name ?>&nbsp;&nbsp;<span>(size:&nbsp;<?=$usbmount->size ?>&nbsp;<?=$usbmount->use ?>&nbsp;in use)</span></a></p>
+	<?php endforeach; else: ?>
 		<p><button class="btn btn-lg btn-disabled btn-block" disabled="disabled">no USB mounts present</button></p>
-		<p><a href="#" class="btn btn-lg btn-default btn-block"><i class="fa fa-check green sx"></i> USB1&nbsp;&nbsp;&nbsp;&nbsp;<span>FAT32 (2048 MB)</span></a></p>
+	<?php endif; ?>
 	</div>
 </div>

@@ -81,7 +81,7 @@ usleep(500000);
 }
 
 if (isset($argv[3]) && $argv[3] === 'simplemessage') {
-	$output = array( 'title' => $argv[1], 'text' => $argv[2]);
+	$output = array( 'title' => $argv[1], 'text' => $argv[2], 'type' => null);
 	ui_render('notify', json_encode($output));
 } else {
 	ui_render('notify', $argv[1]);

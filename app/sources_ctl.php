@@ -81,6 +81,10 @@ if( $source !== true ){ foreach ($source as $mp) {
 } }
 
 $template->mounts = $mounts;
+$usbmounts = $redis->hGetAll('usbmounts');
+foreach ($usbmounts as $usbmount) {
+$template->usbmounts[] = json_decode($usbmount);
+}
 
 if (isset($template->action)) {
 

@@ -47,6 +47,15 @@ if (strpos(file_get_contents('/proc/mounts'),'/mnt/MPD/USB/EFI vfat')) {
     sysCmd('devmon --unmount /mnt/MPD/USB/EFI');
 }
 
+// record mount point info in Redis
+$redis->Del('usbmounts');
+$usbmounts = sysCmd("df -h | grep USB | cut -d ' ' -f 1,23,31,32 | cut -d '/' -f 3,6-7");
+foreach ($usbmounts as $line) {
+$line = explode(' ',trim($line));
+$redis->hSet('usbmounts',$line[0],json_encode(array('device' => $line[0], 'size' => $line[1], 'use' => $line[2], 'name' => $line[3])));
+}
+
+
 // connect to MPD daemon
 $mpd = openMpdSocket('/run/mpd.sock');
 // update MPD database
