@@ -994,7 +994,7 @@ function randomScrollDB() {
 // notify messages rendering
 function renderMSG(text) {
 	// console.log((notify.hide === undefined) ? 'undefined' : notify.hide);
-	console.log(text);
+	// console.log(text);
 	var notify = text[0];
 	if (notify.type !== null) {
 		if (notify.type === 'kernelswitch') {
@@ -1031,7 +1031,8 @@ function renderMSG(text) {
 		text: notify.text,
 		icon: (notify.icon === undefined) ? 'fa fa-check' : notify.icon,
 		opacity: (notify.opacity === undefined) ? 0.9 : notify.opacity,
-		hide: (notify.hide === undefined)
+		hide: (notify.hide === undefined),
+		delay: (notify.delay === undefined) ? 8000 : notify.delay
 	});
 }
 

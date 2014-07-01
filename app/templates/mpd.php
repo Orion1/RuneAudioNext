@@ -4,7 +4,7 @@
 	<form class="form-horizontal" action="" method="post">
 		<fieldset>
 			<legend>Audio Output</legend>
-			<div class="boxed">
+			<div class="boxed-group">
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="audio-output-interface">Audio output interface</label>
 					<div class="col-sm-10">
