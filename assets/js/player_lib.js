@@ -135,6 +135,19 @@ function wlansChannel(){
 	$.ajax({url: '/command/?cmd=wifiscan'});
 }
 
+// open the NIC details channel
+function nicsChannel(){
+	var pushstream = new PushStream({
+		host: window.location.hostname,
+		port: window.location.port,
+		modes: "websocket"
+	});
+	pushstream.onmessage = nicsDetails;
+	pushstream.addChannel('nics');
+	pushstream.connect();
+	$.ajax({url: '/command/?cmd=wifiscan'});
+}
+
 // launch the Playback UI refresh from the data response
 function renderUI(text){
 	$('#loader').addClass('hide');
@@ -1175,6 +1188,27 @@ function listWLANs(text) {
 		content = '<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>';
 	}
 	document.getElementById('wifiNetworks').innerHTML = content;
+}
+
+// draw the NICs details table
+function nicsDetails(text) {
+	var i = 0, content = '', nics = text[0];
+	console.log(nics);
+	$.each(nics, function(i) {
+		if (i === $('#nic-details').data('name')) {
+			content += '<tr><th>Name:</th><td><strong>' + i + '<strong></td></tr>';
+			content += '<tr><th>Type:</th><td>wireless</td></tr>';
+			content += '<tr><th>SSID:</th><td><strong>' + nics[i].currentssid + '</strong></td></tr>';
+			content += '<tr><th>Assigned IP:</th><td>' + nics[i].ip + '</td></tr>';
+			content += '<tr><th>Speed:</th><td>' + nics[i].speed + '</td></tr>';
+			
+			content += '<tr><th>Netmask:</th><td>' + nics[i].netmask + '</td></tr>';
+			content += '<tr><th>Gateway:</th><td>' + nics[i].gw + '</td></tr>';
+			content += '<tr><th>DNS1:</th><td>' + nics[i].dns1 + '</td></tr>';
+			content += '<tr><th>DNS2:</th><td>' + nics[i].dns2 + '</td></tr>';
+		}
+	});
+	$('#nic-details tbody').html(content);
 }
 
 // check visibility of the window

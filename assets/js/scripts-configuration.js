@@ -240,6 +240,7 @@ jQuery(document).ready(function($){ 'use strict';
 		// refresh in range Wi-Fi networks list
 		if($('#wifiNetworks').length){
 			wlansChannel();
+			nicsChannel();
 			var refreshWiFi = setInterval(function() {
 				$.ajax({url: '/command/?cmd=wifiscan'});
 			}, 15000);
