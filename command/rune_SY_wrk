@@ -119,7 +119,7 @@ redisDatastore($redis,'reset');
 	// system ENV files check and replace
 	// runelog("system ENV files check and replace",'');
 	//	wrk_sysEnvCheck($arch,1);
-
+	
 runelog('--- RUNEAUDIO FIRST RUN PROCESS');
 // invoke rune_SY_wrk.php respawn
 sysCmd('systemctl restart rune_SY_wrk');
@@ -183,7 +183,7 @@ runelog("service: MPDSCRIBBLE start",'');
 sysCmd('systemctl start mpdscribble');
 }
 // read system network interfaces details
-wrk_netconfig($redis,'setnics');
+// wrk_netconfig($redis,'setnics');
 // check /etc/network/interfaces integrity
 hashCFG('check_net',$redis);
 // check /etc/mpd.conf integrity
@@ -199,7 +199,13 @@ if ($redis->get('cmediafix') === '1') {
 		// runelog('env: SET KERNEL PROFILE',$redis->get('orionprofile'));
 		// $cmd = "/var/www/command/orion_optimize.sh ".$redis->get('orionprofile')." ".$redis->get('hwplatformid') ;
 		// sysCmd($cmd);
- 
+
+// collect debug data
+sysCmdAsync('/var/www/command/debug_collector');
+
+// refresh nics status
+sysCmdAsync('/var/www/command/refresh_nics'); 
+
 runelog('--- NORMAL STARTUP');
 // --- NORMAL STARTUP //
 

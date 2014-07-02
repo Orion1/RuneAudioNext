@@ -58,6 +58,10 @@ function debug_data($redis) {
 		$output .= "playerID:\t".$redis->get('playerid')."\n";
 		$output .= "\n";
 		$output .= "\n";
+		$output .= "###### System load statistics (procinfo -H) ######\n";
+		$command = sysCmd('procinfo -H');
+		$output .= implode("\n",$command)."\n\n\n";
+		unset($command);
 		$output .= "###### Active processes (pstree) ######\n";
 		$command = sysCmd('pstree');
 		$output .= implode("\n",$command)."\n\n\n";
@@ -200,6 +204,10 @@ function debug_data($redis) {
 		$command = sysCmd('iwlist scan');
 		$output .= implode("\n",$command)."\n\n";
 		unset($command);
+		$output .= "###### Kernel status (dmesg) ######\n";
+		$command = sysCmd('dmesg');
+		$output .= implode("\n",$command)."\n\n";
+		unset($command);
 		$output .= "###### PHP backend ######\n";
 		$output .= "php version:\t".phpVer()."\n";
 		$output .= "debug level:\t".$redis->get('debug')."\n";
@@ -222,4 +230,3 @@ return $output;
 }
 
 $redis->set('debugdata',debug_data($redis));
-$redis->Save();

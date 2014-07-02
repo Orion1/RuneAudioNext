@@ -43,30 +43,37 @@ $redis->connect('127.0.0.1', 6379);
 include('/var/www/app/libs/runeaudio.php');
 include '/var/www/app/libs/vendor/ziegler/iwlist-parser.class.php';
 
-// startup condition
+// startup - collect system data
+runelog('--------------------------- collect system data ---------------------------');
 $active_nics = sysCmd("ifconfig | grep UP | cut -d ':' -f 1");
 $detected_nics = sysCmd("ip addr |grep \"BROADCAST,\" |cut -d':' -f1-2 |cut -d' ' -f2");
 $inactive_nics = array_diff($detected_nics,$active_nics);
 $configured_nics = array_map("trim", sysCmd("netctl list | cut -d ' ' -f 2,3"));
-$removed_nics = print_r(array_diff($configured_nics,$detected_nics));
+$removed_nics = array_diff($configured_nics,$detected_nics);
 
 // debug
+runelog('########### active_nics ########### ', $active_nics);
 // print_r($active_nics);
 // print_r($detected_nics);
+runelog('########### detected_nics ########### ', $detected_nics);
 // print_r(array_diff($detected_nics,$active_nics));
 // print_r($configured_nics);
+runelog('########### configured_nics ########### ', $configured_nics);
 // print_r(array_diff($configured_nics,$detected_nics));
-print_r($removed_nics);
+// print_r($removed_nics);
+runelog('########### removed_nics ########### ', $removed_nics);
 
+// handle inactive nics
+runelog('--------------------------- handle inactive nics ---------------------------');
 if (!empty($inactive_nics)) {
 	foreach($inactive_nics as $nic) {
 		$wireless = sysCmd("iwconfig ".$nic." | grep 'no wireless'");
 		if (empty($wireless)) {
 			// activate link
-			runelog('activate currently inactive wifi nic: '.$nic);
+			runelog('########### activate currently inactive wifi nic: '.$nic);
 			sysCmd('ip link set '.$nic.' up');
 			// start wpa_supplicant
-			runelog('start wpa_supplicant for wifi nic: '.$nic);
+			runelog('########### start wpa_supplicant for wifi nic: '.$nic);
 			sysCmd('systemctl start wpa_supplicant@'.$nic);
 			// check if the nic is unconfigured (= without an existing netctl profile)
 			if (empty(sysCmd('ls /etc/netctl/ | grep '.$nic))) {
@@ -75,41 +82,26 @@ if (!empty($inactive_nics)) {
 				$args->name = $nic;
 				$args->wireless = '1';
 				$args->dhcp = '1';
-				wrk_netconfig($redis,'writecfg',$args);
+				wrk_netconfig($redis,'writecfg',$args,1);
 			}
 			// check wpa_supplicant status
-			if (empty(sysCmd('ls /etc/systemd/system/multi-user.target.wants/ | grep wpa_supplicant@'.$nic))) {
+			// if (empty(sysCmd('ls /etc/systemd/system/multi-user.target.wants/ | grep wpa_supplicant@'.$nic))) {
 				// enable wpa_supplicant
-				runelog('enable wpa_supplicant for wifi nic: '.$nic);
-				sysCmd('systemctl enable wpa_supplicant@'.$nic);
-			}
+				// runelog('########### enable wpa_supplicant for wifi nic: '.$nic);
+				// sysCmd('systemctl enable wpa_supplicant@'.$nic);
+			// }
+			// enable netctl profile
+			// if (empty(sysCmd('ls /etc/systemd/system/multi-user.target.wants/ | grep netctl@'.$nic))) {
+				// runelog('########### enable netctl for wifi nic: '.$nic);
+				// sysCmd('netctl enable '.$nic);
+			// }
 		}
 	}
 }
 
 unset($nic);
 
-if (!empty($removed_nics)) {
-	foreach($removed_nics as $nic) {
-		// check for orphan netctl startup profiles
-		if (!empty(sysCmd('ls /etc/systemd/system/multi-user.target.wants/ | grep '.$nic))) {
-			// delete orphan netctl profiles
-			runelog('delete netctl profiles for nic: '.$nic);
-			// sysCmd("rm -f /etc/systemd/system/multi-user.target.wants/ifplugd@".$nic.".service')");
-			sysCmd("systemctl disable ifplugd@".$nic.".service')");
-			// sysCmd("rm -f /etc/systemd/system/multi-user.target.wants/netctl@".$nic.".service')");
-			sysCmd("systemctl disable netctl@".$nic.".service')");
-		}
-		// check wpa_supplicant startup status
-		if (!empty(sysCmd('ls /etc/systemd/system/multi-user.target.wants/ | grep wpa_supplicant@'.$nic))) {
-			// disable wpa_supplicant autostart 
-			runelog('disable wpa_supplicant autostart for nic: '.$nic);
-			// sysCmd("rm -f /etc/systemd/system/multi-user.target.wants/wpa_supplicant@".$nic.".service')");
-			sysCmd("systemctl disable wpa_supplicant@".$nic.".service')");
-		}
-	}
-}
-
+runelog('--------------------------- handle active nics ---------------------------');
 // check if there is a stored profile
 // refesh visible wifi networks.
 $iw = new iwlist_parser;
@@ -119,10 +111,24 @@ wrk_netconfig($redis,'setnics');
 $nics = wrk_netconfig($redis,'getnics');
 // debug
 // print_r($nics);
-foreach ($nics as $key => $nicdetail) {
+foreach ($nics as $nic => $nicdetail) {
 	if ($nicdetail->wireless === 1) {
+		// check and activate wpa_supplicant
+		if (empty(sysCmd("ps x | grep '\-c\/etc\/wpa_supplicant\/wpa_supplicant.conf'"))) {
+			runelog('########### start wpa_supplicant for nic: '.$nic);
+			sysCmd('systemctl start wpa_supplicant@'.$nic);
+			}
+		// check ad activate netctl@nic profile
+		if (empty(sysCmd('netctl list | grep '.$nic.' | grep \*'))) {
+			runelog('########### start netctl profile for nic: '.$nic);
+				if(!empty(sysCmd('netctl start '.$nic))) {
+					runelog('########### ZERO condition reached for nic: '.$nic.' restart link and wpa_supplicant helper');
+					sysCmd('ip link set '.$nic.' up');
+					sysCmd('systemctl start wpa_supplicant@'.$nic);
+				}
+			}
 		// temp
-		$scan = $iw->parseScanDev( $key );
+		$scan = $iw->parseScanDev( $nic );
 		$redis->set('wlans',json_encode($scan));
 		// debug
 		// print_r($scan);
@@ -142,5 +148,29 @@ foreach ($nics as $key => $nicdetail) {
 		// print_r($wlans);
 		// render wlans channel
 		ui_render('wlans',json_encode($wlans));
+	}
+}
+
+unset($nic);
+
+// handle removed nics
+runelog('--------------------------- handle removed nics ---------------------------');
+if (!empty($removed_nics)) {
+	foreach($removed_nics as $nic) {
+		// check for orphan netctl startup profiles
+		if (!empty(sysCmd('ls /etc/systemd/system/multi-user.target.wants/ | grep '.$nic))) {
+			// disable orphan netctl profiles
+			// sysCmd("rm -f /etc/systemd/system/multi-user.target.wants/netctl@".$nic.".service')");
+			// sysCmd("systemctl disable netctl@".$nic.".service')");
+			runelog('########### disable netctl profiles for nic: '.$nic);
+			sysCmd('netctl disable '.$nic);
+		}
+		// check wpa_supplicant startup status
+		// if (!empty(sysCmd('ls /etc/systemd/system/multi-user.target.wants/ | grep wpa_supplicant@'.$nic))) {
+			// disable wpa_supplicant autostart 
+			// runelog('########### disable wpa_supplicant autostart for nic: '.$nic);
+			// sysCmd("rm -f /etc/systemd/system/multi-user.target.wants/wpa_supplicant@".$nic.".service')");
+			// sysCmd('systemctl disable wpa_supplicant@'.$nic.'.service');
+		// }
 	}
 }
