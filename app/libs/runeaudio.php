@@ -896,7 +896,7 @@ function wrk_opcache($action,$redis) {
 	}
 }
 
-function wrk_netconfig($redis,$action,$args = null) {
+function wrk_netconfig($redis,$action,$args = null,$configonly = null) {
 $updateh = 0;
 	switch ($action) {
 		case 'setnics':
@@ -983,7 +983,7 @@ $updateh = 0;
 			$fp = fopen('/etc/netctl/'.$args->name, 'w');
 			fwrite($fp, $nic);
 			fclose($fp);
-			$updateh = 1;
+			if (!isset($configonly)) $updateh = 1;
 		break;
 		
 		case 'manual':
