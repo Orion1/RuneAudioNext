@@ -151,6 +151,8 @@ foreach ($nics as $nic => $nicdetail) {
 	}
 }
 
+// send nics status to RuneUI
+ui_render('nics',json_encode($nics));
 unset($nic);
 
 // handle removed nics
