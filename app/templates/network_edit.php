@@ -2,7 +2,7 @@
 	<h1>Network interface</h1>
 	<?php if ($this->nic->wireless === 1): ?>
 	<legend>Wi-Fi networks in range</legend>
-	<span class="help-block">The list of available Wi-Fi networks is automatically refreshed every 15 seconds.</span>
+	<span class="help-block">The list of available Wi-Fi networks is automatically refreshed every 15 seconds while you are on this page (so don't forget it open in your browser to avoid unnecessary system load).</span>
 	<fieldset>
 		<div id="wifiNetworks" class="boxed">
 			<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>
