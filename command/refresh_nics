@@ -42,6 +42,28 @@ $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
 include('/var/www/app/libs/runeaudio.php');
 include '/var/www/app/libs/vendor/ziegler/iwlist-parser.class.php';
+
+// startup condition
+$active_nics = sysCmd("ifconfig | grep UP | cut -d ':' -f 1");
+$detected_nics = sysCmd("ip addr |grep \"BROADCAST,\" |cut -d':' -f1-2 |cut -d' ' -f2");
+$inactive_nics = array_diff($detected_nics,$active_nics);
+// debug
+// print_r($active_nics);
+// print_r($detected_nics);
+// print_r(array_diff($detected_nics,$active_nics));
+
+if (!empty($inactive_nics)) {
+	foreach($inactive_nics as $nic) {
+		$wireless = sysCmd("iwconfig ".$nic." | grep 'no wireless'");
+		if (empty($wireless)) {
+			runelog('activate currently inactive wifi nic: '.$nic);
+			sysCmd('ip link set '.$nic.' up');
+		}
+	}
+}
+
+
+// check if there is a stored profile
 // refesh visible wifi networks.
 $iw = new iwlist_parser;
 // debug
@@ -55,7 +77,6 @@ foreach ($nics as $key => $nicdetail) {
 		// temp
 		$scan = $iw->parseScanDev( $key );
 		$redis->set('wlans',json_encode($scan));
-		
 		// debug
 		// print_r($scan);
 		foreach ($scan as $nicname => $nicscan) {
@@ -76,4 +97,3 @@ foreach ($nics as $key => $nicdetail) {
 		ui_render('wlans',json_encode($wlans));
 	}
 }
-

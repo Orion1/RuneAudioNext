@@ -20,7 +20,7 @@
 				<?php foreach ($this->wlan_profiles as $profile): ?>
 				<p><a href="/network/wlan/<?=$this->arg ?>/<?=$profile->ssid ?>" class="btn btn-lg btn-default btn-block"><?php if ($this->nic->currentssid === $profile->ssid): ?><i class="fa fa-check green sx"></i> <?php endif; ?><?php if ($profile->encryption !== 'none'): ?><i class="fa fa-lock sx"></i><?php endif; ?><strong><?=$profile->ssid ?></strong></a></p>
 				<?php endforeach; ?>
-				<p><a href="/network/wlan/add" class="btn btn-primary btn-lg btn-block"><i class="fa fa-plus sx"></i> Add new profile</a></p>
+				<p><a href="/network/wlan/<?=$this->arg ?>/add" class="btn btn-primary btn-lg btn-block"><i class="fa fa-plus sx"></i> Add new profile</a></p>
 			</div>
 		</div>
 	</fieldset>
@@ -61,34 +61,34 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[ip]">IP address</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="address" name="nic[ip]" value="<?=$this->nic->ip ?>" placeholder="<?=$this->nic->ip ?>" data-parsley-trigger="change" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="address" name="nic[ip]" <?php if (isset($this->nic_stored)): ?>value="<?=$this->nic_stored->ip ?>" placeholder="<?=$this->nic_stored->ip ?><?php else: ?>value="<?=$this->nic->ip ?>" placeholder="<?=$this->nic->ip ?>"<?php endif; ?> data-parsley-trigger="change" required />
 						<span class="help-block">Manually set the IP address.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[netmask]">Netmask</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="netmask" name="nic[netmask]" value="<?=$this->nic->netmask ?>" data-parsley-trigger="change" placeholder="<?=$this->nic->netmask ?>" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="netmask" name="nic[netmask]" <?php if (isset($this->nic_stored)): ?>value="<?=$this->nic_stored->netmask ?>" data-parsley-trigger="change" placeholder="<?=$this->nic_stored->netmask ?>"<?php else: ?>value="<?=$this->nic->netmask ?>" data-parsley-trigger="change" placeholder="<?=$this->nic->netmask ?>"<?php endif; ?> required />
 						<span class="help-block">Manually set the network mask.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[gw]">Gateway</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="gateway" name="nic[gw]" value="<?=$this->nic->gw ?>" placeholder="<?=$this->nic->gw ?>" data-parsley-trigger="change" required />
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="gateway" name="nic[gw]" <?php if (isset($this->nic_stored)): ?>value="<?=$this->nic_stored->gw ?>" placeholder="<?=$this->nic_stored->gw ?>" data-parsley-trigger="change"<?php else: ?>value="<?=$this->nic->gw ?>" placeholder="<?=$this->nic->gw ?>" data-parsley-trigger="change"<?php endif; ?> required />
 						<span class="help-block">Manually set the gateway.</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[dns1]">Primary DNS</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="dns1" name="nic[dns1]" value="<?=$this->nic->dns1 ?>" placeholder="<?=$this->nic->dns1 ?>" data-parsley-trigger="change" >
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="dns1" name="nic[dns1]" <?php if (isset($this->nic_stored)): ?>value="<?=$this->nic_stored->dns1 ?>" placeholder="<?=$this->nic_stored->dns1 ?>" data-parsley-trigger="change"<?php else: ?>value="<?=$this->nic->dns1 ?>" placeholder="<?=$this->nic->dns1 ?>" data-parsley-trigger="change"<?php endif; ?> >
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="nic[dns2]">Secondary DNS</label>
 					<div class="col-sm-10">
-						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="dns2" name="nic[dns2]" value="<?=$this->nic->dns2 ?>" placeholder="<?=$this->nic->dns2 ?>" data-parsley-trigger="change" >
+						<input class="form-control input-lg" type="text" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" id="dns2" name="nic[dns2]" <?php if (isset($this->nic_stored)): ?>value="<?=$this->nic_stored->dns2 ?>" placeholder="<?=$this->nic_stored->dns2 ?>" data-parsley-trigger="change"<?php else: ?>value="<?=$this->nic->dns2 ?>" placeholder="<?=$this->nic->dns2 ?>" data-parsley-trigger="change"<?php endif; ?> >
 						<span class="help-block">Manually set the primary and secondary DNS.</span>
 					</div>
 				</div>

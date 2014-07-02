@@ -62,6 +62,17 @@ $template->nics = wrk_netconfig($redis,'getnics');
 if (isset($template->action)) {
 	// check if we are into interface details (ex. http://runeaudio/network/edit/eth0)
 	if (isset($template->arg)) {
+		// check if there is a stored profile for current nic
+		// debug
+		// runelog('nic name: ',$template->uri(3));
+		$nic_stored_profile = json_decode($redis->Get($template->uri(3)));
+		// runelog('nic stored profile: ',$nic_stored_profile);
+		if (!empty($nic_stored_profile)) {
+			if ($nic_stored_profile->dhcp === '0') {
+				// read nic stored profile
+				$template->nic_stored = $nic_stored_profile;
+			}
+		}
 		// retrieve current nic status data (detected from the system)
 		$nic_connection = $redis->hGet('nics', $template->arg);
 		$template->nic = json_decode($nic_connection);
@@ -117,4 +128,5 @@ if (isset($template->action)) {
 	}
 	// debug
 	// print_r($template->wlans);
+	print_r($template->nic_stored);
 } 

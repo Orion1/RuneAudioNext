@@ -69,7 +69,7 @@
 		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
 				<a href="javascript:window.history.back();" class="btn btn-default btn-lg">Cancel</a> <!-- TODO: record routing path in session and use recorded data as href -->
-				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php echo ($this->addprofile === 1) ? 'Connect' : 'Save profile'; ?></button>
+				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php if($this->addprofile !== 1): ?>Connect<?php else: ?>Save profile<?php endif; ?></button>
 			</div>
 		</div>
 		<?php endif; ?>
