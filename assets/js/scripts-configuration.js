@@ -241,17 +241,14 @@ jQuery(document).ready(function($){ 'use strict';
 		if($('#wifiNetworks').length){
 			wlansChannel();
 			nicsChannel();
-			var refreshWiFi = setInterval(function() {
-				$.ajax({url: '/command/?cmd=wifiscan'});
-			}, 15000);
 		}
 		
 		// show/hide WiFi stored profile box
 		$('#wifiProfiles').change(function(){
 			if ($(this).prop('checked')) {
-				$('#wifiProfilesBox').removeClass('hide');
-			} else {
 				$('#wifiProfilesBox').addClass('hide');
+			} else {
+				$('#wifiProfilesBox').removeClass('hide');
 			}
 		});
 

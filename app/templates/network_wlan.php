@@ -26,8 +26,12 @@
 							</td>
 						</tr>
 						<tr><th>Encryption:</th><td><?php if ($this->{$this->uri(4)}->{'Encryption key'} === 'on' && $this->{$this->uri(4)}->{'Group Cipher'} != null && strpos($this->{$this->uri(4)}->IE,'WPA')): ?><i class="fa fa-lock sx"></i>WPA / WPA2 - PSK (<?php if ($this->{$this->uri(4)}->{'Group Cipher'} === 'CCMP'): ?>AES<?php else: ?><?=$this->{$this->uri(4)}->{'Group Cipher'} ?><?php  endif; ?>)<?php elseif ($this->{$this->uri(4)}->{'Encryption key'} === 'on'): ?><i class="fa fa-lock sx"></i>WEP<?php else: ?><i class="fa fa-unlock-alt sx"></i>none (Open Network)<?php endif; ?></td></tr>
-						<tr><th><a href="/network/edit/<?=$this->uri(3) ?>"><i class="fa fa-arrow-left sx"></i> back to NIC details</a></th><td></td></tr>
 					</tbody>
+					<!--
+					<tfoot>
+						<tr><th><a href="/network/edit/<?=$this->uri(3) ?>"><i class="fa fa-arrow-left sx"></i> back to NIC details</a></th><td></td></tr>
+					</tfoot>
+					-->
 				</table>
 			</div>
 		</fieldset>
@@ -68,7 +72,7 @@
 		</fieldset>
 		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
-				<a href="javascript:window.history.back();" class="btn btn-default btn-lg">Cancel</a> <!-- TODO: record routing path in session and use recorded data as href -->
+				<a href="/network/edit/<?=$this->uri(3) ?>" class="btn btn-default btn-lg">Cancel</a> <!-- TODO: check url -->
 				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php if($this->addprofile !== 1): ?>Connect<?php else: ?>Save profile<?php endif; ?></button>
 			</div>
 		</div>

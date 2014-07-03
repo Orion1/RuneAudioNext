@@ -145,7 +145,6 @@ function nicsChannel(){
 	pushstream.onmessage = nicsDetails;
 	pushstream.addChannel('nics');
 	pushstream.connect();
-	$.ajax({url: '/command/?cmd=wifiscan'});
 }
 
 // launch the Playback UI refresh from the data response
@@ -486,7 +485,7 @@ function populateDB(options){
 				var results = (data.length) ? data.length : '0';
 				var s = (data.length === 1) ? '' : 's';
 				$('#db-level-up').addClass('hide');
-				$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
+				$('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
 			}
 			for (i = 0; (row = data[i]); i += 1) {
 				content += parseResponse({
@@ -1173,7 +1172,7 @@ function listWLANs(text) {
 	var i = 0, content = '', wlans = text[0];
 	// console.log(wlans);
 	$.each(wlans, function(i) {
-		content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block">';
+		content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block" title="See network properties">';
 		if (wlans[i].connected !== 0) {
 			content += '<i class="fa fa-check green sx"></i>';
 		}
@@ -1188,6 +1187,7 @@ function listWLANs(text) {
 		content = '<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>';
 	}
 	document.getElementById('wifiNetworks').innerHTML = content;
+	$.ajax({url: '/command/?cmd=wifiscan'});
 }
 
 // draw the NICs details table
@@ -1198,14 +1198,13 @@ function nicsDetails(text) {
 		if (i === $('#nic-details').data('name')) {
 			content += '<tr><th>Name:</th><td><strong>' + i + '<strong></td></tr>';
 			content += '<tr><th>Type:</th><td>wireless</td></tr>';
-			content += '<tr><th>SSID:</th><td><strong>' + nics[i].currentssid + '</strong></td></tr>';
-			content += '<tr><th>Assigned IP:</th><td>' + nics[i].ip + '</td></tr>';
-			content += '<tr><th>Speed:</th><td>' + nics[i].speed + '</td></tr>';
-			
-			content += '<tr><th>Netmask:</th><td>' + nics[i].netmask + '</td></tr>';
-			content += '<tr><th>Gateway:</th><td>' + nics[i].gw + '</td></tr>';
-			content += '<tr><th>DNS1:</th><td>' + nics[i].dns1 + '</td></tr>';
-			content += '<tr><th>DNS2:</th><td>' + nics[i].dns2 + '</td></tr>';
+			content += '<tr><th>Status:</th><td>' + ((nics[i].currentssid === 'off/any') ? '<i class="fa fa-times red sx"></i>no network connected' : ('<i class="fa fa-check green sx"></i>connected to "<strong>' + nics[i].currentssid + '</strong>"')) + '</td></tr>';
+			content += '<tr><th>Assigned IP:</th><td>' + ((nics[i].ip !== null) ? nics[i].ip : 'none') + '</td></tr>';
+			content += '<tr><th>Speed:</th><td>' + ((nics[i].speed !== null) ? nics[i].speed : 'unknown') + '</td></tr>';
+			// content += '<tr><th>Netmask:</th><td>' + nics[i].netmask + '</td></tr>';
+			// content += '<tr><th>Gateway:</th><td>' + nics[i].gw + '</td></tr>';
+			// content += '<tr><th>DNS1:</th><td>' + nics[i].dns1 + '</td></tr>';
+			// content += '<tr><th>DNS2:</th><td>' + nics[i].dns2 + '</td></tr>';
 		}
 	});
 	$('#nic-details tbody').html(content);

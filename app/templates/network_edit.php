@@ -2,7 +2,7 @@
 	<h1>Network interface</h1>
 	<?php if ($this->nic->wireless === 1): ?>
 	<legend>Wi-Fi networks in range</legend>
-	<span class="help-block">The list of available Wi-Fi networks is automatically refreshed every 15 seconds while you are on this page (so don't forget it open in your browser to avoid unnecessary system load).</span>
+	<span class="help-block">The list of available Wi-Fi networks is automatically refreshed while you are on this page (so don't forget it open in your browser to avoid unnecessary system load).</span>
 	<fieldset>
 		<div id="wifiNetworks" class="boxed">
 			<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>
@@ -12,8 +12,8 @@
 	<fieldset>
 		<div class="boxed">
 			<label class="switch-light switch-block well" onclick="">
-				<input id="wifiProfiles" name="features[airplay][enable]" type="checkbox" value="1"<?php if($this->wifiprofiles['enable'] == 1): ?> checked="checked" <?php endif ?>>
-				<span><span>HIDE</span><span>SHOW</span></span><a class="btn btn-primary"></a>
+				<input id="wifiProfiles" name="features[airplay][enable]" type="checkbox" value="1"<?php if($this->wifiprofiles['enable'] !== 1): ?> checked="checked" <?php endif ?>>
+				<span><span>SHOW<i class="fa fa-chevron-down dx"></i></span><span>HIDE<i class="fa fa-chevron-up dx"></i></span></span><a class="btn btn-primary"></a>
 			</label>
 			<div id="wifiProfilesBox" class="hide">
 				<span class="help-block">Add, edit or delete stored Wi-Fi profiles.</span>
@@ -40,13 +40,17 @@
 						<tr><th>Assigned IP:</th><td><?php if ($this->nic->ip !== null): ?><strong><?php echo $this->nic->ip; ?></strong><?php else: ?>none<?php endif; ?></td></tr>
 						<tr><th>Speed:</th><td><?php if ($this->nic->speed !== ' Unknown!' && $this->nic->speed !== null): ?><?=$this->nic->speed ?><?php else: ?>unknown<?php endif; ?></td></tr>
 					</tbody>
+					<!--
 					<tfoot>
 						<tr><th><a href="/network"><i class="fa fa-arrow-left sx"></i> back to the list</a></th><td></td></tr>
 					</tfoot>
+					-->
 				</table>
 			</div>
 		</fieldset>
-		<!-- <p>If you mess up with this configuration you can <a data-toggle="modal" href="#net-config-defaults">reset to default</a>.</p> -->
+		<!--
+		<p>If you mess up with this configuration you can <a data-toggle="modal" href="#net-config-defaults">reset to default</a>.</p>
+		-->
 		<fieldset>
 			<legend>Interface configuration</legend>
 			<div class="form-group">
@@ -105,20 +109,23 @@
 	</form>
 </div>
 <div id="net-config-defaults" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="mpd-config-defaults-label" aria-hidden="true">
-		  <form name="netconf_reset" method="post" id="netconf_reset">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 id="mpd-config-defaults-label">Reset the configuration</h3>
-			</div>
-			<div class="modal-body">
-				<p>You are going to reset the configuration to the default original values.<br>
-				You will lose any modification.</p>
-			</div>
-			
-			<div class="modal-footer">
-			<input type="hidden" name="reset" value="1">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-				<button type="submit" class="btn btn-primary" >Continue</button>
-			</div>
-		  </form>
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<form name="netconf_reset" method="post" id="netconf_reset">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 id="mpd-config-defaults-label">Reset the configuration</h3>
+				</div>
+				<div class="modal-body">
+					<p>You are going to reset the configuration to the default original values.<br>
+					You will lose any modification.</p>
+				</div>
+				<div class="modal-footer">
+					<input type="hidden" name="reset" value="1">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+					<button type="submit" class="btn btn-primary" >Continue</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>

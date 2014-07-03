@@ -230,7 +230,7 @@ jQuery(document).ready(function($){ 'use strict';
 		var s = (count === 1) ? '' : 's';
 		if (filter !== '') {
 			$('#pl-count').addClass('hide');
-			$('#pl-filter-results').removeClass('hide').html('<i class="fa fa-times sx"></i> <span class="visible-xs">back</span><span class="hidden-xs">' + (+count) + ' result' + s + ' for "<span class="keyword">' + filter + '</span>"</span>');
+			$('#pl-filter-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline">back</span><span class="hidden-xs">' + (+count) + ' result' + s + ' for "<span class="keyword">' + filter + '</span>"</span>');
 		} else {
 			$('#pl-count').removeClass('hide');
 			$('#pl-filter-results').addClass('hide').html('');
