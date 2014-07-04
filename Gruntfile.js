@@ -9,8 +9,8 @@ module.exports = function(grunt) {
       all: [
         'Gruntfile.js',
         'assets/js/*.js',
-        '!assets/js/vendor/*.js',
-        '!assets/js/runeui.min.js'
+        '!assets/js/runeui.min.js',
+		'!assets/js/vendor/*.js'
       ]
     },
     less: {
@@ -46,7 +46,7 @@ module.exports = function(grunt) {
           'assets/less/themes/*.less',
           'assets/less/toggle-switch/*.less',
         ],
-        tasks: ['contrib-less']
+        tasks: ['less']
       },
       js: {
         files: [
@@ -64,7 +64,8 @@ module.exports = function(grunt) {
         files: [
           'assets/css/runeui.css',
           'assets/js/runeui.min.js',
-          'templates/*.php',
+          'app/*.php',
+          'app/templates/*.php',
           '*.php'
         ]
       }
