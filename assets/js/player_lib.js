@@ -1169,37 +1169,54 @@ function renderLibraryHome() {
 
 // list of in range wlans
 function listWLANs(text) {
-	var i = 0, content = '', wlans = text[0];
+	var i = 0, content = '', inrange = '', stored = '', wlans = text[0];
 	// console.log(wlans);
 	$.each(wlans, function(i) {
 		content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block" title="See network properties">';
 		if (wlans[i].connected !== 0) {
 			content += '<i class="fa fa-check green sx"></i>';
 		}
-		if (wlans[i].encryption === 'on') {
-			content += '<i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i>';
+		if (wlans[i].storedprofile === 1 && wlans[i].encryption === 'on') {
+			content += '<i class="fa fa-lock sx"></i>';
 		} else {
-			content += '<i class="fa fa-rss fa-wifi sx"></i>';
+			if (wlans[i].encryption === 'on') {
+				content += '<i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i>';
+			} else {
+				content += '<i class="fa fa-rss fa-wifi sx"></i>';
+			}
 		}
 		content += '<strong>' + wlans[i].ESSID + '</strong></a></p>';
+		if (wlans[i].storedprofile === 1) {
+			stored += content;
+		} else {
+			inrange += content;
+		}
+		content = '';
 	});
-	if (wlans === '') {
-		content = '<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>';
+	if (inrange === '') {
+		inrange = '<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>';
 	}
-	document.getElementById('wifiNetworks').innerHTML = content;
+	document.getElementById('wifiNetworks').innerHTML = inrange;
+	document.getElementById('wifiStored').innerHTML = stored;
 	$.ajax({url: '/command/?cmd=wifiscan'});
 }
 
 // draw the NICs details table
 function nicsDetails(text) {
 	var i = 0, content = '', nics = text[0];
-	console.log(nics);
+	// console.log(nics);
 	$.each(nics, function(i) {
 		if (i === $('#nic-details').data('name')) {
 			content += '<tr><th>Name:</th><td><strong>' + i + '<strong></td></tr>';
 			content += '<tr><th>Type:</th><td>wireless</td></tr>';
-			content += '<tr><th>Status:</th><td>' + ((nics[i].currentssid === 'off/any') ? '<i class="fa fa-times red sx"></i>no network connected' : ('<i class="fa fa-check green sx"></i>connected to "<strong>' + nics[i].currentssid + '</strong>"')) + '</td></tr>';
-			content += '<tr><th>Assigned IP:</th><td>' + ((nics[i].ip !== null) ? nics[i].ip : 'none') + '</td></tr>';
+			if (nics[i].currentssid === 'off/any') {
+				content += '<tr><th>Status:</th><td><i class="fa fa-times red sx"></i>no network connected</td></tr>';
+			} else {
+				content += '<tr><th>Status:</th><td><i class="fa fa-check green sx"></i>connected</td></tr>';
+				content += '<tr><th>Associated SSID:</th><td><strong>' + nics[i].currentssid + '</strong></td></tr>';
+			}
+			
+			content += '<tr><th>Assigned IP:</th><td>' + ((nics[i].ip !== null) ? ('<strong>' + nics[i].ip + '</strong>') : 'none') + '</td></tr>';
 			content += '<tr><th>Speed:</th><td>' + ((nics[i].speed !== null) ? nics[i].speed : 'unknown') + '</td></tr>';
 			// content += '<tr><th>Netmask:</th><td>' + nics[i].netmask + '</td></tr>';
 			// content += '<tr><th>Gateway:</th><td>' + nics[i].gw + '</td></tr>';

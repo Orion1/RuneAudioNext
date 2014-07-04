@@ -17,9 +17,11 @@
 			</label>
 			<div id="wifiProfilesBox" class="hide">
 				<span class="help-block">Add, edit or delete stored Wi-Fi profiles.</span>
+				<div id="wifiStored">
 				<?php foreach ($this->wlan_profiles as $profile): ?>
-				<p><a href="/network/wlan/<?=$this->arg ?>/<?=$profile->ssid ?>" class="btn btn-lg btn-default btn-block"><?php if ($this->nic->currentssid === $profile->ssid): ?><i class="fa fa-check green sx"></i> <?php endif; ?><?php if ($profile->encryption !== 'none'): ?><i class="fa fa-lock sx"></i><?php endif; ?><strong><?=$profile->ssid ?></strong></a></p>
+				<p><a href="/network/wlan/<?=$this->arg ?>/<?=$profile->ssid ?>" class="btn btn-lg btn-default btn-block"><?php if ($this->nic->currentssid === $profile->ssid): ?><i class="fa fa-check green sx"></i><?php endif; ?><?php if ($profile->encryption !== 'none'): ?><i class="fa fa-lock sx"></i><?php endif; ?><strong><?=$profile->ssid ?></strong></a></p>
 				<?php endforeach; ?>
+				</div>
 				<p><a href="/network/wlan/<?=$this->arg ?>/add" class="btn btn-primary btn-lg btn-block"><i class="fa fa-plus sx"></i> Add new profile</a></p>
 			</div>
 		</div>
