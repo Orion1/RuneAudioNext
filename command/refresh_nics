@@ -156,6 +156,7 @@ foreach ($nics as $nic => $nicdetail) {
 			$stored_profiles[$i]['nic'] = $details->nic;
 			if (isset($details->key)) { $stored_profiles[$i]['encryption'] = 'on';  } else { $stored_profiles[$i]['encryption'] = 'off'; }
 			$stored_profiles[$i]['ESSID'] = $details->ssid;
+			if ($nicdetail->currentssid === $details->ssid) { $stored_profiles[$i]['connected'] = 1; } else { $stored_profiles[$i]['connected'] = 0; }
 			$stored_profiles[$i]['storedprofile'] = 1;
 			$wlans[] = $stored_profiles[$i];
 		}
