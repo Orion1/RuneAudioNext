@@ -12,7 +12,7 @@
 					<tbody>
 						<tr><th>Network SSID:</th><td><strong><?=$this->uri(4) ?></strong></td></tr>
 						<?php if ($this->nic->currentssid === $this->{$this->uri(4)}->{'ESSID'}): ?>
-						<tr><th>Status:</th><td><i class="fa fa-check green sx"></i>connected<br><button class="btn btn-primary btn-lg">Disconnect</button></td></tr>
+						<tr><th>Status:</th><td><i class="fa fa-check green sx"></i>connected</td></tr>
 						<?php endif; ?>
 						<tr>
 							<th>Signal strength:</th>
@@ -33,6 +33,14 @@
 					</tfoot>
 					-->
 				</table>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="form-group form-actions">
+				<div class="col-sm-12">
+					<a class="btn btn-default btn-lg" href="/network/edit/<?=$this->uri(3) ?>">Cancel</a>
+					<button class="btn btn-primary btn-lg" type="submit">Disconnect</button>
+				</div>
 			</div>
 		</fieldset>
 		<?php endif; ?>
@@ -72,7 +80,7 @@
 		</fieldset>
 		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
-				<a href="/network/edit/<?=$this->uri(3) ?>" class="btn btn-default btn-lg">Cancel</a> <!-- TODO: check url -->
+				<a class="btn btn-default btn-lg" href="/network/edit/<?=$this->uri(3) ?>">Cancel</a>
 				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php if($this->addprofile !== 1): ?>Connect<?php else: ?>Save profile<?php endif; ?></button>
 			</div>
 		</div>
