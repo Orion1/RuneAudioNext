@@ -569,9 +569,14 @@ while (1) {
 						sysCmd('/var/www/command/refresh_nics');
 					}
 					if ($job->action === 'scan') {
-						runelog('wificfg: scan ');
-						// refresh nics status
-						sysCmd('/var/www/command/refresh_nics');
+						$lock = $redis->Get('lock_wifiscan');
+						if ($lock !== 1) {
+							runelog('wificfg: scan ');
+							// refresh nics status
+							sysCmd('/var/www/command/refresh_nics');
+						} else {
+							runelog('wificfg: scan aborted. System locked, scan in progress.');
+						}
 					}
 					$redis->sRem('w_lock',$jobID);
 				break;

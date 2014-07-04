@@ -1651,7 +1651,7 @@ function wrk_sourcemount($redis,$action,$id) {
 				}
 			} else if ($mp['type'] === 'nfs') {
 				// nfs mount
-				$mountstr = "mount -t nfs -o soft,retry=1,noatime,rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
+				$mountstr = "mount -t nfs -o soft,retry=0,actimeo=0,noac,retrans=1,timeo=1,nofsc,noatime,rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
 			} 
 			// debug
 			runelog('mount string',$mountstr);

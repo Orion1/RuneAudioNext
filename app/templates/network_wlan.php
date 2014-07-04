@@ -39,7 +39,7 @@
 			<div class="form-group form-actions">
 				<div class="col-sm-12">
 					<a class="btn btn-default btn-lg" href="/network/edit/<?=$this->uri(3) ?>">Cancel</a>
-					<button class="btn btn-primary btn-lg" type="submit">Disconnect</button>
+					<button class="btn btn-primary btn-lg" name="wpa_cli" value="disconnect" type="submit">Disconnect</button>
 				</div>
 			</div>
 		</fieldset>

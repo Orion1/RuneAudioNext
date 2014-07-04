@@ -43,6 +43,9 @@ $redis->connect('127.0.0.1', 6379);
 include('/var/www/app/libs/runeaudio.php');
 include '/var/www/app/libs/vendor/ziegler/iwlist-parser.class.php';
 
+// startup - lock the scan system
+runelog('--------------------------- lock the scan system ---------------------------');
+$redis->Set('lock_wifiscan',1);
 // startup - collect system data
 runelog('--------------------------- collect system data ---------------------------');
 $active_nics = sysCmd("ifconfig | grep UP | cut -d ':' -f 1");
@@ -192,3 +195,7 @@ if (!empty($removed_nics)) {
 		// }
 	}
 }
+
+// end - unlock the scan system
+runelog('--------------------------- unlock the scan system ---------------------------');
+$redis->Set('lock_wifiscan',0);
