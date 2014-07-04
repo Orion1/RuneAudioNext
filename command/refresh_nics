@@ -147,7 +147,22 @@ foreach ($nics as $nic => $nicdetail) {
 		// debug
 		// print_r($wlans);
 		// render wlans channel
-		ui_render('wlans',json_encode($wlans));
+		// $wlans = json_encode($wlans);
+		$wlans_profiles = $redis->hGetAll('wlan_profiles');
+		$i = count($wlans);
+		foreach ($wlans_profiles as $profile => $details) {
+			$i++;
+			$details = json_decode($details);
+			$stored_profiles[$i]['nic'] = $details->nic;
+			if (isset($details->key)) { $stored_profiles[$i]['encryption'] = 'on';  } else { $stored_profiles[$i]['encryption'] = 'off'; }
+			$stored_profiles[$i]['ESSID'] = $details->ssid;
+			$stored_profiles[$i]['storedprofile'] = 1;
+			$wlans[] = $stored_profiles[$i];
+		}
+		$wlans = json_encode($wlans);
+		// $wlans = json_encode(array_merge($wlans, $stored_profiles));
+		ui_render('wlans',$wlans);
+		runelog('wlans response: ',$wlans);
 	}
 }
 

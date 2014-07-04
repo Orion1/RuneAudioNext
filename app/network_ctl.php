@@ -128,5 +128,5 @@ if (isset($template->action)) {
 	}
 	// debug
 	// print_r($template->wlans);
-	print_r($template->nic_stored);
+	// print_r($template->nic_stored);
 } 

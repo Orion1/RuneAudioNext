@@ -200,10 +200,10 @@ function debug_data($redis) {
 		$command = sysCmd('iwconfig');
 		$output .= implode("\n",$command)."\n\n";
 		unset($command);
-		$output .= "###### Network wifi site-scan (iwlist scan) ######\n";
-		$command = sysCmd('iwlist scan');
-		$output .= implode("\n",$command)."\n\n";
-		unset($command);
+		// $output .= "###### Network wifi site-scan (iwlist scan) ######\n";
+		// $command = sysCmd('iwlist scan');
+		// $output .= implode("\n",$command)."\n\n";
+		// unset($command);
 		$output .= "###### Kernel status (dmesg) ######\n";
 		$command = sysCmd('dmesg');
 		$output .= implode("\n",$command)."\n\n";
