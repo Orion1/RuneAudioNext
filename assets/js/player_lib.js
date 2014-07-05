@@ -53,12 +53,23 @@ function sendCmd(inputcmd) {
 	request = null;
 }
 
+// check WebSocket support
+function checkWS(){
+	if (window.WebSocket){
+		 // console.log("BROWSER SUPPORTED");
+		 return 'websocket';
+	} else {
+		 // console.log("BROWSER NOT SUPPORTED");
+		 return 'longpolling';
+	}
+}
+
 // open the Playback UI refresh channel
 function playbackChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket",
+		modes: checkWS(),
 		reconnectOnChannelUnavailableInterval: 5000
 	});
 	pushstream.onmessage = renderUI;
@@ -87,7 +98,7 @@ function queueChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket"
+		modes: checkWS()
 	});
 	pushstream.onmessage = getPlaylist;
 	// pushstream.onstatuschange = function(status) {
@@ -103,7 +114,7 @@ function libraryChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket"
+		modes: checkWS()
 	});
 	pushstream.onmessage = libraryHome;
 	pushstream.addChannel('library');
@@ -115,7 +126,7 @@ function notifyChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket"
+		modes: checkWS()
 	});
 	pushstream.onmessage = renderMSG;
 	pushstream.addChannel('notify');
@@ -127,7 +138,7 @@ function wlansChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket"
+		modes: checkWS()
 	});
 	pushstream.onmessage = listWLANs;
 	pushstream.addChannel('wlans');
@@ -140,7 +151,7 @@ function nicsChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: "websocket"
+		modes: checkWS()
 	});
 	pushstream.onmessage = nicsDetails;
 	pushstream.addChannel('nics');

@@ -62,8 +62,16 @@ jQuery(document).ready(function($){ 'use strict';
 	 
 	// first connection with MPD daemon
 	// open UI rendering channel;
-	// playbackChannel();
-	var worker = new Worker(playbackChannel());
+	if(typeof(Worker) !== "undefined") {
+		// Web worker support OK
+		var playbackBlob = new Blob([
+			  playbackChannel()
+			], { type: "text/javascript" });
+			var playbackWRK = new Worker(window.URL.createObjectURL(playbackBlob));
+		} else {
+		// Web worker unsupported
+		playbackChannel();
+	}
 	
 	// first GUI update
 	// updateGUI();
@@ -72,8 +80,16 @@ jQuery(document).ready(function($){ 'use strict';
 	PNotify.prototype.options.styling = 'fontawesome';
 	
 	// open notify channel
-	// notifyChannel();
-	var worker = new Worker(notifyChannel());
+	if(typeof(Worker) !== "undefined") {
+		// Web worker support OK
+		var notifyBlob = new Blob([
+		  notifyChannel()
+		], { type: "text/javascript" });
+		var notifyWRK = new Worker(window.URL.createObjectURL(notifyBlob));
+	} else {
+		// Web worker unsupported
+		notifyChannel();
+	}
 	
 	// BUTTONS
 	// ----------------------------------------------------------------------------------------------------
@@ -240,8 +256,30 @@ jQuery(document).ready(function($){ 'use strict';
 		
 		// refresh in range Wi-Fi networks list
 		if($('#wifiNetworks').length){
-			wlansChannel();
-			nicsChannel();
+			// open wlans channel
+			if(typeof(Worker) !== "undefined") {
+				// Web worker support OK
+				var wlansBlob = new Blob([
+				  wlansChannel()
+				], { type: "text/javascript" });
+				var notifyWRK = new Worker(window.URL.createObjectURL(wlansBlob));
+			} else {
+				// Web worker unsupported
+				wlansChannel();
+			}
+			
+			// open nics channel
+			if(typeof(Worker) !== "undefined") {
+				// Web worker support OK
+				var nicsBlob = new Blob([
+				  nicsChannel()
+				], { type: "text/javascript" });
+				var notifyWRK = new Worker(window.URL.createObjectURL(nicsBlob));
+			} else {
+				// Web worker unsupported
+				nicsChannel();
+			}
+			
 		}
 		
 		// show/hide WiFi stored profile box
