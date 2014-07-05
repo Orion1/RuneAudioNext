@@ -168,7 +168,16 @@ function renderUI(text){
 		$('#time').val(0).trigger('change');
 	}
 	if ($('#section-index').length && GUI.json.playlist !== GUI.playlist) {
-		getPlaylistCmd();
+		if(typeof(Worker) !== "undefined") {
+			// Web worker support OK
+			var playlistBlob = new Blob([
+			  getPlaylistCmd()
+			], { type: "text/javascript" });
+			var playlistWRK = new Worker(window.URL.createObjectURL(playlistBlob));
+		} else {
+			// Web worker unsupported
+			getPlaylistCmd();
+		}		
 		GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
 	}

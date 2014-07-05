@@ -62,17 +62,18 @@ jQuery(document).ready(function($){ 'use strict';
 	 
 	// first connection with MPD daemon
 	// open UI rendering channel;
-	playbackChannel();
+	// playbackChannel();
+	var worker = new Worker(playbackChannel());
 	
 	// first GUI update
-	updateGUI();
+	// updateGUI();
 	
 	// PNotify init options
 	PNotify.prototype.options.styling = 'fontawesome';
 	
 	// open notify channel
-	notifyChannel();
-	
+	// notifyChannel();
+	var worker = new Worker(notifyChannel());
 	
 	// BUTTONS
 	// ----------------------------------------------------------------------------------------------------
