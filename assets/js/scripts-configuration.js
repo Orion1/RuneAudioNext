@@ -62,16 +62,7 @@ jQuery(document).ready(function($){ 'use strict';
 	 
 	// first connection with MPD daemon
 	// open UI rendering channel;
-	if(typeof(Worker) !== "undefined") {
-		// Web worker support OK
-		var playbackBlob = new Blob([
-			  playbackChannel()
-			], { type: "text/javascript" });
-			var playbackWRK = new Worker(window.URL.createObjectURL(playbackBlob));
-		} else {
-		// Web worker unsupported
-		playbackChannel();
-	}
+	execAsync(playbackChannel());
 	
 	// first GUI update
 	// updateGUI();
@@ -80,16 +71,7 @@ jQuery(document).ready(function($){ 'use strict';
 	PNotify.prototype.options.styling = 'fontawesome';
 	
 	// open notify channel
-	if(typeof(Worker) !== "undefined") {
-		// Web worker support OK
-		var notifyBlob = new Blob([
-		  notifyChannel()
-		], { type: "text/javascript" });
-		var notifyWRK = new Worker(window.URL.createObjectURL(notifyBlob));
-	} else {
-		// Web worker unsupported
-		notifyChannel();
-	}
+	execAsync(notifyChannel());
 	
 	// BUTTONS
 	// ----------------------------------------------------------------------------------------------------
@@ -257,29 +239,10 @@ jQuery(document).ready(function($){ 'use strict';
 		// refresh in range Wi-Fi networks list
 		if($('#wifiNetworks').length){
 			// open wlans channel
-			if(typeof(Worker) !== "undefined") {
-				// Web worker support OK
-				var wlansBlob = new Blob([
-				  wlansChannel()
-				], { type: "text/javascript" });
-				var notifyWRK = new Worker(window.URL.createObjectURL(wlansBlob));
-			} else {
-				// Web worker unsupported
-				wlansChannel();
-			}
+			execAsync(wlansChannel());
 			
 			// open nics channel
-			if(typeof(Worker) !== "undefined") {
-				// Web worker support OK
-				var nicsBlob = new Blob([
-				  nicsChannel()
-				], { type: "text/javascript" });
-				var notifyWRK = new Worker(window.URL.createObjectURL(nicsBlob));
-			} else {
-				// Web worker unsupported
-				nicsChannel();
-			}
-			
+			execAsync(nicsChannel());	
 		}
 		
 		// show/hide WiFi stored profile box

@@ -62,31 +62,11 @@ jQuery(document).ready(function($){ 'use strict';
 	 
 	// first connection with MPD daemon
 	// open UI rendering channel;
-	if(typeof(Worker) !== "undefined") {
-		// Web worker support OK
-		var playbackBlob = new Blob([
-			  playbackChannel()
-			], { type: "text/javascript" });
-			var playbackWRK = new Worker(window.URL.createObjectURL(playbackBlob));
-		} else {
-		// Web worker unsupported
-		playbackChannel();
-	}
+	execAsync(playbackChannel());
 	
-	
-	if( $('#section-index').length ){
-		if(typeof(Worker) !== "undefined") {
-			// Web worker support OK
-			var libraryBlob = new Blob([
-			  libraryChannel()
-			], { type: "text/javascript" });
-			var libraryWRK = new Worker(window.URL.createObjectURL(libraryBlob));
-		} else {
-			// Web worker unsupported
-			libraryChannel();
-		}
-	}
-	// queueChannel();
+	// open library channel
+	execAsync(libraryChannel());
+	// startChannel(queueChannel());
 	
 	// first GUI update
 	// updateGUI();
@@ -95,16 +75,7 @@ jQuery(document).ready(function($){ 'use strict';
 	PNotify.prototype.options.styling = 'fontawesome';
 
 	// open notify channel
-	if(typeof(Worker) !== "undefined") {
-		// Web worker support OK
-		var notifyBlob = new Blob([
-		  notifyChannel()
-		], { type: "text/javascript" });
-		var notifyWRK = new Worker(window.URL.createObjectURL(notifyBlob));
-	} else {
-		// Web worker unsupported
-		notifyChannel();
-	}
+	execAsync(notifyChannel());
 	
 	// BUTTONS
 	// ----------------------------------------------------------------------------------------------------

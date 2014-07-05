@@ -56,11 +56,34 @@ function sendCmd(inputcmd) {
 // check WebSocket support
 function checkWS(){
 	if (window.WebSocket){
-		 // console.log("BROWSER SUPPORTED");
+		 // console.log("WebSokets supported");
 		 return 'websocket';
 	} else {
-		 // console.log("BROWSER NOT SUPPORTED");
+		 // console.log("WebSokets not supported");
 		 return 'longpolling';
+	}
+}
+
+function checkWW(){
+	if( window.Worker || Modernizr.webworkers ){
+		// console.log('WebWorkers supported');
+		return true;
+	} else {
+		// console.log('WebWorkers not supported');
+		return false;
+	}
+}
+
+function execAsync(code){
+	// if browser support WebWorkers, launch a WW for async execution
+	if (checkWW()) {
+		var channelBlob = new Blob([
+		  code
+		], { type: "text/javascript" });
+		var wrk = new Worker(window.URL.createObjectURL(channelBlob));
+	// if browser does not support WebWorkers, execute code in syncronous way
+	} else {
+		code;
 	}
 }
 
@@ -179,16 +202,7 @@ function renderUI(text){
 		$('#time').val(0).trigger('change');
 	}
 	if ($('#section-index').length && GUI.json.playlist !== GUI.playlist) {
-		if(typeof(Worker) !== "undefined") {
-			// Web worker support OK
-			var playlistBlob = new Blob([
-			  getPlaylistCmd()
-			], { type: "text/javascript" });
-			var playlistWRK = new Worker(window.URL.createObjectURL(playlistBlob));
-		} else {
-			// Web worker unsupported
-			getPlaylistCmd();
-		}		
+		execAsync(getPlaylistCmd());
 		GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
 	}
