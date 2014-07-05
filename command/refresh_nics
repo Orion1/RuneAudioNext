@@ -46,6 +46,10 @@ include '/var/www/app/libs/vendor/ziegler/iwlist-parser.class.php';
 // startup - lock the scan system
 runelog('--------------------------- lock the scan system ---------------------------');
 $redis->Set('lock_wifiscan',1);
+// random delay
+$sleep = rand(1000000,2000000);
+usleep($sleep);
+runelog('random delay: ',$sleep);
 // startup - collect system data
 runelog('--------------------------- collect system data ---------------------------');
 $active_nics = sysCmd("ifconfig | grep UP | cut -d ':' -f 1");
@@ -157,7 +161,7 @@ foreach ($nics as $nic => $nicdetail) {
 			$i++;
 			$details = json_decode($details);
 			$stored_profiles[$i]['nic'] = $details->nic;
-			if (isset($details->key)) { $stored_profiles[$i]['encryption'] = 'on';  } else { $stored_profiles[$i]['encryption'] = 'off'; }
+			if ($details->encryption !== 'open') { $stored_profiles[$i]['encryption'] = 'on';  } else { $stored_profiles[$i]['encryption'] = 'off'; }
 			$stored_profiles[$i]['ESSID'] = $details->ssid;
 			if ($nicdetail->currentssid === $details->ssid) { $stored_profiles[$i]['connected'] = 1; } else { $stored_profiles[$i]['connected'] = 0; }
 			$stored_profiles[$i]['storedprofile'] = 1;

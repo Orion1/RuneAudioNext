@@ -15,15 +15,18 @@
 						<tr><th>Status:</th><td><i class="fa fa-check green sx"></i>connected</td></tr>
 						<?php endif; ?>
 						<tr>
+							<?php $signal_strength = $this->{$this->uri(4)}->{'Quality'}; ?>
+							<?php if (!empty($signal_strength)): ?>
 							<th>Signal strength:</th>
 							<td>
-								<?php $signal_strength = $this->{$this->uri(4)}->{'Quality'}; ?>
+	
 								<div id="wifi-signal-strength" class="progress">
 									<div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $signal_strength; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $signal_strength; ?>%;">
 										<?php echo $signal_strength; ?>%
 									</div>
 								</div>
 							</td>
+							<?php endif; ?>
 						</tr>
 						<tr><th>Encryption:</th><td><?php if ($this->{$this->uri(4)}->{'Encryption key'} === 'on' && $this->{$this->uri(4)}->{'Group Cipher'} != null && strpos($this->{$this->uri(4)}->IE,'WPA')): ?><i class="fa fa-lock sx"></i>WPA / WPA2 - PSK (<?php if ($this->{$this->uri(4)}->{'Group Cipher'} === 'CCMP'): ?>AES<?php else: ?><?=$this->{$this->uri(4)}->{'Group Cipher'} ?><?php  endif; ?>)<?php elseif ($this->{$this->uri(4)}->{'Encryption key'} === 'on'): ?><i class="fa fa-lock sx"></i>WEP<?php else: ?><i class="fa fa-unlock-alt sx"></i>none (Open Network)<?php endif; ?></td></tr>
 					</tbody>
@@ -35,6 +38,7 @@
 				</table>
 			</div>
 		</fieldset>
+		<?php if ($this->nic->currentssid === $this->{$this->uri(4)}->{'ESSID'}): ?>
 		<fieldset>
 			<div class="form-group form-actions">
 				<div class="col-sm-12">
@@ -43,6 +47,7 @@
 				</div>
 			</div>
 		</fieldset>
+		<?php endif; ?>
 		<?php endif; ?>
 		<?php if ($this->nic->currentssid !== $this->{$this->uri(4)}->{'ESSID'}): ?>
 		<fieldset>

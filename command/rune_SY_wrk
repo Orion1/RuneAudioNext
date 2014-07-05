@@ -551,6 +551,13 @@ while (1) {
 				
 				case 'wificfg':
 				runelog('wrk_SY: ',$job->wrkcmd);
+				// inject random delay to avoid wifi scan overlapping
+				if ($job->action === 'scan') {
+					// random delay
+					$sleep = rand(1000000,2000000);
+					usleep($sleep);
+					$lock = $redis->Get('lock_wifiscan');
+					}
 					$redis->sAdd('w_lock',$jobID);
 					if ($job->action === 'save') {
 						runelog('wificfg: save profile for SSID: '.$job->args->ssid);
@@ -569,11 +576,10 @@ while (1) {
 						sysCmd('/var/www/command/refresh_nics');
 					}
 					if ($job->action === 'scan') {
-						$lock = $redis->Get('lock_wifiscan');
-						if ($lock !== 1) {
+						if ($lock !== '1') {
 							runelog('wificfg: scan ');
 							// refresh nics status
-							sysCmd('/var/www/command/refresh_nics');
+							sysCmdAsync('/var/www/command/refresh_nics');
 						} else {
 							runelog('wificfg: scan aborted. System locked, scan in progress.');
 						}
