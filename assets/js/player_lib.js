@@ -1182,7 +1182,9 @@ function listWLANs(text) {
 			if (wlans[i].encryption === 'on') {
 				content += '<i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i>';
 			} else {
+				if (wlans[i].storedprofile !== 1 ) {
 				content += '<i class="fa fa-rss fa-wifi sx"></i>';
+				}
 			}
 		}
 		content += '<strong>' + wlans[i].ESSID + '</strong></a></p>';
