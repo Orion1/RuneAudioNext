@@ -21,12 +21,12 @@
 <script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/pushstream.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/jquery.plugin.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
 <?php if ($this->section == 'debug'): ?>
 <script src="<?=$this->asset('/js/vendor/ZeroClipboard.min.js')?>"></script>
 <?php endif ?>
 <?php if ($this->section == 'index'): ?>
+<script src="<?=$this->asset('/js/vendor/jquery.plugin.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.knob.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap-contextmenu.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.scrollTo.min.js')?>"></script>
