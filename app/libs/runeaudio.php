@@ -1012,31 +1012,35 @@ $updateh = 0;
 		sysCmd('mpc stop');
 		sysCmd('netctl stop '.$args->name);
 		sysCmd('ip addr flush dev '.$args->name);
-		sysCmd('netctl reenable '.$args->name);
-		if ($args->wireless === '1') {
-			// check if wpa_supplicant is enabled for current wifi interface.
-			if (!file_exists('/etc/systemd/system/multi-user.target.wants/wpa_supplicant@'.$args->name.'.service')) {
-				runelog('enable wpa_supplicant on '.$args->name);
-				sysCmd('systemctl enable wpa_supplicant@'.$args->name);
-			}
-		}
+		// sysCmd('netctl reenable '.$args->name);
+		// if ($args->wireless === '1') {
+			// //check if wpa_supplicant is enabled for current wifi interface.
+			// if (!file_exists('/etc/systemd/system/multi-user.target.wants/wpa_supplicant@'.$args->name.'.service')) {
+				// runelog('enable wpa_supplicant on '.$args->name);
+				// sysCmd('systemctl enable wpa_supplicant@'.$args->name);
+			// }
+		// }
 		if ($args->dhcp === '1') {
 		// dhcp configuration
-			// $cmd = 'systemctl enable ifplugd@'.$args->name;
-			$cmd = "ln -s '/usr/lib/systemd/system/ifplugd@.service' '/etc/systemd/system/multi-user.target.wants/ifplugd@".$args->name.".service'";
-			sysCmd($cmd);
+			if ($args->wireless !== '1') {
+				// $cmd = 'systemctl enable ifplugd@'.$args->name;
+				$cmd = "ln -s '/usr/lib/systemd/system/ifplugd@.service' '/etc/systemd/system/multi-user.target.wants/ifplugd@".$args->name.".service'";
+				sysCmd($cmd);
+			}
 			sysCmd('systemctl daemon-reload');
 		} else {
 		// static configuration
-			// $cmd = 'systemctl disable ifplugd@'.$args->name;
-			$cmd = "rm '/etc/systemd/system/multi-user.target.wants/ifplugd@".$args->name.".service'";
-			sysCmd($cmd);
-			sysCmd('systemctl daemon-reload');
-			// find pid of nic associated dhcpcd
-			$dhcpPID = sysCmd("ps aux | grep dhcpcd | grep ".$args->name." | cut -d ' ' -f 7");
-			// kill dhcpcd
-			sysCmd('kill '.$dhcpPID[0]);
-			sysCmd('killall ifplugd');
+			if ($args->wireless !== '1') {
+				// $cmd = 'systemctl disable ifplugd@'.$args->name;
+				$cmd = "rm '/etc/systemd/system/multi-user.target.wants/ifplugd@".$args->name.".service'";
+				sysCmd($cmd);
+				sysCmd('systemctl daemon-reload');
+				// find pid of nic associated dhcpcd
+				$dhcpPID = sysCmd("ps aux | grep dhcpcd | grep ".$args->name." | cut -d ' ' -f 7");
+				// kill dhcpcd
+				sysCmd('kill '.$dhcpPID[0]);
+				sysCmd('killall ifplugd');
+			}
 		}
 		sysCmd('netctl start '.$args->name);
 		sysCmd('systemctl restart mpd');

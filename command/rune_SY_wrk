@@ -376,7 +376,8 @@ while (1) {
 					// write network configuration
 					if ($job->action === 'config') {
 						wrk_netconfig($redis,'writecfg',$job->args);
-						wrk_netconfig($redis,'setnics');
+						// wrk_netconfig($redis,'setnics');
+						sysCmd('/var/www/command/refresh_nics');
 					}
 					// refresh network configuration
 					if ($job->action === 'refresh') {		

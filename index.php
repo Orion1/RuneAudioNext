@@ -46,6 +46,8 @@ $engine->loadExtension(new \League\Plates\Extension\Asset('/srv/http/assets', tr
 $engine->loadExtension(new \League\Plates\Extension\URI($_SERVER['REQUEST_URI']));
 // plates: create a new template
 $template = new \League\Plates\Template($engine);
+// dev state
+$template->dev = $redis->get('dev');
 
 // allowed controllers
 $controllers = array(
@@ -140,4 +142,3 @@ closeMpdSocket($mpd);
 $redis->close();
 // close session
 session_write_close();
-?>
