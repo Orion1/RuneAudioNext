@@ -23,7 +23,6 @@
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.plugin.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
-<script src="<?=$this->asset('/js/player_lib.js')?>"></script>
 <?php if ($this->section == 'debug'): ?>
 <script src="<?=$this->asset('/js/vendor/ZeroClipboard.min.js')?>"></script>
 <?php endif ?>
@@ -33,11 +32,10 @@
 <script src="<?=$this->asset('/js/vendor/jquery.scrollTo.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/Sortable.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/fastclick.js')?>"></script>
-<script src="<?=$this->asset('/js/scripts-playback.js')?>"></script>
 <?php else: ?>
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
-<script src="<?=$this->asset('/js/scripts-configuration.js')?>"></script>
 <?php endif ?>
+<script src="<?=$this->asset('/js/runeui.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/pnotify.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')?>"></script>

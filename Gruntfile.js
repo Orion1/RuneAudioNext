@@ -30,8 +30,7 @@ module.exports = function(grunt) {
     dist: {
         files: {
           'assets/js/runeui.min.js': [
-            'assets/js/vendor/*.js',
-            'assets/js/*.js'
+            'assets/js/runeui.js'
           ]
         }
       }
@@ -52,8 +51,8 @@ module.exports = function(grunt) {
         files: [
           '<%= jshint.all %>'
         ],
-        // tasks: ['jshint', 'uglify']
-        tasks: ['jshint']
+        tasks: ['jshint', 'uglify']
+        // tasks: ['jshint']
       },
       livereload: {
         // Browser live reloading
