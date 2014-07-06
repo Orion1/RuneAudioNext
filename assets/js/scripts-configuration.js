@@ -35,24 +35,25 @@
 // Global GUI Array
 // ----------------------------------------------------------------------------------------------------
 var GUI = {
-	json: 0,
-	playlist: null,
-	currentsong: null,
+	DBentry: ['', '', ''],
+	DBupdate: 0,
+	browsemode: 'file',
+	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
 	currentalbum: null,
 	currentknob: null,
-	state: '',
 	currentpath: '',
-	volume: null,
-	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
-	browsemode: 'file',
+	currentsong: null,
+	json: 0,
+	libraryhome: '',
+	mode: checkWebSocket(),
+	playlist: null,
 	plugin: '',
-	DBentry: ['', '', ''],
-	visibility: 'visible',
-	DBupdate: 0,
-	stepVolumeInt: 0,
+	state: '',
 	stepVolumeDelta: 0,
+	stepVolumeInt: 0,
 	stream: '',
-	libraryhome: ''
+	visibility: 'visible',
+	volume: null
 };
 
 jQuery(document).ready(function($){ 'use strict';
@@ -62,16 +63,16 @@ jQuery(document).ready(function($){ 'use strict';
 	 
 	// first connection with MPD daemon
 	// open UI rendering channel;
-	execAsync(playbackChannel());
+	playbackChannel();
 	
 	// first GUI update
 	// updateGUI();
 	
 	// PNotify init options
 	PNotify.prototype.options.styling = 'fontawesome';
-	
 	// open notify channel
-	execAsync(notifyChannel());
+	notifyChannel();
+	
 	
 	// BUTTONS
 	// ----------------------------------------------------------------------------------------------------
@@ -239,10 +240,10 @@ jQuery(document).ready(function($){ 'use strict';
 		// refresh in range Wi-Fi networks list
 		if($('#wifiNetworks').length){
 			// open wlans channel
-			execAsync(wlansChannel());
+			wlansChannel();
 			
 			// open nics channel
-			execAsync(nicsChannel());	
+			nicsChannel();
 		}
 		
 		// show/hide WiFi stored profile box

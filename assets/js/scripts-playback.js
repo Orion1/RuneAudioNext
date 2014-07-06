@@ -35,37 +35,38 @@
 // Global GUI Array
 // ----------------------------------------------------------------------------------------------------
 var GUI = {
-	json: 0,
-	playlist: null,
-	currentsong: null,
+	DBentry: ['', '', ''],
+	DBupdate: 0,
+	browsemode: 'file',
+	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
 	currentalbum: null,
 	currentknob: null,
-	state: '',
 	currentpath: '',
-	volume: null,
-	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
-	browsemode: 'file',
+	currentsong: null,
+	json: 0,
+	libraryhome: '',
+	mode: checkWebSocket(),
+	playlist: null,
 	plugin: '',
-	DBentry: ['', '', ''],
-	visibility: 'visible',
-	DBupdate: 0,
-	stepVolumeInt: 0,
+	state: '',
 	stepVolumeDelta: 0,
+	stepVolumeInt: 0,
 	stream: '',
-	libraryhome: ''
+	visibility: 'visible',
+	volume: null
 };
 
 jQuery(document).ready(function($){ 'use strict';
 
 	// INITIALIZATION
 	// ----------------------------------------------------------------------------------------------------
-	 
+	
 	// first connection with MPD daemon
 	// open UI rendering channel;
-	execAsync(playbackChannel());
+	playbackChannel();
 	
 	// open library channel
-	execAsync(libraryChannel());
+	libraryChannel();
 	// startChannel(queueChannel());
 	
 	// first GUI update
@@ -73,9 +74,9 @@ jQuery(document).ready(function($){ 'use strict';
 	
 	// PNotify init options
 	PNotify.prototype.options.styling = 'fontawesome';
-
 	// open notify channel
-	execAsync(notifyChannel());
+	notifyChannel();
+	
 	
 	// BUTTONS
 	// ----------------------------------------------------------------------------------------------------

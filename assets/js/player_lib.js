@@ -54,18 +54,19 @@ function sendCmd(inputcmd) {
 }
 
 // check WebSocket support
-function checkWS(){
+function checkWebSocket(){
 	if (window.WebSocket){
-		 // console.log("WebSokets supported");
-		 return 'websocket';
+		// console.log('WebSockets supported');
+		return 'websocket';
 	} else {
-		 // console.log("WebSokets not supported");
-		 return 'longpolling';
+		// console.log('WebSockets not supported');
+		return 'longpolling';
 	}
 }
 
-function checkWW(){
-	if( window.Worker || Modernizr.webworkers ){
+// check HTML5 Workers support
+function checkWorkers(){
+	if ((window.Worker && window.Blob) || (Modernizr.webworkers && Modernizr.blobconstructor)) {
 		// console.log('WebWorkers supported');
 		return true;
 	} else {
@@ -74,25 +75,12 @@ function checkWW(){
 	}
 }
 
-function execAsync(code){
-	// if browser support WebWorkers, launch a WW for async execution
-	if (checkWW()) {
-		var channelBlob = new Blob([
-		  code
-		], { type: "text/javascript" });
-		var wrk = new Worker(window.URL.createObjectURL(channelBlob));
-	// if browser does not support WebWorkers, execute code in syncronous way
-	} else {
-		code;
-	}
-}
-
 // open the Playback UI refresh channel
 function playbackChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: checkWS(),
+		modes: GUI.mode,
 		reconnectOnChannelUnavailableInterval: 5000
 	});
 	pushstream.onmessage = renderUI;
@@ -121,7 +109,7 @@ function queueChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: checkWS()
+		modes: GUI.mode
 	});
 	pushstream.onmessage = getPlaylist;
 	// pushstream.onstatuschange = function(status) {
@@ -137,7 +125,7 @@ function libraryChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: checkWS()
+		modes: GUI.mode
 	});
 	pushstream.onmessage = libraryHome;
 	pushstream.addChannel('library');
@@ -149,7 +137,7 @@ function notifyChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: checkWS()
+		modes: GUI.mode
 	});
 	pushstream.onmessage = renderMSG;
 	pushstream.addChannel('notify');
@@ -161,7 +149,7 @@ function wlansChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: checkWS()
+		modes: GUI.mode
 	});
 	pushstream.onmessage = listWLANs;
 	pushstream.addChannel('wlans');
@@ -174,7 +162,7 @@ function nicsChannel(){
 	var pushstream = new PushStream({
 		host: window.location.hostname,
 		port: window.location.port,
-		modes: checkWS()
+		modes: GUI.mode
 	});
 	pushstream.onmessage = nicsDetails;
 	pushstream.addChannel('nics');
@@ -202,13 +190,13 @@ function renderUI(text){
 		$('#time').val(0).trigger('change');
 	}
 	if ($('#section-index').length && GUI.json.playlist !== GUI.playlist) {
-		execAsync(getPlaylistCmd());
+		getPlaylistCmd();
 		GUI.playlist = GUI.json.playlist;
 		// console.log('playlist = ', GUI.playlist);
 	}
 }
 
-// [!] (discontinued) refresh the queue
+// refresh the queue ([TODO] improve in PushStream mode)
 function getPlaylistCmd(){
 	loadingSpinner('pl');
 	$.ajax({
@@ -236,7 +224,7 @@ function getPlaylistCmd(){
 	});
 }
 
-// launch the playing queue refresh
+// launch the playing queue refresh (PushStream mode, not implemented yet)
 function getPlaylist(text) {
 	data = text[0];
 	// console.log(data);
@@ -1027,12 +1015,12 @@ function customScroll(list, destination, speed) {
 
 // [!] scrolling debug purpose only
 function randomScrollPL() {
-	var n = $(".playlist li").size();
+	var n = $('.playlist li').size();
 	var random = 1 + Math.floor(Math.random() * n);
 	customScroll('pl', random);
 }
 function randomScrollDB() {
-	var n = $(".database li").size();
+	var n = $('.database li').size();
 	var random = 1 + Math.floor(Math.random() * n);
 	customScroll('db', random);
 }
