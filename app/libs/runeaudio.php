@@ -1031,16 +1031,13 @@ $updateh = 0;
 				// kill ifplugd
 				sysCmd('killall ifplugd');
 			}
-			// get pids of dhcpd
-			$pids = sysCmd('pidof dhcpcd');
-			$dhcp_pids = explode(' ',$pids[0]);
-			// debug
-			runelog('dhcp pids', $dhcp_pids);
-			foreach ($dhcp_pids as $pid) {
-				if (!empty(sysCmd('ps aux | grep '.$pid.' | grep '.$args->name))) {
-					// kill dhcpcd
-					sysCmd('kill '.$pid);
-				}
+			// get pids of dhcpcd
+			$pids = sysCmd('pgrep -xf "dhcpcd -4qL -t 30 '.$args->name.'"');
+			foreach ($pids as $pid) {
+				// debug
+				runelog('kill pid:', $pid);
+				// kill dhcpcd
+				sysCmd('kill '.$pid);
 			}
 		}
 		// start netctl profile for wired nics
