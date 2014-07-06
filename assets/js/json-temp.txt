@@ -1,1 +1,0 @@
-[{"bookmark":1,"name":"Musica","path":"NAS/Musica"},{"networkMounts":1},{"USBMounts":0},{"webradio":1},{"Dirble":3860}]
