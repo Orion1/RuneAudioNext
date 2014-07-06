@@ -28,7 +28,7 @@
 							</td>
 							<?php endif; ?>
 						</tr>
-						<tr><th>Encryption:</th><td><?php if ($this->{$this->uri(4)}->{'Encryption key'} === 'on' && $this->{$this->uri(4)}->{'Group Cipher'} != null && strpos($this->{$this->uri(4)}->IE,'WPA')): ?><i class="fa fa-lock sx"></i>WPA / WPA2 - PSK (<?php if ($this->{$this->uri(4)}->{'Group Cipher'} === 'CCMP'): ?>AES<?php else: ?><?=$this->{$this->uri(4)}->{'Group Cipher'} ?><?php  endif; ?>)<?php elseif ($this->{$this->uri(4)}->{'Encryption key'} === 'on'): ?><i class="fa fa-lock sx"></i>WEP<?php else: ?><i class="fa fa-unlock-alt sx"></i>none (Open Network)<?php endif; ?></td></tr>
+						<tr><th>Encryption:</th><td><?php if ($this->{$this->uri(4)}->{'Encryption key'} === 'on' && $this->{$this->uri(4)}->{'Group Cipher'} != null && strpos($this->{$this->uri(4)}->IE,'WPA') OR $this->profile_{$this->uri(4)}->encryption === 'wpa'): ?><i class="fa fa-lock sx"></i>WPA / WPA2 - PSK <?php if ($this->{$this->uri(4)}->{'Group Cipher'} === 'CCMP'): ?>(AES)<?php else: ?><?=$this->{$this->uri(4)}->{'Group Cipher'} ?><?php  endif; ?><?php elseif ($this->{$this->uri(4)}->{'Encryption key'} === 'on' OR $this->profile_{$this->uri(4)}->encryption === 'wep'): ?><i class="fa fa-lock sx"></i>WEP<?php else: ?><i class="fa fa-unlock-alt sx"></i>none (Open Network)<?php endif; ?></td></tr>
 					</tbody>
 					<!--
 					<tfoot>
@@ -38,12 +38,13 @@
 				</table>
 			</div>
 		</fieldset>
-		<?php if ($this->nic->currentssid === $this->{$this->uri(4)}->{'ESSID'}): ?>
+		<?php // if ($this->nic->currentssid === $this->{$this->uri(4)}->{'ESSID'}): ?>
+		<?php if ($this->nic->currentssid === $this->uri(4)): ?>
 		<fieldset>
 			<div class="form-group form-actions">
 				<div class="col-sm-12">
 					<a class="btn btn-default btn-lg" href="/network/edit/<?=$this->uri(3) ?>">Cancel</a>
-					<button class="btn btn-primary btn-lg" name="wpa_cli" value="disconnect" type="submit">Disconnect</button>
+					<button class="btn btn-primary btn-lg" name="wifiprofile[action]" value="disconnect" type="submit">Disconnect</button>
 				</div>
 			</div>
 		</fieldset>
@@ -63,9 +64,9 @@
 				<label class="col-sm-2 control-label" for="wifiprofile[encryption]">Security</label>
 				<div class="col-sm-10">
 					<select id="wifi-security" name="wifiprofile[encryption]" class="selectpicker" data-style="btn-default btn-lg">
-						<option value="open" <?php if($this->uri(4) !== null && strpos($this->{$this->uri(4)}->{'Encryption key'},'off')): ?>selected<?php endif; ?>>none (Open network)</option>
-						<option value="wpa" <?php if($this->uri(4) !== null && strpos($this->{$this->uri(4)}->IE,'WPA')): ?>selected<?php endif; ?>>WPA/WPA2 PSK</option>
-						<option value="wep" <?php if($this->uri(4) !== null && $this->{$this->uri(4)}->{'Encryption key'} === 'on' && !strpos($this->{$this->uri(4)}->IE,'WPA')): ?>selected<?php endif; ?>>WEP</option>
+						<option value="open" <?php if($this->uri(4) !== null && strpos($this->{$this->uri(4)}->{'Encryption key'},'off') OR $this->profile_{$this->uri(4)}->encryption === 'open'): ?>selected<?php endif; ?>>none (Open network)</option>
+						<option value="wpa" <?php if($this->uri(4) !== null && strpos($this->{$this->uri(4)}->IE,'WPA') OR $this->profile_{$this->uri(4)}->encryption === 'wpa' ): ?>selected<?php endif; ?>>WPA/WPA2 PSK</option>
+						<option value="wep" <?php if($this->uri(4) !== null && $this->{$this->uri(4)}->{'Encryption key'} === 'on' && !strpos($this->{$this->uri(4)}->IE,'WPA') OR $this->profile_{$this->uri(4)}->encryption === 'wep'): ?>selected<?php endif; ?>>WEP</option>
 					</select>
 					<span class="help-block">Choose the security type of the Wi-Fi you want to connect.</span>
 				</div>
@@ -73,6 +74,13 @@
 			<div id="wifi-security-key" class="form-group hide">
 				<label class="col-sm-2 control-label" for="wifiprofile[key]">Password</label>
 				<div class="col-sm-10">
+					<input type="hidden" name="wifiprofile[action]" value="<?php if($this->stored === 1): ?>edit<?php else: ?>add<?php endif; ?>">
+					<?php if($this->addprofile !== 1 && $this->stored !== 1 OR ($this->wlan_autoconnect !== '1' && $this->stored === 1 && isset($this->{$this->uri(4)}->{'ESSID'}))): ?>
+					<input type="hidden" name="wifiprofile[connect]" value="1">
+					<?php endif; ?>
+					<?php if(isset($this->profile_{$this->uri(4)}->id)): ?>
+					<input type="hidden" name="wifiprofile[id]" value="<?=$this->profile_{$this->uri(4)}->id ?>">
+					<?php endif; ?>
 					<input class="form-control input-lg" type="password" id="wifi-password" name="wifiprofile[key]" value="<?=$this->profile_{$this->uri(4)}->key ?>" data-trigger="change" autocomplete="off">
 					<span class="help-block">Set the key of the Wi-Fi you want to connect.</span>
 					<div class="checkbox">
@@ -86,7 +94,7 @@
 		<div class="form-group form-actions">
 			<div class="col-sm-offset-2 col-sm-10">
 				<a class="btn btn-default btn-lg" href="/network/edit/<?=$this->uri(3) ?>">Cancel</a>
-				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php if($this->addprofile !== 1): ?>Connect<?php else: ?>Save profile<?php endif; ?></button>
+				<button type="submit" class="btn btn-primary btn-lg" name="wifiprofile[nic]" value="<?=$this->uri(3) ?>"><?php if($this->addprofile !== 1 && $this->stored !== 1 OR ($this->wlan_autoconnect !== '1' && $this->stored === 1 && isset($this->{$this->uri(4)}->{'ESSID'}))): ?>Connect<?php elseif($this->stored === 1): ?>Modify profile<?php else: ?>Save profile<?php endif; ?></button>
 			</div>
 		</div>
 		<?php endif; ?>
@@ -106,8 +114,9 @@
 				<div class="modal-footer">
 					<button class="btn btn-default btn-lg" data-dismiss="modal" aria-hidden="true">Cancel</button>
 					<button type="submit" class="btn btn-primary btn-lg" name="action" value="remove">Remove</button>
-					<input type="hidden" name="wifidelete[ssid]" value="<?=$this->profile_{$this->uri(4)}->ssid ?>">
-					<input type="hidden" name="wifidelete[id]" value="<?=$this->profile_{$this->uri(4)}->id ?>">
+					<input type="hidden" name="wifiprofile[action]" value="delete">
+					<input type="hidden" name="wifiprofile[ssid]" value="<?=$this->profile_{$this->uri(4)}->ssid ?>">
+					<input type="hidden" name="wifiprofile[id]" value="<?=$this->profile_{$this->uri(4)}->id ?>">
 				</div>
 			</div>
 		</div>

@@ -901,7 +901,8 @@ $updateh = 0;
 	switch ($action) {
 		case 'setnics':
 			// flush nics Redis hash table
-			$redis->del('nics');
+			$transaction = $redis->multi();
+			$transaction->del('nics');
 			$interfaces = sysCmd("ip addr |grep \"BROADCAST,\" |cut -d':' -f1-2 |cut -d' ' -f2");
 			foreach ($interfaces as $interface) {
 				$ip = sysCmd("ip addr list ".$interface." |grep \"inet \" |cut -d' ' -f6|cut -d/ -f1");
@@ -920,11 +921,11 @@ $updateh = 0;
 					$speed = sysCmd("iwconfig ".$interface." 2>&1 | grep 'Bit Rate' | cut -d '=' -f 2 | cut -d ' ' -f 1-2");
 					$currentSSID = sysCmd("iwconfig ".$interface." | grep 'ESSID' | cut -d ':' -f 2 | cut -d '\"' -f 2");
 					$currentSSID = sysCmd("iwconfig ".$interface." | grep 'ESSID' | cut -d ':' -f 2 | cut -d '\"' -f 2");
-					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 1, 'currentssid' => $currentSSID[0])));
+					$transaction->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 1, 'currentssid' => $currentSSID[0])));
 					//// $scanwifi = 1;
 				} else {
 					$speed = sysCmd("ethtool ".$interface." 2>&1 | grep -i speed | cut -d':' -f2");
-					$redis->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 0)));
+					$transaction->hSet('nics', $interface , json_encode(array('ip' => $ip[0], 'netmask' => $netmask, 'gw' => $gw[0], 'dns1' => $dns[0], 'dns2' => $dns[1], 'speed' => $speed[0],'wireless' => 0)));
 				}
 			}
 			//// if ($scanwifi) sysCmdAsync('/var/www/command/refresh_nics');
@@ -936,6 +937,7 @@ $updateh = 0;
 					unlink('/etc/systemd/system/multi-user.target.wants/wpa_supplicant@'.$interface_name.'.service');
 				}
 			}
+			$transaction->exec();
 		break;
 		
 		case 'getnics':
@@ -1045,42 +1047,158 @@ $updateh === 0 || $redis->set($args->name.'_hash',md5_file('/etc/netctl/'.$args-
 
 function wrk_wifiprofile($redis,$action,$args) {
 	switch ($action) {
-		case 'save':
+		case 'add':
 			$args->id = wrk_wpa_cli('add', $args);
-			$return = $redis->hSet('wlan_profiles',$args->ssid,json_encode($args));
+			if ($args->id !== false) {
+				unset($args->action);
+				$return = $redis->hSet('wlan_profiles',$args->ssid,json_encode($args));
+			}
+		break;
+		
+		case 'edit':
+			if(wrk_wpa_cli('edit', $args, $redis)) {
+				unset($args->action);
+				unset($args->edit);
+				$return = $redis->hSet('wlan_profiles',$args->ssid,json_encode($args));
+			}
 		break;
 		
 		case 'delete':
 			if (wrk_wpa_cli('delete', $args)) $return = $redis->hDel('wlan_profiles',$args->ssid);
 		break;
+		
+		case 'connect':
+			if (wrk_wpa_cli('connect')) {
+				$redis->Set('wlan_autoconnect',1);
+				$return = 1;
+			}
+		break;
+		
+		case 'disconnect':
+			if (wrk_wpa_cli('disconnect')) {
+				$redis->Set('wlan_autoconnect',0);
+				$return = 1;
+			}
+		break;
 	}
 return $return;
 }
 
-function wrk_wpa_cli($action, $args) {
+function wrk_wpa_cli($action, $args = null, $redis = null) {
 $return = 0;
+// debug
+runelog('**** wrk_wpa_cli() START ****');
+runelog('----- wrk_wpa_cli() args:',$args);
+runelog('----- wrk_wpa_cli() action:',$action);
 	switch ($action) {
 		case 'add':
 			// add wpa entry in the stack
 			$wlanid = sysCmd('wpa_cli add_network');
+			$args->id =  $wlanid[1];
+			// debug
+			runelog('wrk_wpa_cli('.$action.'): assigned wlan ID',$args->id);
+			$wpa_cli_response = wrk_wpa_cli('store', $args);
+			if ($wpa_cli_response) {
+				if (isset($args->connect)) {
+					wrk_wpa_cli('connect');
+				}
+				$return = $args->id;
+			} else {
+				// rollback
+				sysCmd('wpa_cli remove_network '.$args->id);
+				$return = false;
+			}
+		break;
+		
+		case 'edit':
+			$args->edit = 1;
+			if (isset($args->connect)) {
+				unset($args->connect);
+				$connect = 1;
+			}
+			if (wrk_wpa_cli('store', $args, $redis)) {
+				if ($connect) wrk_wpa_cli('connect');
+				$return = 1;
+			}	
+		break;
+		
+		case 'store':
+			// set default set password command
+			$cmd_pass = "wpa_cli set_network ".$args->id." psk '\"".$args->key."\"'";
+			if (isset($args->edit)) {
+				$stored_profile = json_decode($redis->hGet('wlan_profiles',$args->ssid));
+				if ($stored_profile->encryption === $args->encryption) {
+					// select correct change password command
+					$cmd_pass = "wpa_cli new_password ".$args->id." '\"".$args->key."\"'";
+				} else {
+					// remove and 
+					if (wrk_wpa_cli('delete', $args)) {
+					unset($args->edit);
+					wrk_wpa_cli('add', $args);
+					} else {
+						$return = false;
+						break;
+					}
+				}
+			}
 			// set the SSID
-			$wpa_cli_response = sysCmd("wpa_cli set_network ".$wlanid[1]." ssid '\"".$args->ssid."\"'");
+			$wpa_cli_response = sysCmd("wpa_cli set_network ".$args->id." ssid '\"".$args->ssid."\"'");
 			// set the encryption type
-			// if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd('wpa_cli set_network '.$wlanid[1].' key_mgmt WPA-PSK');
-			// store the encryption key
-			if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd("wpa_cli set_network ".$wlanid[1]." psk '\"".$args->key."\"'");
+			if ($wpa_cli_response[1] === 'OK') {
+				if ($args->encryption === 'open') {
+					$wpa_cli_response = sysCmd('wpa_cli set_network '.$args->id.' key_mgmt NONE');
+				}
+				if ($args->encryption === 'wpa') {
+					$wpa_cli_response = sysCmd('wpa_cli set_network '.$args->id.' key_mgmt WPA-PSK');
+					// store the encryption key
+					$wpa_cli_response = sysCmd($cmd_pass);			
+				}
+				if ($args->encryption === 'wep') {
+					$wpa_cli_response = sysCmd('wpa_cli set_network '.$args->id.' key_mgmt NONE');
+					// store the encryption key
+					if (isset($chpass)) {
+						$wpa_cli_response = sysCmd("wpa_cli new_password ".$args->id." '\"".$args->key."\"'");
+					} else {
+						$wpa_cli_response = sysCmd("wpa_cli set_network ".$args->id." wep_key0 '\"".$args->key."\"'");
+					}
+				}
+			}
 			// enable the new network profile
-			if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd('wpa_cli enable_network '.$wlanid[1]);
+			if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd('wpa_cli enable_network '.$args->id);
 			// save configuration file
 			if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd('wpa_cli save_config');
-			if ($wpa_cli_response[1] === 'OK') $return = $wlanid[1];
+			if ($wpa_cli_response[1] === 'OK') {
+				$return = true;
+			} else {
+				$return = false;
+			}
 		break;
 		
 		case 'delete':
 			$wpa_cli_response = sysCmd('wpa_cli remove_network '.$args->id);
+			if ($wpa_cli_response[1] === 'OK') $wpa_cli_response = sysCmd('wpa_cli save_config');
+			if ($wpa_cli_response[1] === 'OK') {
+				$return = 1;
+			} else {
+				$return = false;
+			}
+		break;
+		
+		case 'connect':
+			// TODO: enhance, catch the event "CTRL-EVENT-CONNECTED" instead of "OK" response from wpa_cli
+			$wpa_cli_response = sysCmd('wpa_cli reconnect');
 			if ($wpa_cli_response[1] === 'OK') $return = 1;
 		break;
+		
+		case 'disconnect':
+			$wpa_cli_response = sysCmd('wpa_cli disconnect');
+			if ($wpa_cli_response[1] === 'OK') $return = 1;
+		break;
+		
 	}
+// debug
+runelog('----- wrk_wpa_cli() exit status',$return);
+runelog('**** wrk_wpa_cli() STOP ****');
 return $return;
 }
 
@@ -1651,7 +1769,7 @@ function wrk_sourcemount($redis,$action,$id) {
 				}
 			} else if ($mp['type'] === 'nfs') {
 				// nfs mount
-				$mountstr = "mount -t nfs -o soft,retry=0,actimeo=0,noac,retrans=1,timeo=1,nofsc,noatime,rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
+				$mountstr = "mount -t nfs -o soft,retry=1,actimeo=1,noac,retrans=1,timeo=1,nofsc,noatime,rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
 			} 
 			// debug
 			runelog('mount string',$mountstr);

@@ -38,18 +38,36 @@ if (isset($_POST)) {
 	if (isset($_POST['nic'])) {
 		$redis->get($_POST['nic']['name']) === json_encode($nic) || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'netcfg', 'action' => 'config', 'args' => $_POST['nic'] ));		
 	}
-	
-	if (isset($_POST['wifiprofile'])) {
-		$redis->get('wlan_'.$_POST['wifiprofile']['ssid']) === json_encode($_POST['wifiprofile']) || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'save', 'args' => $_POST['wifiprofile'] ));		
-	}
-	
+
 	if (isset($_POST['refresh'])) {
 		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'netcfg', 'action' => 'refresh' ));
 	}
-	
-	if (isset($_POST['wifidelete'])) {
-		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'delete', 'args' =>  $_POST['wifidelete'] ));
+
+	if (isset($_POST['wifiprofile'])) {
+		switch ($_POST['wifiprofile']['action']) {
+			case 'add':
+				$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'add', 'args' => $_POST['wifiprofile'] ));
+			break;
+			
+			case 'edit':
+				$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'edit', 'args' => $_POST['wifiprofile'] ));
+			break;
+			
+			case 'delete':
+				$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'delete', 'args' =>  $_POST['wifiprofile'] ));
+			break;	
+						
+			case 'disconnect':
+				$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'disconnect', 'args' => $_POST['wifiprofile'] ));
+			break;
+			
+		}
+				
 	}
+	
+	// if (isset($_POST['wifidelete'])) {
+		// $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'delete', 'args' =>  $_POST['wifidelete'] ));
+	// }
 	
 	if (isset($_POST['wpa_cli'])) {
 		$jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'wificfg', 'action' => 'wpa_cli', 'args' =>  $_POST['wpa_cli'] ));
@@ -58,13 +76,13 @@ if (isset($_POST)) {
  
 waitSyWrk($redis,$jobID);
 $template->nics = wrk_netconfig($redis,'getnics');
+$template->wlan_autoconnect = $redis->Get('wlan_autoconnect');
+if ($redis->hExists('wlan_profiles',$template->uri(4))) $template->stored = 1;
 
 if (isset($template->action)) {
 	// check if we are into interface details (ex. http://runeaudio/network/edit/eth0)
 	if (isset($template->arg)) {
 		// check if there is a stored profile for current nic
-		// debug
-		// runelog('nic name: ',$template->uri(3));
 		$nic_stored_profile = json_decode($redis->Get($template->uri(3)));
 		// runelog('nic stored profile: ',$nic_stored_profile);
 		if (!empty($nic_stored_profile)) {
@@ -94,12 +112,6 @@ if (isset($template->action)) {
 						$template->wlan_profiles->{$key} = json_decode($value);
 					} 
 				}
-			// debug
-			// var_dump($template->{$template->arg});
-			// var_dump($template->nic);
-			// var_dump($nic_connection);
-			// print_r($template->wlans);
-			// print_r($template->wlan_profiles);
 		// we are in the wlan subtemplate (ex. http://runeaudio/network/wlan/....)
 		} else {
 			// check if we want to store a wifi profile, that is not in range. (ex. http://runeaudio/network/wlan/add )
@@ -108,25 +120,19 @@ if (isset($template->action)) {
 			} else {
 			// we are connecting to a visible network
 				$template->wlans = json_decode($redis->get('wlans'));
-				foreach ($template->wlans->{$template->arg} as $key => $value) {
-					if ($template->uri(4) === $value->ESSID) {
-						$template->{$template->uri(4)} =  $value;
+				foreach ($template->wlans->{$template->uri(3)} as $key => $value) {
+					// if we are in a stored profile, retrieve his details
+					if ($template->stored) {
 						$template->profile_{$template->uri(4)} = json_decode($redis->hGet('wlan_profiles',$template->uri(4)));
 					}
-					// debug
-					// echo $key."\n";
-					// print_r($value);
+					// check if we are in a connected profile
+					if ($template->uri(4) === $value->ESSID) {
+						// retrieve SSID details
+						$template->{$template->uri(4)} =  $value;
+					}
+
 				}
-				// debug
-				// var_dump($template->profile_{$template->uri(4)});
 			}
-			if ($redis->hExists('wlan_profiles',$template->uri(4))) $template->stored = 1;
-			// debug
-			// var_dump($template->nic);
-			// var_dump($template->stored);
 		}
 	}
-	// debug
-	// print_r($template->wlans);
-	// print_r($template->nic_stored);
 } 

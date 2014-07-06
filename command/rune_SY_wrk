@@ -559,21 +559,26 @@ while (1) {
 					$lock = $redis->Get('lock_wifiscan');
 					}
 					$redis->sAdd('w_lock',$jobID);
-					if ($job->action === 'save') {
-						runelog('wificfg: save profile for SSID: '.$job->args->ssid);
-						wrk_wifiprofile($redis,'save',$job->args);
-						sysCmd('wpa_cli reconnect');
-					}					
+					// add profile
+					if ($job->action === 'add') {
+						runelog('wificfg: add profile for SSID: '.$job->args->ssid);
+						wrk_wifiprofile($redis,'add',$job->args);
+					}
+					if ($job->action === 'edit') {
+						runelog('wificfg: edit profile for SSID: '.$job->args->ssid);
+						wrk_wifiprofile($redis,'edit',$job->args);
+					}
 					if ($job->action === 'delete') {
 						runelog('wificfg: delete profile for SSID: '.$job->args->ssid);
 						wrk_wifiprofile($redis,'delete',$job->args);
 					}
-					if ($job->action === 'wpa_cli') {
-						runelog('wificfg: wpa_cli '.$job->action);
-						// execute wpa_cli command
-						sysCmd('wpa_cli '.$job->args);
-						// refresh nics status
-						sysCmd('/var/www/command/refresh_nics');
+					if ($job->action === 'disconnect') {
+						runelog('wificfg: disconnect profile for SSID: '.$job->args->ssid);
+						wrk_wifiprofile($redis,'disconnect');
+					}
+					if ($job->action === 'connect') {
+						runelog('wificfg: connect profile for SSID: '.$job->args->ssid);
+						wrk_wifiprofile($redis,'connect');
 					}
 					if ($job->action === 'scan') {
 						if ($lock !== '1') {
