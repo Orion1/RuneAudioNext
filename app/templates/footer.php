@@ -36,6 +36,11 @@
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
 <?php endif ?>
-<script src="<?=$this->asset('/js/runeui'. (($this->dev === '0') ? '.min' : '') .'.js')?>"></script>
+<?php if ($this->dev === '0'):?>
+<script src="<?=$this->asset('/js/runeui.min.js')?>"></script>
+<?php else: ?>
+<!-- DEV mode ACTIVE -->
+<script src="<?=$this->asset('/js/runeui.js')?>"></script>
+<?php endif; ?>
 <script src="<?=$this->asset('/js/vendor/pnotify.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')?>"></script>

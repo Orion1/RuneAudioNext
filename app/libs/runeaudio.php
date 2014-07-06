@@ -1008,18 +1008,11 @@ $updateh = 0;
 	}
 
 	if ($updateh === 1) {
+		runelog('wireless NIC?', $args->wireless);
 		// activate configuration (RuneOS)
 		sysCmd('mpc stop');
 		sysCmd('netctl stop '.$args->name);
 		sysCmd('ip addr flush dev '.$args->name);
-		// sysCmd('netctl reenable '.$args->name);
-		// if ($args->wireless === '1') {
-			// //check if wpa_supplicant is enabled for current wifi interface.
-			// if (!file_exists('/etc/systemd/system/multi-user.target.wants/wpa_supplicant@'.$args->name.'.service')) {
-				// runelog('enable wpa_supplicant on '.$args->name);
-				// sysCmd('systemctl enable wpa_supplicant@'.$args->name);
-			// }
-		// }
 		if ($args->dhcp === '1') {
 		// dhcp configuration
 			if ($args->wireless !== '1') {
@@ -1035,14 +1028,23 @@ $updateh = 0;
 				$cmd = "rm '/etc/systemd/system/multi-user.target.wants/ifplugd@".$args->name.".service'";
 				sysCmd($cmd);
 				sysCmd('systemctl daemon-reload');
-				// find pid of nic associated dhcpcd
-				$dhcpPID = sysCmd("ps aux | grep dhcpcd | grep ".$args->name." | cut -d ' ' -f 7");
-				// kill dhcpcd
-				sysCmd('kill '.$dhcpPID[0]);
+				// kill ifplugd
 				sysCmd('killall ifplugd');
 			}
+			// get pids of dhcpd
+			$pids = sysCmd('pidof dhcpcd');
+			$dhcp_pids = explode(' ',$pids[0]);
+			// debug
+			runelog('dhcp pids', $dhcp_pids);
+			foreach ($dhcp_pids as $pid) {
+				if (!empty(sysCmd('ps aux | grep '.$pid.' | grep '.$args->name))) {
+					// kill dhcpcd
+					sysCmd('kill '.$pid);
+				}
+			}
 		}
-		sysCmd('netctl start '.$args->name);
+		// start netctl profile for wired nics
+		if ($args->wireless !== '1') sysCmd('netctl start '.$args->name);
 		sysCmd('systemctl restart mpd');
 	}
 // update hash if necessary

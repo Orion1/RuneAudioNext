@@ -46,9 +46,8 @@ $engine->loadExtension(new \League\Plates\Extension\Asset('/srv/http/assets', tr
 $engine->loadExtension(new \League\Plates\Extension\URI($_SERVER['REQUEST_URI']));
 // plates: create a new template
 $template = new \League\Plates\Template($engine);
-// dev state
-$template->dev = $redis->get('dev');
-
+// set devmode
+$template->dev = $devmode;
 // allowed controllers
 $controllers = array(
 'credits',
@@ -133,9 +132,10 @@ $_SESSION['controller'] = 'error';
 
 }
 // plates: render layout (if you want to output direct, set $tplfile = 0 into controller)
- if ($tplfile !== 0) {
+if ($tplfile !== 0) {
 echo $template->render('default_lo');
 }
+
 // close MPD connection
 closeMpdSocket($mpd);
 // close Redis connection

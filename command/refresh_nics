@@ -125,7 +125,7 @@ foreach ($nics as $nic => $nicdetail) {
 			runelog('########### start wpa_supplicant for nic: '.$nic);
 			sysCmd('systemctl start wpa_supplicant@'.$nic);
 			}
-		// check ad activate netctl@nic profile
+		// check and activate netctl@nic profile
 		if (empty(sysCmd('netctl list | grep '.$nic.' | grep \*'))) {
 			runelog('########### start netctl profile for nic: '.$nic);
 				if(!empty(sysCmd('netctl start '.$nic))) {
