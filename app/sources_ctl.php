@@ -74,7 +74,7 @@ waitSyWrk($redis,$jobID);
 $source = netMounts($redis, 'read');
 
 if( $source !== true ){ foreach ($source as $mp) {
-	if (wrk_checkStrSysfile('/proc/mounts',$mp['name']) ) {
+	if (wrk_checkStrSysfile('/proc/mounts','/mnt/MPD/NAS/'.$mp['name']) ) {
 		$mp['status'] = 1;
 	} else {
 		$mp['status'] = 0;

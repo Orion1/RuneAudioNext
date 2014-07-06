@@ -1223,9 +1223,9 @@ $file = stripcslashes(file_get_contents($sysfile));
 // debug
 runelog('wrk_checkStrSysfile('.$sysfile.','.$searchstr.')',$searchstr);
 	if (strpos($file, $searchstr)) {
-	return true;
+		return true;
 	} else {
-	return false;
+		return false;
 	}
 }
 
@@ -1797,8 +1797,8 @@ function wrk_sourcemount($redis,$action,$id) {
 		$mounts = $redis->keys('mount_*');
 		foreach ($mounts as $key) {
 			$mp = $redis->hGetAll($key);
-			if (!wrk_checkStrSysfile('/proc/mounts',$mp['name']) ) {
-			$return = wrk_sourcemount($redis,'mount',$mp['id']);
+			if (!wrk_checkMount($mp['name'])) {
+				$return = wrk_sourcemount($redis,'mount',$mp['id']);
 			}
 		}
 		break;

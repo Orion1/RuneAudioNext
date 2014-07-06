@@ -73,7 +73,8 @@
 				</div>
 				<label class="control-label col-sm-2" for="i2smodule">I&#178;S kernel modules</label>
 				<div class="col-sm-10">
-					<select class="selectpicker" name="i2smodule" data-style="btn-default btn-lg">
+					<select class="selectpicker" name="i2smodule" data-style="btn-default btn-lg" <?php if($this->kernel === 'linux-rune-3.12.13-rt21_wosa'): ?>disabled<?php endif; ?>>
+						<?php if($this->kernel !== 'linux-rune-3.12.13-rt21_wosa'): ?>
 						<option value="none" <?php if($this->i2smodule === 'none'): ?> selected <?php endif ?>>I&#178;S disabled (default)</option>
 						<option value="berrynos" <?php if($this->i2smodule === 'berrynos'): ?> selected <?php endif ?>>G2Labs BerryNOS</option>
 						<option value="berrynosmini" <?php if($this->i2smodule === 'berrynosmini'): ?> selected <?php endif ?>>G2Labs BerryNOS mini</option>
@@ -81,7 +82,9 @@
 						<option value="hifiberrydigi" <?php if($this->i2smodule === 'hifiberrydigi'): ?> selected <?php endif ?>>HiFiBerry Digi</option>
 						<option value="iqaudiopidac" <?php if($this->i2smodule === 'iqaudiopidac'): ?> selected <?php endif ?>>IQaudIO Pi-DAC</option>
 						<option value="raspi2splay3" <?php if($this->i2smodule === 'raspi2splay3'): ?> selected <?php endif ?>>RaspI2SPlay3</option>
-						<option value="raspi2splay3" <?php if($this->i2smodule === 'wolfsonaudiocard'): ?> selected <?php endif ?>>Wolfson Audio Card</option>
+						<?php else: ?>
+						<option value="wolfsonaudiocard"  selected >Wolfson Audio Card</option>
+						<?php endif ?>
 					</select>
 					<span class="help-block">Enable I&#178;S output selecting one of the available sets of modules, specific for each hardware. Once set, the output interface will appear in the <a href="/mpd/">MPD configuration select menu</a>, and modules will also auto-load from the next reboot.</span>
 				</div>
