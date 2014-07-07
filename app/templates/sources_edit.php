@@ -111,7 +111,7 @@
 			<div class="form-group">
 				<label class="col-sm-2 control-label" for="options">Mount flags</label>
 				<div class="col-sm-10">
-					<input class="form-control input-lg" type="text" id="options" name="mount[options]" value="<?=$this->mount['options']?>" data-trigger="change" autocomplete="off" placeholder="cache=strict,ro">
+					<input class="form-control input-lg" type="text" id="options" name="mount[options]" value="<?=$this->mount['options']?>" data-trigger="change" autocomplete="off" placeholder="cache=none,ro">
 					<input type="hidden" name="mount[error]" value="<?=$this->mount['error']?>">
 					<span class="help-block">Advanced mount flags. Don't use this field if you don't know what you are doing.</span>
 				</div>

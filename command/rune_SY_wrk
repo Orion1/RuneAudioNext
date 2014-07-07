@@ -41,13 +41,17 @@ ini_set('error_log','/var/log/runeaudio/rune_SY_wrk.log');
 define('APP','/srv/http/app/');
 opcache_reset();
 include('/srv/http/app/libs/runeaudio.php');
-// prime PHP 5.5 Opcache
-// wrk_opcache('prime',$redis);
-// sysCmd("curl -s -X GET 'http://localhost/command/cachectl.php?action=prime'");
 
 // Connect to Redis backend
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
+
+// prime PHP 5.5 Opcache
+//if ($redis->get('dev') === '0') {
+//    wrk_opcache('prime',$redis);
+//    sysCmd("curl -s -X GET 'http://localhost/command/cachectl.php?action=prime'");
+//}
+
 // check configuration datastore
 redisDatastore($redis,'check');
 

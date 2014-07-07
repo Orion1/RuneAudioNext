@@ -66,6 +66,8 @@ $controllers = array(
 'tun'
 );
 
+
+
 // check page
 if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
 
@@ -96,12 +98,13 @@ if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
 				// assign TEMPLATE
 				$template->content = $template->uri(1);
 			}
-			
+
+		
 		$template->section = $template->uri(1);
 		// debug
-		runelog("index: section",$template->section);
+		//runelog("index: section",$template->section);
 		// debug
-		runelog("index: selected controller(1)",APP.$template->uri(1));
+		//runelog("index: selected controller(1)",APP.$template->uri(1));
 		// load selected APP Controller
 		include(APP.$template->uri(1).'_ctl.php');
 		// register current controller in SESSION
@@ -113,7 +116,7 @@ if (in_array($template->uri(1),$controllers) OR empty($template->uri(1))) {
     } else {
 	
 	// debug
-	runelog("index: selected controller(2)",'playback_ctl.php');
+	//runelog("index: selected controller(2)",'playback_ctl.php');
 	// load playback APP Controller
     include(APP.'playback_ctl.php');
 	$template->section = 'index';
@@ -131,6 +134,8 @@ $template->content = 'error';
 $_SESSION['controller'] = 'error';
 
 }
+// set devmode
+$template->dev = $devmode;
 // plates: render layout (if you want to output direct, set $tplfile = 0 into controller)
 if ($tplfile !== 0) {
 echo $template->render('default_lo');

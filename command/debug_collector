@@ -168,8 +168,12 @@ function debug_data($redis) {
 		$command = sysCmd('lsmod');
 		$output .= implode("\n",$command)."\n\n\n";
 		unset($command);
-		$output .= "###### Network sockets (netstat -lnp) ######\n";
+		$output .= "###### Network listening sockets (netstat -lnp) ######\n";
 		$command = sysCmd('netstat -lnp');
+		$output .= implode("\n",$command)."\n\n\n";
+		unset($command);
+		$output .= "###### Network established sockets (netstat -np) ######\n";
+		$command = sysCmd('netstat -np');
 		$output .= implode("\n",$command)."\n\n\n";
 		unset($command);
 		$output .= "###### Network interfaces (ip addr) ######\n";

@@ -207,8 +207,9 @@ class globalRandom extends Thread {
 	
     public function run() {
 		$mpd = openMpdSocket('/run/mpd.sock');
-			if ($this->status['consume'] == 0 OR $this->status['random'] == 0) {
-			sendMpdCommand($mpd,'consume 1');
+			// if ($this->status['consume'] == 0 OR $this->status['random'] == 0) {
+			if ($this->status['random'] == 0) {
+			// sendMpdCommand($mpd,'consume 1');
 			sendMpdCommand($mpd,'random 1');
 			}
 			$path = randomSelect($mpd);
@@ -1294,10 +1295,11 @@ function wrk_audioOutput($redis,$action,$args = null) {
 			runelog('/proc/asound/cards',$acards);
 			foreach ($acards as $card) {
 				unset($sub_interfaces);
+				unset($data);
 				$card_index = explode(' : ', $card);
 				$card_index = trim($card_index[0]);
-				// debug
-				runelog('wrk_audioOutput card index: ', $card_index);
+				// acards loop
+				runelog('>>--------------------------- card: '.$card.' index: '.$card_index.' (start) --------------------------->>');
 				$card = explode(' - ', $card);
 				$card = trim($card[1]);
 				// $description = sysCmd("cat /proc/asound/cards | grep : | cut -d ':' -f 2 | cut -d ' ' -f 4-20");
@@ -1312,9 +1314,10 @@ function wrk_audioOutput($redis,$action,$args = null) {
 					if ($i2smodule !== 'none' && $i2smodule_details->sysname === $card) {
 						$acards_details = $i2smodule_details;
 					} else {
+						unset($acards_details);
 						$acards_details = $redis->hGet('acards_details',$card);
 					}
-				if (!empty($acards_details)) {
+				if ($acards_details !== '') {
 					// debug
 					runelog('wrk_audioOutput: in loop: acards_details for: '.$card,$acards_details);
 					$details = json_decode($acards_details);
@@ -1346,11 +1349,15 @@ function wrk_audioOutput($redis,$action,$args = null) {
 								// replace index string in route command
 								if (isset($sub_int_details->route_cmd)) $sub_int_details->route_cmd = str_replace("*CARDID*", $card_index, $sub_int_details->route_cmd);
 								// debug
-								runelog('::::::acard record array::::::',$sub_int_details);
+								runelog('::::::sub interface record array:::::: ',$sub_int_details);
 								$redis->hSet('acards',$card.'_'.$sub_int_details->id,json_encode($sub_int_details));
 							}
 						} 
-						if ($details->extlabel !== 'none') $data['extlabel'] = $details->extlabel;
+						// if ($details->extlabel !== 'none') $data['extlabel'] = $details->extlabel;
+						if (isset($details->extlabel) && $details->extlabel !== 'none') {
+							runelog('::::::acard extlabel:::::: ',$details->extlabel);
+							$data['extlabel'] = $details->extlabel;
+						}
 					}
 					// debug
 					runelog('wrk_audioOutput: in loop: extlabel for: '.$card,$data['extlabel']);
@@ -1363,12 +1370,14 @@ function wrk_audioOutput($redis,$action,$args = null) {
 				runelog('::::::acard record array::::::',$data);
 				$redis->hSet('acards',$card,json_encode($data));
 				}
+				// acards loop
+				runelog('<<--------------------------- card: '.$card.' index: '.$card_index.' (finish) ---------------------------<<');
 			}
 			$redis->Save();
 		break;
 		
 		case 'setdetails':
-			$redis->hSet('acards_labels',$args['card'],json_encode($args['details']));
+			$redis->hSet('acards_details',$args['card'],json_encode($args['details']));
 		break;
 	}
 }
@@ -1511,8 +1520,8 @@ $header .= "\n";
 				$redis->hSet('mpdconf','filesystem_charset','UTF-8');
 				$redis->hSet('mpdconf','id3v1_encoding','UTF-8');
 				$redis->hSet('mpdconf','volume_normalization','no');
-				$redis->hSet('mpdconf','audio_buffer_size','2048');
-				$redis->hSet('mpdconf','buffer_before_play','20%');
+				$redis->hSet('mpdconf','audio_buffer_size','1024');
+				$redis->hSet('mpdconf','buffer_before_play','0%');
 				$redis->hSet('mpdconf','gapless_mp3_playback','yes');
 				$redis->hSet('mpdconf','mixer_type','software');
 				$redis->hSet('mpdconf','curl','yes');
@@ -1554,6 +1563,7 @@ $header .= "\n";
 				
 				if ($param === 'log_level' && $value !== 'none') {
 					$redis->hSet('mpdconf','log_file','/var/log/runeaudio/mpd.log');
+					$redis->save();
 				}					
 				
 				if ($param === 'state_file' && $value === 'no') {
@@ -1796,7 +1806,8 @@ function wrk_sourcemount($redis,$action,$id) {
 				}
 			} else if ($mp['type'] === 'nfs') {
 				// nfs mount
-				$mountstr = "mount -t nfs -o soft,retry=1,actimeo=1,noac,retrans=1,timeo=1,nofsc,noatime,rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
+				$mountstr = "mount -t nfs -o soft,retry=0,actimeo=1,retrans=2,timeo=50,nofsc,noatime,rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
+				// $mountstr = "mount -t nfs -o soft,retry=1,noatime,rsize=".$mp['rsize'].",wsize=".$mp['wsize'].",".$mp['options']." \"".$mp['address'].":/".$mp['remotedir']."\" \"/mnt/MPD/NAS/".$mp['name']."\"";
 			} 
 			// debug
 			runelog('mount string',$mountstr);

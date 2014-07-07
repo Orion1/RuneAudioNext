@@ -44,6 +44,7 @@ include('/var/www/app/libs/runeaudio.php');
 // reset worker logfile
 sysCmd('echo "--------------- start: rune_PL_wrk ---------------" > /var/log/runeaudio/rune_PL_wrk.log');
 runelog("WORKER rune_PL_wrk START",'');
+// reset forceupdate state
 $forceupdate = 0;
 // --- WORKER MAIN LOOP --- //
 while (1) {
