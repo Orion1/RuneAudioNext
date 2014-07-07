@@ -19,7 +19,7 @@
 <!-- loader -->
 <div id="loader"><div id="loaderbg"></div><div id="loadercontent"><i class="fa fa-refresh fa-spin"></i>connecting...</div></div>
 <script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/pushstream.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/pushstream.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
 <?php if ($this->section == 'debug'): ?>
 <script src="<?=$this->asset('/js/vendor/ZeroClipboard.min.js')?>"></script>
@@ -27,11 +27,11 @@
 <?php if ($this->section == 'index'): ?>
 <script src="<?=$this->asset('/js/vendor/jquery.plugin.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/jquery.knob.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/bootstrap-contextmenu.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/jquery.knob.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/bootstrap-contextmenu.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.scrollTo.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/Sortable.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/fastclick.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/Sortable.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/fastclick.min.js')?>"></script>
 <?php else: ?>
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>

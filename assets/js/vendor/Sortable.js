@@ -142,7 +142,7 @@
 					self._onTapStart(evt);
 				}
 			}, 500);
-			// evt.preventDefault();
+			// evt.preventDefault();    // [MOD] Fix for touch devices
 		},
 
 		_onTapStart: function (evt/**Event|TouchEvent*/){
