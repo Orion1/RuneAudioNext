@@ -52,6 +52,7 @@ $redis->set('scrobbling_lastfm', 0);
 $redis->set('cmediafix', 0);
 $redis->set('globalrandom', 0);
 $redis->set('globalrandom_lock', 0);
+$redis->set('mpd_playback_status', '');
 
 // plugins api-keys
 $redis->set('lastfm_apikey', 'ba8ad00468a50732a3860832eaed0882');

@@ -160,7 +160,7 @@ $redis->set('hostname',$hn[0]);
 }
 
 // load i2smodule
-if ($redis->get('i2smodule') !== 'none') {
+if ($redis->get('i2smodule') !== 'none'  && $redis->get('kernel') === 'linux-rune-3.12.19-2-ARCH') {
 	wrk_i2smodule($redis,$redis->get('i2smodule'));
 }
 

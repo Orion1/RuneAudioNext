@@ -1229,6 +1229,15 @@ runelog('wrk_checkStrSysfile('.$sysfile.','.$searchstr.')',$searchstr);
 	}
 }
 
+function wrk_checkMount($mpname) {
+    $check_mp = sysCmd('cat /proc/mounts | grep "/mnt/MPD/NAS/'.$mpname.'"');
+    if (!empty($check_mp)) {
+		return true;
+    } else {
+		return false;
+    }
+}
+
 function wrk_cleanDistro($redis) {
 runelog('function CLEAN DISTRO invoked!!!','');
 // remove mpd.db
@@ -1365,7 +1374,7 @@ function wrk_audioOutput($redis,$action,$args = null) {
 }
 
 function wrk_i2smodule($redis,$args) {
-sysCmd('mpc stop').usleep(300000);
+// sysCmd('mpc stop').usleep(300000);
 	switch ($args) {
 		case 'none':
 			sysCmd('rmmod snd_soc_iqaudio_dac').usleep(300000);
@@ -1678,12 +1687,8 @@ $header .= "\n";
 			}
 			wrk_mpdconf($redis,'writecfg');
 			wrk_shairport($redis,$args);
-			// query playback status
-			$status = sysCmd("mpc status | grep '\[' | cut -d '[' -f 2 | cut -d ']' -f 1");
-			// debug
-			runelog('switchao (current state):',$status[0]);
 			// toggle playback state
-			if ($status[0] === 'playing') {
+			if (wrk_mpdPlaybackStatus() === 'playing') {
 				syscmd('mpc toggle');
 				$recover_state = 1;
 				// debug
@@ -1695,9 +1700,9 @@ $header .= "\n";
 			syscmd('mpc enable only "'.$mpdout.'"');
 			// restore playback state
 			if (isset($recover_state)) {
-			// debug
-			runelog('switchao (RECOVER STATE!)');
-			syscmd('mpc toggle');
+				// debug
+				runelog('switchao (RECOVER STATE!)');
+				syscmd('mpc toggle');
 			}
 			// set notify label
 			if (isset($interface_details->extlabel)) { $interface_label = $interface_details->extlabel; } else { $interface_label = $args; }
@@ -1713,13 +1718,21 @@ $header .= "\n";
 		
 		case 'start':
 			sysCmd('systemctl start mpd');
+			if ($redis->get('mpd_playback_status') === 'playing') {
+				syscmd('mpc play');
+			}
 			// restart mpdscribble
 			if ($redis->get('scrobbling_lastfm') === '1') {
-			sysCmd('systemctl restart mpdscribble');
+				sysCmd('systemctl restart mpdscribble');
 			}
 		break;
 		
 		case 'stop':
+			$redis->set('mpd_playback_status',wrk_mpdPlaybackStatus());
+			$mpd = openMpdSocket('/run/mpd.sock');
+			sendMpdCommand($mpd,'kill');
+			closeMpdSocket($mpd);
+			sleep(1);
 			sysCmd('systemctl stop mpd');
 		break;
 		
@@ -1731,21 +1744,28 @@ $header .= "\n";
 	}
 }
 
-function wrk_shairport($redis,$ao,$name = null) {
-if (!isset($name)) {
-$name = $redis->hGet('airplay','name');
+function wrk_mpdPlaybackStatus() {
+	$status = sysCmd("mpc status | grep '\[' | cut -d '[' -f 2 | cut -d ']' -f 1");
+	// debug
+	runelog('wrk_mpdPlaybackStatus (current state):',$status[0]);
+return $status[0];
 }
-$acard = json_decode($redis->hget('acards',$ao));
-runelog('acard details: ',$acard);
-$file = '/usr/lib/systemd/system/shairport.service';
-$newArray = wrk_replaceTextLine($file,'','ExecStart','ExecStart=/usr/local/bin/shairport -w --name='.$name.' --on-start=/var/www/command/airplay.sh --on-stop=/var/www/command/airplay.sh -o alsa -- -d '.$acard->device);
-runelog('shairport.service :',$newArray);
-// Commit changes to /usr/lib/systemd/system/shairport.service
-$fp = fopen($file, 'w');
-fwrite($fp, implode("",$newArray));
-fclose($fp);
-// update systemd
-sysCmd('systemctl daemon-reload');
+
+function wrk_shairport($redis,$ao,$name = null) {
+	if (!isset($name)) {
+		$name = $redis->hGet('airplay','name');
+	}
+	$acard = json_decode($redis->hget('acards',$ao));
+	runelog('acard details: ',$acard);
+	$file = '/usr/lib/systemd/system/shairport.service';
+	$newArray = wrk_replaceTextLine($file,'','ExecStart','ExecStart=/usr/local/bin/shairport -w --name='.$name.' --on-start=/var/www/command/airplay.sh --on-stop=/var/www/command/airplay.sh -o alsa -- -d '.$acard->device);
+	runelog('shairport.service :',$newArray);
+	// Commit changes to /usr/lib/systemd/system/shairport.service
+	$fp = fopen($file, 'w');
+	fwrite($fp, implode("",$newArray));
+	fclose($fp);
+	// update systemd
+	sysCmd('systemctl daemon-reload');
 	if ($redis->hGet('airplay','enable') === '1') {
 		runelog('restart shairport');
 		sysCmd('systemctl restart shairport');
