@@ -409,7 +409,7 @@ while (1) {
 						wrk_opcache('enable');
 						runelog('PHP 5.5 OPcache enabled');
 						sysCmd('systemctl restart php-fpm');
-						wrk_opcache('forceprime');
+						// wrk_opcache('forceprime');
 						$redis->set('opcache', 1);
 						// send notfy to UI
 						ui_notify_async('PHP OpCache', 'cache enabled', $jobID);
@@ -597,10 +597,11 @@ while (1) {
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
-				case 'workerrestart':
-				
-					sysCmd('systemctl restart rune_SY_wrk');
-				
+				case 'wrkrestart':
+				runelog('wrk_SY: ',$job->wrkcmd);
+						// restart worker
+						sysCmd('systemctl restart '.$job->args);	
+					$redis->sRem('w_lock',$jobID);
 				break;
 			}
 		// delete processed job from the w_queue

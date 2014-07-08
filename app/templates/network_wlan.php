@@ -56,7 +56,7 @@
 			<div class="form-group <?php if($this->uri(4) !== 'add'): ?>hide<?php endif; ?>">
 				<label class="col-sm-2 control-label" for="wifiprofile[ssid]">SSID</label>
 				<div class="col-sm-10">
-					<input class="form-control input-lg" type="text" id="wifi-ssid" name="wifiprofile[ssid]" value="<?php if($this->uri(4) !== 'add'): ?><?=$this->uri(4) ?><?php endif; ?>" data-trigger="change">
+					<input class="form-control input-lg" type="text" id="wifi-ssid" name="wifiprofile[ssid]" value="<?php if($this->uri(4) !== 'add'): ?><?=$this->uri(4) ?><?php endif; ?>" data-trigger="change" autocomplete="off">
 					<span class="help-block">Set the SSID name of the Wi-Fi you want to connect.</span>
 				</div>
 			</div>
