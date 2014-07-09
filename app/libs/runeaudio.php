@@ -1262,12 +1262,12 @@ sysCmd('rm -rf /root/.*');
 // delete .git folder
 sysCmd('rm -rf /var/www/.git');
 // switch smb.conf to 'production' state
-sysCmd('rm /var/www/_OS_SETTINGS/etc/samba/smb.conf');
-sysCmd('ln -s /var/www/_OS_SETTINGS/etc/samba/smb-prod.conf /var/www/_OS_SETTINGS/etc/samba/smb.conf');
+// sysCmd('rm /var/www/app/config/_os/etc/samba/smb.conf');
+sysCmd('cp /var/www/app/config/_os/etc/samba/smb-prod.conf /etc/samba/smb.conf');
 // switch nginx.conf to 'production' state
 sysCmd('systemctl stop nginx');
 sysCmd('rm /etc/nginx/nginx.conf');
-sysCmd('ln -s /var/www/_OS_SETTINGS/etc/nginx/nginx-prod.conf /etc/nginx/nginx.conf');
+sysCmd('cp /var/www/app/config/_os/etc/nginx/nginx-prod.conf /etc/nginx/nginx.conf');
 sysCmd('systemctl start nginx');
 // reset /var/log/runeaudio/*
 sysCmd('rm -f /var/log/runeaudio/*');
@@ -2011,20 +2011,20 @@ function wrk_sysEnvCheck($arch,$install) {
 	if ($arch == '01' OR $arch == '02' OR $arch == '03' OR $arch == '04' ) {
 	 // /etc/rc.local
 	 $a = '/etc/rc.local';
-	 $b = '/var/www/_OS_SETTINGS/etc/rc.local';
+	 $b = '/var/www/app/config/_os/etc/rc.local';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a);
 	 }
 	 
 	 // /etc/samba/smb.conf
 	 $a = '/etc/samba/smb.conf';
-	 $b = '/var/www/_OS_SETTINGS/etc/samba/smb.conf';
+	 $b = '/var/www/app/config/_os/etc/samba/smb.conf';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a.' ');
 	 }
 	 // /etc/nginx.conf
 	 $a = '/etc/nginx/nginx.conf';
-	 $b = '/var/www/_OS_SETTINGS/etc/nginx/nginx.conf';
+	 $b = '/var/www/app/config/_os/etc/nginx/nginx.conf';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a.' ');
 	 // stop nginx
@@ -2034,21 +2034,21 @@ function wrk_sysEnvCheck($arch,$install) {
 	 }
 	 // /etc/php5/cli/php.ini
 	 $a = '/etc/php5/cli/php.ini';
-	 $b = '/var/www/_OS_SETTINGS/etc/php5/cli/php.ini';
+	 $b = '/var/www/app/config/_os/etc/php5/cli/php.ini';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a.' ');
 	 $restartphp = 1;
 	 }
 	 // /etc/php5/fpm/php-fpm.conf
 	 $a = '/etc/php5/fpm/php-fpm.conf';
-	 $b = '/var/www/_OS_SETTINGS/etc/php5/fpm/php-fpm.conf';
+	 $b = '/var/www/app/config/_os/etc/php5/fpm/php-fpm.conf';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a.' ');
 	 $restartphp = 1;
 	 }
 	 // /etc/php5/fpm/php.ini
 	 $a = '/etc/php5/fpm/php.ini';
-	 $b = '/var/www/_OS_SETTINGS/etc/php5/fpm/php.ini';
+	 $b = '/var/www/app/config/_os/etc/php5/fpm/php.ini';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a.' ');
 	 $restartphp = 1;
@@ -2056,35 +2056,35 @@ function wrk_sysEnvCheck($arch,$install) {
 	 
 		if ($install == 1) {
 		 // remove autoFS for NAS mount
-		 sysCmd('cp /var/www/_OS_SETTINGS/etc/auto.master /etc/auto.master');
+		 sysCmd('cp /var/www/app/config/_os/etc/auto.master /etc/auto.master');
 		 sysCmd('rm /etc/auto.nas');
 		 sysCmd('systemctl restart autofs');
 		 // /etc/php5/mods-available/apc.ini
-		 sysCmd('cp /var/www/_OS_SETTINGS/etc/php5/mods-available/apc.ini /etc/php5/mods-available/apc.ini');
+		 sysCmd('cp /var/www/app/config/_os/etc/php5/mods-available/apc.ini /etc/php5/mods-available/apc.ini');
 		 // /etc/php5/fpm/pool.d/ erase
 		 sysCmd('rm /etc/php5/fpm/pool.d/*');
 		 // /etc/php5/fpm/pool.d/ copy
-		 sysCmd('cp /var/www/_OS_SETTINGS/etc/php5/fpm/pool.d/* /etc/php5/fpm/pool.d/');
+		 sysCmd('cp /var/www/app/config/_os/etc/php5/fpm/pool.d/* /etc/php5/fpm/pool.d/');
 		 $restartphp = 1;
 		}
 		
 	 // /etc/php5/fpm/pool.d/command.conf
 	 $a = '/etc/php5/fpm/pool.d/command.conf';
-	 $b = '/var/www/_OS_SETTINGS/etc/php5/fpm/pool.d/command.conf';
+	 $b = '/var/www/app/config/_os/etc/php5/fpm/pool.d/command.conf';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a.' ');
 	 $restartphp = 1;
 	 }
 	 // /etc/php5/fpm/pool.d/db.conf
 	 $a = '/etc/php5/fpm/pool.d/db.conf';
-	 $b = '/var/www/_OS_SETTINGS/etc/php5/fpm/pool.d/db.conf';
+	 $b = '/var/www/app/config/_os/etc/php5/fpm/pool.d/db.conf';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a.' ');
 	 $restartphp = 1;
 	 }
 	 // /etc/php5/fpm/pool.d/display.conf
 	 $a = '/etc/php5/fpm/pool.d/display.conf';
-	 $b = '/var/www/_OS_SETTINGS/etc/php5/fpm/pool.d/display.conf';
+	 $b = '/var/www/app/config/_os/etc/php5/fpm/pool.d/display.conf';
 	 if (md5_file($a) != md5_file($b)) {
 	 sysCmd('cp '.$b.' '.$a.' ');
 	 $restartphp = 1;
@@ -2092,12 +2092,12 @@ function wrk_sysEnvCheck($arch,$install) {
 		// (RaspberryPi arch)
 		if ($arch == '01') {
 			$a = '/boot/cmdline.txt';
-			$b = '/var/www/_OS_SETTINGS/boot/cmdline.txt';
+			$b = '/var/www/app/config/_os/boot/cmdline.txt';
 			if (md5_file($a) != md5_file($b)) {
 			sysCmd('cp '.$b.' '.$a.' ');
 			// /etc/fstab
 			$a = '/etc/fstab';
-			$b = '/var/www/_OS_SETTINGS/etc/fstab_raspberry';
+			$b = '/var/www/app/config/_os/etc/fstab_raspberry';
 			if (md5_file($a) != md5_file($b)) {
 				sysCmd('cp '.$b.' '.$a.' ');
 				$reboot = 1;
