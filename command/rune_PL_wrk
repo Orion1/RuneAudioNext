@@ -45,7 +45,7 @@ include('/var/www/app/libs/runeaudio.php');
 sysCmd('echo "--------------- start: rune_PL_wrk ---------------" > /var/log/runeaudio/rune_PL_wrk.log');
 runelog("WORKER rune_PL_wrk START",'');
 // reset forceupdate state
-$forceupdate = 0;
+$forceupdate = 1;
 // --- WORKER MAIN LOOP --- //
 while (1) {
 runelog("rune_PL_wrk: open MPD local UNIX socket",'');

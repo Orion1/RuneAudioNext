@@ -39,18 +39,18 @@ if (isset($_POST)) {
 		if ($_POST['mode']['dev']['enable'] == 1) {
 			// create worker job (start udevil)
 			$redis->get('dev') == 1 || $redis->set('dev', 1);
-			$redis->get('debug') == 1 || $redis->set('debug', 1).usleep(500000);
+			$redis->get('debug') == 1 || $redis->set('debug', 1);
 		} else {
 			// create worker job (stop udevil)
-			$redis->get('dev') == 0 || $redis->set('dev', 0).usleep(500000);
+			$redis->get('dev') == 0 || $redis->set('dev', 0);
 		}
 	// ----- DEBUG -----
 		if ($_POST['mode']['debug']['enable'] == 1) {
 			// create worker job (start udevil)
-			$redis->get('debug') == 1 || $redis->set('debug', 1).usleep(500000);
+			$redis->get('debug') == 1 || $redis->set('debug', 1);
 		} else {
 			// create worker job (stop udevil)
-			$redis->get('debug') == 0 || $redis->set('debug', 0).usleep(500000);
+			$redis->get('debug') == 0 || $redis->set('debug', 0);
 		}
 	}
 	// ----- OPCACHE -----
@@ -86,3 +86,7 @@ waitSyWrk($redis,$jobID);
 $template->debug = $redis->get('debug');
 $template->playerid = $redis->get('playerid');
 $template->opcache = $redis->get('opcache');
+// debug
+// var_dump($template->dev);
+// var_dump($template->debug);
+// var_dump($template->opcache);

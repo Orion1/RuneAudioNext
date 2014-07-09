@@ -68,7 +68,11 @@ if (isset($_POST)) {
 	
 	if (isset($_POST['i2smodule'])) {		
 		// submit worker job
-		$redis->get('i2smodule') == $_POST['i2smodule'] || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'i2smodule', 'args' => $_POST['i2smodule'] ));	
+		$redis->get('i2smodule') == $_POST['i2smodule'] || $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'i2smodule', 'args' => $_POST['i2smodule'] ));
+		// autoswitch optimized kernel profile for BerryNOS mini DAC
+		if ($_POST['i2smodule'] === 'berrynosmini') $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'orionprofile', 'args' => 'OrionV3_berrynosmini' ));
+		// autoswitch optimized kernel profile for IQaudIO Pi-DAC
+		if ($_POST['i2smodule'] === 'iqaudiopidac') $jobID[] = wrk_control($redis,'newjob', $data = array( 'wrkcmd' => 'orionprofile', 'args' => 'OrionV3_iqaudio' ));
 	} 
 	
 	// ----- FEATURES -----

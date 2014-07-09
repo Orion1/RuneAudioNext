@@ -459,9 +459,11 @@ while (1) {
 					$redis->sRem('w_lock',$jobID);
 				break;
 				
-				case 'restore':
-					wrk_restore("/run/".$job->args);
-				break;
+				// case 'restore':
+				// runelog('wrk_SY: ',$job->wrkcmd);
+					// wrk_restore("/run/".$job->args);
+					// $redis->sRem('w_lock',$jobID);
+				// break;
 				
 				case 'scrobbling_lastfm':
 				runelog('wrk_SY: ',$job->wrkcmd);
@@ -504,9 +506,9 @@ while (1) {
 				break;
 
 				case 'sysAcl':
-				
+				runelog('wrk_SY: ',$job->wrkcmd);
 					wrk_sysAcl();
-				
+					$redis->sRem('w_lock',$jobID);
 				break;
 					
 				case 'udevil':
