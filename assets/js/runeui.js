@@ -38,7 +38,7 @@
 var GUI = {
 	DBentry: ['', '', ''],
 	DBupdate: 0,
-	browsemode: 'file',
+	browsemode: 'artist',
 	currentDBpos: [0,0,0,0,0,0,0,0,0,0,0],
 	currentalbum: null,
 	currentknob: null,
